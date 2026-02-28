@@ -830,31 +830,11 @@
 
 @media (max-width: 768px) {
   .jobs-section {
-    margin-top: -7.5rem;
+    margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     padding-left: 0;
     padding-right: 0;
-    overflow: visible;
-    position: relative;
-    z-index: 10;
-  }
-
-  .filter-bar-label {
-    color: rgba(255, 255, 255, 0.95) !important;
-  }
-
-  .section-header h2 {
-    color: rgba(255, 255, 255, 0.95) !important;
-  }
-
-  .section-showing-label {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-    border: none;
-  }
-
-  .view-all-btn {
-    color: rgba(255, 255, 255, 0.9) !important;
+    overflow: hidden;
   }
 
   .section-header {
@@ -1116,7 +1096,7 @@
   }
 
   .hero {
-    padding: 1rem 1.5rem 8rem;
+    padding: 1rem 1.5rem 1rem;
   }
 
   .hero h1 {
@@ -1441,36 +1421,11 @@
 
 @media (max-width: 480px) {
   .hero {
-    padding-bottom: 7rem;
+    padding-bottom: 1rem;
   }
 
   .jobs-section {
-    margin-top: -7.5rem;
-    position: relative;
-    z-index: 20;
-  }
-
-  .filter-bar-label {
-    color: rgba(255, 255, 255, 0.95) !important;
-  }
-
-  .section-header h2 {
-    color: rgba(255, 255, 255, 0.95) !important;
-  }
-
-  .section-showing-label {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: rgba(255, 255, 255, 0.95) !important;
-    border: none;
-  }
-
-  /* Ensure dropdowns pop against blue background */
-  .filter-dropdown {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .filter-scroll-btn {
-    background: rgba(255, 255, 255, 0.9);
+    margin-top: 1rem;
   }
 
   .hero h1 {
