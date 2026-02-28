@@ -610,7 +610,7 @@ function App() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h1>Searching for Your Dream Job?<br /><span className="hero-highlight">Let Placement<span style={{ color: '#ff8c00', WebkitTextFillColor: '#ff8c00' }}>Babai</span> Help You Get Hired</span></h1>
+          <h1>Searching for Your Dream&nbsp;Job?<br /><span className="hero-highlight">Let Placement<span style={{ color: '#ff8c00', WebkitTextFillColor: '#ff8c00' }}>Babai</span> Help You Get Hired</span></h1>
           <p className="hero-subtitle" style={{ marginBottom: '0.25rem' }}>
             India’s Trusted Job Discovery Platform for Freshers & Professionals
           </p>
