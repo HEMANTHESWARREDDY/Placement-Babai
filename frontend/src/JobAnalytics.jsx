@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from './config';
 import './JobAnalytics.css';
 
 function JobAnalytics({ jobId, onClose }) {
     const [stats, setStats] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/analytics/job/${jobId}`)
+        fetch(`${API_BASE_URL}/api/analytics/job/${jobId}`)
             .then(res => res.json())
             .then(data => setStats(data))
             .catch(console.error);

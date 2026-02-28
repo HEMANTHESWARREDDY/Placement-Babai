@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from './config';
 import './AdminLogin.css';
 
 function AdminLogin({ onLoginSuccess, onBack }) {
@@ -23,7 +24,7 @@ function AdminLogin({ onLoginSuccess, onBack }) {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:8080/api/auth/login', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

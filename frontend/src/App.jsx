@@ -4,6 +4,7 @@ import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
 import CustomSelect from './CustomSelect';
 import LegalModal from './LegalModal';
+import { API_BASE_URL } from './config';
 import './App.css';
 
 function App() {
@@ -321,7 +322,7 @@ function App() {
 
   useEffect(() => {
     fetchJobs();
-    fetch('http://localhost:8080/api/analytics/view/website', { method: 'POST' }).catch(() => { });
+    fetch(`${API_BASE_URL}/api/analytics/view/website`, { method: 'POST' }).catch(() => { });
 
     // Hidden admin route via URL parameter
     const params = new URLSearchParams(window.location.search);
@@ -346,7 +347,7 @@ function App() {
 
   useEffect(() => {
     if (selectedJob) {
-      fetch(`http://localhost:8080/api/analytics/view/job/${selectedJob.id}`, { method: 'POST' }).catch(() => { });
+      fetch(`${API_BASE_URL}/api/analytics/view/job/${selectedJob.id}`, { method: 'POST' }).catch(() => { });
     }
   }, [selectedJob]);
 
@@ -368,7 +369,7 @@ function App() {
     try {
       setLoading(true);
       setIsSearchResult(false);
-      const response = await fetch('http://localhost:8080/api/jobs');
+      const response = await fetch(`${API_BASE_URL}/api/jobs`);
       if (!response.ok) {
         throw new Error('Failed to fetch jobs');
       }
@@ -392,14 +393,14 @@ function App() {
       setLoading(true);
 
       if (searchKeyword && searchKeyword.trim()) {
-        fetch(`http://localhost:8080/api/analytics/search?keyword=${encodeURIComponent(searchKeyword.trim())}`, { method: 'POST' }).catch(() => { });
+        fetch(`${API_BASE_URL}/api/analytics/search?keyword=${encodeURIComponent(searchKeyword.trim())}`, { method: 'POST' }).catch(() => { });
       }
-      let url = 'http://localhost:8080/api/jobs';
+      let url = `${API_BASE_URL}/api/jobs`;
 
       if (searchKeyword) {
-        url = `http://localhost:8080/api/jobs/search?keyword=${encodeURIComponent(searchKeyword)}`;
+        url = `${API_BASE_URL}/api/jobs/search?keyword=${encodeURIComponent(searchKeyword)}`;
       } else if (searchLocation) {
-        url = `http://localhost:8080/api/jobs/location?location=${encodeURIComponent(searchLocation)}`;
+        url = `${API_BASE_URL}/api/jobs/location?location=${encodeURIComponent(searchLocation)}`;
       }
 
       const response = await fetch(url);

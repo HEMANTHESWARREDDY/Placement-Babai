@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, parseISO } from 'date-fns';
+import { API_BASE_URL } from './config';
 import './AnalyticsDashboard.css';
 
 function AnalyticsDashboard() {
@@ -10,12 +11,12 @@ function AnalyticsDashboard() {
     const [activeDateIndex, setActiveDateIndex] = useState(0);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/analytics/website')
+        fetch(`${API_BASE_URL}/api/analytics/website`)
             .then(res => res.json())
             .then(data => setWebsiteStats(data))
             .catch(console.error);
 
-        fetch('http://localhost:8080/api/analytics/historical')
+        fetch(`${API_BASE_URL}/api/analytics/historical`)
             .then(res => res.json())
             .then(data => {
                 setHistoricalStats(data);

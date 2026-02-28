@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from './config';
 import './AdminDashboard.css';
 import CustomSelect from './CustomSelect';
 import AnalyticsDashboard from './AnalyticsDashboard';
@@ -106,14 +107,14 @@ function AdminDashboard({ adminData, onLogout }) {
     useEffect(() => {
         if (!searchQuery || !searchQuery.trim()) return;
         const timer = setTimeout(() => {
-            fetch(`http://localhost:8080/api/analytics/search?keyword=${encodeURIComponent(searchQuery.trim())}`, { method: 'POST' }).catch(() => { });
+            fetch(`${API_BASE_URL}/api/analytics/search?keyword=${encodeURIComponent(searchQuery.trim())}`, { method: 'POST' }).catch(() => { });
         }, 1000);
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
     const fetchJobs = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/jobs');
+            const response = await fetch(`${API_BASE_URL}/api/jobs`);
             const data = await response.json();
             setJobs(data);
         } catch (error) {
@@ -131,8 +132,8 @@ function AdminDashboard({ adminData, onLogout }) {
         e.preventDefault();
         try {
             const url = editingJob
-                ? `http://localhost:8080/api/jobs/${editingJob.id}`
-                : 'http://localhost:8080/api/jobs';
+                ? `${API_BASE_URL}/api/jobs/${editingJob.id}`
+                : `${API_BASE_URL}/api/jobs`;
             const method = editingJob ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -178,7 +179,7 @@ function AdminDashboard({ adminData, onLogout }) {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this job?')) return;
         try {
-            const response = await fetch(`http://localhost:8080/api/jobs/${id}`, { method: 'DELETE' });
+            const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 fetchJobs();
                 alert('Job deleted successfully!');

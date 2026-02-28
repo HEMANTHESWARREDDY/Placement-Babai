@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from './config';
 
 import './JobDetail.css';
 
@@ -52,7 +53,7 @@ function JobDetail({ job, onClose }) {
 
     const handleApply = () => {
         // Track the apply
-        fetch(`http://localhost:8080/api/analytics/apply/job/${job.id}`, { method: 'POST' })
+        fetch(`${API_BASE_URL}/api/analytics/apply/job/${job.id}`, { method: 'POST' })
             .catch(err => console.error('Failed to track apply:', err));
 
         const link = job.applyLink || 'https://www.foundit.in/jobs';
