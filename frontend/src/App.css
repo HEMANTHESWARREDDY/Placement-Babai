@@ -906,7 +906,7 @@
   .job-info {
     flex: 1;
     min-width: 0;
-    padding-right: 4.5rem;
+    padding-right: 6rem;
     /* Prevent overlap with 'View Details ->' */
   }
 
