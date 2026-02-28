@@ -830,11 +830,21 @@
 
 @media (max-width: 768px) {
   .jobs-section {
-    margin-top: 1.5rem;
+    margin-top: -3.8rem;
     margin-bottom: 1.5rem;
     padding-left: 0;
     padding-right: 0;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 10;
+  }
+
+  .filter-bar-label {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .filter-scroll-btn {
+    background: rgba(255, 255, 255, 0.9);
   }
 
   .section-header {
@@ -1096,11 +1106,11 @@
   }
 
   .hero {
-    padding: 1rem 1.5rem 1rem;
+    padding: 1rem 1.5rem 4.8rem;
   }
 
   .hero h1 {
-    font-size: 1.8rem;
+    font-size: 2.1rem;
     word-break: break-word;
     /* ensure proper padding inside 100vw */
     padding: 0 0.5rem;
@@ -1421,15 +1431,15 @@
 
 @media (max-width: 480px) {
   .hero {
-    padding-bottom: 1rem;
+    padding-bottom: 4.8rem;
   }
 
   .jobs-section {
-    margin-top: 1rem;
+    margin-top: -3.8rem;
   }
 
   .hero h1 {
-    font-size: 1.25rem;
+    font-size: 1.7rem;
   }
 
   .hero-subtitle {
