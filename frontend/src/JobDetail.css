@@ -1,0 +1,457 @@
+/* ===== Job Detail Modal ===== */
+.jd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: jd-fade-in 0.2s ease;
+}
+
+@keyframes jd-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.jd-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: jd-slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  scrollbar-width: thin;
+  scrollbar-color: #93c5fd #eff6ff;
+}
+
+@keyframes jd-slide-up {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.jd-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.jd-modal::-webkit-scrollbar-track {
+  background: #eff6ff;
+  border-radius: 10px;
+}
+
+.jd-modal::-webkit-scrollbar-thumb {
+  background: #93c5fd;
+  border-radius: 10px;
+}
+
+/* Top action bar */
+.jd-top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Share icon button */
+.jd-share-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #eff6ff;
+  color: #0073b1;
+  border: 1.5px solid #bfdbfe;
+  padding: 0.3rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jd-share-icon-btn:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.jd-share-icon-label {
+  font-size: 0.75rem;
+}
+
+/* Close Button */
+.jd-close {
+  background: #f3f4f6;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.jd-close:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+/* Header */
+.jd-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.jd-company-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0073b1;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 115, 177, 0.15);
+}
+
+.jd-header-info {
+  flex: 1;
+}
+
+.jd-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 0.2rem;
+  line-height: 1.2;
+}
+
+.jd-company {
+  font-size: 0.95rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-bottom: 0px;
+}
+
+.jd-badges-container {
+  margin-bottom: 1.25rem;
+}
+
+.jd-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.jd-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.jd-badge-green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.jd-badge-teal {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.jd-badge-blue {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.jd-badge-purple {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.jd-badge-orange {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.jd-posted {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+/* Apply Bar */
+.jd-apply-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
+  margin-bottom: 1rem;
+  border: 1px solid #bfdbfe;
+  flex-wrap: wrap;
+}
+
+.jd-apply-btn {
+  background: linear-gradient(135deg, #0073b1, #004182);
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 115, 177, 0.3);
+  white-space: nowrap;
+}
+
+.jd-apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 115, 177, 0.5);
+}
+
+.jd-apply-btn:active {
+  transform: translateY(0);
+}
+
+.jd-apply-note {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.jd-share-btn {
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 2px solid #c4b5fd;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jd-share-btn:hover {
+  background: #7c3aed;
+  color: #fff;
+  border-color: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+
+/* Divider */
+.jd-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+  margin: 1rem 0;
+}
+
+/* Sections */
+.jd-section {
+  margin-bottom: 1.25rem;
+}
+
+.jd-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid #dbeafe;
+}
+
+.jd-description {
+  color: #4b5563;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.jd-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.jd-list li {
+  color: #4b5563;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.jd-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #0073b1;
+  font-size: 0.75rem;
+}
+
+/* Skills */
+.jd-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.jd-skill-tag {
+  background: #dbeafe;
+  color: #0073b1;
+  padding: 0.35rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.jd-skill-tag:hover {
+  background: #0073b1;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Footer */
+.jd-footer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 1rem;
+}
+
+.jd-footer-secondary {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.jd-apply-btn-lg {
+  font-size: 0.95rem;
+  padding: 0.75rem 2rem;
+}
+
+.jd-close-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 2px solid #fecaca;
+  padding: 0.75rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jd-close-btn:hover {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .jd-modal {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .jd-header {
+    flex-direction: row;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .jd-company-logo {
+    width: 56px;
+    height: 56px;
+    font-size: 1.2rem;
+  }
+
+  .jd-title {
+    font-size: 1.3rem;
+  }
+
+  .jd-apply-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .jd-apply-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .jd-footer {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .jd-footer>.jd-apply-btn-lg {
+    width: 100%;
+    text-align: center;
+  }
+
+  .jd-footer-secondary {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .jd-footer-secondary .jd-share-btn,
+  .jd-footer-secondary .jd-close-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+}
