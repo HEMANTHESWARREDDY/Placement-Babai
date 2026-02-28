@@ -1221,6 +1221,12 @@
     flex-shrink: 0;
   }
 
+  .popular-tag:hover,
+  .popular-tag:focus,
+  .popular-tag:active {
+    transform: none;
+  }
+
   .popular-tag:nth-of-type(n+3) {
     display: none;
   }
