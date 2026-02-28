@@ -141,6 +141,18 @@ function JobDetail({ job, onClose }) {
                     </section>
                 )}
 
+                {/* Skills */}
+                {skills.length > 0 && (
+                    <section className="jd-section">
+                        <h2 className="jd-section-title">🛠️ Required Skills</h2>
+                        <div className="jd-skills">
+                            {skills.map((skill, i) => (
+                                <span key={i} className="jd-skill-tag">{skill}</span>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
                 {/* Responsibilities */}
                 {responsibilities.length > 0 && (
                     <section className="jd-section">
@@ -162,18 +174,6 @@ function JobDetail({ job, onClose }) {
                                 <li key={i}>{item}</li>
                             ))}
                         </ul>
-                    </section>
-                )}
-
-                {/* Skills */}
-                {skills.length > 0 && (
-                    <section className="jd-section">
-                        <h2 className="jd-section-title">🛠️ Required Skills</h2>
-                        <div className="jd-skills">
-                            {skills.map((skill, i) => (
-                                <span key={i} className="jd-skill-tag">{skill}</span>
-                            ))}
-                        </div>
                     </section>
                 )}
 
