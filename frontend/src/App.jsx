@@ -808,6 +808,20 @@ function App() {
           {/* Scrollable pills */}
           <div className="filter-bar" ref={filterBarRef}>
             <CustomSelect
+              options={FILTERS.passoutYear}
+              value={activeFilters.passoutYear}
+              onChange={(val) => toggleFilter('passoutYear', val)}
+              placeholder="🎓 Passout Year"
+            />
+
+            <CustomSelect
+              options={FILTERS.salary}
+              value={activeFilters.salary}
+              onChange={(val) => toggleFilter('salary', val)}
+              placeholder="💰 Package"
+            />
+
+            <CustomSelect
               options={FILTERS.role}
               value={activeFilters.role}
               onChange={(val) => toggleFilter('role', val)}
@@ -836,24 +850,10 @@ function App() {
             />
 
             <CustomSelect
-              options={FILTERS.salary}
-              value={activeFilters.salary}
-              onChange={(val) => toggleFilter('salary', val)}
-              placeholder="💰 Package"
-            />
-
-            <CustomSelect
               options={FILTERS.datePosted}
               value={activeFilters.datePosted}
               onChange={(val) => toggleFilter('datePosted', val)}
               placeholder="🗓️ Date Posted"
-            />
-
-            <CustomSelect
-              options={FILTERS.passoutYear}
-              value={activeFilters.passoutYear}
-              onChange={(val) => toggleFilter('passoutYear', val)}
-              placeholder="🎓 Passout Year"
             />
 
             <CustomSelect
