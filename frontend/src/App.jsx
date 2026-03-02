@@ -25,6 +25,7 @@ function App() {
   const [sortType, setSortType] = useState('');
   const [legalContent, setLegalContent] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [appliesCount, setAppliesCount] = useState({});
   const filterBarRef = useRef(null);
   const jobsGridRef = useRef(null);
 
@@ -326,7 +327,23 @@ function App() {
 
       return true;
     }).sort((a, b) => {
-      if (!sortType) return 0;
+      if (!sortType) {
+        const aIsLastDay = a.expiryDate && a.expiryDate !== "Don't know" && new Date(a.expiryDate).toDateString() === new Date().toDateString();
+        const bIsLastDay = b.expiryDate && b.expiryDate !== "Don't know" && new Date(b.expiryDate).toDateString() === new Date().toDateString();
+        if (aIsLastDay && !bIsLastDay) return -1;
+        if (!aIsLastDay && bIsLastDay) return 1;
+
+        const aIsNew = a.postedDate && new Date(a.postedDate).toDateString() === new Date().toDateString();
+        const bIsNew = b.postedDate && new Date(b.postedDate).toDateString() === new Date().toDateString();
+        if (aIsNew && !bIsNew) return -1;
+        if (!aIsNew && bIsNew) return 1;
+
+        const aApplies = appliesCount[a.id] || 0;
+        const bApplies = appliesCount[b.id] || 0;
+        if (bApplies !== aApplies) return bApplies - aApplies;
+
+        return new Date(b.postedDate || 0) - new Date(a.postedDate || 0);
+      }
       if (sortType === 'newest') return new Date(b.postedDate || 0) - new Date(a.postedDate || 0);
       if (sortType === 'oldest') return new Date(a.postedDate || 0) - new Date(b.postedDate || 0);
       if (sortType === 'az') return (a.title || '').localeCompare(b.title || '');
@@ -341,6 +358,11 @@ function App() {
   useEffect(() => {
     fetchJobs();
     fetch(`${API_BASE_URL}/api/analytics/view/website`, { method: 'POST' }).catch(() => { });
+
+    fetch(`${API_BASE_URL}/api/analytics/applies/grouped`)
+      .then(res => res.ok ? res.json() : {})
+      .then(data => setAppliesCount(data))
+      .catch(() => { });
 
     // Hidden admin route via URL parameter
     const params = new URLSearchParams(window.location.search);

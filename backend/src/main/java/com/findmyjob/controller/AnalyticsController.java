@@ -60,6 +60,16 @@ public class AnalyticsController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/applies/grouped")
+    public ResponseEntity<Map<Long, Long>> getGroupedApplies() {
+        List<Object[]> results = jobApplyRepository.countAppliesGroupedByJob();
+        Map<Long, Long> groupedApplies = new HashMap<>();
+        for (Object[] row : results) {
+            groupedApplies.put((Long) row[0], (Long) row[1]);
+        }
+        return ResponseEntity.ok(groupedApplies);
+    }
+
     @PostMapping("/search")
     public ResponseEntity<?> recordSearch(@RequestParam String keyword) {
         if (keyword != null && !keyword.trim().isEmpty()) {
