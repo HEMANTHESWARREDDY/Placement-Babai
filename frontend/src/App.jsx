@@ -973,9 +973,9 @@ function App() {
                             <div className="job-details">
                               {isNewJob && (
                                 <div className="job-detail-item" style={{
-                                  background: 'rgba(230, 74, 25, 0.1)',
-                                  border: '1px solid rgba(230, 74, 25, 0.3)',
-                                  color: '#e64a19',
+                                  background: 'rgba(217, 119, 6, 0.15)',
+                                  border: '1px solid rgba(217, 119, 6, 0.4)',
+                                  color: '#b45309',
                                   padding: '0.2rem 0.6rem',
                                   borderRadius: '20px',
                                   fontWeight: '700',
@@ -989,9 +989,9 @@ function App() {
                               )}
                               {isLastDay && (
                                 <div className="job-detail-item" style={{
-                                  background: 'rgba(217, 119, 6, 0.15)',
-                                  border: '1px solid rgba(217, 119, 6, 0.4)',
-                                  color: '#b45309',
+                                  background: 'rgba(230, 74, 25, 0.1)',
+                                  border: '1px solid rgba(230, 74, 25, 0.3)',
+                                  color: '#e64a19',
                                   padding: '0.2rem 0.6rem',
                                   borderRadius: '20px',
                                   fontWeight: '800',

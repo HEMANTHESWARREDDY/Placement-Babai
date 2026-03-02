@@ -104,9 +104,9 @@ function JobDetail({ job, onClose }) {
                     <div className="jd-meta-row">
                         {job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString() && (
                             <span className="jd-badge" style={{
-                                background: 'rgba(230, 74, 25, 0.1)',
-                                border: '1px solid rgba(230, 74, 25, 0.3)',
-                                color: '#e64a19',
+                                background: 'rgba(217, 119, 6, 0.15)',
+                                border: '1px solid rgba(217, 119, 6, 0.4)',
+                                color: '#b45309',
                                 padding: '0.2rem 0.6rem',
                                 borderRadius: '20px',
                                 fontWeight: '700',
@@ -115,14 +115,14 @@ function JobDetail({ job, onClose }) {
                                 gap: '0.2rem'
                             }}>
                                 <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
-                                <span style={{ color: '#e64a19', fontWeight: 'bold' }}>Posted Today</span>
+                                <span style={{ color: '#b45309', fontWeight: 'bold' }}>Posted Today</span>
                             </span>
                         )}
                         {job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString() && (
                             <span className="jd-badge" style={{
-                                background: 'rgba(217, 119, 6, 0.15)',
-                                border: '1px solid rgba(217, 119, 6, 0.4)',
-                                color: '#b45309',
+                                background: 'rgba(230, 74, 25, 0.1)',
+                                border: '1px solid rgba(230, 74, 25, 0.3)',
+                                color: '#e64a19',
                                 padding: '0.2rem 0.6rem',
                                 borderRadius: '20px',
                                 fontWeight: '800',
@@ -131,7 +131,7 @@ function JobDetail({ job, onClose }) {
                                 gap: '0.2rem'
                             }}>
                                 <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
-                                <span style={{ color: '#b45309', fontWeight: '800' }}>Last Day to Apply</span>
+                                <span style={{ color: '#e64a19', fontWeight: '800' }}>Last Day to Apply</span>
                             </span>
                         )}
                         {job.salary && (
