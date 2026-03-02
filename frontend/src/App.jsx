@@ -989,12 +989,12 @@ function App() {
                               )}
                               {isLastDay && (
                                 <div className="job-detail-item" style={{
-                                  background: 'linear-gradient(135deg, #ffb347, #ffcc33)',
-                                  color: '#333',
+                                  background: 'rgba(217, 119, 6, 0.1)',
+                                  border: '1px solid rgba(217, 119, 6, 0.3)',
+                                  color: '#d97706',
                                   padding: '0.2rem 0.6rem',
                                   borderRadius: '20px',
-                                  fontWeight: '800',
-                                  boxShadow: '0 4px 10px rgba(255, 179, 71, 0.4)',
+                                  fontWeight: '700',
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: '0.2rem'
