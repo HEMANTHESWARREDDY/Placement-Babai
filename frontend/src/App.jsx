@@ -927,71 +927,96 @@ function App() {
 
                     <div className="jobs-grid" ref={jobsGridRef} onScroll={checkScroll}>
                       {/* recent-label removed — now in section-header */}
-                      {filtered.map((job) => (
-                        <div
-                          key={job.id}
-                          className="job-card"
-                          onClick={() => openJob(job)}
-                          title="Click to view job details"
-                        >
-                          <div className="job-card-header">
-                            <div className="company-logo">
-                              {getCompanyInitials(job.company)}
-                            </div>
-                            <div className="job-info">
-                              <h3 className="job-title">{job.title}</h3>
-                              <p className="company-name">{job.company}</p>
-                            </div>
-                          </div>
-
-                          <div className="job-details">
-                            <div className="job-detail-item">
-                              <span className="job-detail-icon">💰</span>
-                              <span>{job.salary || '—'}</span>
-                            </div>
-                            {job.experienceLevel && (
-                              <div className="job-detail-item">
-                                <span className="job-detail-icon">📅</span>
-                                <span>{job.experienceLevel}</span>
+                      {filtered.map((job) => {
+                        const isNewJob = job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString();
+                        return (
+                          <div
+                            key={job.id}
+                            className="job-card"
+                            onClick={() => openJob(job)}
+                            title="Click to view job details"
+                            style={{ position: 'relative' }}
+                          >
+                            {isNewJob && (
+                              <div style={{
+                                position: 'absolute',
+                                top: '-8px',
+                                right: '-8px',
+                                background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
+                                color: 'white',
+                                padding: '0.2rem 0.6rem',
+                                borderRadius: '20px',
+                                fontSize: '0.75rem',
+                                fontWeight: '700',
+                                boxShadow: '0 4px 10px rgba(255, 65, 108, 0.3)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.2rem',
+                                zIndex: 2,
+                                animation: 'pulse 2s infinite'
+                              }}>
+                                🔥 Posted Today
                               </div>
                             )}
-                            {job.passoutYear && (
+                            <div className="job-card-header">
+                              <div className="company-logo">
+                                {getCompanyInitials(job.company)}
+                              </div>
+                              <div className="job-info">
+                                <h3 className="job-title">{job.title}</h3>
+                                <p className="company-name">{job.company}</p>
+                              </div>
+                            </div>
+
+                            <div className="job-details">
                               <div className="job-detail-item">
-                                <span className="job-detail-icon">🎓</span>
-                                <span>{job.passoutYear}</span>
+                                <span className="job-detail-icon">💰</span>
+                                <span>{job.salary || '—'}</span>
+                              </div>
+                              {job.experienceLevel && (
+                                <div className="job-detail-item">
+                                  <span className="job-detail-icon">📅</span>
+                                  <span>{job.experienceLevel}</span>
+                                </div>
+                              )}
+                              {job.passoutYear && (
+                                <div className="job-detail-item">
+                                  <span className="job-detail-icon">🎓</span>
+                                  <span>{job.passoutYear}</span>
+                                </div>
+                              )}
+                              <div className="job-detail-item">
+                                <span className="job-detail-icon">📍</span>
+                                <span>{job.location}</span>
+                              </div>
+                              {job.jobType && (
+                                <div className="job-detail-item">
+                                  <span className="job-detail-icon">💼</span>
+                                  <span>{job.jobType}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {job.description && (
+                              <p className="job-description">{job.description}</p>
+                            )}
+
+                            {job.skills && (
+                              <div className="job-skills">
+                                {job.skills.split(',').map((skill, index) => (
+                                  <span key={index} className="skill-tag">
+                                    {skill.trim()}
+                                  </span>
+                                ))}
                               </div>
                             )}
-                            <div className="job-detail-item">
-                              <span className="job-detail-icon">📍</span>
-                              <span>{job.location}</span>
+
+                            <div className="job-card-footer">
+                              <span className="view-details-hint">View Details →</span>
                             </div>
-                            {job.jobType && (
-                              <div className="job-detail-item">
-                                <span className="job-detail-icon">💼</span>
-                                <span>{job.jobType}</span>
-                              </div>
-                            )}
                           </div>
-
-                          {job.description && (
-                            <p className="job-description">{job.description}</p>
-                          )}
-
-                          {job.skills && (
-                            <div className="job-skills">
-                              {job.skills.split(',').map((skill, index) => (
-                                <span key={index} className="skill-tag">
-                                  {skill.trim()}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-
-                          <div className="job-card-footer">
-                            <span className="view-details-hint">View Details →</span>
-                          </div>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                     <button
                       className="jobs-nav-btn jobs-nav-next"

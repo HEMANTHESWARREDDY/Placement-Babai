@@ -125,7 +125,13 @@ function JobDetail({ job, onClose }) {
                             <span className="jd-badge jd-badge-orange">🏷️ {job.category}</span>
                         )}
                     </div>
-                    <p className="jd-posted">🗓️ Posted on {formatDate(job.postedDate)}</p>
+                    {job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString() ? (
+                        <p className="jd-posted" style={{ color: '#ff4b2b', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #ff4b2b', padding: '0.2rem 0.6rem', borderRadius: '1rem', background: 'rgba(255, 75, 43, 0.05)', marginTop: '0.5rem' }}>
+                            <span style={{ fontSize: '1.2rem', animation: 'pulse 2s infinite' }}>🔥</span> Posted Today !
+                        </p>
+                    ) : (
+                        <p className="jd-posted">🗓️ Posted on {formatDate(job.postedDate)}</p>
+                    )}
                 </div>
 
                 {/* Apply + Share Bar */}
