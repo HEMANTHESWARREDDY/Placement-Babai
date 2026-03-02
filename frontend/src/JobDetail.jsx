@@ -112,6 +112,11 @@ function JobDetail({ job, onClose }) {
                                 📅 {job.experienceLevel}
                             </span>
                         )}
+                        {job.passoutYear && (
+                            <span className="jd-badge jd-badge-green">
+                                🎓 {job.passoutYear}
+                            </span>
+                        )}
                         <span className="jd-badge jd-badge-blue">📍 {job.location}</span>
                         {job.jobType && (
                             <span className="jd-badge jd-badge-purple">💼 {job.jobType}</span>

@@ -930,6 +930,12 @@ function App() {
                                 <span>{job.experienceLevel}</span>
                               </div>
                             )}
+                            {job.passoutYear && (
+                              <div className="job-detail-item">
+                                <span className="job-detail-icon">🎓</span>
+                                <span>{job.passoutYear}</span>
+                              </div>
+                            )}
                             <div className="job-detail-item">
                               <span className="job-detail-icon">📍</span>
                               <span>{job.location}</span>

@@ -66,6 +66,7 @@ const EMPTY_FORM = {
     company: '',
     companyLogo: '',
     location: '',
+    passoutYear: '',
     description: '',
     salary: '',
     experienceLevel: '',
@@ -160,6 +161,7 @@ function AdminDashboard({ adminData, onLogout }) {
             company: job.company || '',
             companyLogo: job.companyLogo || '',
             location: job.location || '',
+            passoutYear: job.passoutYear || '',
             description: job.description || '',
             salary: job.salary || '',
             experienceLevel: job.experienceLevel || '',
@@ -466,6 +468,14 @@ function AdminDashboard({ adminData, onLogout }) {
                                     <input type="text" name="skills" value={formData.skills}
                                         onChange={handleInputChange}
                                         placeholder="e.g., Java, Spring Boot, React, MySQL, AWS" />
+                                </div>
+
+                                {/* Passout Year */}
+                                <div className="form-group">
+                                    <label>Eligible Passout Years <span className="form-hint">(comma-separated)</span></label>
+                                    <input type="text" name="passoutYear" value={formData.passoutYear}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g., 2024, 2025" />
                                 </div>
 
                                 {/* Company Logo */}

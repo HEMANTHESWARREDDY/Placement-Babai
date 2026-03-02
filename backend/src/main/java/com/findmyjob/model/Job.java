@@ -55,6 +55,8 @@ public class Job {
 
     private String companyType; // e.g., "Startup", "MNC"
 
+    private String passoutYear; // e.g., "2024, 2025"
+
     @Column(length = 5000)
     private String responsibilities; // Job responsibilities
 
