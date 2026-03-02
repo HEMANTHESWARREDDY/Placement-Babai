@@ -450,8 +450,28 @@ function AdminDashboard({ adminData, onLogout }) {
                                     </div>
                                     <div className="form-group">
                                         <label>Job Expiry Date <span className="form-hint">(optional)</span></label>
-                                        <input type="date" name="expiryDate" value={formData.expiryDate}
-                                            onChange={handleInputChange} />
+                                        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginBottom: '0.75rem', marginTop: '0.5rem' }}>
+                                            <label style={{ margin: 0, fontWeight: 'normal', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                                <input type="radio"
+                                                    name="expiryType"
+                                                    checked={formData.expiryDate !== "Don't know"}
+                                                    onChange={() => setFormData({ ...formData, expiryDate: '' })}
+                                                />
+                                                Specific Date
+                                            </label>
+                                            <label style={{ margin: 0, fontWeight: 'normal', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                                <input type="radio"
+                                                    name="expiryType"
+                                                    checked={formData.expiryDate === "Don't know"}
+                                                    onChange={() => setFormData({ ...formData, expiryDate: "Don't know" })}
+                                                />
+                                                Don't know
+                                            </label>
+                                        </div>
+                                        {formData.expiryDate !== "Don't know" && (
+                                            <input type="date" name="expiryDate" value={formData.expiryDate || ''}
+                                                onChange={handleInputChange} style={{ marginTop: '0.5rem' }} />
+                                        )}
                                     </div>
                                 </div>
 
@@ -633,6 +653,7 @@ function AdminDashboard({ adminData, onLogout }) {
                 <JobAnalytics
                     jobId={expandedAnalyticsJobId}
                     postedDate={jobs.find(j => j.id === expandedAnalyticsJobId)?.postedDate}
+                    expiryDate={jobs.find(j => j.id === expandedAnalyticsJobId)?.expiryDate}
                     onClose={() => setExpandedAnalyticsJobId(null)}
                 />
             )}

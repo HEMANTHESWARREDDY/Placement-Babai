@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { API_BASE_URL } from './config';
 import './JobAnalytics.css';
 
-function JobAnalytics({ jobId, postedDate, onClose }) {
+function JobAnalytics({ jobId, postedDate, expiryDate, onClose }) {
     const [stats, setStats] = useState(null);
 
     useEffect(() => {
@@ -31,10 +31,19 @@ function JobAnalytics({ jobId, postedDate, onClose }) {
                 <button className="ja-close" onClick={onClose} aria-label="Close">✕</button>
                 <div className="job-analytics-wrapper">
                     <h3 className="ja-modal-title">Job Analytics</h3>
-                    {postedDate && (
-                        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem', marginTop: '-0.5rem' }}>
-                            Posted Date: <strong>{formatDate(postedDate)}</strong>
-                        </p>
+                    {(postedDate || expiryDate) && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', marginTop: '-0.5rem' }}>
+                            {postedDate && (
+                                <p style={{ color: '#64748b', fontSize: '0.9rem', margin: 0 }}>
+                                    Posted Date: <strong>{formatDate(postedDate)}</strong>
+                                </p>
+                            )}
+                            {expiryDate && (
+                                <p style={{ color: '#64748b', fontSize: '0.9rem', margin: 0 }}>
+                                    Expiry Date: <strong>{expiryDate === "Don't know" ? "Don't know" : formatDate(expiryDate)}</strong>
+                                </p>
+                            )}
+                        </div>
                     )}
                     <h4 className="job-analytics-title">Views</h4>
                     <div className="job-analytics-inline">
