@@ -57,15 +57,26 @@ public class AtsService {
             }
         }
 
-        // Additional keywords from job description using regex to find words >= 5 chars
-        if (job.getDescription() != null) {
+        // Additional keywords from job description, requirements, and responsibilities
+        // using regex to find words >= 5 chars
+        StringBuilder extraText = new StringBuilder();
+        if (job.getDescription() != null)
+            extraText.append(job.getDescription()).append(" ");
+        if (job.getRequirements() != null)
+            extraText.append(job.getRequirements()).append(" ");
+        if (job.getResponsibilities() != null)
+            extraText.append(job.getResponsibilities()).append(" ");
+
+        if (extraText.length() > 0) {
             Pattern pattern = Pattern.compile("\\b[a-zA-Z]{5,}\\b");
-            java.util.regex.Matcher matcher = pattern.matcher(job.getDescription());
+            java.util.regex.Matcher matcher = pattern.matcher(extraText.toString());
             int count = 0;
-            while (matcher.find() && count < 25) { // Limit to 25 important words from desc
+            // Limit to 40 important words from desc/reqs/resp
+            while (matcher.find() && count < 40) {
                 String word = matcher.group().toLowerCase();
                 // ignore common words
-                if (!Arrays.asList("their", "there", "about", "which", "would", "these", "those").contains(word)) {
+                if (!Arrays.asList("their", "there", "about", "which", "would", "these", "those", "other", "where")
+                        .contains(word)) {
                     keywords.add(word);
                     count++;
                 }
