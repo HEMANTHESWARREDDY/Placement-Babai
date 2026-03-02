@@ -9,6 +9,7 @@ function AnalyticsDashboard() {
     const [websiteStats, setWebsiteStats] = useState(null);
     const [historicalStats, setHistoricalStats] = useState([]);
     const [activeDateIndex, setActiveDateIndex] = useState(0);
+    const [selectedMetric, setSelectedMetric] = useState('views');
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/api/analytics/website`)
@@ -43,6 +44,42 @@ function AnalyticsDashboard() {
 
     const minDate = historicalStats.length > 0 ? parseISO(historicalStats[historicalStats.length - 1].date) : new Date();
     const maxDate = historicalStats.length > 0 ? parseISO(historicalStats[0].date) : new Date();
+
+    const renderMetricGrid = () => {
+        let last1Hour, today, last7Days;
+
+        if (selectedMetric === 'views') {
+            last1Hour = websiteStats.last1Hour;
+            today = websiteStats.today;
+            last7Days = websiteStats.last7Days;
+        } else if (selectedMetric === 'applies') {
+            last1Hour = websiteStats.last1HourApplies;
+            today = websiteStats.todayApplies;
+            last7Days = websiteStats.last7DaysApplies;
+        } else if (selectedMetric === 'jobs') {
+            last1Hour = websiteStats.last1HourJobs;
+            today = websiteStats.todayJobs;
+            last7Days = websiteStats.last7DaysJobs;
+        }
+
+        return (
+            <div className="stats-grid" style={{ marginBottom: '2rem' }}>
+                <div className="stat-card">
+                    <h3>Last 1 Hour</h3>
+                    <p>{last1Hour}</p>
+                </div>
+                <div className="stat-card">
+                    <h3>Today</h3>
+                    <p>{today}</p>
+                </div>
+                <div className="stat-card">
+                    <h3>Last 7 Days</h3>
+                    <p>{last7Days}</p>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="analytics-container">
             {websiteStats ? (
@@ -63,64 +100,19 @@ function AnalyticsDashboard() {
                         </div>
                     </div>
 
-                    <h2>Website Traffic (Overall)</h2>
-                    <div className="stats-grid" style={{ marginBottom: '2rem' }}>
-                        <div className="stat-card">
-                            <h3>Last 1 Hour</h3>
-                            <p>{websiteStats.last1Hour}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Today</h3>
-                            <p>{websiteStats.today}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Last 7 Days</h3>
-                            <p>{websiteStats.last7Days}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Lifetime</h3>
-                            <p>{websiteStats.lifetime}</p>
-                        </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>Recent Activity Breakdown</h2>
+                        <select
+                            value={selectedMetric}
+                            onChange={(e) => setSelectedMetric(e.target.value)}
+                            style={{ padding: '0.6rem 1rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.95rem', outline: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: '500', color: '#1e293b', backgroundColor: 'white' }}
+                        >
+                            <option value="views">Website Traffic (Overall)</option>
+                            <option value="applies">Total Job Applies</option>
+                            <option value="jobs">Total Jobs Created</option>
+                        </select>
                     </div>
-
-                    <h2>Total Job Applies</h2>
-                    <div className="stats-grid">
-                        <div className="stat-card">
-                            <h3>Last 1 Hour</h3>
-                            <p>{websiteStats.last1HourApplies}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Today</h3>
-                            <p>{websiteStats.todayApplies}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Last 7 Days</h3>
-                            <p>{websiteStats.last7DaysApplies}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Lifetime</h3>
-                            <p>{websiteStats.lifetimeApplies}</p>
-                        </div>
-                    </div>
-                    <h2>Total Jobs Created</h2>
-                    <div className="stats-grid" style={{ marginBottom: '2rem' }}>
-                        <div className="stat-card">
-                            <h3>Last 1 Hour</h3>
-                            <p>{websiteStats.last1HourJobs}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Today</h3>
-                            <p>{websiteStats.todayJobs}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Last 7 Days</h3>
-                            <p>{websiteStats.last7DaysJobs}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Lifetime</h3>
-                            <p>{websiteStats.lifetimeJobs}</p>
-                        </div>
-                    </div>
+                    {renderMetricGrid()}
                 </>
             ) : <p>Loading website stats...</p>}
 
