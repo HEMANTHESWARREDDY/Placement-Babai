@@ -929,6 +929,7 @@ function App() {
                       {/* recent-label removed — now in section-header */}
                       {filtered.map((job) => {
                         const isNewJob = job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString();
+                        const isLastDay = job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString();
                         return (
                           <div
                             key={job.id}
@@ -962,6 +963,22 @@ function App() {
                                 }}>
                                   <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
                                   <span>Posted Today</span>
+                                </div>
+                              )}
+                              {isLastDay && (
+                                <div className="job-detail-item" style={{
+                                  background: 'linear-gradient(135deg, #ffb347, #ffcc33)',
+                                  color: '#333',
+                                  padding: '0.2rem 0.6rem',
+                                  borderRadius: '20px',
+                                  fontWeight: '800',
+                                  boxShadow: '0 4px 10px rgba(255, 179, 71, 0.4)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.2rem'
+                                }}>
+                                  <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
+                                  <span>Last Day to Apply</span>
                                 </div>
                               )}
                               <div className="job-detail-item">

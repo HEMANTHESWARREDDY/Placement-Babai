@@ -119,6 +119,23 @@ function JobDetail({ job, onClose }) {
                                 <span style={{ color: 'white', fontWeight: 'bold' }}>Posted Today</span>
                             </span>
                         )}
+                        {job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString() && (
+                            <span className="jd-badge" style={{
+                                background: 'linear-gradient(135deg, #ffb347, #ffcc33)',
+                                color: '#333',
+                                padding: '0.2rem 0.6rem',
+                                borderRadius: '20px',
+                                fontWeight: '800',
+                                boxShadow: '0 4px 10px rgba(255, 179, 71, 0.4)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.2rem',
+                                border: 'none'
+                            }}>
+                                <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
+                                <span>Last Day to Apply</span>
+                            </span>
+                        )}
                         {job.salary && (
                             <span className="jd-badge jd-badge-green">
                                 💰 {job.salary}
