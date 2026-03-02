@@ -951,12 +951,12 @@ function App() {
                             <div className="job-details">
                               {isNewJob && (
                                 <div className="job-detail-item" style={{
-                                  background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
+                                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                                   color: 'white',
                                   padding: '0.2rem 0.6rem',
                                   borderRadius: '20px',
                                   fontWeight: '700',
-                                  boxShadow: '0 4px 10px rgba(255, 65, 108, 0.3)',
+                                  boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: '0.2rem'
