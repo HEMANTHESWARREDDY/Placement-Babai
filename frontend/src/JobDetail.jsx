@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { API_BASE_URL } from './config';
 
 import './JobDetail.css';
@@ -32,6 +32,47 @@ function JobDetail({ job, onClose }) {
 
     const [copiedTop, setCopiedTop] = useState(false);
     const [copiedBottom, setCopiedBottom] = useState(false);
+
+    const [showAts, setShowAts] = useState(false);
+    const [atsFile, setAtsFile] = useState(null);
+    const [isCheckingAts, setIsCheckingAts] = useState(false);
+    const [atsResult, setAtsResult] = useState(null);
+    const [atsError, setAtsError] = useState(null);
+    const fileInputRef = useRef(null);
+
+    const handleAtsFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setAtsFile(e.target.files[0]);
+            setAtsResult(null);
+            setAtsError(null);
+        }
+    };
+
+    const handleCheckAts = async () => {
+        if (!atsFile) return;
+        setIsCheckingAts(true);
+        setAtsError(null);
+
+        const formData = new FormData();
+        formData.append('resume', atsFile);
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/jobs/${job.id}/ats-check`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setAtsResult(data);
+            } else {
+                setAtsError(data.error || 'Failed to check score');
+            }
+        } catch (err) {
+            setAtsError('Network error occurred while analyzing.');
+        } finally {
+            setIsCheckingAts(false);
+        }
+    };
 
     const handleShareTop = () => {
         const url = new URL(window.location.href);
@@ -171,6 +212,9 @@ function JobDetail({ job, onClose }) {
                     <button className="jd-apply-btn" onClick={handleApply}>
                         Apply Now →
                     </button>
+                    <button className="jd-ats-btn" onClick={() => setShowAts(true)}>
+                        <span style={{ marginRight: '6px' }}>📝</span> Check ATS Score
+                    </button>
                     <span className="jd-apply-note">You will be redirected to the company's job page</span>
                 </div>
 
@@ -235,6 +279,58 @@ function JobDetail({ job, onClose }) {
                     </div>
                 </div>
             </div>
+
+            {/* ATS Modal */}
+            {showAts && (
+                <div className="ats-overlay" onClick={() => setShowAts(false)}>
+                    <div className="ats-modal" onClick={e => e.stopPropagation()}>
+                        <button className="ats-close" onClick={() => setShowAts(false)}>×</button>
+                        <h2>ATS Match Checker</h2>
+                        <p className="ats-desc">Upload your resume to see how well it matches this job's keywords, requirements, and role.</p>
+
+                        <div className="ats-upload-area" onClick={() => fileInputRef.current?.click()}>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                accept=".pdf,.doc,.docx,.ppt,.pptx"
+                                onChange={handleAtsFileChange}
+                            />
+                            {atsFile ? (
+                                <div className="ats-file-selected">
+                                    <span style={{ fontSize: '2rem' }}>📄</span>
+                                    <p>{atsFile.name}</p>
+                                    <span className="ats-change-file">Click to change file</span>
+                                </div>
+                            ) : (
+                                <div className="ats-upload-prompt">
+                                    <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '10px' }}>☁️</span>
+                                    <p>Click to browse files (PDF, DOCX, PPTX)</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {atsError && <p className="ats-error">{atsError}</p>}
+
+                        {atsResult ? (
+                            <div className="ats-result-box">
+                                <div className={`ats-score-circle ${atsResult.score >= 70 ? 'high' : atsResult.score >= 40 ? 'med' : 'low'}`}>
+                                    {atsResult.score}%
+                                </div>
+                                <h3 style={{ marginTop: '15px' }}>{atsResult.message}</h3>
+                            </div>
+                        ) : (
+                            <button
+                                className="ats-check-btn"
+                                disabled={!atsFile || isCheckingAts}
+                                onClick={handleCheckAts}
+                            >
+                                {isCheckingAts ? 'Analyzing...' : 'Analyze Match'}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
