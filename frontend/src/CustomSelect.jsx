@@ -38,7 +38,12 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
             }
         };
 
-        const handleScroll = () => setIsOpen(false);
+        const handleScroll = (event) => {
+            const portal = document.getElementById('custom-select-portal');
+            // If the user is scrolling the dropdown itself, don't close it
+            if (portal && portal.contains(event.target)) return;
+            setIsOpen(false);
+        };
 
         document.addEventListener('mousedown', handleClickOutside);
         document.addEventListener('touchstart', handleClickOutside);
@@ -60,8 +65,7 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
                 <div
                     key={option.value}
                     className={`custom-option ${value === option.value ? 'selected' : ''}`}
-                    onMouseDown={(e) => { e.preventDefault(); handleSelect(option.value); }}
-                    onTouchEnd={(e) => { e.preventDefault(); handleSelect(option.value); }}
+                    onClick={() => handleSelect(option.value)}
                 >
                     {option.label}
                 </div>
