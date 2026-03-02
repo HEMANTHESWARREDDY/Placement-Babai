@@ -440,6 +440,21 @@ function AdminDashboard({ adminData, onLogout }) {
                                     </div>
                                 </div>
 
+                                {/* Row 6: Passout Year + Expiry Date */}
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Eligible Passout Years <span className="form-hint">(comma-separated)</span></label>
+                                        <input type="text" name="passoutYear" value={formData.passoutYear}
+                                            onChange={handleInputChange}
+                                            placeholder="e.g., 2024, 2025" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Job Expiry Date <span className="form-hint">(optional)</span></label>
+                                        <input type="date" name="expiryDate" value={formData.expiryDate}
+                                            onChange={handleInputChange} />
+                                    </div>
+                                </div>
+
                                 {/* Description */}
                                 <div className="form-group">
                                     <label>Job Description / About the Role</label>
@@ -470,21 +485,6 @@ function AdminDashboard({ adminData, onLogout }) {
                                     <input type="text" name="skills" value={formData.skills}
                                         onChange={handleInputChange}
                                         placeholder="e.g., Java, Spring Boot, React, MySQL, AWS" />
-                                </div>
-
-                                {/* Passout Year */}
-                                <div className="form-group">
-                                    <label>Eligible Passout Years <span className="form-hint">(comma-separated)</span></label>
-                                    <input type="text" name="passoutYear" value={formData.passoutYear}
-                                        onChange={handleInputChange}
-                                        placeholder="e.g., 2024, 2025" />
-                                </div>
-
-                                {/* Expiry Date */}
-                                <div className="form-group">
-                                    <label>Job Expiry Date <span className="form-hint">(optional)</span></label>
-                                    <input type="date" name="expiryDate" value={formData.expiryDate}
-                                        onChange={handleInputChange} />
                                 </div>
 
                                 {/* Company Logo */}
@@ -632,6 +632,7 @@ function AdminDashboard({ adminData, onLogout }) {
             {expandedAnalyticsJobId && (
                 <JobAnalytics
                     jobId={expandedAnalyticsJobId}
+                    postedDate={jobs.find(j => j.id === expandedAnalyticsJobId)?.postedDate}
                     onClose={() => setExpandedAnalyticsJobId(null)}
                 />
             )}

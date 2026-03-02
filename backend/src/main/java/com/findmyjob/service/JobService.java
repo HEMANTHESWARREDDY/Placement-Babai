@@ -45,6 +45,8 @@ public class JobService {
         job.setCompanyType(jobDetails.getCompanyType());
         job.setResponsibilities(jobDetails.getResponsibilities());
         job.setRequirements(jobDetails.getRequirements());
+        job.setPassoutYear(jobDetails.getPassoutYear());
+        job.setExpiryDate(jobDetails.getExpiryDate());
 
         return jobRepository.save(job);
     }
