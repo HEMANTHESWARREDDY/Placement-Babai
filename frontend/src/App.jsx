@@ -75,6 +75,12 @@ function App() {
       { label: '📅 Last 7 days', value: '7d' },
       { label: '🗓️ Last 30 days', value: '30d' },
     ],
+    passoutYear: [
+      { label: '🎓 2024', value: '2024' },
+      { label: '🎓 2025', value: '2025' },
+      { label: '🎓 2026', value: '2026' },
+      { label: '🎓 Other', value: 'Other' },
+    ],
   };
 
   const getSuggestions = () => {
@@ -303,6 +309,18 @@ function App() {
           if (diffTime > 7 * oneDay) return false;
         } else if (activeFilters.datePosted === '30d') {
           if (diffTime > 30 * oneDay) return false;
+        }
+      }
+
+      // ── Passout Year filter ───────────────────────────────────────
+      if (activeFilters.passoutYear) {
+        const pyJob = job.passoutYear || '';
+        if (activeFilters.passoutYear === 'Other') {
+          if (!pyJob || pyJob.includes('2024') || pyJob.includes('2025') || pyJob.includes('2026')) {
+            return false;
+          }
+        } else {
+          if (!pyJob.includes(activeFilters.passoutYear)) return false;
         }
       }
 
@@ -807,6 +825,13 @@ function App() {
               value={activeFilters.datePosted}
               onChange={(val) => toggleFilter('datePosted', val)}
               placeholder="🗓️ Date Posted"
+            />
+
+            <CustomSelect
+              options={FILTERS.passoutYear}
+              value={activeFilters.passoutYear}
+              onChange={(val) => toggleFilter('passoutYear', val)}
+              placeholder="🎓 Passout Year"
             />
 
             <CustomSelect
