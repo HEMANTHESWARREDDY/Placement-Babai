@@ -45,63 +45,20 @@ function AnalyticsDashboard() {
     const maxDate = historicalStats.length > 0 ? parseISO(historicalStats[0].date) : new Date();
     return (
         <div className="analytics-container">
-            <h2>Website Traffic (Overall)</h2>
+            <h2>Lifetime Overview</h2>
             {websiteStats ? (
                 <>
                     <div className="stats-grid" style={{ marginBottom: '2rem' }}>
                         <div className="stat-card">
-                            <h3>Last 1 Hour</h3>
-                            <p>{websiteStats.last1Hour}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Today</h3>
-                            <p>{websiteStats.today}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Last 7 Days</h3>
-                            <p>{websiteStats.last7Days}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Lifetime</h3>
+                            <h3>Total Views</h3>
                             <p>{websiteStats.lifetime}</p>
                         </div>
-                    </div>
-
-                    <h2>Total Job Applies</h2>
-                    <div className="stats-grid">
                         <div className="stat-card">
-                            <h3>Last 1 Hour</h3>
-                            <p>{websiteStats.last1HourApplies}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Today</h3>
-                            <p>{websiteStats.todayApplies}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Last 7 Days</h3>
-                            <p>{websiteStats.last7DaysApplies}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Lifetime</h3>
+                            <h3>Total Applies</h3>
                             <p>{websiteStats.lifetimeApplies}</p>
                         </div>
-                    </div>
-                    <h2>Total Jobs Created</h2>
-                    <div className="stats-grid" style={{ marginBottom: '2rem' }}>
                         <div className="stat-card">
-                            <h3>Last 1 Hour</h3>
-                            <p>{websiteStats.last1HourJobs}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Today</h3>
-                            <p>{websiteStats.todayJobs}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Last 7 Days</h3>
-                            <p>{websiteStats.last7DaysJobs}</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Lifetime</h3>
+                            <h3>Total Jobs Created</h3>
                             <p>{websiteStats.lifetimeJobs}</p>
                         </div>
                     </div>
