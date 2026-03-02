@@ -47,6 +47,7 @@ function App() {
       { label: '🌱 Fresher', value: 'fresher' },
       { label: '📅 1–3 Yrs', value: '1-3' },
       { label: '📅 3+ Yrs', value: '3+' },
+      { label: '📌 Other', value: 'Other' },
     ],
     location: [
       { label: '🏠 Remote', value: 'Remote' },
@@ -54,27 +55,32 @@ function App() {
       { label: '🌆 Hyderabad', value: 'Hyderabad' },
       { label: '🌇 Mumbai', value: 'Mumbai' },
       { label: '🏘️ Pune', value: 'Pune' },
+      { label: '📌 Other', value: 'Other' },
     ],
     companyType: [
       { label: '🏢 MNC', value: 'MNC' },
       { label: '🚀 Startup', value: 'Startup' },
+      { label: '📌 Other', value: 'Other' },
     ],
     jobType: [
       { label: '💼 Full-time', value: 'Full-time' },
       { label: '⏰ Part-time', value: 'Part-time' },
       { label: '📋 Internship', value: 'Internship' },
       { label: '🔀 Hybrid', value: 'Hybrid' },
+      { label: '📌 Other', value: 'Other' },
     ],
     salary: [
       { label: '💰 0–3 LPA', value: '0-3' },
       { label: '💰 3–6 LPA', value: '3-6' },
       { label: '💰 6–10 LPA', value: '6-10' },
       { label: '💰 10+ LPA', value: '10+' },
+      { label: '📌 Other', value: 'Other' },
     ],
     datePosted: [
       { label: '🕒 Today', value: '24h' },
       { label: '📅 Last 7 days', value: '7d' },
       { label: '🗓️ Last 30 days', value: '30d' },
+      { label: '📌 Other', value: 'Other' },
     ],
     passoutYear: [
       { label: '🎓 2024', value: '2024' },
@@ -208,19 +214,30 @@ function App() {
         const catLow = (job.category || '').toLowerCase();
         const jobRole = (job.role || '').toLowerCase();
         const skillsLow = (job.skills || '').toLowerCase();
-        const matched =
-          jobRole.includes(roleVal) ||
-          titleLow.includes(roleVal) ||
-          catLow.includes(roleVal) ||
-          skillsLow.includes(roleVal) ||
-          // special aliases
-          (roleVal === 'developer' && (titleLow.includes('dev') || titleLow.includes('engineer') || titleLow.includes('full stack') || titleLow.includes('backend') || titleLow.includes('frontend'))) ||
-          (roleVal === 'ml' && (titleLow.includes('machine learning') || titleLow.includes(' ml ') || titleLow.includes('data scientist') || titleLow.includes('ai ') || skillsLow.includes('tensorflow') || skillsLow.includes('pytorch'))) ||
-          (roleVal === 'qa' && (titleLow.includes('test') || titleLow.includes('qa') || titleLow.includes('quality'))) ||
-          (roleVal === 'devops' && (titleLow.includes('devops') || titleLow.includes('cloud') || titleLow.includes('sre') || skillsLow.includes('docker') || skillsLow.includes('kubernetes'))) ||
-          (roleVal === 'analyst' && (titleLow.includes('analyst') || titleLow.includes('bi ') || titleLow.includes('data'))) ||
-          (roleVal === 'design' && (titleLow.includes('design') || titleLow.includes('ui') || titleLow.includes('ux')));
-        if (!matched) return false;
+
+        const isDeveloper = titleLow.includes('dev') || titleLow.includes('engineer') || titleLow.includes('full stack') || titleLow.includes('backend') || titleLow.includes('frontend') || jobRole.includes('developer');
+        const isML = titleLow.includes('machine learning') || titleLow.includes(' ml ') || titleLow.includes('data scientist') || titleLow.includes('ai ') || skillsLow.includes('tensorflow') || skillsLow.includes('pytorch') || jobRole.includes('ml');
+        const isQA = titleLow.includes('test') || titleLow.includes('qa') || titleLow.includes('quality') || jobRole.includes('qa');
+        const isDevOps = titleLow.includes('devops') || titleLow.includes('cloud') || titleLow.includes('sre') || skillsLow.includes('docker') || skillsLow.includes('kubernetes') || jobRole.includes('devops');
+        const isAnalyst = titleLow.includes('analyst') || titleLow.includes('bi ') || titleLow.includes('data') || jobRole.includes('analyst');
+        const isDesign = titleLow.includes('design') || titleLow.includes('ui') || titleLow.includes('ux') || jobRole.includes('design');
+
+        if (roleVal === 'other') {
+          if (isDeveloper || isML || isQA || isDevOps || isAnalyst || isDesign) return false;
+        } else {
+          const matched =
+            jobRole.includes(roleVal) ||
+            titleLow.includes(roleVal) ||
+            catLow.includes(roleVal) ||
+            skillsLow.includes(roleVal) ||
+            (roleVal === 'developer' && isDeveloper) ||
+            (roleVal === 'ml' && isML) ||
+            (roleVal === 'qa' && isQA) ||
+            (roleVal === 'devops' && isDevOps) ||
+            (roleVal === 'analyst' && isAnalyst) ||
+            (roleVal === 'design' && isDesign);
+          if (!matched) return false;
+        }
       }
 
       // ── Location filter ───────────────────────────────────────────
@@ -229,7 +246,9 @@ function App() {
         const locJob = (job.location || '').toLowerCase();
         const typeJob = (job.jobType || '').toLowerCase();
         const isRemote = locJob.includes('remote') || typeJob.includes('remote');
-        if (locFilter === 'remote') {
+        if (locFilter === 'other') {
+          if (isRemote || locJob.includes('bangalore') || locJob.includes('hyderabad') || locJob.includes('mumbai') || locJob.includes('pune')) return false;
+        } else if (locFilter === 'remote') {
           if (!isRemote) return false;
         } else {
           if (!locJob.includes(locFilter)) return false;
@@ -239,16 +258,30 @@ function App() {
       // ── Company type filter ───────────────────────────────────────
       if (activeFilters.companyType) {
         const ctJob = (job.companyType || '').toLowerCase();
-        if (!ctJob.includes(activeFilters.companyType.toLowerCase())) return false;
+        if (activeFilters.companyType === 'Other') {
+          if (ctJob.includes('mnc') || ctJob.includes('startup')) return false;
+        } else {
+          if (!ctJob.includes(activeFilters.companyType.toLowerCase())) return false;
+        }
       }
 
       // ── Job Type filter ───────────────────────────────────────────
-      if (activeFilters.jobType && job.jobType !== activeFilters.jobType) return false;
+      if (activeFilters.jobType) {
+        const tJob = job.jobType || '';
+        if (activeFilters.jobType === 'Other') {
+          if (tJob === 'Full-time' || tJob === 'Part-time' || tJob === 'Internship' || tJob === 'Hybrid') return false;
+        } else if (tJob !== activeFilters.jobType) {
+          return false;
+        }
+      }
 
       // ── Salary / Package filter ───────────────────────────────────
       if (activeFilters.salary) {
         const salaryStr = job.salary || '';
-        if (salaryStr) {
+        if (activeFilters.salary === 'Other') {
+          const low = parseRangeLow(salaryStr);
+          if (low !== null || salaryStr.includes('As per')) return false; // If there's a specific amount or string, might not be "Other", but typically Other = Not Specified / Unknown
+        } else if (salaryStr) {
           const low = parseRangeLow(salaryStr);
           const high = parseRangeHigh(salaryStr);
           if (low !== null) {
@@ -257,7 +290,11 @@ function App() {
             if (activeFilters.salary === '3-6' && !(low < 6 && jobHigh >= 3)) return false;
             if (activeFilters.salary === '6-10' && !(low < 10 && jobHigh >= 6)) return false;
             if (activeFilters.salary === '10+' && !(jobHigh >= 10)) return false;
+          } else {
+            return false;
           }
+        } else {
+          return false;
         }
       }
 
@@ -265,7 +302,10 @@ function App() {
       if (activeFilters.experience) {
         const expStr = (job.experienceLevel || '').toLowerCase();
         const isFresher = expStr.includes('fresh') || expStr.includes('0 - 0') || expStr === '0';
-        if (activeFilters.experience === 'fresher') {
+        if (activeFilters.experience === 'Other') {
+          const expLow = parseRangeLow(expStr);
+          if (isFresher || expLow !== null) return false;
+        } else if (activeFilters.experience === 'fresher') {
           if (!isFresher) return false;
         } else {
           if (isFresher) return false;
@@ -274,6 +314,8 @@ function App() {
           if (expLow !== null) {
             if (activeFilters.experience === '1-3' && !(expLow < 3 && (expHigh ?? expLow) >= 1)) return false;
             if (activeFilters.experience === '3+' && !((expHigh ?? expLow) >= 3)) return false;
+          } else {
+            return false;
           }
         }
       }
@@ -298,18 +340,23 @@ function App() {
 
       // ── Date Posted filter ───────────────────────────────────────
       if (activeFilters.datePosted) {
-        if (!job.postedDate) return false;
-        const jobDate = new Date(job.postedDate);
-        const now = new Date();
-        const diffTime = Math.abs(now - jobDate);
-        const oneDay = 24 * 60 * 60 * 1000;
+        if (!job.postedDate) {
+          if (activeFilters.datePosted !== 'Other') return false;
+        } else {
+          const jobDate = new Date(job.postedDate);
+          const now = new Date();
+          const diffTime = Math.abs(now - jobDate);
+          const oneDay = 24 * 60 * 60 * 1000;
 
-        if (activeFilters.datePosted === '24h') {
-          if (diffTime > oneDay) return false;
-        } else if (activeFilters.datePosted === '7d') {
-          if (diffTime > 7 * oneDay) return false;
-        } else if (activeFilters.datePosted === '30d') {
-          if (diffTime > 30 * oneDay) return false;
+          if (activeFilters.datePosted === 'Other') {
+            if (diffTime <= 30 * oneDay) return false;
+          } else if (activeFilters.datePosted === '24h') {
+            if (diffTime > oneDay) return false;
+          } else if (activeFilters.datePosted === '7d') {
+            if (diffTime > 7 * oneDay) return false;
+          } else if (activeFilters.datePosted === '30d') {
+            if (diffTime > 30 * oneDay) return false;
+          }
         }
       }
 
