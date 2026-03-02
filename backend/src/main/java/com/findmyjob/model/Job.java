@@ -57,6 +57,8 @@ public class Job {
 
     private String passoutYear; // e.g., "2024, 2025"
 
+    private java.time.LocalDate expiryDate; // e.g., 2026-03-31
+
     @Column(length = 5000)
     private String responsibilities; // Job responsibilities
 

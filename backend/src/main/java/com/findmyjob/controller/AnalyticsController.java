@@ -8,6 +8,7 @@ import com.findmyjob.repository.JobApplyRepository;
 import com.findmyjob.repository.JobViewRepository;
 import com.findmyjob.repository.SearchQueryLogRepository;
 import com.findmyjob.repository.WebsiteViewRepository;
+import com.findmyjob.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,9 @@ public class AnalyticsController {
 
     @Autowired
     private JobApplyRepository jobApplyRepository;
+
+    @Autowired
+    private JobRepository jobRepository;
 
     @PostMapping("/view/website")
     public ResponseEntity<?> recordWebsiteView() {
@@ -78,6 +82,12 @@ public class AnalyticsController {
         stats.put("last7DaysApplies", jobApplyRepository.countByAppliedAtAfter(now.minusDays(7)));
         stats.put("todayApplies", jobApplyRepository.countByAppliedAtAfter(now.toLocalDate().atStartOfDay()));
         stats.put("last1HourApplies", jobApplyRepository.countByAppliedAtAfter(now.minusHours(1)));
+
+        // Add jobs created stats
+        stats.put("lifetimeJobs", jobRepository.count());
+        stats.put("last7DaysJobs", jobRepository.countByPostedDateAfter(now.minusDays(7)));
+        stats.put("todayJobs", jobRepository.countByPostedDateAfter(now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourJobs", jobRepository.countByPostedDateAfter(now.minusHours(1)));
 
         return ResponseEntity.ok(stats);
     }
@@ -126,6 +136,7 @@ public class AnalyticsController {
 
             long views = websiteViewRepository.countByViewedAtBetween(startOfDay, endOfDay);
             long applies = jobApplyRepository.countByAppliedAtBetween(startOfDay, endOfDay);
+            long jobsCreated = jobRepository.countByPostedDateBetween(startOfDay, endOfDay);
             List<Object[]> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay,
                     PageRequest.of(0, 5));
             List<Map<String, Object>> topSearches = searches.stream().map(row -> {
@@ -139,6 +150,7 @@ public class AnalyticsController {
             dayStat.put("date", targetDate.toString());
             dayStat.put("views", views);
             dayStat.put("applies", applies);
+            dayStat.put("jobsCreated", jobsCreated);
             dayStat.put("topSearches", topSearches);
             history.add(dayStat);
         }

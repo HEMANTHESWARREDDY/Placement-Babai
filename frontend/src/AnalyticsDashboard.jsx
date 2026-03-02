@@ -86,6 +86,25 @@ function AnalyticsDashboard() {
                             <p>{websiteStats.lifetimeApplies}</p>
                         </div>
                     </div>
+                    <h2>Total Jobs Created</h2>
+                    <div className="stats-grid" style={{ marginBottom: '2rem' }}>
+                        <div className="stat-card">
+                            <h3>Last 1 Hour</h3>
+                            <p>{websiteStats.last1HourJobs}</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>Today</h3>
+                            <p>{websiteStats.todayJobs}</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>Last 7 Days</h3>
+                            <p>{websiteStats.last7DaysJobs}</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>Lifetime</h3>
+                            <p>{websiteStats.lifetimeJobs}</p>
+                        </div>
+                    </div>
                 </>
             ) : <p>Loading website stats...</p>}
 
@@ -118,6 +137,10 @@ function AnalyticsDashboard() {
                             <div className="stat-card day-views">
                                 <h3>Total Applies</h3>
                                 <p>{activeDayData.applies}</p>
+                            </div>
+                            <div className="stat-card day-views">
+                                <h3>Total Jobs Created</h3>
+                                <p>{activeDayData.jobsCreated}</p>
                             </div>
                         </div>
 

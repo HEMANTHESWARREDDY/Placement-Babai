@@ -78,6 +78,7 @@ const EMPTY_FORM = {
     applyLink: '',
     responsibilities: '',
     requirements: '',
+    expiryDate: '',
 };
 
 function AdminDashboard({ adminData, onLogout }) {
@@ -173,6 +174,7 @@ function AdminDashboard({ adminData, onLogout }) {
             applyLink: job.applyLink || '',
             responsibilities: job.responsibilities || '',
             requirements: job.requirements || '',
+            expiryDate: job.expiryDate || '',
         });
         setShowForm(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -476,6 +478,13 @@ function AdminDashboard({ adminData, onLogout }) {
                                     <input type="text" name="passoutYear" value={formData.passoutYear}
                                         onChange={handleInputChange}
                                         placeholder="e.g., 2024, 2025" />
+                                </div>
+
+                                {/* Expiry Date */}
+                                <div className="form-group">
+                                    <label>Job Expiry Date <span className="form-hint">(optional)</span></label>
+                                    <input type="date" name="expiryDate" value={formData.expiryDate}
+                                        onChange={handleInputChange} />
                                 </div>
 
                                 {/* Company Logo */}

@@ -23,4 +23,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             "LOWER(j.location) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(j.skills) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Job> searchJobs(@Param("keyword") String keyword);
+
+    long countByPostedDateAfter(java.time.LocalDateTime date);
+
+    long countByPostedDateBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }
