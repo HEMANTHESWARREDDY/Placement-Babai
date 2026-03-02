@@ -104,19 +104,18 @@ function JobDetail({ job, onClose }) {
                     <div className="jd-meta-row">
                         {job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString() && (
                             <span className="jd-badge" style={{
-                                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                                color: 'white',
+                                background: 'rgba(230, 74, 25, 0.1)',
+                                border: '1px solid rgba(230, 74, 25, 0.3)',
+                                color: '#e64a19',
                                 padding: '0.2rem 0.6rem',
                                 borderRadius: '20px',
                                 fontWeight: '700',
-                                boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '0.2rem',
-                                border: 'none'
+                                gap: '0.2rem'
                             }}>
                                 <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
-                                <span style={{ color: 'white', fontWeight: 'bold' }}>Posted Today</span>
+                                <span style={{ color: '#e64a19', fontWeight: 'bold' }}>Posted Today</span>
                             </span>
                         )}
                         {job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString() && (
