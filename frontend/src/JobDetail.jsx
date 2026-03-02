@@ -102,6 +102,23 @@ function JobDetail({ job, onClose }) {
 
                 <div className="jd-badges-container">
                     <div className="jd-meta-row">
+                        {job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString() && (
+                            <span className="jd-badge" style={{
+                                background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
+                                color: 'white',
+                                padding: '0.2rem 0.6rem',
+                                borderRadius: '20px',
+                                fontWeight: '700',
+                                boxShadow: '0 4px 10px rgba(255, 65, 108, 0.3)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.2rem',
+                                border: 'none'
+                            }}>
+                                <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
+                                <span style={{ color: 'white', fontWeight: 'bold' }}>Posted Today</span>
+                            </span>
+                        )}
                         {job.salary && (
                             <span className="jd-badge jd-badge-green">
                                 💰 {job.salary}

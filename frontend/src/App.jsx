@@ -937,27 +937,6 @@ function App() {
                             title="Click to view job details"
                             style={{ position: 'relative' }}
                           >
-                            {isNewJob && (
-                              <div style={{
-                                position: 'absolute',
-                                top: '-8px',
-                                right: '-8px',
-                                background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
-                                color: 'white',
-                                padding: '0.2rem 0.6rem',
-                                borderRadius: '20px',
-                                fontSize: '0.75rem',
-                                fontWeight: '700',
-                                boxShadow: '0 4px 10px rgba(255, 65, 108, 0.3)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.2rem',
-                                zIndex: 2,
-                                animation: 'pulse 2s infinite'
-                              }}>
-                                🔥 Posted Today
-                              </div>
-                            )}
                             <div className="job-card-header">
                               <div className="company-logo">
                                 {getCompanyInitials(job.company)}
@@ -969,6 +948,22 @@ function App() {
                             </div>
 
                             <div className="job-details">
+                              {isNewJob && (
+                                <div className="job-detail-item" style={{
+                                  background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
+                                  color: 'white',
+                                  padding: '0.2rem 0.6rem',
+                                  borderRadius: '20px',
+                                  fontWeight: '700',
+                                  boxShadow: '0 4px 10px rgba(255, 65, 108, 0.3)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.2rem'
+                                }}>
+                                  <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
+                                  <span>Posted Today</span>
+                                </div>
+                              )}
                               <div className="job-detail-item">
                                 <span className="job-detail-icon">💰</span>
                                 <span>{job.salary || '—'}</span>
