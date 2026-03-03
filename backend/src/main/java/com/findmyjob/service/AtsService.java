@@ -43,44 +43,11 @@ public class AtsService {
                     .forEach(keywords::add);
         }
 
-        if (job.getRole() != null)
-            keywords.add(job.getRole().toLowerCase());
-        if (job.getPassoutYear() != null && !job.getPassoutYear().equalsIgnoreCase("Other")) {
-            keywords.add(job.getPassoutYear().toLowerCase());
-        }
-        if (job.getExperienceLevel() != null) {
-            if (job.getExperienceLevel().toLowerCase().contains("fresh")) {
-                keywords.add("fresher");
-                keywords.add("graduate");
-            } else {
-                keywords.add(job.getExperienceLevel().toLowerCase());
-            }
-        }
-
-        // Additional keywords from job description, requirements, and responsibilities
-        // using regex to find words >= 5 chars
-        StringBuilder extraText = new StringBuilder();
-        if (job.getDescription() != null)
-            extraText.append(job.getDescription()).append(" ");
-        if (job.getRequirements() != null)
-            extraText.append(job.getRequirements()).append(" ");
-        if (job.getResponsibilities() != null)
-            extraText.append(job.getResponsibilities()).append(" ");
-
-        if (extraText.length() > 0) {
-            Pattern pattern = Pattern.compile("\\b[a-zA-Z]{5,}\\b");
-            java.util.regex.Matcher matcher = pattern.matcher(extraText.toString());
-            int count = 0;
-            // Limit to 40 important words from desc/reqs/resp
-            while (matcher.find() && count < 40) {
-                String word = matcher.group().toLowerCase();
-                // ignore common words
-                if (!Arrays.asList("their", "there", "about", "which", "would", "these", "those", "other", "where")
-                        .contains(word)) {
-                    keywords.add(word);
-                    count++;
-                }
-            }
+        if (job.getSkills() != null) {
+            Arrays.stream(job.getSkills().split(","))
+                    .map(String::trim)
+                    .map(String::toLowerCase)
+                    .forEach(keywords::add);
         }
 
         if (keywords.isEmpty())
