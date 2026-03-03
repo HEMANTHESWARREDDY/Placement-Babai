@@ -21,15 +21,16 @@ public class AtsController {
 
     @PostMapping("/{id}/ats-check")
     public ResponseEntity<?> checkAtsScore(@PathVariable Long id, @RequestParam("resume") MultipartFile resume) {
+        System.out.println("====== checkAtsScore hit for job " + id + " ======");
         try {
             int score = atsService.calculateAtsScore(id, resume);
             Map<String, Object> response = new HashMap<>();
             response.put("score", score);
             response.put("message", getMessageForScore(score));
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body(Map.of("error", "Failed to parse document: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("error", "Failed to parse document: " + e.toString()));
         }
     }
 
