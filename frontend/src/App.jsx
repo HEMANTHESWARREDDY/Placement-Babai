@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import JobDetail from './JobDetail';
 import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
@@ -1228,6 +1229,7 @@ function App() {
         </div>
       </footer >
 
+      <SpeedInsights />
     </div >
   );
 }
