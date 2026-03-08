@@ -392,7 +392,7 @@ function AdminDashboard({ adminData, onLogout }) {
                         <p>{confirmDialog.message}</p>
                         <div className="admin-modal-actions">
                             <button className="btn-cancel" onClick={() => setConfirmDialog({ show: false, message: '', onConfirm: null })}>Cancel</button>
-                            <button className="btn-primary" onClick={() => {
+                            <button className="btn-confirm-danger" onClick={() => {
                                 if (confirmDialog.onConfirm) confirmDialog.onConfirm();
                                 setConfirmDialog({ show: false, message: '', onConfirm: null });
                             }}>Confirm</button>
