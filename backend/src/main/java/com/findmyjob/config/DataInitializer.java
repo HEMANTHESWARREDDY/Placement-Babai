@@ -4,6 +4,7 @@ import com.findmyjob.model.Admin;
 import com.findmyjob.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,19 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Override
     public void run(String... args) throws Exception {
+        // Backfill null is_deleted columns to false for existing jobs
+        try {
+            jdbcTemplate.execute("UPDATE jobs SET is_deleted = false WHERE is_deleted IS NULL");
+            System.out.println("✅ Backfilled existing jobs where is_deleted was NULL");
+        } catch (Exception e) {
+            System.out.println("⚠️ Could not backfill is_deleted, perhaps table doesn't exist yet: " + e.getMessage());
+        }
+
         // Create default admin if it doesn't exist
         if (!adminRepository.existsByUsername("Bobby")) {
             Admin admin = new Admin();

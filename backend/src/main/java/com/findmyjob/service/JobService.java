@@ -58,7 +58,7 @@ public class JobService {
     public void deleteJob(Long id) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
-        job.setDeleted(true);
+        job.setIsDeleted(true);
         job.setDeletedAt(java.time.LocalDateTime.now());
         jobRepository.save(job);
     }
@@ -66,7 +66,7 @@ public class JobService {
     public void restoreJob(Long id) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
-        job.setDeleted(false);
+        job.setIsDeleted(false);
         job.setDeletedAt(null);
         jobRepository.save(job);
     }

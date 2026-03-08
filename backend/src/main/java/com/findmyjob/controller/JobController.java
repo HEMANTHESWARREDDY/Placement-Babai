@@ -26,7 +26,7 @@ public class JobController {
     @GetMapping("/{id}")
     public ResponseEntity<Job> getJobById(@PathVariable Long id) {
         return jobService.getJobById(id)
-                .filter(job -> !job.isDeleted())
+                .filter(job -> !Boolean.TRUE.equals(job.getIsDeleted()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

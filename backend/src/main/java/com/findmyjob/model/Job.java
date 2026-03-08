@@ -65,8 +65,8 @@ public class Job {
     @Column(length = 5000)
     private String requirements; // Job requirements / qualifications
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted = false;
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
