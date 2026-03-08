@@ -37,9 +37,27 @@ public class JobSchedulerService {
 
         int deletedCount = 0;
         for (Job job : activeJobs) {
-            if (job.getExpiryDate() != null && !job.getExpiryDate().trim().isEmpty()) {
-                try {
-                    LocalDate expiry = LocalDate.parse(job.getExpiryDate().trim());
+            if (job.getExpiryDate() == null || job.getExpiryDate().trim().isEmpty()) {
+                continue;
+            }
+            try {
+                LocalDate expiry = null;
+                String cleanDate = job.getExpiryDate().trim();
+                if (cleanDate.contains("T")) {
+                    cleanDate = cleanDate.substring(0, cleanDate.indexOf("T"));
+                }
+
+                String[] formats = { "yyyy-MM-dd", "dd-MM-yyyy", "MM/dd/yyyy", "dd/MM/yyyy" };
+                for (String format : formats) {
+                    try {
+                        expiry = LocalDate.parse(cleanDate, java.time.format.DateTimeFormatter.ofPattern(format));
+                        break;
+                    } catch (Exception e) {
+                        // Try next
+                    }
+                }
+
+                if (expiry != null) {
                     LocalDateTime expiryTime = expiry.atTime(23, 58, 0);
 
                     // If current time in IST is strictly after the 11:58:00 PM of the expiry date
@@ -48,10 +66,15 @@ public class JobSchedulerService {
                         deletedCount++;
                         logger.info("Soft-deleted expired job with ID: {}", job.getId());
                     }
-                } catch (DateTimeParseException e) {
-                    // Ignore parsing errors for formats like "Don't know"
-                    logger.debug("Could not parse expiry date '{}' for Job ID: {}", job.getExpiryDate(), job.getId());
+                } else {
+                    // Only log if it's not the generic "Don't know" phrase
+                    if (!"Don't know".equalsIgnoreCase(cleanDate)) {
+                        logger.error("Could not parse explicit expiry date '{}' for Job ID: {}", job.getExpiryDate(),
+                                job.getId());
+                    }
                 }
+            } catch (Exception e) {
+                logger.error("Unexpected error processing Job ID: {}", job.getId(), e);
             }
         }
         logger.info("Finished auto-delete task. Deleted {} jobs.", deletedCount);
