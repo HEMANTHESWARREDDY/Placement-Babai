@@ -67,11 +67,23 @@ public class JobParserService {
     private Job parseWithGemini(String url, String pageText, String metaTitle) throws Exception {
         String prompt = "You are an expert ATS and Job Data Extractor. " +
                 "Extract job details from the provided webpage text into a valid JSON object. " +
-                "The JSON must have EXACTLY these keys (use placeholders like 'Not Specified' if missing): " +
-                "'title', 'company', 'location', 'description' (max 400 chars summary), 'skills' (comma separated), " +
-                "'jobType' (Full-time, Part-time, Internship, etc.), 'experienceLevel' (e.g. 0-2 Years), " +
-                "'salary', 'category', 'role', 'companyType', 'responsibilities' (one per line, max 5 lines), 'requirements' (one per line, max 5 lines).\n\n"
+                "The JSON must have EXACTLY these keys (use placeholders like 'Don\\'t know' or 'Not Specified' if missing or use the exact requested format below):\n"
                 +
+                "- title (e.g., Intern - Associate Systems Management Specialist)\n" +
+                "- company (e.g., IBM)\n" +
+                "- location (e.g., Bangalore, India)\n" +
+                "- description (max 400 chars summary, detailed and professional)\n" +
+                "- skills (comma separated e.g. Linux, Windows Server, Networking...)\n" +
+                "- jobType (e.g., Full-time (Internship), Part-time, Full-time)\n" +
+                "- experienceLevel (e.g., 0 - 1 Years (Entry Level / Student) or 3 - 7 Years)\n" +
+                "- salary (e.g., Not Specified (Standard industry internship stipend) or 10 - 20 LPA)\n" +
+                "- category (e.g., Software Engineering / IT Operations, Technology)\n" +
+                "- role (e.g., Developer / Engineer)\n" +
+                "- companyType (e.g., MNC (Large Enterprise), Startup)\n" +
+                "- responsibilities (bullet points WITHOUT bullets, one per line, max 5 lines)\n" +
+                "- requirements (bullet points WITHOUT bullets, one per line, max 5 lines)\n" +
+                "- passoutYear (e.g., 2024, 2025)\n" +
+                "- expiryDate (e.g., Don't know)\n\n" +
                 "Here is the page title: " + metaTitle + "\n\n" +
                 "Here is the raw HTML data containing the job details (could be inside javascript JSON or HTML tags):\n"
                 + pageText;
@@ -142,6 +154,13 @@ public class JobParserService {
             job.setCompanyType(jobData.path("companyType").asText("Corporate"));
             job.setResponsibilities(jobData.path("responsibilities").asText(""));
             job.setRequirements(jobData.path("requirements").asText(""));
+            job.setPassoutYear(jobData.path("passoutYear").asText(""));
+
+            // expiryDate is a String field in the model (e.g. "Don't know" or "2026-03-31")
+            String expiryText = jobData.path("expiryDate").asText("");
+            if (expiryText != null && !expiryText.isEmpty()) {
+                job.setExpiryDate(expiryText);
+            }
 
             return job;
         } else {
