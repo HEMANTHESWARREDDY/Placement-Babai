@@ -17,8 +17,19 @@ function App() {
   const [searchLocation, setSearchLocation] = useState('');
   const [showLocSuggestions, setShowLocSuggestions] = useState(false);
   const [searchExperience, setSearchExperience] = useState('');
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'admin-login', 'admin-dashboard'
-  const [adminData, setAdminData] = useState(null);
+  const [currentView, setCurrentView] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === 'true') {
+      return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login';
+    }
+    return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'home';
+  });
+  const [adminData, setAdminData] = useState(() => {
+    const token = localStorage.getItem('adminToken');
+    const username = localStorage.getItem('adminUsername');
+    const email = localStorage.getItem('adminEmail');
+    return token ? { token, username, email } : null;
+  });
   const [selectedJob, setSelectedJob] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
@@ -414,7 +425,6 @@ function App() {
     // Hidden admin route via URL parameter
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === 'true') {
-      setCurrentView('admin-login');
       // Clean up URL without refreshing
       const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
       window.history.pushState({ path: newUrl }, '', newUrl);

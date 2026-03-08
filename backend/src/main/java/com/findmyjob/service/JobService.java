@@ -15,7 +15,11 @@ public class JobService {
     private JobRepository jobRepository;
 
     public List<Job> getAllJobs() {
-        return jobRepository.findAll();
+        return jobRepository.findByIsDeletedFalse();
+    }
+
+    public List<Job> getDeletedJobs() {
+        return jobRepository.findByIsDeletedTrue();
     }
 
     public Optional<Job> getJobById(Long id) {
@@ -52,7 +56,19 @@ public class JobService {
     }
 
     public void deleteJob(Long id) {
-        jobRepository.deleteById(id);
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+        job.setDeleted(true);
+        job.setDeletedAt(java.time.LocalDateTime.now());
+        jobRepository.save(job);
+    }
+
+    public void restoreJob(Long id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+        job.setDeleted(false);
+        job.setDeletedAt(null);
+        jobRepository.save(job);
     }
 
     public List<Job> searchJobs(String keyword) {
@@ -60,6 +76,6 @@ public class JobService {
     }
 
     public List<Job> searchByLocation(String location) {
-        return jobRepository.findByLocationContainingIgnoreCase(location);
+        return jobRepository.findByLocationContainingIgnoreCaseAndIsDeletedFalse(location);
     }
 }

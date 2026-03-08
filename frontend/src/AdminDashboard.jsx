@@ -89,14 +89,16 @@ const EMPTY_FORM = {
 
 function AdminDashboard({ adminData, onLogout }) {
     const [jobs, setJobs] = useState([]);
+    const [deletedJobs, setDeletedJobs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [deletedLoading, setDeletedLoading] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [editingJob, setEditingJob] = useState(null);
     const [formData, setFormData] = useState(EMPTY_FORM);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilters, setActiveFilters] = useState({});
     const [sortType, setSortType] = useState('');
-    const [activeTab, setActiveTab] = useState('jobs');
+    const [activeTab, setActiveTab] = useState('jobs'); // 'jobs', 'analytics', 'deleted'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
 
     const toggleFilter = (group, value) => {
@@ -110,6 +112,7 @@ function AdminDashboard({ adminData, onLogout }) {
 
     useEffect(() => {
         fetchJobs();
+        fetchDeletedJobs();
     }, []);
 
     useEffect(() => {
@@ -129,6 +132,19 @@ function AdminDashboard({ adminData, onLogout }) {
             console.error('Error fetching jobs:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchDeletedJobs = async () => {
+        setDeletedLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/deleted`);
+            const data = await response.json();
+            setDeletedJobs(data);
+        } catch (error) {
+            console.error('Error fetching deleted jobs:', error);
+        } finally {
+            setDeletedLoading(false);
         }
     };
 
@@ -152,6 +168,7 @@ function AdminDashboard({ adminData, onLogout }) {
 
             if (response.ok) {
                 fetchJobs();
+                fetchDeletedJobs();
                 resetForm();
                 alert(editingJob ? 'Job updated successfully!' : 'Job created successfully!');
             }
@@ -182,8 +199,24 @@ function AdminDashboard({ adminData, onLogout }) {
             requirements: job.requirements || '',
             expiryDate: job.expiryDate || '',
         });
+        setActiveTab('jobs');
         setShowForm(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleRestore = async (id) => {
+        if (!confirm('Are you sure you want to restore (revoke) this job?')) return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/${id}/restore`, { method: 'PUT' });
+            if (response.ok) {
+                fetchJobs();
+                fetchDeletedJobs();
+                alert('Job restored successfully!');
+            }
+        } catch (error) {
+            console.error('Error restoring job:', error);
+            alert('Failed to restore job');
+        }
     };
 
     const handleDelete = async (id) => {
@@ -192,6 +225,7 @@ function AdminDashboard({ adminData, onLogout }) {
             const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 fetchJobs();
+                fetchDeletedJobs();
                 alert('Job deleted successfully!');
             }
         } catch (error) {
@@ -345,6 +379,12 @@ function AdminDashboard({ adminData, onLogout }) {
                         >
                             📈 Analytics
                         </button>
+                        <button
+                            className={`btn-tab ${activeTab === 'deleted' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('deleted')}
+                        >
+                            🗑️ History
+                        </button>
                         <button className="btn-primary" onClick={() => { setActiveTab('jobs'); setShowForm(!showForm); if (showForm) resetForm(); }}>
                             {showForm ? '✕ Cancel' : '+ Add New Job'}
                         </button>
@@ -355,6 +395,52 @@ function AdminDashboard({ adminData, onLogout }) {
 
             {activeTab === 'analytics' ? (
                 <AnalyticsDashboard />
+            ) : activeTab === 'deleted' ? (
+                <div className="jobs-management">
+                    <div className="jobs-list-header">
+                        <h2>Deleted Jobs History ({deletedJobs.length})</h2>
+                        <p style={{ color: '#64748b' }}>Jobs are permanently deleted after 15 days.</p>
+                    </div>
+                    {deletedLoading ? (
+                        <div className="loading">Loading deleted jobs...</div>
+                    ) : (
+                        <div className="jobs-table-container">
+                            <table className="jobs-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Company</th>
+                                        <th>Deleted At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {deletedJobs.length > 0 ? (
+                                        deletedJobs.map((job) => (
+                                            <tr key={job.id}>
+                                                <td>{job.id}</td>
+                                                <td><strong>{job.title}</strong></td>
+                                                <td>{job.company}</td>
+                                                <td>{job.deletedAt ? new Date(job.deletedAt).toLocaleString() : '—'}</td>
+                                                <td>
+                                                    <div className="action-buttons">
+                                                        <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
+                                                        <button className="btn-primary" onClick={() => handleRestore(job.id)}>↩️ Revoke</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>No deleted jobs found.</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             ) : (
                 <>
                     {/* Job Form */}

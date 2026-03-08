@@ -26,6 +26,7 @@ public class JobController {
     @GetMapping("/{id}")
     public ResponseEntity<Job> getJobById(@PathVariable Long id) {
         return jobService.getJobById(id)
+                .filter(job -> !job.isDeleted())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -60,5 +61,20 @@ public class JobController {
     @GetMapping("/location")
     public ResponseEntity<List<Job>> searchByLocation(@RequestParam String location) {
         return ResponseEntity.ok(jobService.searchByLocation(location));
+    }
+
+    @GetMapping("/deleted")
+    public ResponseEntity<List<Job>> getDeletedJobs() {
+        return ResponseEntity.ok(jobService.getDeletedJobs());
+    }
+
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Void> restoreJob(@PathVariable Long id) {
+        try {
+            jobService.restoreJob(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
