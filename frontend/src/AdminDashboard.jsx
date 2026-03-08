@@ -100,6 +100,13 @@ function AdminDashboard({ adminData, onLogout }) {
     const [sortType, setSortType] = useState('');
     const [activeTab, setActiveTab] = useState('jobs'); // 'jobs', 'analytics', 'deleted'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
+
+    const showToast = (message, type = 'success') => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+    };
 
     const toggleFilter = (group, value) => {
         setActiveFilters(prev => ({
@@ -170,11 +177,13 @@ function AdminDashboard({ adminData, onLogout }) {
                 fetchJobs();
                 fetchDeletedJobs();
                 resetForm();
-                alert(editingJob ? 'Job updated successfully!' : 'Job created successfully!');
+                showToast(editingJob ? 'Job updated successfully!' : 'Job created successfully!', 'success');
+            } else {
+                showToast('Failed to save job', 'error');
             }
         } catch (error) {
             console.error('Error saving job:', error);
-            alert('Failed to save job');
+            showToast('Failed to save job', 'error');
         }
     };
 
@@ -204,34 +213,48 @@ function AdminDashboard({ adminData, onLogout }) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleRestore = async (id) => {
-        if (!confirm('Are you sure you want to restore (revoke) this job?')) return;
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/jobs/${id}/restore`, { method: 'PUT' });
-            if (response.ok) {
-                fetchJobs();
-                fetchDeletedJobs();
-                alert('Job restored successfully!');
+    const handleRestore = (id) => {
+        setConfirmDialog({
+            show: true,
+            message: 'Are you sure you want to restore (revoke) this job?',
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/jobs/${id}/restore`, { method: 'PUT' });
+                    if (response.ok) {
+                        fetchJobs();
+                        fetchDeletedJobs();
+                        showToast('Job restored successfully!', 'success');
+                    } else {
+                        showToast('Failed to restore job', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error restoring job:', error);
+                    showToast('Failed to restore job', 'error');
+                }
             }
-        } catch (error) {
-            console.error('Error restoring job:', error);
-            alert('Failed to restore job');
-        }
+        });
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this job?')) return;
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
-            if (response.ok) {
-                fetchJobs();
-                fetchDeletedJobs();
-                alert('Job deleted successfully!');
+    const handleDelete = (id) => {
+        setConfirmDialog({
+            show: true,
+            message: 'Are you sure you want to delete this job?',
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        fetchJobs();
+                        fetchDeletedJobs();
+                        showToast('Job deleted successfully!', 'success');
+                    } else {
+                        showToast('Failed to delete job', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting job:', error);
+                    showToast('Failed to delete job', 'error');
+                }
             }
-        } catch (error) {
-            console.error('Error deleting job:', error);
-            alert('Failed to delete job');
-        }
+        });
     };
 
     const resetForm = () => {
@@ -354,6 +377,30 @@ function AdminDashboard({ adminData, onLogout }) {
 
     return (
         <div className="admin-dashboard">
+            {/* Custom Toast Notification */}
+            {toast.show && (
+                <div className={`admin-toast admin-toast-${toast.type}`}>
+                    {toast.type === 'success' ? '✅' : '❌'} {toast.message}
+                </div>
+            )}
+
+            {/* Custom Confirm Modal */}
+            {confirmDialog.show && (
+                <div className="admin-modal-overlay">
+                    <div className="admin-modal">
+                        <h3>Confirm Action</h3>
+                        <p>{confirmDialog.message}</p>
+                        <div className="admin-modal-actions">
+                            <button className="btn-cancel" onClick={() => setConfirmDialog({ show: false, message: '', onConfirm: null })}>Cancel</button>
+                            <button className="btn-primary" onClick={() => {
+                                if (confirmDialog.onConfirm) confirmDialog.onConfirm();
+                                setConfirmDialog({ show: false, message: '', onConfirm: null });
+                            }}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <div className="admin-header">
                 <div className="admin-header-content">
