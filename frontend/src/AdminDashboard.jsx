@@ -213,48 +213,38 @@ function AdminDashboard({ adminData, onLogout }) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleRestore = (id) => {
-        setConfirmDialog({
-            show: true,
-            message: 'Are you sure you want to restore (revoke) this job?',
-            onConfirm: async () => {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/jobs/${id}/restore`, { method: 'PUT' });
-                    if (response.ok) {
-                        fetchJobs();
-                        fetchDeletedJobs();
-                        showToast('Job restored successfully!', 'success');
-                    } else {
-                        showToast('Failed to restore job', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error restoring job:', error);
-                    showToast('Failed to restore job', 'error');
-                }
+    const handleRestore = async (id) => {
+        if (!window.confirm('Are you sure you want to restore (revoke) this job?')) return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/${id}/restore`, { method: 'PUT' });
+            if (response.ok) {
+                fetchJobs();
+                fetchDeletedJobs();
+                showToast('Job restored successfully!', 'success');
+            } else {
+                showToast('Failed to restore job', 'error');
             }
-        });
+        } catch (error) {
+            console.error('Error restoring job:', error);
+            showToast('Failed to restore job', 'error');
+        }
     };
 
-    const handleDelete = (id) => {
-        setConfirmDialog({
-            show: true,
-            message: 'Are you sure you want to delete this job?',
-            onConfirm: async () => {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
-                    if (response.ok) {
-                        fetchJobs();
-                        fetchDeletedJobs();
-                        showToast('Job deleted successfully!', 'success');
-                    } else {
-                        showToast('Failed to delete job', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error deleting job:', error);
-                    showToast('Failed to delete job', 'error');
-                }
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this job?')) return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                fetchJobs();
+                fetchDeletedJobs();
+                showToast('Job deleted successfully!', 'success');
+            } else {
+                showToast('Failed to delete job', 'error');
             }
-        });
+        } catch (error) {
+            console.error('Error deleting job:', error);
+            showToast('Failed to delete job', 'error');
+        }
     };
 
     const resetForm = () => {
@@ -384,22 +374,6 @@ function AdminDashboard({ adminData, onLogout }) {
                 </div>
             )}
 
-            {/* Custom Confirm Modal */}
-            {confirmDialog.show && (
-                <div className="admin-modal-overlay">
-                    <div className="admin-modal">
-                        <h3>Confirm Action</h3>
-                        <p>{confirmDialog.message}</p>
-                        <div className="admin-modal-actions">
-                            <button className="btn-cancel" onClick={() => setConfirmDialog({ show: false, message: '', onConfirm: null })}>Cancel</button>
-                            <button className="btn-primary" onClick={() => {
-                                if (confirmDialog.onConfirm) confirmDialog.onConfirm();
-                                setConfirmDialog({ show: false, message: '', onConfirm: null });
-                            }}>Confirm</button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Header */}
             <div className="admin-header">
@@ -469,7 +443,7 @@ function AdminDashboard({ adminData, onLogout }) {
                                                 <td>{job.id}</td>
                                                 <td><strong>{job.title}</strong></td>
                                                 <td>{job.company}</td>
-                                                <td>{job.deletedAt ? new Date(job.deletedAt).toLocaleString() : '—'}</td>
+                                                <td>{job.deletedAt ? new Date(job.deletedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—'}</td>
                                                 <td>
                                                     <div className="action-buttons">
                                                         <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
