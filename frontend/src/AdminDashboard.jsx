@@ -171,6 +171,16 @@ function AdminDashboard({ adminData, onLogout }) {
             });
             if (response.ok) {
                 const data = await response.json();
+
+                if (data.title === "Unable to automatically extract details") {
+                    showToast('Website blocked auto-extraction! Apply link added.', 'error');
+                    setFormData(prev => ({
+                        ...prev,
+                        applyLink: autofillUrl.trim() || prev.applyLink
+                    }));
+                    return;
+                }
+
                 setFormData(prev => ({
                     ...prev,
                     title: data.title || prev.title,
@@ -188,7 +198,7 @@ function AdminDashboard({ adminData, onLogout }) {
                 }));
                 showToast('Form autofilled successfully!', 'success');
             } else {
-                showToast('Failed to extract data. Please fill manually.', 'error');
+                showToast('Backend server is still booting up! Please wait 30s.', 'error');
             }
         } catch (error) {
             console.error('Error autofilling job:', error);
