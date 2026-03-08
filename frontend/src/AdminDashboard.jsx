@@ -194,6 +194,8 @@ function AdminDashboard({ adminData, onLogout }) {
                     category: data.category || prev.category,
                     role: data.role || prev.role,
                     companyType: data.companyType || prev.companyType,
+                    responsibilities: data.responsibilities || prev.responsibilities,
+                    requirements: data.requirements || prev.requirements,
                     applyLink: data.applyLink || autofillUrl.trim() || prev.applyLink
                 }));
                 showToast('Form autofilled successfully!', 'success');

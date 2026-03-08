@@ -70,7 +70,8 @@ public class JobParserService {
                 "The JSON must have EXACTLY these keys (use placeholders like 'Not Specified' if missing): " +
                 "'title', 'company', 'location', 'description' (max 400 chars summary), 'skills' (comma separated), " +
                 "'jobType' (Full-time, Part-time, Internship, etc.), 'experienceLevel' (e.g. 0-2 Years), " +
-                "'salary', 'category', 'role', 'companyType'.\n\n" +
+                "'salary', 'category', 'role', 'companyType', 'responsibilities' (one per line, max 5 lines), 'requirements' (one per line, max 5 lines).\n\n"
+                +
                 "Here is the page title: " + metaTitle + "\n\n" +
                 "Here is the raw HTML data containing the job details (could be inside javascript JSON or HTML tags):\n"
                 + pageText;
@@ -139,6 +140,8 @@ public class JobParserService {
             job.setCategory(jobData.path("category").asText("Technology"));
             job.setRole(jobData.path("role").asText("Developer/Engineer"));
             job.setCompanyType(jobData.path("companyType").asText("Corporate"));
+            job.setResponsibilities(jobData.path("responsibilities").asText(""));
+            job.setRequirements(jobData.path("requirements").asText(""));
 
             return job;
         } else {
