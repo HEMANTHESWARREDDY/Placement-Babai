@@ -47,6 +47,16 @@ public class JobController {
         return ResponseEntity.ok(extractedJob);
     }
 
+    @GetMapping("/gemini-status")
+    public ResponseEntity<Map<String, Object>> geminiStatus() {
+        Map<String, Object> status = new java.util.HashMap<>();
+        status.put("geminiConfigured", jobParserService.isGeminiConfigured());
+        status.put("message", jobParserService.isGeminiConfigured()
+                ? "Gemini API key is active and ready"
+                : "Gemini API key is NOT configured - set GEMINI_API_KEY environment variable");
+        return ResponseEntity.ok(status);
+    }
+
     @PostMapping
     public ResponseEntity<Job> createJob(@Valid @RequestBody Job job) {
         Job createdJob = jobService.createJob(job);

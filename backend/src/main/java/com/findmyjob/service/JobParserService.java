@@ -21,41 +21,98 @@ public class JobParserService {
     @Value("${gemini.api.key:}")
     private String geminiApiKey;
 
+    public boolean isGeminiConfigured() {
+        return geminiApiKey != null && !geminiApiKey.trim().isEmpty();
+    }
+
     public Job extractJobFromUrl(String url) {
         Job job = new Job();
         job.setApplyLink(url);
 
         try {
-            // Default timeout and pretend we are a browser to bypass basic bot protection
+            // Fetch page as a browser would
             Document doc = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                    .timeout(10000)
+                    .userAgent(
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                    .header("Accept-Language", "en-US,en;q=0.5")
+                    .timeout(12000)
+                    .followRedirects(true)
                     .get();
 
-            String pageText = doc.body() != null ? doc.body().text() : "";
-            String rawHtml = doc.outerHtml();
+            // 1. Get visible body text
+            String bodyText = doc.body() != null ? doc.body().text() : "";
 
-            // Limit raw HTML size to avoid completely massive prompts, 90k chars is well
-            // within Gemini 2.0 Flash context
-            if (rawHtml.length() > 90000) {
-                rawHtml = rawHtml.substring(0, 90000);
-            }
-
-            // If Gemini API Key is provided, use the power of AI to parse the job!
-            if (geminiApiKey != null && !geminiApiKey.trim().isEmpty()) {
-                try {
-                    return parseWithGemini(url, rawHtml, doc.title());
-                } catch (Exception e) {
-                    System.err.println("Gemini parsing failed, falling back to heuristics: " + e.getMessage());
+            // 2. Extract ALL script tag contents (includes JSON data in SPAs like
+            // brassring/Angular)
+            StringBuilder scriptContent = new StringBuilder();
+            doc.select("script").forEach(script -> {
+                String content = script.html();
+                // Only include scripts that look like they have job data (not pure JS logic)
+                if (content != null && content.length() > 50 &&
+                        (content.contains("jobTitle") || content.contains("job_title") ||
+                                content.contains("positionTitle") || content.contains("ReqTitle") ||
+                                content.contains("JobTitle") || content.contains("title") ||
+                                content.contains("company") || content.contains("description") ||
+                                content.contains("location") || content.contains("salary") ||
+                                content.contains("\"@type\"") // JSON-LD structured data
+                )) {
+                    scriptContent.append(content).append("\n\n");
                 }
+            });
+
+            // 3. Also grab JSON-LD structured data specifically
+            StringBuilder jsonLd = new StringBuilder();
+            doc.select("script[type='application/ld+json']").forEach(s -> {
+                jsonLd.append(s.html()).append("\n");
+            });
+            doc.select("script[type='application/json']").forEach(s -> {
+                jsonLd.append(s.html()).append("\n");
+            });
+
+            // 4. Combine everything — prioritize JSON data over generic visible body text
+            String combinedContent = "";
+            if (jsonLd.length() > 0) {
+                combinedContent = "=== STRUCTURED JSON DATA ===\n" + jsonLd + "\n\n";
+            }
+            if (scriptContent.length() > 0) {
+                combinedContent += "=== SCRIPT/APP DATA ===\n" + scriptContent + "\n\n";
+            }
+            combinedContent += "=== VISIBLE PAGE TEXT ===\n" + bodyText;
+
+            // Limit total content size
+            if (combinedContent.length() > 100000) {
+                combinedContent = combinedContent.substring(0, 100000);
             }
 
-            // Fallback: Heuristic Parsing (Existing logic)
-            return parseWithHeuristics(job, url, doc, pageText);
+            System.out.println("== Extracted content length: " + combinedContent.length() +
+                    " (JSON-LD: " + jsonLd.length() + ", Scripts: " + scriptContent.length() +
+                    ", Body: " + bodyText.length() + ")");
+
+            // If Gemini API Key is provided, use AI to parse!
+            if (isGeminiConfigured()) {
+                try {
+                    Job geminiResult = parseWithGemini(url, combinedContent, doc.title());
+                    // Validate Gemini didn't just hallucinate generic content
+                    if (geminiResult.getTitle() != null &&
+                            !geminiResult.getTitle().equalsIgnoreCase("Parsed Job") &&
+                            !geminiResult.getTitle().isEmpty()) {
+                        System.out.println("== Gemini successfully extracted: " + geminiResult.getTitle());
+                        return geminiResult;
+                    } else {
+                        System.err.println("== Gemini returned generic/empty data, falling back to heuristics");
+                    }
+                } catch (Exception e) {
+                    System.err.println("== Gemini parsing failed: " + e.getMessage());
+                }
+            } else {
+                System.out.println("== Gemini key not configured, using heuristic extraction");
+            }
+
+            // Fallback: Heuristic Parsing
+            return parseWithHeuristics(job, url, doc, bodyText);
 
         } catch (Exception e) {
-            // Failed to parse, probably blocked or invalid URL. Return what we safely
-            // initialized.
             System.err.println("Failed to scrape URL: " + url + " - " + e.getMessage());
             job.setTitle("Unable to automatically extract details");
             job.setCompany("Unknown");
