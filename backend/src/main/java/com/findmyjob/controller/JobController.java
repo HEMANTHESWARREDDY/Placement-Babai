@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.findmyjob.service.JobParserService;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -17,6 +20,9 @@ public class JobController {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private JobParserService jobParserService;
 
     @GetMapping
     public ResponseEntity<List<Job>> getAllJobs() {
@@ -29,6 +35,16 @@ public class JobController {
                 .filter(job -> !Boolean.TRUE.equals(job.getIsDeleted()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/extract")
+    public ResponseEntity<Job> extractJobFromUrl(@RequestBody Map<String, String> payload) {
+        String url = payload.get("url");
+        if (url == null || url.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Job extractedJob = jobParserService.extractJobFromUrl(url.trim());
+        return ResponseEntity.ok(extractedJob);
     }
 
     @PostMapping

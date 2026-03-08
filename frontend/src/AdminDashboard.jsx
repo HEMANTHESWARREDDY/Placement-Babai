@@ -102,6 +102,8 @@ function AdminDashboard({ adminData, onLogout }) {
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
+    const [autofillUrl, setAutofillUrl] = useState('');
+    const [isAutofilling, setIsAutofilling] = useState(false);
 
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
@@ -152,6 +154,47 @@ function AdminDashboard({ adminData, onLogout }) {
             console.error('Error fetching deleted jobs:', error);
         } finally {
             setDeletedLoading(false);
+        }
+    };
+
+    const handleAutofill = async () => {
+        if (!autofillUrl || !autofillUrl.trim()) {
+            showToast('Please paste a valid job link.', 'error');
+            return;
+        }
+        setIsAutofilling(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/jobs/extract`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: autofillUrl.trim() })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setFormData(prev => ({
+                    ...prev,
+                    title: data.title || prev.title,
+                    company: data.company || prev.company,
+                    location: data.location || prev.location,
+                    description: data.description || prev.description,
+                    skills: data.skills || prev.skills,
+                    jobType: data.jobType || prev.jobType,
+                    experienceLevel: data.experienceLevel || prev.experienceLevel,
+                    salary: data.salary || prev.salary,
+                    category: data.category || prev.category,
+                    role: data.role || prev.role,
+                    companyType: data.companyType || prev.companyType,
+                    applyLink: data.applyLink || autofillUrl.trim() || prev.applyLink
+                }));
+                showToast('Form autofilled successfully!', 'success');
+            } else {
+                showToast('Failed to extract data. Please fill manually.', 'error');
+            }
+        } catch (error) {
+            console.error('Error autofilling job:', error);
+            showToast('Network error during URL extraction.', 'error');
+        } finally {
+            setIsAutofilling(false);
         }
     };
 
@@ -260,6 +303,7 @@ function AdminDashboard({ adminData, onLogout }) {
     const resetForm = () => {
         setFormData(EMPTY_FORM);
         setEditingJob(null);
+        setAutofillUrl('');
         setShowForm(false);
     };
 
@@ -493,7 +537,28 @@ function AdminDashboard({ adminData, onLogout }) {
                     {/* Job Form */}
                     {showForm && (
                         <div className="job-form-container">
-                            <h2>{editingJob ? '✏️ Edit Job' : '➕ Create New Job'}</h2>
+                            <div className="form-header-with-autofill">
+                                <h2>{editingJob ? '✏️ Edit Job' : '➕ Create New Job'}</h2>
+                                {!editingJob && (
+                                    <div className="autofill-container">
+                                        <input
+                                            type="url"
+                                            placeholder="Paste job link to automatically extract details..."
+                                            value={autofillUrl}
+                                            onChange={(e) => setAutofillUrl(e.target.value)}
+                                            className="autofill-input"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn-autofill"
+                                            onClick={handleAutofill}
+                                            disabled={isAutofilling}
+                                        >
+                                            {isAutofilling ? '⏳ Extracting...' : '✨ Auto-Fill'}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                             <form onSubmit={handleSubmit} className="job-form">
 
                                 {/* Row 1: Title + Company */}
