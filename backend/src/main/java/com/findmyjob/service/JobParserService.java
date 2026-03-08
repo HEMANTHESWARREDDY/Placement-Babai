@@ -33,16 +33,18 @@ public class JobParserService {
                     .get();
 
             String pageText = doc.body() != null ? doc.body().text() : "";
+            String rawHtml = doc.outerHtml();
 
-            // Limit page text size to avoid completely massive prompts
-            if (pageText.length() > 25000) {
-                pageText = pageText.substring(0, 25000);
+            // Limit raw HTML size to avoid completely massive prompts, 90k chars is well
+            // within Gemini 2.0 Flash context
+            if (rawHtml.length() > 90000) {
+                rawHtml = rawHtml.substring(0, 90000);
             }
 
             // If Gemini API Key is provided, use the power of AI to parse the job!
             if (geminiApiKey != null && !geminiApiKey.trim().isEmpty()) {
                 try {
-                    return parseWithGemini(url, pageText, doc.title());
+                    return parseWithGemini(url, rawHtml, doc.title());
                 } catch (Exception e) {
                     System.err.println("Gemini parsing failed, falling back to heuristics: " + e.getMessage());
                 }
@@ -70,7 +72,8 @@ public class JobParserService {
                 "'jobType' (Full-time, Part-time, Internship, etc.), 'experienceLevel' (e.g. 0-2 Years), " +
                 "'salary', 'category', 'role', 'companyType'.\n\n" +
                 "Here is the page title: " + metaTitle + "\n\n" +
-                "Here is the page text to parse:\n" + pageText;
+                "Here is the raw HTML data containing the job details (could be inside javascript JSON or HTML tags):\n"
+                + pageText;
 
         Map<String, Object> requestBody = new HashMap<>();
         Map<String, Object> content = new HashMap<>();
