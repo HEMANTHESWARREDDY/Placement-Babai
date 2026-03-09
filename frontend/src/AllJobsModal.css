@@ -298,8 +298,11 @@
     }
 
     .aj-card-actions {
-        display: none;
-        /* Hide view details text on mobile to save space, whole card is clickable anyway */
+        display: flex;
+    }
+
+    .aj-view-details-txt {
+        font-size: 0.8rem;
     }
 
     .aj-card-skills-section {
