@@ -173,11 +173,12 @@ function AdminDashboard({ adminData, onLogout }) {
             showToast('Please paste a valid job link.', 'error');
             return;
         }
-        // Don't allow click during cooldown
         if (retryCountdown > 0) return;
 
-        const apiKey = geminiKey || localStorage.getItem('gemini_api_key') || '';
-        if (!apiKey) {
+        const rawKeys = geminiKey || localStorage.getItem('gemini_api_key') || '';
+        // Support multiple comma-separated keys — tries each until one works
+        const apiKeys = rawKeys.split(',').map(k => k.trim()).filter(Boolean);
+        if (apiKeys.length === 0) {
             setShowKeyInput(true);
             showToast('Please enter your Gemini API key first.', 'error');
             return;
@@ -210,29 +211,36 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
   "companyLogo": "https://logo.clearbit.com/companyname.com"
 }`;
 
-            const geminiRes = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { response_mime_type: 'application/json' }
-                    })
-                }
-            );
-
-            if (!geminiRes.ok) {
+            // Try each API key in order — if one hits quota, move to next
+            let geminiRes = null;
+            let lastMsg = '';
+            for (let i = 0; i < apiKeys.length; i++) {
+                const key = apiKeys[i];
+                console.log(`Trying API key ${i + 1}/${apiKeys.length}...`);
+                geminiRes = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { response_mime_type: 'application/json' }
+                        })
+                    }
+                );
+                if (geminiRes.ok) break; // this key worked!
                 const errBody = await geminiRes.json();
-                const msg = errBody?.error?.message || `HTTP ${geminiRes.status}`;
-                console.error('Gemini error:', msg);
+                lastMsg = errBody?.error?.message || `HTTP ${geminiRes.status}`;
+                console.warn(`Key ${i + 1} failed: ${lastMsg}`);
+                geminiRes = null; // mark as failed
+            }
 
-                // Rate limit? Show countdown and re-enable button (NO auto-retry loop)
-                const retryMatch = msg.match(/retry in ([\d.]+)s/i);
+            if (!geminiRes) {
+                // All keys exhausted
+                const retryMatch = lastMsg.match(/retry in ([\d.]+)s/i);
                 const waitSecs = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) + 3 : 65;
                 setRetryCountdown(waitSecs);
-                showToast(`⏳ Rate limit hit. Button re-enables in ${waitSecs}s — then click again.`, 'error');
-
+                showToast(`⏳ All API keys rate-limited. Re-enables in ${waitSecs}s. Or add a key from a different Google account.`, 'error');
                 let remaining = waitSecs;
                 if (retryTimerRef.current) clearInterval(retryTimerRef.current);
                 retryTimerRef.current = setInterval(() => {
@@ -241,7 +249,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                     if (remaining <= 0) {
                         clearInterval(retryTimerRef.current);
                         retryTimerRef.current = null;
-                        setRetryCountdown(0); // just re-enable the button, NO auto-call
+                        setRetryCountdown(0);
                         showToast('✅ Ready! Click Auto-Fill to try again.', 'success');
                     }
                 }, 1000);
@@ -675,42 +683,45 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 )}
                                 {showKeyInput && !editingJob && (
                                     <div style={{
-                                        display: 'flex', gap: '0.5rem', alignItems: 'center',
-                                        padding: '0.75rem 1rem', background: '#f8fafc',
-                                        border: '1px solid #e2e8f0', borderRadius: '10px',
+                                        display: 'flex', flexDirection: 'column', gap: '0.5rem',
+                                        padding: '0.75rem 1rem', background: '#fffbeb',
+                                        border: '2px solid #f59e0b', borderRadius: '10px',
                                         marginBottom: '1rem'
                                     }}>
-                                        <span style={{ fontSize: '0.85rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                                            🔑 Gemini API Key:
-                                        </span>
-                                        <input
-                                            type="password"
-                                            placeholder="Paste your Gemini API key from aistudio.google.com/apikey"
-                                            defaultValue={geminiKey}
-                                            id="gemini-key-input"
-                                            style={{
-                                                flex: 1, padding: '0.4rem 0.75rem',
-                                                border: '1px solid #cbd5e1', borderRadius: '6px',
-                                                fontSize: '0.85rem'
-                                            }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const val = document.getElementById('gemini-key-input').value.trim();
-                                                if (val) saveGeminiKey(val);
-                                                else showToast('Key cannot be empty', 'error');
-                                            }}
-                                            style={{
-                                                padding: '0.4rem 1rem', background: '#3b82f6',
-                                                color: '#fff', border: 'none', borderRadius: '6px',
-                                                cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem'
-                                            }}
-                                        >Save</button>
-                                        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer"
-                                            style={{ fontSize: '0.8rem', color: '#3b82f6', whiteSpace: 'nowrap' }}>
-                                            Get free key →
-                                        </a>
+                                        <div style={{ fontSize: '0.82rem', color: '#92400e', fontWeight: '600' }}>
+                                            ⚠️ If all keys show quota errors, they are from the same Google project. Add keys from different Google accounts below (comma-separated):
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                            <input
+                                                type="text"
+                                                placeholder="key1, key2, key3 (from different Google accounts for more quota)"
+                                                defaultValue={geminiKey}
+                                                id="gemini-key-input"
+                                                style={{
+                                                    flex: 1, padding: '0.4rem 0.75rem',
+                                                    border: '1px solid #cbd5e1', borderRadius: '6px',
+                                                    fontSize: '0.82rem'
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const val = document.getElementById('gemini-key-input').value.trim();
+                                                    if (val) saveGeminiKey(val);
+                                                    else showToast('Key cannot be empty', 'error');
+                                                }}
+                                                style={{
+                                                    padding: '0.4rem 1rem', background: '#3b82f6',
+                                                    color: '#fff', border: 'none', borderRadius: '6px',
+                                                    cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem',
+                                                    whiteSpace: 'nowrap'
+                                                }}
+                                            >Save</button>
+                                            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer"
+                                                style={{ fontSize: '0.8rem', color: '#3b82f6', whiteSpace: 'nowrap' }}>
+                                                Get new key →
+                                            </a>
+                                        </div>
                                     </div>
                                 )}
                             </div>
