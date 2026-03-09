@@ -675,14 +675,14 @@
 .job-card {
   background: var(--white);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
   cursor: pointer;
   border: 2px solid transparent;
   display: flex;
   flex-direction: column;
-  height: 380px;
+  height: 280px;
 }
 
 .job-card:hover {
@@ -702,13 +702,14 @@
 
 .job-card-header {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 0.5rem;
+  align-items: center;
 }
 
 .company-logo {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   object-fit: cover;
   background: #e8f5ff;
@@ -717,6 +718,7 @@
   justify-content: center;
   font-weight: 700;
   color: #0073b1;
+  font-size: 0.8rem;
   flex-shrink: 0;
 }
 
@@ -725,10 +727,10 @@
 }
 
 .job-title {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -738,33 +740,34 @@
 
 .company-name {
   color: var(--text-gray);
-  font-size: 0.95rem;
+  font-size: 0.75rem;
 }
 
 .job-details {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin: 0.5rem 0;
+  gap: 0.4rem 0.8rem;
+  margin: 0.4rem 0;
 }
 
 .job-detail-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   color: var(--text-gray);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
 }
 
 .job-detail-icon {
   color: var(--primary-purple);
+  font-size: 0.75rem;
 }
 
 .job-description {
   color: var(--text-gray);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0.75rem 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0.5rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -775,37 +778,21 @@
 .job-skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
 }
 
 .skill-tag {
   background: #e8f5ff;
   color: #0073b1;
-  padding: 0.4rem 0.8rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.65rem;
   font-weight: 500;
 }
 
 .job-card-footer {
-  flex: 0 0 auto;
-  padding-top: 0.75rem;
-  border-top: 1px solid #f3f4f6;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.view-details-hint {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--primary-purple);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.job-card:hover .view-details-hint {
-  opacity: 1;
+  display: none;
 }
 
 /* Loading and Error States */
