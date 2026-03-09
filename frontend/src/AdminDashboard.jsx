@@ -184,22 +184,37 @@ function AdminDashboard({ adminData, onLogout }) {
             const url = autofillUrl.trim();
             const prompt = `You are an expert job data extractor. Extract details from this job posting URL:\nURL: ${url}\n\nReturn ONLY a valid JSON object with exactly these keys (no explanation, no markdown):\n{\n  "title": "exact job title",\n  "company": "company name (e.g. PwC, IBM)",\n  "location": "city, country (e.g. Bangalore, India)",\n  "description": "max 400 char professional role summary",\n  "skills": "comma-separated required skills",\n  "jobType": "Full-time | Full-time (Internship) | Part-time | Contract",\n  "experienceLevel": "e.g. 1 - 3 Years or 0 - 1 Years (Entry Level / Student)",\n  "salary": "e.g. Not Specified (Standard industry competitive pay) or 10 - 20 LPA",\n  "category": "e.g. Data Science | Technology | Software Engineering / IT Operations",\n  "role": "e.g. Data Science / Analytics | Developer / Engineer",\n  "companyType": "e.g. MNC (Large Enterprise) | Startup | Product Company",\n  "responsibilities": "5 items, one per line, no bullets",\n  "requirements": "5 items, one per line, no bullets",\n  "passoutYear": "eligible graduation years e.g. 2021, 2022, 2023",\n  "expiryDate": "deadline if known, else: Don't know",\n  "companyLogo": "https://logo.clearbit.com/<domain> or empty string"\n}\n\nExtract real data from this exact job posting. Use your knowledge of the company and role.`;
 
-            const geminiRes = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { response_mime_type: 'application/json' }
-                    })
-                }
-            );
+            // Try gemini-1.5-flash first (higher free quota), fallback to 2.0-flash
+            const models = ['gemini-1.5-flash', 'gemini-2.0-flash'];
+            let geminiRes = null;
+            let lastErr = null;
 
-            if (!geminiRes.ok) {
-                const err = await geminiRes.json();
-                console.error('Gemini error:', err);
-                showToast(`Gemini error: ${err?.error?.message || geminiRes.status}`, 'error');
+            for (const model of models) {
+                geminiRes = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { response_mime_type: 'application/json' }
+                        })
+                    }
+                );
+                if (geminiRes.ok) break; // success — use this model's response
+                const errBody = await geminiRes.json();
+                lastErr = errBody;
+                console.warn(`Model ${model} failed:`, errBody?.error?.message);
+            }
+
+            if (!geminiRes || !geminiRes.ok) {
+                const msg = lastErr?.error?.message || 'Unknown Gemini error';
+                // Extract retry seconds from quota error
+                const retryMatch = msg.match(/retry in ([\d.]+)s/i);
+                const retryMsg = retryMatch
+                    ? `⏳ Quota exceeded. Please wait ${Math.ceil(parseFloat(retryMatch[1]))} seconds and try again.`
+                    : `❌ Gemini error: ${msg.substring(0, 120)}`;
+                showToast(retryMsg, 'error');
                 return;
             }
 
