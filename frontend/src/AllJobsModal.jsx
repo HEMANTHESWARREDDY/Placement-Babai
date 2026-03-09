@@ -103,6 +103,9 @@ function AllJobsModal({ jobs, onClose, openJob }) {
 
                             {/* Mobile specific view details at the very bottom */}
                             <div className="aj-card-actions aj-mobile-actions">
+                                <span className="aj-card-posted-bottom">
+                                    🗓️ Posted on {formatDate(job.postedDate)}
+                                </span>
                                 <span className="aj-view-details-txt">View Details &rarr;</span>
                             </div>
                         </div>

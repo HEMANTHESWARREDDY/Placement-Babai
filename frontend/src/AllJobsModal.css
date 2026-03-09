@@ -159,6 +159,10 @@
     gap: 0.3rem;
 }
 
+.aj-card-posted-bottom {
+    display: none;
+}
+
 .aj-card-actions {
     display: flex;
     gap: 0.75rem;
@@ -300,9 +304,21 @@
         align-items: flex-start;
     }
 
-    .aj-company-name,
-    .aj-card-posted-inline {
+    .aj-company-name {
         font-size: 0.8rem;
+    }
+
+    .aj-card-posted-inline {
+        display: none;
+        /* Hide top inline date on mobile */
+    }
+
+    .aj-card-posted-bottom {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.8rem;
+        color: #94a3b8;
     }
 
     .aj-desktop-actions {
@@ -311,7 +327,8 @@
 
     .aj-mobile-actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         width: 100%;
         margin-top: 0.2rem;
     }
