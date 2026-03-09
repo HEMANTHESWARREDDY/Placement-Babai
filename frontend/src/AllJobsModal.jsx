@@ -45,7 +45,12 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                 </div>
                                 <div className="aj-card-header-info">
                                     <h3 className="aj-job-title">{job.title}</h3>
-                                    <p className="aj-company-name">{job.company}</p>
+                                    <div className="aj-company-meta-row">
+                                        <p className="aj-company-name">{job.company}</p>
+                                        <span className="aj-card-posted-inline">
+                                            📅 Posted on {formatDate(job.postedDate)}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="aj-card-actions">
                                     <span className="aj-view-details-txt">View Details &rarr;</span>
@@ -78,9 +83,7 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                 )}
                             </div>
 
-                            <div className="aj-card-posted">
-                                📅 Posted on {formatDate(job.postedDate)}
-                            </div>
+
 
                             {job.skills && (
                                 <div className="aj-card-skills-section">
