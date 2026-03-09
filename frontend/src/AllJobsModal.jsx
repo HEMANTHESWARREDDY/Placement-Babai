@@ -48,11 +48,11 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                     <div className="aj-company-meta-row">
                                         <p className="aj-company-name">{job.company}</p>
                                         <span className="aj-card-posted-inline">
-                                            📅 Posted on {formatDate(job.postedDate)}
+                                            🗓️ Posted on {formatDate(job.postedDate)}
                                         </span>
                                     </div>
                                 </div>
-                                <div className="aj-card-actions">
+                                <div className="aj-card-actions aj-desktop-actions">
                                     <span className="aj-view-details-txt">View Details &rarr;</span>
                                 </div>
                             </div>
@@ -100,6 +100,11 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Mobile specific view details at the very bottom */}
+                            <div className="aj-card-actions aj-mobile-actions">
+                                <span className="aj-view-details-txt">View Details &rarr;</span>
+                            </div>
                         </div>
                     ))}
                     {jobs.length === 0 && (
