@@ -682,8 +682,7 @@
   border: 2px solid transparent;
   display: flex;
   flex-direction: column;
-  max-height: 400px;
-  /* Constrain overall card size */
+  height: 380px;
 }
 
 .job-card:hover {
@@ -699,8 +698,6 @@
   margin-bottom: 0.75rem;
   display: flex;
   flex-direction: column;
-  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
 
 .job-card-header {
@@ -732,6 +729,11 @@
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .company-name {
