@@ -779,7 +779,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: 0.7rem;
+  margin-top: auto;
+  /* Push skills to the bottom if there's space, or just use 0.7rem */
+  padding-top: 0.8rem;
+  border-top: 1px solid #e5e7eb;
 }
 
 .skill-tag {
