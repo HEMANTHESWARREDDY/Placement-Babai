@@ -682,7 +682,8 @@
   border: 2px solid transparent;
   display: flex;
   flex-direction: column;
-  height: 310px;
+  height: 355px;
+  /* Increased height */
 }
 
 .job-card:hover {
@@ -727,7 +728,7 @@
 }
 
 .job-title {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 0.15rem;
@@ -740,7 +741,7 @@
 
 .company-name {
   color: var(--text-gray);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .job-details {
@@ -755,18 +756,18 @@
   align-items: center;
   gap: 0.35rem;
   color: var(--text-gray);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .job-detail-icon {
   color: var(--primary-purple);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
 }
 
 .job-description {
   color: var(--text-gray);
-  font-size: 0.85rem;
-  line-height: 1.55;
+  font-size: 0.9rem;
+  line-height: 1.6;
   margin: 0.5rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -785,9 +786,9 @@
 .skill-tag {
   background: #e8f5ff;
   color: #0073b1;
-  padding: 0.35rem 0.75rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 20px;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 500;
 }
 
