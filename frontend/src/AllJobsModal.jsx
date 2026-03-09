@@ -23,27 +23,6 @@ function AllJobsModal({ jobs, onClose, openJob }) {
             .substring(0, 2);
     };
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) return 'Recently posted';
-        const date = new Date(dateStr);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays === 0) return 'Posted today';
-        if (diffDays === 1) return 'Posted 1 day ago';
-        if (diffDays < 30) return `Posted ${diffDays} days ago`;
-        return `Posted a month ago`;
-    };
-
-    const isEarlyApplicant = (dateStr) => {
-        if (!dateStr) return true;
-        const date = new Date(dateStr);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays <= 7;
-    };
-
     return (
         <div className="aj-overlay" onClick={onClose}>
             <div className="aj-modal" onClick={e => e.stopPropagation()}>
@@ -52,54 +31,110 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                     <button className="aj-close" onClick={onClose}>✕</button>
                 </div>
                 <div className="aj-content">
-                    {jobs.map(job => (
-                        <div key={job.id} className="aj-job-card" onClick={() => openJob(job)}>
-                            <div className="aj-card-left">
-                                <h3 className="aj-job-title">{job.title}</h3>
-                                <p className="aj-company-name">{job.company}</p>
-
-                                <div className="aj-job-meta">
-                                    {job.experienceLevel && (
-                                        <span className="aj-meta-item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
-                                            {job.experienceLevel}
-                                        </span>
-                                    )}
-                                    {job.location && (
-                                        <span className="aj-meta-item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                                            {job.location}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {isEarlyApplicant(job.postedDate) && (
-                                    <div className="aj-early-applicant">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                                        Early Applicant
+                    {jobs.map((job) => {
+                        const isNewJob = job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString();
+                        const isLastDay = job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString();
+                        return (
+                            <div
+                                key={job.id}
+                                className="job-card aj-override-card"
+                                onClick={() => openJob(job)}
+                                title="Click to view job details"
+                                style={{ position: 'relative' }}
+                            >
+                                <div className="job-card-body">
+                                    <div className="job-card-header">
+                                        <div className="company-logo">
+                                            {getCompanyInitials(job.company)}
+                                        </div>
+                                        <div className="job-info">
+                                            <h3 className="job-title">{job.title}</h3>
+                                            <p className="company-name">{job.company}</p>
+                                        </div>
                                     </div>
-                                )}
 
-                                <p className="aj-posted-date">{formatDate(job.postedDate)}</p>
-                            </div>
+                                    <div className="job-details">
+                                        {isNewJob && (
+                                            <div className="job-detail-item" style={{
+                                                background: 'rgba(217, 119, 6, 0.15)',
+                                                border: '1px solid rgba(217, 119, 6, 0.4)',
+                                                color: '#b45309',
+                                                padding: '0.2rem 0.6rem',
+                                                borderRadius: '20px',
+                                                fontWeight: '700',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.2rem'
+                                            }}>
+                                                <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
+                                                <span>Posted Today</span>
+                                            </div>
+                                        )}
+                                        {isLastDay && (
+                                            <div className="job-detail-item" style={{
+                                                background: 'rgba(230, 74, 25, 0.1)',
+                                                border: '1px solid rgba(230, 74, 25, 0.3)',
+                                                color: '#e64a19',
+                                                padding: '0.2rem 0.6rem',
+                                                borderRadius: '20px',
+                                                fontWeight: '800',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.2rem'
+                                            }}>
+                                                <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
+                                                <span>Last Day to Apply</span>
+                                            </div>
+                                        )}
+                                        <div className="job-detail-item">
+                                            <span className="job-detail-icon">💰</span>
+                                            <span>{job.salary || '—'}</span>
+                                        </div>
+                                        {job.experienceLevel && (
+                                            <div className="job-detail-item">
+                                                <span className="job-detail-icon">📅</span>
+                                                <span>{job.experienceLevel}</span>
+                                            </div>
+                                        )}
+                                        {job.passoutYear && (
+                                            <div className="job-detail-item">
+                                                <span className="job-detail-icon">🎓</span>
+                                                <span>{job.passoutYear}</span>
+                                            </div>
+                                        )}
+                                        <div className="job-detail-item">
+                                            <span className="job-detail-icon">📍</span>
+                                            <span>{job.location}</span>
+                                        </div>
+                                        {job.jobType && (
+                                            <div className="job-detail-item">
+                                                <span className="job-detail-icon">💼</span>
+                                                <span>{job.jobType}</span>
+                                            </div>
+                                        )}
+                                    </div>
 
-                            <div className="aj-card-right">
-                                <div className="aj-company-logo">
-                                    {getCompanyInitials(job.company)}
+                                    {job.description && (
+                                        <p className="job-description">{job.description}</p>
+                                    )}
+
+                                    {job.skills && (
+                                        <div className="job-skills">
+                                            {job.skills.split(',').map((skill, index) => (
+                                                <span key={index} className="skill-tag">
+                                                    {skill.trim()}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="aj-card-actions">
-                                    <button className="aj-save-btn" onClick={(e) => { e.stopPropagation(); alert('Job saved!'); }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
-                                        Save
-                                    </button>
-                                    <button className="aj-apply-btn" onClick={(e) => { e.stopPropagation(); window.open(job.applyLink || 'https://www.foundit.in/jobs', '_blank', 'noopener,noreferrer'); }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
-                                        Quick Apply
-                                    </button>
+
+                                <div className="job-card-footer" style={{ flex: 'none' }}>
+                                    <span className="view-details-hint" style={{ opacity: 1, visibility: 'visible', bottom: '0px' }}>View Details →</span>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                     {jobs.length === 0 && (
                         <div className="aj-empty">
                             No jobs found. Try adjusting your filters.
