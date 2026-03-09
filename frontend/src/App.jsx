@@ -4,6 +4,7 @@ import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
 import CustomSelect from './CustomSelect';
 import LegalModal from './LegalModal';
+import AllJobsModal from './AllJobsModal';
 import { API_BASE_URL } from './config';
 import './App.css';
 
@@ -37,6 +38,7 @@ function App() {
   const [legalContent, setLegalContent] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [appliesCount, setAppliesCount] = useState({});
+  const [showAllJobsModal, setShowAllJobsModal] = useState(false);
   const filterBarRef = useRef(null);
   const jobsGridRef = useRef(null);
 
@@ -633,6 +635,11 @@ function App() {
         <LegalModal type={legalContent} onClose={() => setLegalContent(null)} />
       )}
 
+      {/* All Jobs Modal */}
+      {showAllJobsModal && (
+        <AllJobsModal jobs={jobs} openJob={openJob} onClose={() => setShowAllJobsModal(false)} />
+      )}
+
       {/* Header */}
       <header className="header">
         <div className="header-content">
@@ -684,16 +691,8 @@ function App() {
               <li>
                 <a href="#browse" onClick={(e) => {
                   e.preventDefault();
-                  setSearchKeyword('');
-                  setSearchLocation('');
-                  setSearchExperience('');
-                  setActiveFilters({});
-                  setSortType('');
-                  setShowAll(true);
                   setIsMobileMenuOpen(false);
-                  fetchJobs().then(() => {
-                    document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
-                  });
+                  setShowAllJobsModal(true);
                 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
                   Browse All Jobs
@@ -822,15 +821,7 @@ function App() {
           <div className="hero-browse">
             <button className="browse-all-btn" onClick={(e) => {
               e.preventDefault();
-              setSearchKeyword('');
-              setSearchLocation('');
-              setSearchExperience('');
-              setActiveFilters({});
-              setSortType('');
-              setShowAll(true);
-              fetchJobs().then(() => {
-                document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
-              });
+              setShowAllJobsModal(true);
             }}>
               Browse All Jobs &rarr;
             </button>
