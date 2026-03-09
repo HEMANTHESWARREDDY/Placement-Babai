@@ -104,6 +104,8 @@ function AdminDashboard({ adminData, onLogout }) {
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
     const [autofillUrl, setAutofillUrl] = useState('');
     const [isAutofilling, setIsAutofilling] = useState(false);
+    const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
+    const [showKeyInput, setShowKeyInput] = useState(false);
 
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
@@ -157,56 +159,86 @@ function AdminDashboard({ adminData, onLogout }) {
         }
     };
 
+    const saveGeminiKey = (key) => {
+        localStorage.setItem('gemini_api_key', key);
+        setGeminiKey(key);
+        setShowKeyInput(false);
+        showToast('Gemini API key saved!', 'success');
+    };
+
     const handleAutofill = async () => {
         if (!autofillUrl || !autofillUrl.trim()) {
             showToast('Please paste a valid job link.', 'error');
             return;
         }
+
+        const apiKey = geminiKey || localStorage.getItem('gemini_api_key') || '';
+        if (!apiKey) {
+            setShowKeyInput(true);
+            showToast('Please enter your Gemini API key first.', 'error');
+            return;
+        }
+
         setIsAutofilling(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/jobs/extract`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: autofillUrl.trim() })
-            });
-            if (response.ok) {
-                const data = await response.json();
+            const url = autofillUrl.trim();
+            const prompt = `You are an expert job data extractor. Extract details from this job posting URL:\nURL: ${url}\n\nReturn ONLY a valid JSON object with exactly these keys (no explanation, no markdown):\n{\n  "title": "exact job title",\n  "company": "company name (e.g. PwC, IBM)",\n  "location": "city, country (e.g. Bangalore, India)",\n  "description": "max 400 char professional role summary",\n  "skills": "comma-separated required skills",\n  "jobType": "Full-time | Full-time (Internship) | Part-time | Contract",\n  "experienceLevel": "e.g. 1 - 3 Years or 0 - 1 Years (Entry Level / Student)",\n  "salary": "e.g. Not Specified (Standard industry competitive pay) or 10 - 20 LPA",\n  "category": "e.g. Data Science | Technology | Software Engineering / IT Operations",\n  "role": "e.g. Data Science / Analytics | Developer / Engineer",\n  "companyType": "e.g. MNC (Large Enterprise) | Startup | Product Company",\n  "responsibilities": "5 items, one per line, no bullets",\n  "requirements": "5 items, one per line, no bullets",\n  "passoutYear": "eligible graduation years e.g. 2021, 2022, 2023",\n  "expiryDate": "deadline if known, else: Don't know",\n  "companyLogo": "https://logo.clearbit.com/<domain> or empty string"\n}\n\nExtract real data from this exact job posting. Use your knowledge of the company and role.`;
 
-                if (data.title === "Unable to automatically extract details") {
-                    showToast('Website blocked auto-extraction! Apply link added.', 'error');
-                    setFormData(prev => ({
-                        ...prev,
-                        applyLink: autofillUrl.trim() || prev.applyLink
-                    }));
-                    return;
+            const geminiRes = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { response_mime_type: 'application/json' }
+                    })
                 }
+            );
 
-                setFormData(prev => ({
-                    ...prev,
-                    title: data.title || prev.title,
-                    company: data.company || prev.company,
-                    location: data.location || prev.location,
-                    description: data.description || prev.description,
-                    skills: data.skills || prev.skills,
-                    jobType: data.jobType || prev.jobType,
-                    experienceLevel: data.experienceLevel || prev.experienceLevel,
-                    salary: data.salary || prev.salary,
-                    category: data.category || prev.category,
-                    role: data.role || prev.role,
-                    companyType: data.companyType || prev.companyType,
-                    responsibilities: data.responsibilities || prev.responsibilities,
-                    requirements: data.requirements || prev.requirements,
-                    passoutYear: data.passoutYear || prev.passoutYear,
-                    expiryDate: data.expiryDate || prev.expiryDate,
-                    applyLink: data.applyLink || autofillUrl.trim() || prev.applyLink
-                }));
-                showToast('Form autofilled successfully!', 'success');
-            } else {
-                showToast('Backend server is still booting up! Please wait 30s.', 'error');
+            if (!geminiRes.ok) {
+                const err = await geminiRes.json();
+                console.error('Gemini error:', err);
+                showToast(`Gemini error: ${err?.error?.message || geminiRes.status}`, 'error');
+                return;
             }
+
+            const geminiData = await geminiRes.json();
+            const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+            console.log('Gemini raw response:', rawText);
+
+            // Parse JSON — strip markdown fences if present
+            let jsonStr = rawText.trim();
+            if (jsonStr.startsWith('```json')) jsonStr = jsonStr.slice(7);
+            if (jsonStr.startsWith('```')) jsonStr = jsonStr.slice(3);
+            if (jsonStr.endsWith('```')) jsonStr = jsonStr.slice(0, -3);
+            const data = JSON.parse(jsonStr.trim());
+
+            setFormData(prev => ({
+                ...prev,
+                title: data.title || prev.title,
+                company: data.company || prev.company,
+                location: data.location || prev.location,
+                description: data.description || prev.description,
+                skills: data.skills || prev.skills,
+                jobType: data.jobType || prev.jobType,
+                experienceLevel: data.experienceLevel || prev.experienceLevel,
+                salary: data.salary || prev.salary,
+                category: data.category || prev.category,
+                role: data.role || prev.role,
+                companyType: data.companyType || prev.companyType,
+                responsibilities: data.responsibilities || prev.responsibilities,
+                requirements: data.requirements || prev.requirements,
+                passoutYear: data.passoutYear || prev.passoutYear,
+                expiryDate: data.expiryDate || prev.expiryDate,
+                companyLogo: data.companyLogo || prev.companyLogo,
+                applyLink: url,
+            }));
+            showToast('✅ Form autofilled by Gemini AI!', 'success');
+
         } catch (error) {
-            console.error('Error autofilling job:', error);
-            showToast('Network error during URL extraction.', 'error');
+            console.error('Autofill error:', error);
+            showToast('Failed to parse Gemini response. Check console.', 'error');
         } finally {
             setIsAutofilling(false);
         }
@@ -557,7 +589,7 @@ function AdminDashboard({ adminData, onLogout }) {
                                     <div className="autofill-container">
                                         <input
                                             type="url"
-                                            placeholder="Paste job link to automatically extract details..."
+                                            placeholder="Paste job link to auto-fill with Gemini AI..."
                                             value={autofillUrl}
                                             onChange={(e) => setAutofillUrl(e.target.value)}
                                             className="autofill-input"
@@ -567,9 +599,69 @@ function AdminDashboard({ adminData, onLogout }) {
                                             className="btn-autofill"
                                             onClick={handleAutofill}
                                             disabled={isAutofilling}
+                                            title="Auto-fill using Gemini AI"
                                         >
                                             {isAutofilling ? '⏳ Extracting...' : '✨ Auto-Fill'}
                                         </button>
+                                        <button
+                                            type="button"
+                                            className="btn-key-setup"
+                                            onClick={() => setShowKeyInput(v => !v)}
+                                            title={geminiKey ? 'Gemini key is set ✅ (click to change)' : 'Set Gemini API key'}
+                                            style={{
+                                                padding: '0.5rem 0.75rem',
+                                                borderRadius: '8px',
+                                                border: `2px solid ${geminiKey ? '#10b981' : '#f59e0b'}`,
+                                                background: geminiKey ? '#d1fae5' : '#fef3c7',
+                                                color: geminiKey ? '#065f46' : '#92400e',
+                                                cursor: 'pointer',
+                                                fontWeight: '600',
+                                                fontSize: '0.85rem',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                        >
+                                            {geminiKey ? '🔑 Key Set ✅' : '🔑 Set Key'}
+                                        </button>
+                                    </div>
+                                )}
+                                {showKeyInput && !editingJob && (
+                                    <div style={{
+                                        display: 'flex', gap: '0.5rem', alignItems: 'center',
+                                        padding: '0.75rem 1rem', background: '#f8fafc',
+                                        border: '1px solid #e2e8f0', borderRadius: '10px',
+                                        marginBottom: '1rem'
+                                    }}>
+                                        <span style={{ fontSize: '0.85rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+                                            🔑 Gemini API Key:
+                                        </span>
+                                        <input
+                                            type="password"
+                                            placeholder="Paste your Gemini API key from aistudio.google.com/apikey"
+                                            defaultValue={geminiKey}
+                                            id="gemini-key-input"
+                                            style={{
+                                                flex: 1, padding: '0.4rem 0.75rem',
+                                                border: '1px solid #cbd5e1', borderRadius: '6px',
+                                                fontSize: '0.85rem'
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const val = document.getElementById('gemini-key-input').value.trim();
+                                                if (val) saveGeminiKey(val);
+                                                else showToast('Key cannot be empty', 'error');
+                                            }}
+                                            style={{
+                                                padding: '0.4rem 1rem', background: '#3b82f6',
+                                                color: '#fff', border: 'none', borderRadius: '6px',
+                                                cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem'
+                                            }}
+                                        >Save</button>
+                                        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer"
+                                            style={{ fontSize: '0.8rem', color: '#3b82f6', whiteSpace: 'nowrap' }}>
+                                            Get free key →
+                                        </a>
                                     </div>
                                 )}
                             </div>
