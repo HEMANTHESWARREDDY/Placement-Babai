@@ -104,8 +104,10 @@ function AdminDashboard({ adminData, onLogout }) {
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
     const [autofillUrl, setAutofillUrl] = useState('');
     const [isAutofilling, setIsAutofilling] = useState(false);
+    const [retryCountdown, setRetryCountdown] = useState(0);
     const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
     const [showKeyInput, setShowKeyInput] = useState(false);
+    const retryTimerRef = useRef(null);
 
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
@@ -209,12 +211,28 @@ function AdminDashboard({ adminData, onLogout }) {
 
             if (!geminiRes || !geminiRes.ok) {
                 const msg = lastErr?.error?.message || 'Unknown Gemini error';
-                // Extract retry seconds from quota error
                 const retryMatch = msg.match(/retry in ([\d.]+)s/i);
-                const retryMsg = retryMatch
-                    ? `⏳ Quota exceeded. Please wait ${Math.ceil(parseFloat(retryMatch[1]))} seconds and try again.`
-                    : `❌ Gemini error: ${msg.substring(0, 120)}`;
-                showToast(retryMsg, 'error');
+                if (retryMatch) {
+                    // Auto-retry after the quota cooldown expires
+                    const waitSecs = Math.ceil(parseFloat(retryMatch[1])) + 2;
+                    setRetryCountdown(waitSecs);
+                    showToast(`⏳ Quota limit hit. Auto-retrying in ${waitSecs}s...`, 'error');
+                    // countdown tick
+                    let remaining = waitSecs;
+                    if (retryTimerRef.current) clearInterval(retryTimerRef.current);
+                    retryTimerRef.current = setInterval(() => {
+                        remaining -= 1;
+                        setRetryCountdown(remaining);
+                        if (remaining <= 0) {
+                            clearInterval(retryTimerRef.current);
+                            retryTimerRef.current = null;
+                            setRetryCountdown(0);
+                            handleAutofill(); // auto-retry!
+                        }
+                    }, 1000);
+                } else {
+                    showToast(`❌ Gemini error: ${msg.substring(0, 120)}`, 'error');
+                }
                 return;
             }
 
@@ -613,10 +631,14 @@ function AdminDashboard({ adminData, onLogout }) {
                                             type="button"
                                             className="btn-autofill"
                                             onClick={handleAutofill}
-                                            disabled={isAutofilling}
+                                            disabled={isAutofilling || retryCountdown > 0}
                                             title="Auto-fill using Gemini AI"
                                         >
-                                            {isAutofilling ? '⏳ Extracting...' : '✨ Auto-Fill'}
+                                            {isAutofilling
+                                                ? '⏳ Extracting...'
+                                                : retryCountdown > 0
+                                                    ? `⏳ Retry in ${retryCountdown}s`
+                                                    : '✨ Auto-Fill'}
                                         </button>
                                         <button
                                             type="button"
