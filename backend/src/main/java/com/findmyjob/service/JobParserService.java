@@ -34,7 +34,7 @@ public class JobParserService {
 
         if (isGeminiConfigured()) {
             try {
-                Job result = parseWithGemini(url);
+                Job result = parseWithGeminiSearch(url);
                 if (result != null && result.getTitle() != null
                         && !result.getTitle().isEmpty()
                         && !result.getTitle().equalsIgnoreCase("Parsed Job")) {
@@ -43,7 +43,7 @@ public class JobParserService {
                 }
                 System.err.println("== Gemini returned incomplete data, falling back to heuristics");
             } catch (Exception e) {
-                System.err.println("== Gemini failed: " + e.getMessage() + " — trying heuristics");
+                System.err.println("== Gemini failed (" + e.getMessage() + "), falling back to heuristics");
             }
         } else {
             System.out.println("== No Gemini key — using Jsoup heuristics");
@@ -53,39 +53,48 @@ public class JobParserService {
     }
 
     /**
-     * Single Gemini API call using url_context tool (so Gemini browses the page
-     * directly)
-     * and asks Gemini to return data as a JSON block in plain text.
-     * We then parse that JSON block ourselves.
-     *
-     * This avoids the conflict between "tools" and "response_mime_type:
-     * application/json".
+     * Uses Gemini 2.0 Flash with Google Search grounding.
+     * Gemini searches the web for the job posting and extracts real data.
+     * Asks for a plain-text JSON block to avoid the response_mime_type + tools
+     * conflict.
      */
-    private Job parseWithGemini(String url) throws Exception {
+    private Job parseWithGeminiSearch(String url) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
-        String prompt = "Visit the following job posting URL and extract all job details.\n" +
-                "URL: " + url + "\n\n" +
-                "Return ONLY a JSON object (no explanation, no extra text) with exactly these keys:\n" +
+        // Extract company/title hints from the URL itself for better search grounding
+        String urlHint = "";
+        try {
+            String path = new URI(url).getPath();
+            // e.g. /global/en/job/695817WD/Associate-Deals-Data-Science-Bangalore
+            // or /TGnewUI/Search/home/HomeWithPreLoad?partnerid=...&jobid=...
+            urlHint = path.replaceAll("[/_\\-]", " ").replaceAll("\\s+", " ").trim();
+        } catch (Exception ignored) {
+        }
+
+        String prompt = "Search for and find the full details of this specific job posting:\n" +
+                "URL: " + url + "\n" +
+                "URL hints: " + urlHint + "\n\n" +
+                "Based on the actual job posting at that URL (search for it, read it, or use your knowledge of it), " +
+                "return ONLY a raw JSON object (no markdown fences, no explanation) with exactly these keys:\n" +
                 "{\n" +
-                "  \"title\": \"exact job title, e.g., Intern - Associate Systems Management Specialist\",\n" +
-                "  \"company\": \"hiring company name, e.g., IBM\",\n" +
-                "  \"location\": \"city, country, e.g., Bangalore, India\",\n" +
-                "  \"description\": \"max 400 char professional summary of the role\",\n" +
-                "  \"skills\": \"comma-separated required skills, e.g., Linux, Python, SQL\",\n" +
-                "  \"jobType\": \"e.g., Full-time (Internship), Full-time, Part-time\",\n" +
-                "  \"experienceLevel\": \"e.g., 0 - 1 Years (Entry Level / Student), 1 - 3 Years\",\n" +
-                "  \"salary\": \"e.g., Not Specified (Standard industry internship stipend), 10 - 20 LPA\",\n" +
-                "  \"category\": \"e.g., Software Engineering / IT Operations, Data Science, Technology\",\n" +
-                "  \"role\": \"e.g., Developer / Engineer, Data Science / Analytics\",\n" +
-                "  \"companyType\": \"e.g., MNC (Large Enterprise), Startup, Product Company\",\n" +
-                "  \"responsibilities\": \"max 5 items, one per line, no bullet symbols\",\n" +
-                "  \"requirements\": \"max 5 items, one per line, no bullet symbols\",\n" +
-                "  \"passoutYear\": \"eligible graduation years, e.g., 2024, 2025\",\n" +
-                "  \"expiryDate\": \"application deadline if shown, else: Don't know\",\n" +
-                "  \"companyLogo\": \"direct URL to company logo if visible, else empty string\"\n" +
+                "  \"title\": \"exact job title from the posting\",\n" +
+                "  \"company\": \"exact company name (e.g. IBM, PwC, not subsidiary)\",\n" +
+                "  \"location\": \"city, country (e.g. Bangalore, India)\",\n" +
+                "  \"description\": \"professional summary of the role, max 400 chars\",\n" +
+                "  \"skills\": \"comma-separated required technical skills\",\n" +
+                "  \"jobType\": \"Full-time (Internship) or Full-time or Part-time\",\n" +
+                "  \"experienceLevel\": \"e.g. 0 - 1 Years (Entry Level / Student) or 1 - 3 Years\",\n" +
+                "  \"salary\": \"if not stated: Not Specified (Standard industry competitive pay)\",\n" +
+                "  \"category\": \"e.g. Data Science or Software Engineering / IT Operations\",\n" +
+                "  \"role\": \"e.g. Data Science / Analytics or Developer / Engineer\",\n" +
+                "  \"companyType\": \"e.g. MNC (Large Enterprise) or Startup\",\n" +
+                "  \"responsibilities\": \"5 lines, one responsibility per line, no bullet symbols\",\n" +
+                "  \"requirements\": \"5 lines, one requirement per line, no bullet symbols\",\n" +
+                "  \"passoutYear\": \"eligible graduation batch years e.g. 2021, 2022, 2023\",\n" +
+                "  \"expiryDate\": \"deadline if shown, else: Don't know\",\n" +
+                "  \"companyLogo\": \"official company logo image URL or empty string\"\n" +
                 "}\n\n" +
-                "IMPORTANT: Actually browse and read the live page. Do NOT guess or use generic data.";
+                "CRITICAL: Use real data from the actual job posting. Extract every detail accurately.";
 
         Map<String, Object> textPart = new HashMap<>();
         textPart.put("text", prompt);
@@ -93,16 +102,21 @@ public class JobParserService {
         Map<String, Object> content = new HashMap<>();
         content.put("parts", new Object[] { textPart });
 
-        // url_context allows Gemini to browse the URL — same as Gemini chat
+        // google_search grounding — lets Gemini search the web for accurate data
+        Map<String, Object> googleSearchTool = new HashMap<>();
+        googleSearchTool.put("google_search", new HashMap<>());
+
+        // Also add url_context as a second tool — Gemini will pick whichever works
         Map<String, Object> urlContextTool = new HashMap<>();
         urlContextTool.put("url_context", new HashMap<>());
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("contents", new Object[] { content });
-        requestBody.put("tools", new Object[] { urlContextTool });
-        // NOTE: NO response_mime_type — it conflicts with tool use
+        requestBody.put("tools", new Object[] { googleSearchTool, urlContextTool });
+        // NO response_mime_type — conflicts with tools
 
         String jsonBody = mapper.writeValueAsString(requestBody);
+        System.out.println("== Calling Gemini with google_search + url_context tools for: " + url);
 
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(30))
@@ -118,35 +132,40 @@ public class JobParserService {
         System.out.println("== Gemini status: " + response.statusCode());
 
         if (response.statusCode() != 200) {
-            System.err.println(
-                    "== Gemini error: " + response.body().substring(0, Math.min(500, response.body().length())));
+            System.err.println("== Gemini error body: " +
+                    response.body().substring(0, Math.min(600, response.body().length())));
             throw new RuntimeException("Gemini API error: " + response.statusCode());
         }
 
         JsonNode root = mapper.readTree(response.body());
 
-        // Collect all text from all parts (tool-enabled responses can have multiple
-        // parts)
-        StringBuilder fullText = new StringBuilder();
-        JsonNode parts = root.path("candidates").get(0).path("content").path("parts");
-        for (JsonNode part : parts) {
-            String text = part.path("text").asText("");
-            if (!text.isEmpty())
-                fullText.append(text);
+        // Collect all text parts (search-grounded responses may have multiple parts)
+        StringBuilder allText = new StringBuilder();
+        JsonNode candidates = root.path("candidates");
+        if (!candidates.isEmpty()) {
+            JsonNode parts = candidates.get(0).path("content").path("parts");
+            for (JsonNode part : parts) {
+                String text = part.path("text").asText("");
+                if (!text.isEmpty())
+                    allText.append(text);
+            }
         }
 
-        String responseText = fullText.toString().trim();
-        System.out.println(
-                "== Gemini response preview: " + responseText.substring(0, Math.min(300, responseText.length())));
+        String responseText = allText.toString().trim();
+        System.out.println("== Gemini response preview: " +
+                responseText.substring(0, Math.min(400, responseText.length())));
 
-        // Extract JSON from response (Gemini may wrap in markdown code fences)
         String jsonStr = extractJson(responseText);
-        System.out.println("== Parsed JSON preview: " + jsonStr.substring(0, Math.min(200, jsonStr.length())));
+        System.out.println("== Extracted JSON preview: " +
+                jsonStr.substring(0, Math.min(300, jsonStr.length())));
 
         return mapJsonToJob(url, mapper.readTree(jsonStr));
     }
 
-    /** Extracts the JSON object string from a possibly markdown-wrapped response */
+    /**
+     * Robustly extracts a JSON object from a response that may have markdown or
+     * prose around it
+     */
     private String extractJson(String text) {
         // Remove ```json ... ``` fences
         if (text.contains("```json")) {
@@ -161,7 +180,7 @@ public class JobParserService {
             if (end > start)
                 return text.substring(start, end).trim();
         }
-        // Try to find raw { ... } block
+        // Find raw { ... } block
         int start = text.indexOf('{');
         int end = text.lastIndexOf('}');
         if (start != -1 && end > start)
@@ -175,7 +194,7 @@ public class JobParserService {
         job.setTitle(get(d, "title", "Parsed Job"));
         job.setCompany(get(d, "company", "Unknown Company"));
 
-        // Fallback company from URL domain if AI failed
+        // Fallback: infer company from URL domain
         if (job.getCompany().equalsIgnoreCase("Not Specified")
                 || job.getCompany().equalsIgnoreCase("Unknown Company")) {
             try {
@@ -211,7 +230,9 @@ public class JobParserService {
         return (v == null || v.trim().isEmpty()) ? def : v.trim();
     }
 
-    // ─── Jsoup heuristic fallback (no Gemini) ────────────────────────────────
+    // ──────────────────────────────────────────────────────────────────────────
+    // Jsoup heuristic fallback (used when Gemini is not configured or fails)
+    // ──────────────────────────────────────────────────────────────────────────
 
     private Job extractWithJsoupFallback(String url, Job job) {
         try {
@@ -224,7 +245,7 @@ public class JobParserService {
                     .get();
             return parseWithHeuristics(job, url, doc, doc.body() != null ? doc.body().text() : "");
         } catch (Exception e) {
-            System.err.println("Jsoup fallback also failed: " + e.getMessage());
+            System.err.println("Jsoup fallback failed: " + e.getMessage());
             job.setTitle("Unable to automatically extract details");
             job.setCompany("Unknown");
             return job;
