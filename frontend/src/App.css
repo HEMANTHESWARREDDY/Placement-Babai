@@ -719,6 +719,11 @@
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .company-name {
@@ -731,6 +736,9 @@
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   margin: 0.5rem 0;
+  max-height: 48px;
+  overflow: hidden;
+  align-content: flex-start;
 }
 
 .job-detail-item {
@@ -762,6 +770,9 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
+  max-height: 68px;
+  overflow: hidden;
+  align-content: flex-start;
 }
 
 .skill-tag {
@@ -771,6 +782,7 @@
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .job-card-footer {
