@@ -89,9 +89,14 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                         <h4>🛠️ Required Skills</h4>
                                     </div>
                                     <div className="aj-skills-list">
-                                        {job.skills.split(',').map((skill, index) => (
+                                        {job.skills.split(',').slice(0, 8).map((skill, index) => (
                                             <span key={index} className="aj-skill-tag">{skill.trim()}</span>
                                         ))}
+                                        {job.skills.split(',').length > 8 && (
+                                            <span className="aj-skill-tag" style={{ background: '#f1f5f9', color: '#64748b' }}>
+                                                +{job.skills.split(',').length - 8} more
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             )}
