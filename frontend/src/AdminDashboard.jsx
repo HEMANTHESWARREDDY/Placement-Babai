@@ -162,10 +162,45 @@ function AdminDashboard({ adminData, onLogout }) {
     };
 
     const saveGeminiKey = (key) => {
-        localStorage.setItem('gemini_api_key', key);
-        setGeminiKey(key);
+        const trimmed = key.trim();
+        localStorage.setItem('gemini_api_key', trimmed);
+        setGeminiKey(trimmed);
         setShowKeyInput(false);
-        showToast('Gemini API key saved!', 'success');
+        showToast('Key saved! Testing it now...', 'success');
+        // Auto-test after save
+        setTimeout(() => testGeminiKey(trimmed), 500);
+    };
+
+    const testGeminiKey = async (keyToTest) => {
+        const key = keyToTest || geminiKey || localStorage.getItem('gemini_api_key') || '';
+        if (!key) { showToast('No API key set!', 'error'); return; }
+        showToast('🔍 Testing API key...', 'success');
+        try {
+            const res = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: 'Reply with the single word: WORKING' }] }],
+                        generationConfig: { max_output_tokens: 10 }
+                    })
+                }
+            );
+            if (res.ok) {
+                const d = await res.json();
+                const text = d?.candidates?.[0]?.content?.parts?.[0]?.text || '?';
+                showToast(`✅ Key works! Gemini says: ${text.trim()}`, 'success');
+            } else {
+                const err = await res.json();
+                const msg = err?.error?.message || `HTTP ${res.status}`;
+                showToast(`❌ Key failed: ${msg.substring(0, 150)}`, 'error');
+                console.error('Key test failed:', msg);
+            }
+        } catch (e) {
+            showToast(`❌ Network error: ${e.message}`, 'error');
+            console.error('Key test network error:', e);
+        }
     };
 
     const handleAutofill = async () => {
@@ -717,6 +752,19 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     whiteSpace: 'nowrap'
                                                 }}
                                             >Save</button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const val = document.getElementById('gemini-key-input').value.trim() || geminiKey;
+                                                    testGeminiKey(val);
+                                                }}
+                                                style={{
+                                                    padding: '0.4rem 0.75rem', background: '#10b981',
+                                                    color: '#fff', border: 'none', borderRadius: '6px',
+                                                    cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem',
+                                                    whiteSpace: 'nowrap'
+                                                }}
+                                            >🔍 Test</button>
                                             <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer"
                                                 style={{ fontSize: '0.8rem', color: '#3b82f6', whiteSpace: 'nowrap' }}>
                                                 Get new key →
