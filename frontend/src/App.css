@@ -779,7 +779,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: 1rem;
+  margin-top: auto;
   padding-top: 0.8rem;
   border-top: 1px solid #e5e7eb;
 }
