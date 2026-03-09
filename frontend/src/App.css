@@ -795,11 +795,25 @@
 }
 
 .job-card-footer {
-  display: none;
+  flex: 0 0 auto;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
 }
 
-/* Loading and Error States */
-.loading,
+.view-details-hint {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-purple);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.job-card:hover .view-details-hint {
+  opacity: 1;
+}
+
 .error,
 .no-jobs {
   text-align: center;
