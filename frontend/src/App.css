@@ -911,6 +911,8 @@
     width: 100%;
     scroll-snap-align: center;
     box-sizing: border-box;
+    height: 240px;
+    /* Override large desktop height */
   }
 
   .job-card-header {
@@ -969,7 +971,8 @@
 
   .job-skills {
     gap: 0.3rem;
-    margin-top: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
   }
 
   .skill-tag {
