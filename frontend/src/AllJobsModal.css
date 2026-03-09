@@ -17,7 +17,7 @@
 .aj-modal {
     background: #ffffff;
     width: 100%;
-    max-width: 850px;
+    max-width: 900px;
     height: 90vh;
     border-radius: 12px;
     display: flex;
@@ -80,107 +80,71 @@
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
 
 .aj-job-card {
     background: #fff;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
-    padding: 1.25rem;
+    padding: 1.5rem;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 1.15rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .aj-job-card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
     border-color: #cbd5e1;
 }
 
-.aj-card-left {
+.aj-card-top {
     display: flex;
-    flex-direction: column;
     align-items: flex-start;
-    flex: 1;
-}
-
-.aj-job-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 0.5rem 0;
-}
-
-.aj-company-name {
-    font-size: 1.05rem;
-    color: #64748b;
-    margin: 0 0 1rem 0;
-}
-
-.aj-job-meta {
-    display: flex;
     gap: 1.25rem;
-    margin-bottom: 0.75rem;
-}
-
-.aj-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 1rem;
-    color: #334155;
-    font-weight: 500;
-}
-
-.aj-meta-item svg {
-    color: #64748b;
-}
-
-.aj-early-applicant {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: #e0f2fe;
-    color: #0284c7;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 0.35rem 0.6rem;
-    border-radius: 4px;
-    margin-bottom: 2rem;
-}
-
-.aj-posted-date {
-    font-size: 0.9rem;
-    color: #94a3b8;
-    margin: 0;
-}
-
-.aj-card-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-end;
-    min-width: 180px;
 }
 
 .aj-company-logo {
-    width: 60px;
-    height: 60px;
-    background: #faf5ff;
-    color: #d8b4fe;
-    font-size: 1.75rem;
-    font-weight: 700;
+    width: 64px;
+    height: 64px;
+    background: #dbeafe;
+    color: #0369a1;
+    font-size: 1.7rem;
+    font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 14px;
+    flex-shrink: 0;
+}
+
+.aj-card-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding-top: 0.25rem;
+}
+
+.aj-job-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.aj-company-name {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin: 0;
 }
 
 .aj-card-actions {
     display: flex;
     gap: 0.75rem;
+    align-items: flex-start;
 }
 
 .aj-save-btn {
@@ -192,7 +156,7 @@
     color: #1e293b;
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -211,7 +175,7 @@
     color: #6b21a8;
     padding: 0.5rem 1.2rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
@@ -219,6 +183,92 @@
 
 .aj-apply-btn:hover {
     background: #e9d5ff;
+}
+
+/* Badges */
+.aj-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.aj-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.aj-badge-green {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.aj-badge-teal {
+    background: #ccfbf1;
+    color: #0f766e;
+}
+
+.aj-badge-blue {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.aj-badge-purple {
+    background: #f3e8ff;
+    color: #6b21a8;
+}
+
+.aj-badge-orange {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+.aj-card-posted {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Skills section */
+.aj-card-skills-section {
+    margin-top: 0.25rem;
+}
+
+.aj-skills-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.aj-skills-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.aj-skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.aj-skill-tag {
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 0.4rem 0.95rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .aj-empty {
@@ -230,29 +280,32 @@
 
 /* Mobile Responsive */
 @media (max-width: 640px) {
-    .aj-job-card {
+    .aj-card-top {
         flex-direction: column;
-    }
-
-    .aj-job-meta {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .aj-card-right {
-        margin-top: 1rem;
-        flex-direction: row;
-        align-items: center;
-        width: 100%;
-        min-width: unset;
+        align-items: flex-start;
+        gap: 1rem;
     }
 
     .aj-company-logo {
-        display: none;
+        width: 50px;
+        height: 50px;
+        font-size: 1.4rem;
+        border-radius: 10px;
     }
 
     .aj-card-actions {
         width: 100%;
         justify-content: space-between;
+        margin-top: 0.5rem;
+    }
+
+    .aj-badge {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.7rem;
+    }
+
+    .aj-skill-tag {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.8rem;
     }
 }

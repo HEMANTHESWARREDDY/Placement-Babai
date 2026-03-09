@@ -26,22 +26,7 @@ function AllJobsModal({ jobs, onClose, openJob }) {
     const formatDate = (dateStr) => {
         if (!dateStr) return 'Recently posted';
         const date = new Date(dateStr);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays === 0) return 'Posted today';
-        if (diffDays === 1) return 'Posted 1 day ago';
-        if (diffDays < 30) return `Posted ${diffDays} days ago`;
-        return `Posted a month ago`;
-    };
-
-    const isEarlyApplicant = (dateStr) => {
-        if (!dateStr) return true; // Just for visuals
-        const date = new Date(dateStr);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays <= 7;
+        return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
     };
 
     return (
@@ -54,34 +39,13 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                 <div className="aj-content">
                     {jobs.map(job => (
                         <div key={job.id} className="aj-job-card" onClick={() => openJob(job)}>
-                            <div className="aj-card-left">
-                                <h3 className="aj-job-title">{job.title}</h3>
-                                <p className="aj-company-name">{job.company}</p>
-
-                                <div className="aj-job-meta">
-                                    <span className="aj-meta-item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
-                                        {job.experienceLevel || "0-2, Fresher"}
-                                    </span>
-                                    <span className="aj-meta-item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                                        {job.location || "Multiple Locations (India)"}
-                                    </span>
-                                </div>
-
-                                {isEarlyApplicant(job.postedDate) && (
-                                    <div className="aj-early-applicant">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                                        Early Applicant
-                                    </div>
-                                )}
-
-                                <p className="aj-posted-date">{formatDate(job.postedDate)}</p>
-                            </div>
-
-                            <div className="aj-card-right">
+                            <div className="aj-card-top">
                                 <div className="aj-company-logo">
                                     {getCompanyInitials(job.company)}
+                                </div>
+                                <div className="aj-card-header-info">
+                                    <h3 className="aj-job-title">{job.title}</h3>
+                                    <p className="aj-company-name">{job.company}</p>
                                 </div>
                                 <div className="aj-card-actions">
                                     <button className="aj-save-btn" onClick={(e) => { e.stopPropagation(); alert('Job saved!'); }}>
@@ -94,6 +58,49 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                     </button>
                                 </div>
                             </div>
+
+                            <div className="aj-card-badges">
+                                {job.salary && (
+                                    <span className="aj-badge aj-badge-green">
+                                        💰 {job.salary}
+                                    </span>
+                                )}
+                                {job.experienceLevel && (
+                                    <span className="aj-badge aj-badge-teal">
+                                        📅 {job.experienceLevel}
+                                    </span>
+                                )}
+                                <span className="aj-badge aj-badge-blue">
+                                    📍 {job.location || 'Multiple Locations'}
+                                </span>
+                                {job.jobType && (
+                                    <span className="aj-badge aj-badge-purple">
+                                        💼 {job.jobType}
+                                    </span>
+                                )}
+                                {job.category && (
+                                    <span className="aj-badge aj-badge-orange">
+                                        🏷️ {job.category}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="aj-card-posted">
+                                📅 Posted on {formatDate(job.postedDate)}
+                            </div>
+
+                            {job.skills && (
+                                <div className="aj-card-skills-section">
+                                    <div className="aj-skills-header">
+                                        <h4>🛠️ Required Skills</h4>
+                                    </div>
+                                    <div className="aj-skills-list">
+                                        {job.skills.split(',').map((skill, index) => (
+                                            <span key={index} className="aj-skill-tag">{skill.trim()}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ))}
                     {jobs.length === 0 && (
