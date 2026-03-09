@@ -156,7 +156,7 @@
 /* Hero Section */
 .hero {
   background: linear-gradient(135deg, #0f172a 0%, #0073b1 60%, #0ea5e9 100%);
-  padding: 4rem 2rem 5rem;
+  padding: 4rem 2rem 2.5rem;
   position: relative;
   overflow: hidden;
 }
@@ -534,7 +534,7 @@
 /* Jobs Section */
 .jobs-section {
   max-width: 1400px;
-  margin: 3rem auto;
+  margin: 1rem auto 3rem auto;
   padding: 0 2rem;
 }
 
