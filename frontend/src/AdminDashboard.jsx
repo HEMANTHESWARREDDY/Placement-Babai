@@ -173,6 +173,8 @@ function AdminDashboard({ adminData, onLogout }) {
             showToast('Please paste a valid job link.', 'error');
             return;
         }
+        // Don't allow click during cooldown
+        if (retryCountdown > 0) return;
 
         const apiKey = geminiKey || localStorage.getItem('gemini_api_key') || '';
         if (!apiKey) {
@@ -184,55 +186,65 @@ function AdminDashboard({ adminData, onLogout }) {
         setIsAutofilling(true);
         try {
             const url = autofillUrl.trim();
-            const prompt = `You are an expert job data extractor. Extract details from this job posting URL:\nURL: ${url}\n\nReturn ONLY a valid JSON object with exactly these keys (no explanation, no markdown):\n{\n  "title": "exact job title",\n  "company": "company name (e.g. PwC, IBM)",\n  "location": "city, country (e.g. Bangalore, India)",\n  "description": "max 400 char professional role summary",\n  "skills": "comma-separated required skills",\n  "jobType": "Full-time | Full-time (Internship) | Part-time | Contract",\n  "experienceLevel": "e.g. 1 - 3 Years or 0 - 1 Years (Entry Level / Student)",\n  "salary": "e.g. Not Specified (Standard industry competitive pay) or 10 - 20 LPA",\n  "category": "e.g. Data Science | Technology | Software Engineering / IT Operations",\n  "role": "e.g. Data Science / Analytics | Developer / Engineer",\n  "companyType": "e.g. MNC (Large Enterprise) | Startup | Product Company",\n  "responsibilities": "5 items, one per line, no bullets",\n  "requirements": "5 items, one per line, no bullets",\n  "passoutYear": "eligible graduation years e.g. 2021, 2022, 2023",\n  "expiryDate": "deadline if known, else: Don't know",\n  "companyLogo": "https://logo.clearbit.com/<domain> or empty string"\n}\n\nExtract real data from this exact job posting. Use your knowledge of the company and role.`;
+            const prompt = `You are a job data extraction expert. Based on your knowledge of this specific job posting URL, extract ALL details and return a JSON object.
 
-            // Try gemini-1.5-flash first (higher free quota), fallback to 2.0-flash
-            const models = ['gemini-1.5-flash', 'gemini-2.0-flash'];
-            let geminiRes = null;
-            let lastErr = null;
+URL: ${url}
 
-            for (const model of models) {
-                geminiRes = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }],
-                            generationConfig: { response_mime_type: 'application/json' }
-                        })
-                    }
-                );
-                if (geminiRes.ok) break; // success — use this model's response
-                const errBody = await geminiRes.json();
-                lastErr = errBody;
-                console.warn(`Model ${model} failed:`, errBody?.error?.message);
-            }
+Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
+{
+  "title": "exact job title from the posting",
+  "company": "company name (e.g. PwC, IBM, TCS)",
+  "location": "city, country (e.g. Bangalore, India)",
+  "description": "professional 3-4 sentence role summary",
+  "skills": "comma-separated required technical skills",
+  "jobType": "Full-time or Full-time (Internship) or Part-time or Contract",
+  "experienceLevel": "e.g. 1 - 3 Years or 0 - 1 Years (Entry Level / Student)",
+  "salary": "e.g. Not Specified (Standard industry competitive pay) or 10 - 20 LPA",
+  "category": "e.g. Data Science or Technology or Software Engineering / IT Operations",
+  "role": "e.g. Data Science / Analytics or Developer / Engineer or Analyst",
+  "companyType": "e.g. MNC (Large Enterprise) or Startup or Product Company",
+  "responsibilities": "5 responsibilities, one per line, no bullet symbols",
+  "requirements": "5 requirements, one per line, no bullet symbols",
+  "passoutYear": "eligible graduation years e.g. 2021, 2022, 2023",
+  "expiryDate": "application deadline or: Don't know",
+  "companyLogo": "https://logo.clearbit.com/companyname.com"
+}`;
 
-            if (!geminiRes || !geminiRes.ok) {
-                const msg = lastErr?.error?.message || 'Unknown Gemini error';
-                const retryMatch = msg.match(/retry in ([\d.]+)s/i);
-                if (retryMatch) {
-                    // Auto-retry after the quota cooldown expires
-                    const waitSecs = Math.ceil(parseFloat(retryMatch[1])) + 2;
-                    setRetryCountdown(waitSecs);
-                    showToast(`⏳ Quota limit hit. Auto-retrying in ${waitSecs}s...`, 'error');
-                    // countdown tick
-                    let remaining = waitSecs;
-                    if (retryTimerRef.current) clearInterval(retryTimerRef.current);
-                    retryTimerRef.current = setInterval(() => {
-                        remaining -= 1;
-                        setRetryCountdown(remaining);
-                        if (remaining <= 0) {
-                            clearInterval(retryTimerRef.current);
-                            retryTimerRef.current = null;
-                            setRetryCountdown(0);
-                            handleAutofill(); // auto-retry!
-                        }
-                    }, 1000);
-                } else {
-                    showToast(`❌ Gemini error: ${msg.substring(0, 120)}`, 'error');
+            const geminiRes = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { response_mime_type: 'application/json' }
+                    })
                 }
+            );
+
+            if (!geminiRes.ok) {
+                const errBody = await geminiRes.json();
+                const msg = errBody?.error?.message || `HTTP ${geminiRes.status}`;
+                console.error('Gemini error:', msg);
+
+                // Rate limit? Show countdown and re-enable button (NO auto-retry loop)
+                const retryMatch = msg.match(/retry in ([\d.]+)s/i);
+                const waitSecs = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) + 3 : 65;
+                setRetryCountdown(waitSecs);
+                showToast(`⏳ Rate limit hit. Button re-enables in ${waitSecs}s — then click again.`, 'error');
+
+                let remaining = waitSecs;
+                if (retryTimerRef.current) clearInterval(retryTimerRef.current);
+                retryTimerRef.current = setInterval(() => {
+                    remaining -= 1;
+                    setRetryCountdown(remaining);
+                    if (remaining <= 0) {
+                        clearInterval(retryTimerRef.current);
+                        retryTimerRef.current = null;
+                        setRetryCountdown(0); // just re-enable the button, NO auto-call
+                        showToast('✅ Ready! Click Auto-Fill to try again.', 'success');
+                    }
+                }, 1000);
                 return;
             }
 
