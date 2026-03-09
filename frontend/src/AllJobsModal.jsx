@@ -48,14 +48,7 @@ function AllJobsModal({ jobs, onClose, openJob }) {
                                     <p className="aj-company-name">{job.company}</p>
                                 </div>
                                 <div className="aj-card-actions">
-                                    <button className="aj-save-btn" onClick={(e) => { e.stopPropagation(); alert('Job saved!'); }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
-                                        Save
-                                    </button>
-                                    <button className="aj-apply-btn" onClick={(e) => { e.stopPropagation(); window.open(job.applyLink || 'https://www.foundit.in/jobs', '_blank', 'noopener,noreferrer'); }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
-                                        Quick Apply
-                                    </button>
+                                    <span className="aj-view-details-txt">View Details &rarr;</span>
                                 </div>
                             </div>
 
