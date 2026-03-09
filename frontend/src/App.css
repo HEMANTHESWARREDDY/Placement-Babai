@@ -682,12 +682,23 @@
   border: 2px solid transparent;
   display: flex;
   flex-direction: column;
+  max-height: 400px;
+  /* Constrain overall card size */
 }
 
 .job-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 28px rgba(0, 115, 177, 0.18);
   border-color: #0073b1;
+}
+
+.job-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .job-card-header {
@@ -719,11 +730,6 @@
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 0.25rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .company-name {
@@ -736,9 +742,6 @@
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   margin: 0.5rem 0;
-  max-height: 48px;
-  overflow: hidden;
-  align-content: flex-start;
 }
 
 .job-detail-item {
@@ -770,9 +773,6 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
-  max-height: 68px;
-  overflow: hidden;
-  align-content: flex-start;
 }
 
 .skill-tag {
@@ -782,11 +782,10 @@
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
-  white-space: nowrap;
 }
 
 .job-card-footer {
-  margin-top: auto;
+  flex: 0 0 auto;
   padding-top: 0.75rem;
   border-top: 1px solid #f3f4f6;
   display: flex;
