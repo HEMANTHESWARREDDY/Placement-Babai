@@ -911,7 +911,7 @@
     width: 100%;
     scroll-snap-align: center;
     box-sizing: border-box;
-    height: 240px;
+    height: 280px;
     /* Override large desktop height */
   }
 
