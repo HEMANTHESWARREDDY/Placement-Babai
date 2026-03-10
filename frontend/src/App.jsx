@@ -364,7 +364,8 @@ function App() {
           if (activeFilters.datePosted === 'Other') {
             if (diffTime <= 30 * oneDay) return false;
           } else if (activeFilters.datePosted === '24h') {
-            if (diffTime > oneDay) return false;
+            // Strict calendar day match instead of 24h rolling window
+            if (jobDate.toDateString() !== now.toDateString()) return false;
           } else if (activeFilters.datePosted === '7d') {
             if (diffTime > 7 * oneDay) return false;
           } else if (activeFilters.datePosted === '30d') {
@@ -617,10 +618,8 @@ function App() {
 
   const newJobsToday = jobs.filter(job => {
     if (!job.postedDate) return false;
-    const jobDate = new Date(job.postedDate);
-    const now = new Date();
-    const diffTime = Math.abs(now - jobDate);
-    return diffTime <= 24 * 60 * 60 * 1000;
+    // Strictly compare calendar dates to avoid 24h rolling issues spanning daylines
+    return new Date(job.postedDate).toDateString() === new Date().toDateString();
   }).length;
 
   return (
