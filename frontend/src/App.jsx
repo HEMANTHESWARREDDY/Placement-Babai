@@ -954,9 +954,11 @@ function App() {
           {applyFilters(jobs).length > 3 && (
             <button
               className="view-all-btn"
-              onClick={() => setShowAll(!showAll)}
+              onClick={() => {
+                setShowAllJobsModal(true);
+              }}
             >
-              {showAll ? '← less jobs' : 'View all jobs →'}
+              View all jobs →
             </button>
           )}
         </div>
