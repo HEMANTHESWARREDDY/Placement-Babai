@@ -635,9 +635,21 @@ function App() {
       )}
 
       {/* All Jobs Modal */}
-      {showAllJobsModal && (
-        <AllJobsModal jobs={jobs} openJob={openJob} onClose={() => setShowAllJobsModal(false)} />
-      )}
+      {showAllJobsModal && (() => {
+        const modalJobs = applyFilters(jobs);
+        let modalTitle = 'All Jobs';
+        if (isSearchResult) modalTitle = 'Search Results';
+        else if (hasActiveFilters) modalTitle = 'Filtered Search';
+
+        return (
+          <AllJobsModal
+            jobs={modalJobs}
+            title={modalTitle}
+            openJob={openJob}
+            onClose={() => setShowAllJobsModal(false)}
+          />
+        );
+      })()}
 
       {/* Header */}
       <header className="header">

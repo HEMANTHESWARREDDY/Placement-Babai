@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './AllJobsModal.css';
 
-function AllJobsModal({ jobs, onClose, openJob }) {
+function AllJobsModal({ jobs, title = 'All Jobs', onClose, openJob }) {
     // Close on Escape key
     useEffect(() => {
         const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -33,7 +33,7 @@ function AllJobsModal({ jobs, onClose, openJob }) {
         <div className="aj-overlay" onClick={onClose}>
             <div className="aj-modal" onClick={e => e.stopPropagation()}>
                 <div className="aj-header">
-                    <h2>All Jobs ({jobs.length})</h2>
+                    <h2>{title} ({jobs.length})</h2>
                     <button className="aj-close" onClick={onClose}>✕</button>
                 </div>
                 <div className="aj-content">
