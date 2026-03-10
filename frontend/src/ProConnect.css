@@ -74,117 +74,159 @@
     padding: 0 1.5rem;
 }
 
-.pro-profiles-section h2 {
-    text-align: center;
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: transparent;
-    margin-bottom: 3rem;
-    opacity: 0;
-    /* visually hide, but keep for screen readers */
-    height: 0;
+/* Section Header */
+.pro-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
 }
 
+.pro-section-title {
+    border-left: 4px solid #2563eb;
+    padding-left: 1.2rem;
+}
+
+.pro-section-title h2 {
+    text-align: left;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.4rem;
+    opacity: 1;
+    height: auto;
+}
+
+.pro-section-title p {
+    color: #64748b;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Top Mentors Card Grid */
 .pro-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
 }
 
-.pro-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid rgba(226, 232, 240, 0.8);
+.tm-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.pro-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+.tm-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
     border-color: #cbd5e1;
 }
 
-.pro-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: white;
-    margin-bottom: 1.25rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    border: 4px solid white;
+.tm-header {
+    height: 100px;
+    width: 100%;
 }
 
-.pro-name {
-    font-size: 1.5rem;
+.tm-avatar-container {
+    position: relative;
+    width: 86px;
+    height: 86px;
+    margin: -43px auto 0 1.5rem;
+}
+
+.tm-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
     font-weight: 800;
-    color: #0f172a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tm-trophy {
+    position: absolute;
+    bottom: 0;
+    right: -4px;
+    background: white;
+    padding: 3px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.tm-content {
+    padding: 1.2rem 1.5rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.tm-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #1e293b;
     margin-bottom: 0.3rem;
 }
 
-.pro-role {
-    font-size: 1.05rem;
-    color: #475569;
-    font-weight: 600;
-    margin-bottom: 1.25rem;
-}
-
-.pro-exp {
+.tm-rating {
     font-size: 0.95rem;
-    color: #64748b;
-    margin-bottom: 1rem;
-    font-weight: 600;
+    font-weight: 700;
+    color: #eab308;
+    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.4rem;
 }
 
-.pro-expertise {
-    background: #f8fafc;
-    padding: 0.85rem 1rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    color: #334155;
-    width: 100%;
-    margin-bottom: 2rem;
-    font-weight: 600;
-    border: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+.tm-rating span {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.85rem;
 }
 
-.book-session-btn {
+.tm-role {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+}
+
+.tm-btn {
     width: 100%;
-    padding: 0.9rem;
-    border-radius: 50px;
-    border: none;
-    background: #4f46e5;
-    color: white;
-    font-weight: 700;
-    font-size: 1.05rem;
+    background: transparent;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 0.75rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-top: auto;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
-.book-session-btn:hover {
-    background: #4338ca;
-    transform: scale(1.03);
-    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+.tm-card:hover .tm-btn {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: #eff6ff;
 }
 
 @media (max-width: 768px) {

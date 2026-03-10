@@ -1,18 +1,78 @@
 import React, { useState } from 'react';
+import ProDetail from './ProDetail';
 import './ProConnect.css';
 
-function ProConnect() {
-    const pros = [
-        { id: 1, name: "Rahul Sharma", role: "Senior SDE @ Amazon", exp: "8+ Yrs Exp", expertise: "System Design, FAANG Interviews", initials: "RS", color: "#f59e0b" },
-        { id: 2, name: "Priya Patel", role: "Frontend Lead @ Google", exp: "6+ Yrs Exp", expertise: "React Performance, UI/UX", initials: "PP", color: "#10b981" },
-        { id: 3, name: "Amit Kumar", role: "Cloud Architect @ Microsoft", exp: "10+ Yrs Exp", expertise: "Azure, Cloud Migration", initials: "AK", color: "#3b82f6" },
-        { id: 4, name: "Sneha Gupta", role: "Data Scientist @ Meta", exp: "5+ Yrs Exp", expertise: "Machine Learning, Resume Review", initials: "SG", color: "#8b5cf6" },
-        { id: 5, name: "Vikram Singh", role: "Engineering Manager @ Uber", exp: "12+ Yrs Exp", expertise: "Leadership, Career Growth", initials: "VS", color: "#ef4444" },
-        { id: 6, name: "Neha Verma", role: "Product Designer @ Atlassian", exp: "7+ Yrs Exp", expertise: "Product Thinking, Portfolios", initials: "NV", color: "#06b6d4" },
-    ];
+const pros = [
+    {
+        id: 1, name: "Vedansh Dubey", role: "Assistant Manager HR @ Wipro", exp: "4 years",
+        rating: "4.9", reviews: "346",
+        expertise: "HR, Resume Review", initials: "VD",
+        headerBg: "linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)", avatarBg: "#fcd34d",
+        about: "Guided 500+ students towards successful placements. specialized in MBA HR roles and tech recruitment.",
+        topics: ["Mock Interviews", "Resume Formatting", "Salary Negotiation"],
+        skills: ["HR Consulting", "Recruitment", "Communication"],
+        fluentIn: ["English", "Hindi"],
+        education: ["MBA @XIMB", "BTech @VIT"],
+        workExperience: ["Assistant Manager HR @ Wipro", "Ex-TCS", "Nestlé"],
+        services: [
+            { type: '1:1 Call', title: 'Mock Interview (HR)', price: '₹399', tag: 'Best Seller' },
+            { type: 'Query', title: 'Resume Review', price: '₹199', tag: 'Resource' }
+        ]
+    },
+    {
+        id: 2, name: "Vaibhav Sharma", role: "Strategy @ Meesho | IIM Lucknow | Top 15 Unstoppable Mentor", exp: "4 years",
+        rating: "4.8", reviews: "210",
+        expertise: "Consulting", initials: "VS",
+        headerBg: "linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)", avatarBg: "#0ea5e9",
+        about: "Winner & Finalist in 23+ Int'l & Nat'l Corporate Case Competitions Recognized as Top 100 Unstoppable B-School Leaders 2024.",
+        topics: ["Case Interviews", "B-School Strategy", "Marketing Prep"],
+        skills: ["Strategy", "Problem Solving", "Marketing"],
+        fluentIn: ["English", "Hindi"],
+        education: ["MBA from IIM Lucknow"],
+        workExperience: ["Strategy @ Meesho", "Analyst @ Deloitte"],
+        services: [
+            { type: '1:1 Call', title: 'Case Interview Strategy', price: '₹499', tag: 'Best Seller' },
+            { type: 'Query', title: 'Marketing Prep Material', price: '₹199', tag: 'Resource' },
+            { type: 'Query', title: 'Winning Case Competitions Guide', price: '₹99', tag: 'Resource' }
+        ]
+    },
+    {
+        id: 3, name: "Palak Gupta", role: "Consulting Analyst @ Accenture | MBA (Gold Medalist)", exp: "3 years",
+        rating: "4.9", reviews: "152",
+        expertise: "Analytics, Consulting", initials: "PG",
+        headerBg: "linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)", avatarBg: "#ec4899",
+        about: "Gold medalist with deep expertise in analytics and management consulting. Helped 50+ candidates crack MBB.",
+        topics: ["Consulting Cases", "Data Frameworks", "Guesstimates"],
+        skills: ["Data Analytics", "Consulting", "Excel/SQL"],
+        fluentIn: ["English"],
+        education: ["MBA (Gold Medalist)", "B.Com Hons"],
+        workExperience: ["Consulting Analyst @ Accenture"],
+        services: [
+            { type: '1:1 Call', title: 'Guesstimate Practice', price: '₹349', tag: 'Best Seller' }
+        ]
+    },
+    {
+        id: 4, name: "Shiri Agarwal", role: "Product @ Telstra | MBA @ MDI Gurgaon'24", exp: "5 years",
+        rating: "4.9", reviews: "258",
+        expertise: "Product Management", initials: "SA",
+        headerBg: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)", avatarBg: "#8b5cf6",
+        about: "Product Manager deeply passionate about building consumer tech. Ranked 6th across India in PM competitions.",
+        topics: ["PM Interviews", "Product Teardowns", "Portfolio Review"],
+        skills: ["Product Strategy", "Figma", "User Research"],
+        fluentIn: ["English"],
+        education: ["MBA @ MDI Gurgaon'24"],
+        workExperience: ["Product @ Telstra", "APM @ Byjus"],
+        services: [
+            { type: '1:1 Call', title: 'PM Mock Interview', price: '₹599', tag: 'Best Seller' },
+            { type: 'Query', title: 'Product Portfolio Review', price: '₹299', tag: 'Resource' }
+        ]
+    }
+];
 
+function ProConnect() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [searchExperience, setSearchExperience] = useState('');
+    const [selectedPro, setSelectedPro] = useState(null);
 
     const filteredPros = pros.filter(pro => {
         let matchKw = true;
@@ -84,7 +144,13 @@ function ProConnect() {
             </div>
 
             <div className="pro-profiles-section">
-                <h2>Meet Our Mentors</h2>
+                <div className="pro-section-header">
+                    <div className="pro-section-title">
+                        <h2>Top Mentors</h2>
+                        <p>In search of excellence? Explore the highest-rated mentors as recognized by the learner community.</p>
+                    </div>
+                </div>
+
                 {filteredPros.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.1rem' }}>
                         No mentors found matching your search criteria. Try a different search!
@@ -92,22 +158,30 @@ function ProConnect() {
                 ) : (
                     <div className="pro-grid">
                         {filteredPros.map(pro => (
-                            <div className="pro-card" key={pro.id}>
-                                <div className="pro-avatar" style={{ backgroundColor: pro.color }}>
-                                    {pro.initials}
+                            <div className="tm-card" key={pro.id}>
+                                <div className="tm-header" style={{ background: pro.headerBg }}></div>
+                                <div className="tm-avatar-container">
+                                    <div className="tm-avatar" style={{ backgroundColor: pro.avatarBg }}>
+                                        {pro.initials}
+                                    </div>
+                                    <div className="tm-trophy">🏆</div>
                                 </div>
-                                <h3 className="pro-name">{pro.name}</h3>
-                                <p className="pro-role">{pro.role}</p>
-                                <p className="pro-exp">⏱️ {pro.exp}</p>
-                                <div className="pro-expertise">
-                                    <span>💡</span> {pro.expertise}
+                                <div className="tm-content">
+                                    <h3 className="tm-name">{pro.name}</h3>
+                                    <div className="tm-rating">⭐ {pro.rating} <span>({pro.reviews} Reviews)</span></div>
+                                    <p className="tm-role">{pro.role}</p>
+                                    <button className="tm-btn" onClick={() => setSelectedPro(pro)}>View Profile</button>
                                 </div>
-                                <button className="book-session-btn" onClick={() => alert("Booking session flow coming soon!")}>Book a Session</button>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
+
+            {/* Render details modal if selected */}
+            {selectedPro && (
+                <ProDetail pro={selectedPro} onClose={() => setSelectedPro(null)} />
+            )}
         </div>
     );
 }

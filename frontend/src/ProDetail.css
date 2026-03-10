@@ -1,0 +1,413 @@
+/* ProDetail Modal Overlay */
+.pd-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem 1rem;
+    overflow-y: auto;
+}
+
+.pd-modal-container {
+    background: transparent;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1100px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.pd-close-btn {
+    position: absolute;
+    top: -2.5rem;
+    right: 0;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.pd-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.pd-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Left Column: Profile Card */
+.pd-profile-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f1f5f9;
+}
+
+.pd-profile-header-bg {
+    height: 120px;
+    width: 100%;
+}
+
+.pd-profile-avatar-wrapper {
+    position: relative;
+    width: 110px;
+    margin: -55px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pd-profile-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    color: white;
+    font-size: 2.8rem;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pd-available-badge {
+    background: #0076fe;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    position: absolute;
+    bottom: -10px;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0, 118, 254, 0.3);
+    white-space: nowrap;
+}
+
+.pd-profile-info {
+    text-align: center;
+    padding: 1.8rem 1.5rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.pd-profile-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.pd-profile-rating {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.pd-profile-headline {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.4;
+    font-weight: 500;
+    margin-bottom: 1.2rem;
+}
+
+.pd-profile-exp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 1.8rem;
+}
+
+.pd-social-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.pd-social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-size: 200% auto;
+}
+
+.pd-insta {
+    color: #e1306c;
+}
+
+.pd-insta:hover {
+    background-image: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.pd-linkedin {
+    color: #0a66c2;
+}
+
+.pd-linkedin:hover {
+    background: #0a66c2;
+    color: white;
+    border-color: transparent;
+}
+
+.pd-share {
+    color: #64748b;
+}
+
+.pd-share:hover {
+    background: #e2e8f0;
+}
+
+/* Left Accordions */
+.pd-accordion-container {
+    padding: 0;
+}
+
+.pd-accordion-item {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.pd-accordion-item:last-child {
+    border-bottom: none;
+}
+
+.pd-accordion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    transition: background 0.2s;
+}
+
+.pd-accordion-header:hover {
+    background: #f8fafc;
+}
+
+.pd-chevron {
+    transition: transform 0.3s ease;
+    color: #64748b;
+}
+
+.pd-chevron-up {
+    transform: rotate(180deg);
+}
+
+.pd-accordion-content {
+    padding: 0 1.5rem 1.2rem;
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.pd-accordion-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pd-accordion-content li {
+    margin-bottom: 0.4rem;
+}
+
+/* Right Column: Services */
+.pd-right-col {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.pd-services-header {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.2rem;
+}
+
+.pd-services-sub {
+    font-size: 1rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.pd-service-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+}
+
+.pd-tab-btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    background: transparent;
+    color: #475569;
+}
+
+.pd-tab-btn:hover {
+    color: #0f172a;
+}
+
+.pd-tab-btn.pd-tab-active {
+    background: #ec4899;
+    color: white;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.pd-services-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.pd-service-card {
+    background: #fafaf9;
+    border: 1px solid #e7e5e4;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pd-service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    background: white;
+    border-color: #ec4899;
+}
+
+.pd-service-tags {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pd-service-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.pd-tag-resource {
+    background: #fff1f2;
+    color: #e11d48;
+}
+
+.pd-tag-bestseller {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.pd-service-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1c1917;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.pd-service-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.pd-service-price {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #44403c;
+}
+
+.pd-service-btn {
+    background: transparent;
+    color: #44403c;
+    border: 1px solid #d6d3d1;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pd-service-card:hover .pd-service-btn {
+    background: #1c1917;
+    color: white;
+    border-color: #1c1917;
+}
+
+@media (max-width: 900px) {
+    .pd-content {
+        grid-template-columns: 1fr;
+    }
+
+    .pd-modal-container {
+        max-width: 500px;
+    }
+
+    .pd-right-col {
+        padding: 1.5rem;
+    }
+}
