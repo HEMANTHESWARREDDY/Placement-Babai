@@ -56,7 +56,7 @@ function ProDetail({ pro, onClose }) {
                             <div className="pd-profile-header-bg" style={{ background: pro.headerBg || pro.color }}></div>
                             <div className="pd-profile-avatar-wrapper">
                                 <div className="pd-profile-avatar" style={{ backgroundColor: pro.avatarBg || '#1e293b' }}>
-                                    {pro.initials}
+                                    {pro.image ? <img src={pro.image} alt={pro.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} /> : pro.initials}
                                 </div>
                                 <span className="pd-available-badge">⚡ Available</span>
                             </div>

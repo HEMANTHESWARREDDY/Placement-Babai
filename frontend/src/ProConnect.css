@@ -104,6 +104,40 @@
     margin: 0;
 }
 
+.pro-view-all-btn {
+    background: transparent;
+    border: 1px solid #bfdbfe;
+    color: #2563eb;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.pro-view-all-btn:hover {
+    background: #ebf5ff;
+    border-color: #93c5fd;
+    transform: translateY(-2px);
+}
+
+.pro-view-all-arrow {
+    background: #2563eb;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+}
+
 /* Top Mentors Card Grid */
 .pro-grid {
     display: grid;
@@ -154,6 +188,14 @@
     font-size: 2rem;
     font-weight: 800;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f1f5f9;
+}
+
+.tm-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .tm-trophy {

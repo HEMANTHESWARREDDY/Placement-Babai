@@ -4,9 +4,10 @@ import './ProConnect.css';
 
 const pros = [
     {
-        id: 1, name: "Vedansh Dubey", role: "Assistant Manager HR @ Wipro", exp: "4 years",
+        id: 1, name: "Vedansh Dubey", role: "Assistant Manager HR @ Wipro | MBA @XIMB, Ex-TCS, Nestlé", exp: "4 years",
         rating: "4.9", reviews: "346",
         expertise: "HR, Resume Review", initials: "VD",
+        image: "https://randomuser.me/api/portraits/men/45.jpg",
         headerBg: "linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)", avatarBg: "#fcd34d",
         about: "Guided 500+ students towards successful placements. specialized in MBA HR roles and tech recruitment.",
         topics: ["Mock Interviews", "Resume Formatting", "Salary Negotiation"],
@@ -37,9 +38,10 @@ const pros = [
         ]
     },
     {
-        id: 3, name: "Palak Gupta", role: "Consulting Analyst @ Accenture | MBA (Gold Medalist)", exp: "3 years",
+        id: 3, name: "Palak Gupta", role: "Consulting Analyst @ Accenture | MBA (Gold Medalist) @ IIM ...", exp: "3 years",
         rating: "4.9", reviews: "152",
         expertise: "Analytics, Consulting", initials: "PG",
+        image: "https://randomuser.me/api/portraits/women/68.jpg",
         headerBg: "linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)", avatarBg: "#ec4899",
         about: "Gold medalist with deep expertise in analytics and management consulting. Helped 50+ candidates crack MBB.",
         topics: ["Consulting Cases", "Data Frameworks", "Guesstimates"],
@@ -52,9 +54,10 @@ const pros = [
         ]
     },
     {
-        id: 4, name: "Shiri Agarwal", role: "Product @ Telstra | MBA @ MDI Gurgaon'24", exp: "5 years",
+        id: 4, name: "Shiri Agarwal", role: "Product @ Telstra | MBA @ MDI Gurgaon'24 | Rank 6th ...", exp: "5 years",
         rating: "4.9", reviews: "258",
         expertise: "Product Management", initials: "SA",
+        image: "https://randomuser.me/api/portraits/women/44.jpg",
         headerBg: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)", avatarBg: "#8b5cf6",
         about: "Product Manager deeply passionate about building consumer tech. Ranked 6th across India in PM competitions.",
         topics: ["PM Interviews", "Product Teardowns", "Portfolio Review"],
@@ -149,6 +152,9 @@ function ProConnect() {
                         <h2>Top Mentors</h2>
                         <p>In search of excellence? Explore the highest-rated mentors as recognized by the learner community.</p>
                     </div>
+                    <button className="pro-view-all-btn">
+                        View All <span className="pro-view-all-arrow">❯</span>
+                    </button>
                 </div>
 
                 {filteredPros.length === 0 ? (
@@ -162,7 +168,7 @@ function ProConnect() {
                                 <div className="tm-header" style={{ background: pro.headerBg }}></div>
                                 <div className="tm-avatar-container">
                                     <div className="tm-avatar" style={{ backgroundColor: pro.avatarBg }}>
-                                        {pro.initials}
+                                        {pro.image ? <img src={pro.image} alt={pro.name} className="tm-avatar-img" /> : pro.initials}
                                     </div>
                                     <div className="tm-trophy">🏆</div>
                                 </div>
