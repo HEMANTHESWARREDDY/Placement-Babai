@@ -5,6 +5,7 @@ import AdminDashboard from './AdminDashboard';
 import CustomSelect from './CustomSelect';
 import LegalModal from './LegalModal';
 import AllJobsModal from './AllJobsModal';
+import ProConnect from './ProConnect';
 import { API_BASE_URL } from './config';
 import './App.css';
 
@@ -39,6 +40,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [appliesCount, setAppliesCount] = useState({});
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
+  const [activeMainTab, setActiveMainTab] = useState('jobs');
   const filterBarRef = useRef(null);
   const jobsGridRef = useRef(null);
 
@@ -680,10 +682,22 @@ function App() {
           <nav className={isMobileMenuOpen ? "nav-open" : ""}>
             <ul className="nav-links">
               <li>
+                <a href="#pro-connect" onClick={(e) => {
+                  e.preventDefault();
+                  setActiveMainTab('pro-connect');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} className={activeMainTab === 'pro-connect' ? 'active-nav' : ''}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  Pro Connect
+                </a>
+              </li>
+              <li>
                 <a href="#home" onClick={(e) => {
                   e.preventDefault();
+                  setActiveMainTab('jobs');
                   setSearchKeyword(''); setSearchLocation(''); setShowAll(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); fetchJobs();
-                }}>
+                }} className={activeMainTab === 'jobs' ? 'active-nav' : ''}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
                   Home
                 </a>
@@ -714,426 +728,432 @@ function App() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content">
-          <h1>Searching for Your Dream&nbsp;Job?<br /><span className="hero-highlight">Let Placement<span style={{ color: '#ff8c00', WebkitTextFillColor: '#ff8c00' }}>Babai</span> Help You Get Hired</span></h1>
-          <p className="hero-subtitle" style={{ marginBottom: '0.25rem' }}>
-            India’s Trusted Job Discovery Platform for Freshers & Professionals
-          </p>
-          <p className="hero-subtitle" style={{ marginTop: 0, fontWeight: '600' }}>
-            Verified placement links, Updated daily
-          </p>
+      {activeMainTab === 'jobs' ? (
+        <>
+          {/* Hero Section */}
+          <section className="hero">
+            <div className="hero-content">
+              <h1>Searching for Your Dream&nbsp;Job?<br /><span className="hero-highlight">Let Placement<span style={{ color: '#ff8c00', WebkitTextFillColor: '#ff8c00' }}>Babai</span> Help You Get Hired</span></h1>
+              <p className="hero-subtitle" style={{ marginBottom: '0.25rem' }}>
+                India’s Trusted Job Discovery Platform for Freshers & Professionals
+              </p>
+              <p className="hero-subtitle" style={{ marginTop: 0, fontWeight: '600' }}>
+                Verified placement links, Updated daily
+              </p>
 
-          {/* Search Bar */}
-          <div className="search-container">
-            <div className="search-input-group">
-              <span className="search-icon">🔍</span>
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search by Skills, Company or Job Title"
-                value={searchKeyword}
-                onChange={(e) => {
-                  setSearchKeyword(e.target.value);
-                  setShowSuggestions(true);
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                onKeyPress={handleKeyPress}
-              />
-              {showSuggestions && getSuggestions().length > 0 && (
-                <div className="search-suggestions">
-                  {getSuggestions().map((suggestion, idx) => (
-                    <div
-                      key={idx}
-                      className="search-suggestion-item"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setSearchKeyword(suggestion);
-                        setShowSuggestions(false);
-                      }}
-                    >
-                      {suggestion}
+              {/* Search Bar */}
+              <div className="search-container">
+                <div className="search-input-group">
+                  <span className="search-icon">🔍</span>
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search by Skills, Company or Job Title"
+                    value={searchKeyword}
+                    onChange={(e) => {
+                      setSearchKeyword(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    onKeyPress={handleKeyPress}
+                  />
+                  {showSuggestions && getSuggestions().length > 0 && (
+                    <div className="search-suggestions">
+                      {getSuggestions().map((suggestion, idx) => (
+                        <div
+                          key={idx}
+                          className="search-suggestion-item"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setSearchKeyword(suggestion);
+                            setShowSuggestions(false);
+                          }}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
+
+                <div className="search-input-group">
+                  <span className="search-icon">📍</span>
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Location"
+                    value={searchLocation}
+                    onChange={(e) => {
+                      setSearchLocation(e.target.value);
+                      setShowLocSuggestions(true);
+                    }}
+                    onFocus={() => setShowLocSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowLocSuggestions(false), 200)}
+                    onKeyPress={handleKeyPress}
+                  />
+                  {showLocSuggestions && getLocSuggestions().length > 0 && (
+                    <div className="search-suggestions">
+                      {getLocSuggestions().map((suggestion, idx) => (
+                        <div
+                          key={idx}
+                          className="search-suggestion-item"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setSearchLocation(suggestion);
+                            setShowLocSuggestions(false);
+                          }}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="search-input-group search-exp-input-group">
+                  <span className="search-icon">🎓</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="30"
+                    className="search-input search-exp-number"
+                    placeholder="Years of exp"
+                    value={searchExperience}
+                    onChange={(e) => setSearchExperience(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                  />
+                  {searchExperience !== '' && (
+                    <span className="exp-badge">
+                      {parseInt(searchExperience, 10) === 0 ? '🌱 Fresher' : parseInt(searchExperience, 10) <= 3 ? '📅 Junior' : '🚀 Senior'}
+                    </span>
+                  )}
+                </div>
+
+                <button className="search-btn" onClick={handleSearch}>
+                  Search
+                </button>
+              </div>
+
+              {/* Popular Searches */}
+              <div className="popular-searches">
+                <span className="popular-label">🔥 Trending:</span>
+                {['Java Developer', 'Data Analyst', 'React Developer', 'Python', 'DevOps'].map(tag => (
+                  <button key={tag} className="popular-tag" onClick={() => setSearchKeyword(tag)}>
+                    {tag}
+                  </button>
+                ))}
+              </div>
+
+              <div className="hero-browse">
+                <button className="browse-all-btn" onClick={(e) => {
+                  e.preventDefault();
+                  setShowAllJobsModal(true);
+                }}>
+                  Browse All Jobs &rarr;
+                </button>
+              </div>
+
+              {/* Trust Stats */}
+              <div className="hero-stats">
+                <div className="hero-stat"><span className="stat-number">500+</span><span className="stat-label">Jobs Listed</span></div>
+                <div className="hero-stat-divider" />
+                <div className="hero-stat"><span className="stat-number">150+</span><span className="stat-label">Companies</span></div>
+                <div className="hero-stat-divider" />
+                <div className="hero-stat"><span className="stat-number">2,000+</span><span className="stat-label">Job Seekers</span></div>
+                <div className="hero-stat-divider" />
+                <div className="hero-stat"><span className="stat-number">400+</span><span className="stat-label">Offers Secured</span></div>
+              </div>
+            </div>
+          </section >
+
+          {/* Jobs Section */}
+          < section className="jobs-section" id="jobs" >
+            {/* Filter Bar */}
+            <div className="filter-bar-wrapper">
+              {/* Fixed label - mobile only */}
+              <span className="filter-bar-label" style={{ color: '#334155' }}>Filters</span>
+
+              {/* Left scroll arrow - mobile only */}
+              <button className="filter-scroll-btn filter-scroll-left" aria-label="Scroll filters left"
+                onClick={() => { filterBarRef.current?.scrollBy({ left: -150, behavior: 'smooth' }); }}>
+                ‹
+              </button>
+
+              {/* Scrollable pills */}
+              <div className="filter-bar" ref={filterBarRef}>
+                <CustomSelect
+                  options={FILTERS.passoutYear}
+                  value={activeFilters.passoutYear}
+                  onChange={(val) => toggleFilter('passoutYear', val)}
+                  placeholder="🎓 Passout Year"
+                />
+
+                <CustomSelect
+                  options={FILTERS.salary}
+                  value={activeFilters.salary}
+                  onChange={(val) => toggleFilter('salary', val)}
+                  placeholder="💰 Package"
+                />
+
+                <CustomSelect
+                  options={FILTERS.role}
+                  value={activeFilters.role}
+                  onChange={(val) => toggleFilter('role', val)}
+                  placeholder="👤 Role"
+                />
+
+                <CustomSelect
+                  options={FILTERS.experience}
+                  value={activeFilters.experience}
+                  onChange={(val) => toggleFilter('experience', val)}
+                  placeholder="🎓 Experience"
+                />
+
+                <CustomSelect
+                  options={FILTERS.companyType}
+                  value={activeFilters.companyType}
+                  onChange={(val) => toggleFilter('companyType', val)}
+                  placeholder="🏢 Company"
+                />
+
+                <CustomSelect
+                  options={FILTERS.jobType}
+                  value={activeFilters.jobType}
+                  onChange={(val) => toggleFilter('jobType', val)}
+                  placeholder="💼 Job Type"
+                />
+
+                <CustomSelect
+                  options={FILTERS.datePosted}
+                  value={activeFilters.datePosted}
+                  onChange={(val) => toggleFilter('datePosted', val)}
+                  placeholder="🗓️ Date Posted"
+                />
+
+                <CustomSelect
+                  options={[
+                    { label: 'Newest First', value: 'newest' },
+                    { label: 'Oldest First', value: 'oldest' },
+                    { label: 'A-Z', value: 'az' },
+                    { label: 'Z-A', value: 'za' }
+                  ]}
+                  value={sortType}
+                  onChange={(val) => { setSortType(val); setShowAll(false); }}
+                  placeholder="Sort By"
+                />
+
+                {/* Clear REMOVED from scroll area - now after › */}
+              </div>
+
+              {/* Right scroll arrow pinned at right edge */}
+              <button
+                className="filter-scroll-btn filter-scroll-right"
+                aria-label="Scroll filters right"
+                style={{ marginLeft: 'auto', flexShrink: 0 }}
+                onClick={() => { filterBarRef.current?.scrollBy({ left: 150, behavior: 'smooth' }); }}>
+                ›
+              </button>
+
+              {/* Clear pinned AFTER › - always visible, easy to tap */}
+              {hasActiveFilters && (
+                <button className="filter-clear-btn" onClick={() => { setActiveFilters({}); setSortType(''); setShowAll(false); }}>
+                  ✕
+                </button>
               )}
             </div>
 
-            <div className="search-input-group">
-              <span className="search-icon">📍</span>
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Location"
-                value={searchLocation}
-                onChange={(e) => {
-                  setSearchLocation(e.target.value);
-                  setShowLocSuggestions(true);
-                }}
-                onFocus={() => setShowLocSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowLocSuggestions(false), 200)}
-                onKeyPress={handleKeyPress}
-              />
-              {showLocSuggestions && getLocSuggestions().length > 0 && (
-                <div className="search-suggestions">
-                  {getLocSuggestions().map((suggestion, idx) => (
-                    <div
-                      key={idx}
-                      className="search-suggestion-item"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setSearchLocation(suggestion);
-                        setShowLocSuggestions(false);
-                      }}
-                    >
-                      {suggestion}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="search-input-group search-exp-input-group">
-              <span className="search-icon">🎓</span>
-              <input
-                type="number"
-                min="0"
-                max="30"
-                className="search-input search-exp-number"
-                placeholder="Years of exp"
-                value={searchExperience}
-                onChange={(e) => setSearchExperience(e.target.value)}
-                onKeyPress={handleKeyPress}
-              />
-              {searchExperience !== '' && (
-                <span className="exp-badge">
-                  {parseInt(searchExperience, 10) === 0 ? '🌱 Fresher' : parseInt(searchExperience, 10) <= 3 ? '📅 Junior' : '🚀 Senior'}
+            <div className="section-header">
+              <h2>
+                {isSearchResult
+                  ? `Search Results (${applyFilters(jobs).length})`
+                  : hasActiveFilters
+                    ? `Filtered Search (${applyFilters(jobs).length})`
+                    : showAll
+                      ? `All Jobs`
+                      : 'Recent Jobs'}
+              </h2>
+              {/* Center label - mobile only */}
+              {!showAll && !isSearchResult && applyFilters(jobs).length > 3 && (
+                <span className="section-showing-label">
+                  showing top 3 jobs
                 </span>
               )}
+              {applyFilters(jobs).length > 3 && (
+                <button
+                  className="view-all-btn"
+                  onClick={() => {
+                    setShowAllJobsModal(true);
+                  }}
+                >
+                  View all jobs →
+                </button>
+              )}
             </div>
 
-            <button className="search-btn" onClick={handleSearch}>
-              Search
-            </button>
-          </div>
+            {loading && <div className="loading">Loading jobs...</div>}
 
-          {/* Popular Searches */}
-          <div className="popular-searches">
-            <span className="popular-label">🔥 Trending:</span>
-            {['Java Developer', 'Data Analyst', 'React Developer', 'Python', 'DevOps'].map(tag => (
-              <button key={tag} className="popular-tag" onClick={() => setSearchKeyword(tag)}>
-                {tag}
-              </button>
-            ))}
-          </div>
+            {error && <div className="error">Error: {error}</div>}
 
-          <div className="hero-browse">
-            <button className="browse-all-btn" onClick={(e) => {
-              e.preventDefault();
-              setShowAllJobsModal(true);
-            }}>
-              Browse All Jobs &rarr;
-            </button>
-          </div>
+            {
+              !loading && !error && jobs.length === 0 && (
+                <div className="no-jobs">No jobs found. Try a different search.</div>
+              )
+            }
 
-          {/* Trust Stats */}
-          <div className="hero-stats">
-            <div className="hero-stat"><span className="stat-number">500+</span><span className="stat-label">Jobs Listed</span></div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat"><span className="stat-number">150+</span><span className="stat-label">Companies</span></div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat"><span className="stat-number">2,000+</span><span className="stat-label">Job Seekers</span></div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat"><span className="stat-number">400+</span><span className="stat-label">Offers Secured</span></div>
-          </div>
-        </div>
-      </section >
+            {
+              !loading && !error && jobs.length > 0 && (() => {
+                const totalFiltered = applyFilters(jobs);           // filter ALL jobs
+                const filtered = showAll ? totalFiltered : totalFiltered.slice(0, 3); // then slice
+                return (
+                  <>
+                    {filtered.length === 0 ? (
+                      <div className="no-jobs">No jobs match the selected filters. <button className="filter-clear-btn" onClick={() => setActiveFilters({})}>Clear filters</button></div>
+                    ) : (
+                      <div className="jobs-carousel-wrapper">
+                        <button
+                          className="jobs-nav-btn jobs-nav-prev"
+                          aria-label="Previous job"
+                          onClick={() => {
+                            if (jobsGridRef.current) {
+                              jobsGridRef.current.scrollBy({ left: -jobsGridRef.current.offsetWidth, behavior: 'smooth' });
+                            }
+                          }}
+                          style={{ visibility: canScrollLeft ? 'visible' : 'hidden' }}
+                        >
+                          ‹
+                        </button>
 
-      {/* Jobs Section */}
-      < section className="jobs-section" id="jobs" >
-        {/* Filter Bar */}
-        <div className="filter-bar-wrapper">
-          {/* Fixed label - mobile only */}
-          <span className="filter-bar-label" style={{ color: '#334155' }}>Filters</span>
+                        <div className="jobs-grid" ref={jobsGridRef} onScroll={checkScroll}>
+                          {/* recent-label removed — now in section-header */}
+                          {filtered.map((job) => {
+                            const isNewJob = job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString();
+                            const isLastDay = job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString();
+                            return (
+                              <div
+                                key={job.id}
+                                className="job-card"
+                                onClick={() => openJob(job)}
+                                title="Click to view job details"
+                                style={{ position: 'relative' }}
+                              >
+                                <div className="job-card-body">
+                                  <div className="job-card-header">
+                                    <div className="company-logo">
+                                      {getCompanyInitials(job.company)}
+                                    </div>
+                                    <div className="job-info">
+                                      <h3 className="job-title">{job.title}</h3>
+                                      <p className="company-name">{job.company}</p>
+                                    </div>
+                                  </div>
 
-          {/* Left scroll arrow - mobile only */}
-          <button className="filter-scroll-btn filter-scroll-left" aria-label="Scroll filters left"
-            onClick={() => { filterBarRef.current?.scrollBy({ left: -150, behavior: 'smooth' }); }}>
-            ‹
-          </button>
+                                  <div className="job-details">
+                                    {isNewJob && (
+                                      <div className="job-detail-item" style={{
+                                        background: 'rgba(217, 119, 6, 0.15)',
+                                        border: '1px solid rgba(217, 119, 6, 0.4)',
+                                        color: '#b45309',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '20px',
+                                        fontWeight: '700',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.2rem'
+                                      }}>
+                                        <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
+                                        <span>Posted Today</span>
+                                      </div>
+                                    )}
+                                    {isLastDay && (
+                                      <div className="job-detail-item" style={{
+                                        background: 'rgba(230, 74, 25, 0.1)',
+                                        border: '1px solid rgba(230, 74, 25, 0.3)',
+                                        color: '#e64a19',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '20px',
+                                        fontWeight: '800',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.2rem'
+                                      }}>
+                                        <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
+                                        <span>Last Day to Apply</span>
+                                      </div>
+                                    )}
+                                    <div className="job-detail-item">
+                                      <span className="job-detail-icon">💰</span>
+                                      <span>{job.salary || '—'}</span>
+                                    </div>
+                                    {job.experienceLevel && (
+                                      <div className="job-detail-item">
+                                        <span className="job-detail-icon">📅</span>
+                                        <span>{job.experienceLevel}</span>
+                                      </div>
+                                    )}
+                                    {job.passoutYear && (
+                                      <div className="job-detail-item">
+                                        <span className="job-detail-icon">🎓</span>
+                                        <span>{job.passoutYear}</span>
+                                      </div>
+                                    )}
+                                    <div className="job-detail-item">
+                                      <span className="job-detail-icon">📍</span>
+                                      <span>{job.location}</span>
+                                    </div>
+                                    {job.jobType && (
+                                      <div className="job-detail-item">
+                                        <span className="job-detail-icon">💼</span>
+                                        <span>{job.jobType}</span>
+                                      </div>
+                                    )}
+                                  </div>
 
-          {/* Scrollable pills */}
-          <div className="filter-bar" ref={filterBarRef}>
-            <CustomSelect
-              options={FILTERS.passoutYear}
-              value={activeFilters.passoutYear}
-              onChange={(val) => toggleFilter('passoutYear', val)}
-              placeholder="🎓 Passout Year"
-            />
+                                  {job.description && (
+                                    <p className="job-description">{job.description}</p>
+                                  )}
 
-            <CustomSelect
-              options={FILTERS.salary}
-              value={activeFilters.salary}
-              onChange={(val) => toggleFilter('salary', val)}
-              placeholder="💰 Package"
-            />
-
-            <CustomSelect
-              options={FILTERS.role}
-              value={activeFilters.role}
-              onChange={(val) => toggleFilter('role', val)}
-              placeholder="👤 Role"
-            />
-
-            <CustomSelect
-              options={FILTERS.experience}
-              value={activeFilters.experience}
-              onChange={(val) => toggleFilter('experience', val)}
-              placeholder="🎓 Experience"
-            />
-
-            <CustomSelect
-              options={FILTERS.companyType}
-              value={activeFilters.companyType}
-              onChange={(val) => toggleFilter('companyType', val)}
-              placeholder="🏢 Company"
-            />
-
-            <CustomSelect
-              options={FILTERS.jobType}
-              value={activeFilters.jobType}
-              onChange={(val) => toggleFilter('jobType', val)}
-              placeholder="💼 Job Type"
-            />
-
-            <CustomSelect
-              options={FILTERS.datePosted}
-              value={activeFilters.datePosted}
-              onChange={(val) => toggleFilter('datePosted', val)}
-              placeholder="🗓️ Date Posted"
-            />
-
-            <CustomSelect
-              options={[
-                { label: 'Newest First', value: 'newest' },
-                { label: 'Oldest First', value: 'oldest' },
-                { label: 'A-Z', value: 'az' },
-                { label: 'Z-A', value: 'za' }
-              ]}
-              value={sortType}
-              onChange={(val) => { setSortType(val); setShowAll(false); }}
-              placeholder="Sort By"
-            />
-
-            {/* Clear REMOVED from scroll area - now after › */}
-          </div>
-
-          {/* Right scroll arrow pinned at right edge */}
-          <button
-            className="filter-scroll-btn filter-scroll-right"
-            aria-label="Scroll filters right"
-            style={{ marginLeft: 'auto', flexShrink: 0 }}
-            onClick={() => { filterBarRef.current?.scrollBy({ left: 150, behavior: 'smooth' }); }}>
-            ›
-          </button>
-
-          {/* Clear pinned AFTER › - always visible, easy to tap */}
-          {hasActiveFilters && (
-            <button className="filter-clear-btn" onClick={() => { setActiveFilters({}); setSortType(''); setShowAll(false); }}>
-              ✕
-            </button>
-          )}
-        </div>
-
-        <div className="section-header">
-          <h2>
-            {isSearchResult
-              ? `Search Results (${applyFilters(jobs).length})`
-              : hasActiveFilters
-                ? `Filtered Search (${applyFilters(jobs).length})`
-                : showAll
-                  ? `All Jobs`
-                  : 'Recent Jobs'}
-          </h2>
-          {/* Center label - mobile only */}
-          {!showAll && !isSearchResult && applyFilters(jobs).length > 3 && (
-            <span className="section-showing-label">
-              showing top 3 jobs
-            </span>
-          )}
-          {applyFilters(jobs).length > 3 && (
-            <button
-              className="view-all-btn"
-              onClick={() => {
-                setShowAllJobsModal(true);
-              }}
-            >
-              View all jobs →
-            </button>
-          )}
-        </div>
-
-        {loading && <div className="loading">Loading jobs...</div>}
-
-        {error && <div className="error">Error: {error}</div>}
-
-        {
-          !loading && !error && jobs.length === 0 && (
-            <div className="no-jobs">No jobs found. Try a different search.</div>
-          )
-        }
-
-        {
-          !loading && !error && jobs.length > 0 && (() => {
-            const totalFiltered = applyFilters(jobs);           // filter ALL jobs
-            const filtered = showAll ? totalFiltered : totalFiltered.slice(0, 3); // then slice
-            return (
-              <>
-                {filtered.length === 0 ? (
-                  <div className="no-jobs">No jobs match the selected filters. <button className="filter-clear-btn" onClick={() => setActiveFilters({})}>Clear filters</button></div>
-                ) : (
-                  <div className="jobs-carousel-wrapper">
-                    <button
-                      className="jobs-nav-btn jobs-nav-prev"
-                      aria-label="Previous job"
-                      onClick={() => {
-                        if (jobsGridRef.current) {
-                          jobsGridRef.current.scrollBy({ left: -jobsGridRef.current.offsetWidth, behavior: 'smooth' });
-                        }
-                      }}
-                      style={{ visibility: canScrollLeft ? 'visible' : 'hidden' }}
-                    >
-                      ‹
-                    </button>
-
-                    <div className="jobs-grid" ref={jobsGridRef} onScroll={checkScroll}>
-                      {/* recent-label removed — now in section-header */}
-                      {filtered.map((job) => {
-                        const isNewJob = job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString();
-                        const isLastDay = job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString();
-                        return (
-                          <div
-                            key={job.id}
-                            className="job-card"
-                            onClick={() => openJob(job)}
-                            title="Click to view job details"
-                            style={{ position: 'relative' }}
-                          >
-                            <div className="job-card-body">
-                              <div className="job-card-header">
-                                <div className="company-logo">
-                                  {getCompanyInitials(job.company)}
+                                  {job.skills && (
+                                    <div className="job-skills">
+                                      {job.skills.split(',').map((skill, index) => (
+                                        <span key={index} className="skill-tag">
+                                          {skill.trim()}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
-                                <div className="job-info">
-                                  <h3 className="job-title">{job.title}</h3>
-                                  <p className="company-name">{job.company}</p>
+
+                                <div className="job-card-footer">
+                                  <span className="view-details-hint">View Details →</span>
                                 </div>
                               </div>
+                            )
+                          })}
+                        </div>
+                        <button
+                          className="jobs-nav-btn jobs-nav-next"
+                          aria-label="Next job"
+                          onClick={() => {
+                            if (jobsGridRef.current) {
+                              jobsGridRef.current.scrollBy({ left: jobsGridRef.current.offsetWidth, behavior: 'smooth' });
+                            }
+                          }}
+                          style={{ visibility: canScrollRight ? 'visible' : 'hidden' }}
+                        >
+                          ›
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
 
-                              <div className="job-details">
-                                {isNewJob && (
-                                  <div className="job-detail-item" style={{
-                                    background: 'rgba(217, 119, 6, 0.15)',
-                                    border: '1px solid rgba(217, 119, 6, 0.4)',
-                                    color: '#b45309',
-                                    padding: '0.2rem 0.6rem',
-                                    borderRadius: '20px',
-                                    fontWeight: '700',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.2rem'
-                                  }}>
-                                    <span style={{ fontSize: '0.85rem', animation: 'pulse 2s infinite' }}>🔥</span>
-                                    <span>Posted Today</span>
-                                  </div>
-                                )}
-                                {isLastDay && (
-                                  <div className="job-detail-item" style={{
-                                    background: 'rgba(230, 74, 25, 0.1)',
-                                    border: '1px solid rgba(230, 74, 25, 0.3)',
-                                    color: '#e64a19',
-                                    padding: '0.2rem 0.6rem',
-                                    borderRadius: '20px',
-                                    fontWeight: '800',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.2rem'
-                                  }}>
-                                    <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
-                                    <span>Last Day to Apply</span>
-                                  </div>
-                                )}
-                                <div className="job-detail-item">
-                                  <span className="job-detail-icon">💰</span>
-                                  <span>{job.salary || '—'}</span>
-                                </div>
-                                {job.experienceLevel && (
-                                  <div className="job-detail-item">
-                                    <span className="job-detail-icon">📅</span>
-                                    <span>{job.experienceLevel}</span>
-                                  </div>
-                                )}
-                                {job.passoutYear && (
-                                  <div className="job-detail-item">
-                                    <span className="job-detail-icon">🎓</span>
-                                    <span>{job.passoutYear}</span>
-                                  </div>
-                                )}
-                                <div className="job-detail-item">
-                                  <span className="job-detail-icon">📍</span>
-                                  <span>{job.location}</span>
-                                </div>
-                                {job.jobType && (
-                                  <div className="job-detail-item">
-                                    <span className="job-detail-icon">💼</span>
-                                    <span>{job.jobType}</span>
-                                  </div>
-                                )}
-                              </div>
-
-                              {job.description && (
-                                <p className="job-description">{job.description}</p>
-                              )}
-
-                              {job.skills && (
-                                <div className="job-skills">
-                                  {job.skills.split(',').map((skill, index) => (
-                                    <span key={index} className="skill-tag">
-                                      {skill.trim()}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="job-card-footer">
-                              <span className="view-details-hint">View Details →</span>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                    <button
-                      className="jobs-nav-btn jobs-nav-next"
-                      aria-label="Next job"
-                      onClick={() => {
-                        if (jobsGridRef.current) {
-                          jobsGridRef.current.scrollBy({ left: jobsGridRef.current.offsetWidth, behavior: 'smooth' });
-                        }
-                      }}
-                      style={{ visibility: canScrollRight ? 'visible' : 'hidden' }}
-                    >
-                      ›
-                    </button>
-                  </div>
-                )}
-              </>
-            );
-          })()}
-
-      </section >
+          </section >
+        </>
+      ) : (
+        <ProConnect />
+      )}
 
       {/* Featured Companies Marquee */}
       < section className="companies-section" >

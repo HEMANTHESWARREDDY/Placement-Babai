@@ -132,6 +132,15 @@
   width: 100%;
 }
 
+.nav-links a.active-nav {
+  color: #e11d48;
+}
+
+.nav-links a.active-nav::after {
+  width: 100%;
+  background: #e11d48;
+}
+
 .mobile-menu-btn {
   display: none;
 }
