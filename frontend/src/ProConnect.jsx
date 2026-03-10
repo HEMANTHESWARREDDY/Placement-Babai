@@ -55,9 +55,9 @@ function ProConnect() {
                         />
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '1rem' }}>
                         <span className="search-icon" style={{ marginRight: 0 }}>🎓</span>
-                        <span style={{ color: '#94a3b8', fontSize: '0.95rem', whiteSpace: 'nowrap' }}>Years of experience</span>
+                        <span style={{ color: '#94a3b8', fontSize: '0.95rem', whiteSpace: 'nowrap', marginLeft: '-2px' }}>Years of experience</span>
                         <input
                             type="number"
                             min="0"
