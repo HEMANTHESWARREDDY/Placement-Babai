@@ -23,24 +23,11 @@ public class AtsController {
     public ResponseEntity<?> checkAtsScore(@PathVariable Long id, @RequestParam("resume") MultipartFile resume) {
         System.out.println("====== checkAtsScore hit for job " + id + " ======");
         try {
-            int score = atsService.calculateAtsScore(id, resume);
-            Map<String, Object> response = new HashMap<>();
-            response.put("score", score);
-            response.put("message", getMessageForScore(score));
+            Map<String, Object> response = atsService.calculateAtsScore(id, resume);
             return ResponseEntity.ok(response);
         } catch (Throwable e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(Map.of("error", "Failed to parse document: " + e.toString()));
         }
-    }
-
-    private String getMessageForScore(int score) {
-        if (score >= 80)
-            return "Excellent Match! Your profile closely aligns with this role.";
-        if (score >= 60)
-            return "Good Match! You meet a solid amount of the requirements.";
-        if (score >= 40)
-            return "Fair Match! Consider highlighting relevant skills if you have them.";
-        return "Low Match! This role might require different experience or skills.";
     }
 }
