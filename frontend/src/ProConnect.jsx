@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ProDetail from './ProDetail';
+import AllMentorsList from './AllMentorsList';
 import './ProConnect.css';
 
 const pros = [
@@ -76,6 +77,7 @@ function ProConnect() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [searchExperience, setSearchExperience] = useState('');
     const [selectedPro, setSelectedPro] = useState(null);
+    const [showAllMentors, setShowAllMentors] = useState(false);
 
     const filteredPros = pros.filter(pro => {
         let matchKw = true;
@@ -99,6 +101,21 @@ function ProConnect() {
 
         return matchKw && matchExp;
     });
+
+    if (showAllMentors) {
+        return (
+            <div className="pro-connect-container">
+                <AllMentorsList
+                    mentors={filteredPros}
+                    onBack={() => setShowAllMentors(false)}
+                    onSelectPro={setSelectedPro}
+                />
+                {selectedPro && (
+                    <ProDetail pro={selectedPro} onClose={() => setSelectedPro(null)} />
+                )}
+            </div>
+        );
+    }
 
     return (
         <div className="pro-connect-container">
@@ -152,7 +169,7 @@ function ProConnect() {
                         <h2>Top Mentors</h2>
                         <p>In search of excellence? Explore the highest-rated mentors as recognized by the learner community.</p>
                     </div>
-                    <button className="pro-view-all-btn">
+                    <button className="pro-view-all-btn" onClick={() => setShowAllMentors(true)}>
                         View All <span className="pro-view-all-arrow">❯</span>
                     </button>
                 </div>
