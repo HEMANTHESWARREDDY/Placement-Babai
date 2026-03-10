@@ -41,9 +41,6 @@ function ProConnect() {
         <div className="pro-connect-container">
             <div className="pro-hero">
                 <h1>Pro <span className="highlight-text">Connect</span></h1>
-                <p className="pro-subtitle">A dedicated space to connect with industry professionals, mentors, and experienced engineers.</p>
-                <p className="pro-desc">Get career advice, interview tips, resume guidance, and real insights from people working in top tech companies.</p>
-                <div className="pro-tagline">Learn from the pros. Grow faster 🚀</div>
 
                 {/* Search Bar for Pros */}
                 <div className="search-container" style={{ marginTop: '2rem' }}>
@@ -58,14 +55,15 @@ function ProConnect() {
                         />
                     </div>
 
-                    <div className="search-input-group search-exp-input-group">
-                        <span className="search-icon">🎓</span>
+                    <div className="search-input-group search-exp-input-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className="search-icon" style={{ marginRight: 0 }}>🎓</span>
+                        <span style={{ color: '#94a3b8', fontSize: '0.95rem', whiteSpace: 'nowrap' }}>Years of experience</span>
                         <input
                             type="number"
                             min="0"
                             max="30"
                             className="search-input search-exp-number"
-                            placeholder="Years of exp"
+                            placeholder=""
                             value={searchExperience}
                             onChange={(e) => setSearchExperience(e.target.value)}
                         />
