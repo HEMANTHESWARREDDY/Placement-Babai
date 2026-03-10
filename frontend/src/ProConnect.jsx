@@ -135,15 +135,12 @@ function ProConnect() {
                         />
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '1rem' }}>
-                        <span className="search-icon" style={{ marginRight: 0 }}>🎓</span>
-                        <span style={{ color: '#94a3b8', fontSize: '0.95rem', whiteSpace: 'nowrap', marginLeft: '-2px' }}>Years of experience</span>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '0.8', borderLeft: '1px solid #e2e8f0', paddingLeft: '1.4rem' }}>
+                        <span className="search-icon">🎓</span>
                         <input
-                            type="number"
-                            min="0"
-                            max="30"
+                            type="text"
                             className="search-input search-exp-number"
-                            placeholder=""
+                            placeholder="Years of experience"
                             value={searchExperience}
                             onChange={(e) => setSearchExperience(e.target.value)}
                         />
