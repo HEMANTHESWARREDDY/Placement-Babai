@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ProConnect.css';
 
 function ProConnect() {
@@ -11,6 +11,32 @@ function ProConnect() {
         { id: 6, name: "Neha Verma", role: "Product Designer @ Atlassian", exp: "7+ Yrs Exp", expertise: "Product Thinking, Portfolios", initials: "NV", color: "#06b6d4" },
     ];
 
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [searchExperience, setSearchExperience] = useState('');
+
+    const filteredPros = pros.filter(pro => {
+        let matchKw = true;
+        if (searchKeyword.trim()) {
+            const kw = searchKeyword.toLowerCase();
+            matchKw =
+                pro.name.toLowerCase().includes(kw) ||
+                pro.role.toLowerCase().includes(kw) ||
+                pro.expertise.toLowerCase().includes(kw);
+        }
+
+        let matchExp = true;
+        if (searchExperience !== '') {
+            const expVal = parseInt(searchExperience, 10);
+            const proExpVal = parseInt(pro.exp, 10);
+            if (!isNaN(expVal) && !isNaN(proExpVal)) {
+                // Show mentors with AT LEAST the required experience
+                matchExp = proExpVal >= expVal;
+            }
+        }
+
+        return matchKw && matchExp;
+    });
+
     return (
         <div className="pro-connect-container">
             <div className="pro-hero">
@@ -18,26 +44,71 @@ function ProConnect() {
                 <p className="pro-subtitle">A dedicated space to connect with industry professionals, mentors, and experienced engineers.</p>
                 <p className="pro-desc">Get career advice, interview tips, resume guidance, and real insights from people working in top tech companies.</p>
                 <div className="pro-tagline">Learn from the pros. Grow faster 🚀</div>
+
+                {/* Search Bar for Pros */}
+                <div className="search-container" style={{ marginTop: '2rem' }}>
+                    <div className="search-input-group">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Search by Role, Company, or Skills"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="search-input-group search-exp-input-group">
+                        <span className="search-icon">🎓</span>
+                        <input
+                            type="number"
+                            min="0"
+                            max="30"
+                            className="search-input search-exp-number"
+                            placeholder="Years of exp"
+                            value={searchExperience}
+                            onChange={(e) => setSearchExperience(e.target.value)}
+                        />
+                        {searchExperience !== '' && (
+                            <span className="exp-badge">
+                                {parseInt(searchExperience, 10) === 0 ? '🌱 Fresher' : parseInt(searchExperience, 10) <= 3 ? '📅 Junior' : '🚀 Senior'}
+                            </span>
+                        )}
+                    </div>
+
+                    <button className="search-btn" onClick={() => {
+                        // The filtering is real-time, but this button provides psychological closure
+                        document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}>
+                        Search Mentors
+                    </button>
+                </div>
             </div>
 
             <div className="pro-profiles-section">
                 <h2>Meet Our Mentors</h2>
-                <div className="pro-grid">
-                    {pros.map(pro => (
-                        <div className="pro-card" key={pro.id}>
-                            <div className="pro-avatar" style={{ backgroundColor: pro.color }}>
-                                {pro.initials}
+                {filteredPros.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.1rem' }}>
+                        No mentors found matching your search criteria. Try a different search!
+                    </div>
+                ) : (
+                    <div className="pro-grid">
+                        {filteredPros.map(pro => (
+                            <div className="pro-card" key={pro.id}>
+                                <div className="pro-avatar" style={{ backgroundColor: pro.color }}>
+                                    {pro.initials}
+                                </div>
+                                <h3 className="pro-name">{pro.name}</h3>
+                                <p className="pro-role">{pro.role}</p>
+                                <p className="pro-exp">⏱️ {pro.exp}</p>
+                                <div className="pro-expertise">
+                                    <span>💡</span> {pro.expertise}
+                                </div>
+                                <button className="book-session-btn" onClick={() => alert("Booking session flow coming soon!")}>Book a Session</button>
                             </div>
-                            <h3 className="pro-name">{pro.name}</h3>
-                            <p className="pro-role">{pro.role}</p>
-                            <p className="pro-exp">⏱️ {pro.exp}</p>
-                            <div className="pro-expertise">
-                                <span>💡</span> {pro.expertise}
-                            </div>
-                            <button className="book-session-btn" onClick={() => alert("Booking session flow coming soon!")}>Book a Session</button>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
