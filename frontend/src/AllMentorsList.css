@@ -39,6 +39,156 @@
     color: #0f172a;
 }
 
+/* Categories Row */
+.aml-categories-row {
+    display: flex;
+    gap: 1.2rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    position: relative;
+}
+
+.aml-categories-row::-webkit-scrollbar {
+    display: none;
+}
+
+.aml-category-card {
+    background: #f0f9ff;
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    min-width: 140px;
+    height: 125px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.aml-category-card:hover {
+    background: #e0f2fe;
+    transform: translateY(-2px);
+    border-color: #bae6fd;
+}
+
+.aml-cat-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 4px 6px rgba(14, 165, 233, 0.2));
+}
+
+.aml-cat-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.aml-cat-next {
+    background: white;
+    border: 1px solid #e2e8f0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #475569;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    z-index: 2;
+}
+
+.aml-cat-next:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* Filters Row */
+.aml-filters-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.aml-filters-left {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.aml-filter-btn {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.aml-filter-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #334155;
+}
+
+.aml-filter-active {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: #eff6ff;
+}
+
+.aml-filter-active:hover {
+    background: #dbeafe;
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.aml-filter-badge {
+    background: #0ea5e9;
+    color: white;
+    font-size: 0.75rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.aml-filters-right {
+    display: flex;
+    align-items: center;
+}
+
+.aml-featured-pill {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: 1px solid #e2e8f0;
+}
+
 .aml-list {
     display: flex;
     flex-direction: column;

@@ -4,11 +4,50 @@ import './AllMentorsList.css';
 function AllMentorsList({ mentors, onBack, onSelectPro }) {
     return (
         <div className="aml-container">
-            <div className="aml-header">
+            <div className="aml-header" style={{ marginBottom: '1.5rem', marginTop: '-1rem' }}>
                 <button className="aml-back-btn" onClick={onBack}>
                     ←
                 </button>
-                <div className="aml-title">All Mentors</div>
+                <div className="aml-title" style={{ fontSize: '2.2rem' }}>Explore <span style={{ color: '#0ea5e9' }}>Mentors</span></div>
+            </div>
+
+            {/* Categories Row */}
+            <div className="aml-categories-row">
+                {[
+                    { icon: '📄', label: 'CV Review' },
+                    { icon: '🎓', label: 'MBA Preparation' },
+                    { icon: '🏆', label: 'Case Competition' },
+                    { icon: '🤝', label: 'Placement Support' },
+                    { icon: '👨‍💻', label: 'Interview Preparation' },
+                    { icon: '💼', label: 'Career Guidance' },
+                    { icon: '✨', label: 'Personal Branding' }
+                ].map((cat, i) => (
+                    <div className="aml-category-card" key={i}>
+                        <div className="aml-cat-icon">{cat.icon}</div>
+                        <div className="aml-cat-label">{cat.label}</div>
+                    </div>
+                ))}
+                <button className="aml-cat-next">❯</button>
+            </div>
+
+            {/* Filters Row */}
+            <div className="aml-filters-row">
+                <div className="aml-filters-left">
+                    <button className="aml-filter-btn">
+                        <span style={{ fontSize: '1.1rem' }}>▤</span> Filters <span className="aml-filter-badge">1</span>
+                    </button>
+                    <button className="aml-filter-btn aml-filter-active">
+                        Top Mentor
+                    </button>
+                    <button className="aml-filter-btn">
+                        ⇕ Sort By
+                    </button>
+                </div>
+                <div className="aml-filters-right">
+                    <div className="aml-featured-pill">
+                        Featured
+                    </div>
+                </div>
             </div>
 
             <div className="aml-list">
