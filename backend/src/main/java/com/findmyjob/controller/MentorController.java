@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/mentors")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class MentorController {
 
     @Autowired
