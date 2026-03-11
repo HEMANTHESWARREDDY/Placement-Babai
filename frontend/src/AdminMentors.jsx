@@ -136,7 +136,7 @@ function AdminMentors() {
                                 <th>Experience</th>
                                 <th>Contact / Links</th>
                                 <th>Bio & Skills</th>
-                                <th>Created</th>
+                                <th>Submitted On</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
