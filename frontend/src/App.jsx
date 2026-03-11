@@ -40,7 +40,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [appliesCount, setAppliesCount] = useState({});
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
-  const [activeMainTab, setActiveMainTab] = useState('jobs');
+  const [activeMainTab, setActiveMainTab] = useState(() => sessionStorage.getItem('activeMainTab') || 'jobs');
   const filterBarRef = useRef(null);
   const jobsGridRef = useRef(null);
 
@@ -685,6 +685,7 @@ function App() {
                 <a href="#pro-connect" onClick={(e) => {
                   e.preventDefault();
                   setActiveMainTab('pro-connect');
+                  sessionStorage.setItem('activeMainTab', 'pro-connect');
                   setIsMobileMenuOpen(false);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }} className={activeMainTab === 'pro-connect' ? 'active-nav' : ''}>
@@ -696,6 +697,7 @@ function App() {
                 <a href="#home" onClick={(e) => {
                   e.preventDefault();
                   setActiveMainTab('jobs');
+                  sessionStorage.setItem('activeMainTab', 'jobs');
                   setSearchKeyword(''); setSearchLocation(''); setShowAll(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); fetchJobs();
                 }} className={activeMainTab === 'jobs' ? 'active-nav' : ''}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
