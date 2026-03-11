@@ -15,7 +15,7 @@ function AdminMentors() {
     const fetchMentors = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('adminToken');
             const endpoint = activeSubTab === 'PENDING'
                 ? `${API_BASE_URL}/api/admin/mentors/applications`
                 : `${API_BASE_URL}/api/admin/mentors`;
@@ -44,7 +44,7 @@ function AdminMentors() {
 
         setIsUpdating(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('adminToken');
             const response = await fetch(`${API_BASE_URL}/api/admin/mentors/${id}/status`, {
                 method: 'PUT',
                 headers: {
@@ -73,7 +73,7 @@ function AdminMentors() {
 
         setIsUpdating(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('adminToken');
             const response = await fetch(`${API_BASE_URL}/api/admin/mentors/${id}`, {
                 method: 'DELETE',
                 headers: {
