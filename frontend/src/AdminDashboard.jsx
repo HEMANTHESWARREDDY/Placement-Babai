@@ -99,7 +99,7 @@ function AdminDashboard({ adminData, onLogout }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilters, setActiveFilters] = useState({});
     const [sortType, setSortType] = useState('');
-    const [activeTab, setActiveTab] = useState('jobs'); // 'jobs', 'analytics', 'deleted'
+    const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('adminActiveTab') || 'jobs'); // 'jobs', 'analytics', 'deleted', 'mentors'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
@@ -113,6 +113,11 @@ function AdminDashboard({ adminData, onLogout }) {
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
         setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+    };
+
+    const changeTab = (tab) => {
+        setActiveTab(tab);
+        sessionStorage.setItem('adminActiveTab', tab);
     };
 
     const toggleFilter = (group, value) => {
@@ -595,29 +600,29 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                     <div className="header-actions">
                         <button
                             className={`btn-tab ${activeTab === 'jobs' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('jobs')}
+                            onClick={() => changeTab('jobs')}
                         >
                             📋 Jobs
                         </button>
                         <button
                             className={`btn-tab ${activeTab === 'analytics' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('analytics')}
+                            onClick={() => changeTab('analytics')}
                         >
                             📈 Analytics
                         </button>
                         <button
                             className={`btn-tab ${activeTab === 'deleted' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('deleted')}
+                            onClick={() => changeTab('deleted')}
                         >
                             🗑️ History
                         </button>
                         <button
                             className={`btn-tab ${activeTab === 'mentors' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('mentors')}
+                            onClick={() => changeTab('mentors')}
                         >
                             👨‍🏫 Mentors
                         </button>
-                        <button className="btn-primary" onClick={() => { setActiveTab('jobs'); setShowForm(!showForm); if (showForm) resetForm(); }}>
+                        <button className="btn-primary" onClick={() => { changeTab('jobs'); setShowForm(!showForm); if (showForm) resetForm(); }}>
                             {showForm ? '✕ Cancel' : '+ Add New Job'}
                         </button>
                         <button className="btn-logout" onClick={onLogout}>Logout</button>
