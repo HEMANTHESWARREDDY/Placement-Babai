@@ -37,6 +37,75 @@
     animation: rmSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Already a Mentor Banner */
+.rm-already-mentor-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.15);
+}
+
+.rm-already-mentor-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rm-already-mentor-emoji {
+    font-size: 2rem;
+    line-height: 1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.rm-already-mentor-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.rm-already-mentor-sub {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.rm-mentor-login-btn {
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+    color: white;
+    text-decoration: none;
+    padding: 0.6rem 1.4rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.rm-mentor-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    color: white;
+}
+
 @keyframes rmSlideUp {
     from {
         opacity: 0;

@@ -79,6 +79,19 @@ function RegisterMentorModal({ onClose }) {
                             <p>Share your expertise, guide the next generation, and grow your personal brand.</p>
                         </div>
 
+                        <div className="rm-already-mentor-banner">
+                            <div className="rm-already-mentor-left">
+                                <span className="rm-already-mentor-emoji">⚡</span>
+                                <div>
+                                    <div className="rm-already-mentor-title">Already a Mentor?</div>
+                                    <div className="rm-already-mentor-sub">Log in to your mentor dashboard</div>
+                                </div>
+                            </div>
+                            <a href="mailto:mentor@placementbabai.com" className="rm-mentor-login-btn">
+                                Login Here →
+                            </a>
+                        </div>
+
                         <form className="rm-form" onSubmit={handleSubmit}>
                             <div className="rm-form-grid">
                                 <div className="rm-form-group">
