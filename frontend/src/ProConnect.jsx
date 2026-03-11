@@ -126,7 +126,7 @@ function ProConnect() {
                     A dedicated space to connect with industry professionals, mentors, and experienced engineers.
                 </p>
                 <div className="pro-tagline">
-                    Learn from the pros. Grow faster.
+                    Connect faster. Grow faster. Get hired faster. 🚀
                 </div>
 
                 {/* Search Bar for Pros */}
