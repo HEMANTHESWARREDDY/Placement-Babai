@@ -1,0 +1,44 @@
+package com.findmyjob.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@Table(name = "mentors")
+public class Mentor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String email;
+    private String phone;
+    private String company;
+    private String role;
+    private String experience;
+    private String linkedin;
+    private String skills;
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    private String status; // PENDING, APPROVED, REJECTED
+
+    private LocalDateTime createdAt;
+
+    // Fields used when approved
+    private String headerBg;
+    private String avatarBg;
+    private String image;
+    private Double rating;
+    private Integer reviews;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (status == null) {
+            status = "PENDING";
+        }
+    }
+}

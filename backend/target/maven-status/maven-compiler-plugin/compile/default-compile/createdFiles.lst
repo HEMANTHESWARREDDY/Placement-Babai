@@ -1,12 +1,15 @@
 com\findmyjob\repository\JobApplyRepository.class
 com\findmyjob\controller\AuthController.class
 com\findmyjob\config\DataInitializer.class
+com\findmyjob\model\Mentor.class
 com\findmyjob\service\AtsService.class
 com\findmyjob\service\JobParserService.class
 com\findmyjob\config\WebConfig.class
 com\findmyjob\FindMyJobApplication.class
 com\findmyjob\model\Admin.class
 com\findmyjob\model\Job.class
+com\findmyjob\controller\MentorController.class
+com\findmyjob\repository\MentorRepository.class
 com\findmyjob\model\WebsiteView.class
 com\findmyjob\controller\AnalyticsController.class
 com\findmyjob\repository\AdminRepository.class
@@ -16,6 +19,7 @@ com\findmyjob\config\SecurityConfig.class
 com\findmyjob\service\JobService.class
 com\findmyjob\repository\WebsiteViewRepository.class
 com\findmyjob\controller\JobController.class
+com\findmyjob\controller\AdminMentorController.class
 com\findmyjob\repository\SearchQueryLogRepository.class
 com\findmyjob\model\JobApply.class
 com\findmyjob\model\JobView.class

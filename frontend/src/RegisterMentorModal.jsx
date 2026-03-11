@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from './config';
 import './RegisterMentorModal.css';
 
 function RegisterMentorModal({ onClose }) {
@@ -32,17 +33,32 @@ function RegisterMentorModal({ onClose }) {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/mentors/apply`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                setIsSuccess(true);
+                setTimeout(() => {
+                    onClose();
+                }, 2500);
+            } else {
+                alert('There was an issue submitting your application.');
+            }
+        } catch (error) {
+            console.error('Error applying as mentor:', error);
+            alert('A network error occurred.');
+        } finally {
             setIsSubmitting(false);
-            setIsSuccess(true);
-            setTimeout(() => {
-                onClose();
-            }, 2500);
-        }, 1500);
+        }
     };
 
     return (

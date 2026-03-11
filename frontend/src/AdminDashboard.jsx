@@ -4,6 +4,7 @@ import './AdminDashboard.css';
 import CustomSelect from './CustomSelect';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import JobAnalytics from './JobAnalytics';
+import AdminMentors from './AdminMentors';
 
 const parseRangeLow = (str) => {
     if (!str) return null;
@@ -610,6 +611,12 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                         >
                             🗑️ History
                         </button>
+                        <button
+                            className={`btn-tab ${activeTab === 'mentors' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('mentors')}
+                        >
+                            👨‍🏫 Mentors
+                        </button>
                         <button className="btn-primary" onClick={() => { setActiveTab('jobs'); setShowForm(!showForm); if (showForm) resetForm(); }}>
                             {showForm ? '✕ Cancel' : '+ Add New Job'}
                         </button>
@@ -620,6 +627,8 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
 
             {activeTab === 'analytics' ? (
                 <AnalyticsDashboard />
+            ) : activeTab === 'mentors' ? (
+                <AdminMentors />
             ) : activeTab === 'deleted' ? (
                 <div className="jobs-management">
                     <div className="jobs-list-header">
