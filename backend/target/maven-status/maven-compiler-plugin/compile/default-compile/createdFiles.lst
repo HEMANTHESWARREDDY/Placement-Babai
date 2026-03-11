@@ -7,6 +7,7 @@ com\findmyjob\service\JobParserService.class
 com\findmyjob\config\WebConfig.class
 com\findmyjob\FindMyJobApplication.class
 com\findmyjob\model\Admin.class
+com\findmyjob\config\JwtAuthFilter.class
 com\findmyjob\model\Job.class
 com\findmyjob\controller\MentorController.class
 com\findmyjob\repository\MentorRepository.class

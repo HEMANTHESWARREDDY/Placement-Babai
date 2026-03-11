@@ -5,6 +5,7 @@ C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\f
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\repository\WebsiteViewRepository.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\util\JwtUtil.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\repository\SearchQueryLogRepository.java
+C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\config\JwtAuthFilter.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\controller\AnalyticsController.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\controller\AdminMentorController.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\controller\MentorController.java
