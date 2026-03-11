@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ProDetail from './ProDetail';
 import AllMentorsList from './AllMentorsList';
+import RegisterMentorModal from './RegisterMentorModal';
 import './ProConnect.css';
 
 const pros = [
@@ -78,6 +79,7 @@ function ProConnect() {
     const [searchExperience, setSearchExperience] = useState('');
     const [selectedPro, setSelectedPro] = useState(null);
     const [showAllMentors, setShowAllMentors] = useState(false);
+    const [showRegisterMentor, setShowRegisterMentor] = useState(false);
 
     const filteredPros = pros.filter(pro => {
         let matchKw = true;
@@ -127,6 +129,15 @@ function ProConnect() {
                 </p>
                 <div className="pro-tagline">
                     Connect faster. Grow faster. Get hired faster. 🚀
+                </div>
+
+                <div style={{ marginTop: '1.5rem' }}>
+                    <button
+                        className="become-mentor-hero-btn"
+                        onClick={() => setShowRegisterMentor(true)}
+                    >
+                        Become a Mentor
+                    </button>
                 </div>
 
                 {/* Search Bar for Pros */}
@@ -208,6 +219,11 @@ function ProConnect() {
             {/* Render details modal if selected */}
             {selectedPro && (
                 <ProDetail pro={selectedPro} onClose={() => setSelectedPro(null)} />
+            )}
+
+            {/* Render Become Mentor Modal */}
+            {showRegisterMentor && (
+                <RegisterMentorModal onClose={() => setShowRegisterMentor(false)} />
             )}
         </div>
     );
