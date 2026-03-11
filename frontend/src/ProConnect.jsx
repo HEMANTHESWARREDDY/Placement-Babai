@@ -122,9 +122,16 @@ function ProConnect() {
             <div className="pro-hero">
                 <h1>Pro <span className="highlight-text">Connect</span></h1>
 
+                <p className="pro-subtitle">
+                    A dedicated space to connect with industry professionals, mentors, and experienced engineers.
+                </p>
+                <div className="pro-tagline">
+                    Learn from the pros. Grow faster.
+                </div>
+
                 {/* Search Bar for Pros */}
-                <div className="search-container" style={{ marginTop: '2rem' }}>
-                    <div className="search-input-group">
+                <div className="search-container" style={{ marginTop: '2.5rem' }}>
+                    <div className="search-input-group" style={{ flex: '1.2' }}>
                         <span className="search-icon">🔍</span>
                         <input
                             type="text"
@@ -135,7 +142,7 @@ function ProConnect() {
                         />
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '0.8', borderLeft: '1px solid #e2e8f0', paddingLeft: '1.4rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '0.9', borderLeft: '1px solid #e2e8f0', paddingLeft: '1.4rem' }}>
                         <span className="search-icon">🎓</span>
                         <input
                             type="text"
