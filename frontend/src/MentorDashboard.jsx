@@ -42,6 +42,21 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         setProfile(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleImageUpload = (e, field) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                setMessage('Image size must be less than 2MB');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfile(prev => ({ ...prev, [field]: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
         setSaving(true);
@@ -107,12 +122,17 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
 
                     <div className="mentor-form-group">
-                        <label>Header Banner Color (Hex)</label>
-                        <input type="text" name="headerBg" value={profile.headerBg || ''} onChange={handleChange} placeholder="#fbcfe8" />
+                        <label>Profile Picture (Upload)</label>
+                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'image')} />
                     </div>
 
                     <div className="mentor-form-group">
-                        <label>Avatar Background Color (Hex)</label>
+                        <label>Banner Image (Upload)</label>
+                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'headerBg')} />
+                    </div>
+
+                    <div className="mentor-form-group">
+                        <label>Backup Avatar Color (Hex)</label>
                         <input type="text" name="avatarBg" value={profile.avatarBg || ''} onChange={handleChange} placeholder="#0ea5e9" />
                     </div>
 
@@ -142,8 +162,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
 
                     <div className="mentor-form-group">
-                        <label>Instagram URL</label>
-                        <input type="text" name="instagram" value={profile.instagram || ''} onChange={handleChange} />
+                        <label>Education</label>
+                        <textarea name="education" value={profile.education || ''} onChange={handleChange} rows="2" placeholder="e.g. MBA from IIM Lucknow" />
+                    </div>
+
+                    <div className="mentor-form-group">
+                        <label>Work Experience</label>
+                        <textarea name="workExperience" value={profile.workExperience || ''} onChange={handleChange} rows="3" placeholder="e.g. Strategy @ Meesho" />
+                    </div>
+
+                    <div className="mentor-form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" value={profile.email || ''} onChange={handleChange} />
                     </div>
 
                     <div className="mentor-form-group">
@@ -158,10 +188,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                 {/* Live Preview Section */}
                 <div className="mentor-preview">
-                    <div className="preview-header" style={{background: headerBgColor}}></div>
+                    <div className="preview-header" style={{background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}></div>
                     <div className="preview-body">
                         <div className="preview-avatar-wrapper">
-                            <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image})` : avatarBgColor}}>
+                            <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                 {!profile.image && initials}
                             </div>
                             <div className="availability-badge">⚡ Available</div>
@@ -170,7 +200,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div className="preview-title-row">
                             <h3>{profile.name} <span className="preview-rating">⭐ {profile.rating || 'New'}</span></h3>
                             <div className="preview-socials">
-                                {profile.instagram && <a href={profile.instagram} target="_blank" rel="noopener noreferrer" className="preview-social-icon">📸</a>}
+                                {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
                                 {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
                             </div>
                         </div>
@@ -190,13 +220,23 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 
                                 <div className="preview-accordion">
                                     <div className="preview-accordion-header">About <span>^</span></div>
-                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5'}}>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
                                         {profile.bio || "No about added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion"><div className="preview-accordion-header">Topics <span>v</span></div></div>
-                                <div className="preview-accordion"><div className="preview-accordion-header">Education <span>v</span></div></div>
-                                <div className="preview-accordion"><div className="preview-accordion-header">Work Experience <span>v</span></div></div>
+                                <div className="preview-accordion">
+                                    <div className="preview-accordion-header">Education <span>^</span></div>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                        {profile.education || "No education added yet."}
+                                    </div>
+                                </div>
+                                <div className="preview-accordion">
+                                    <div className="preview-accordion-header">Work Experience <span>^</span></div>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                        {profile.workExperience || "No work experience added yet."}
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="preview-section-right">
@@ -212,7 +252,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     {/* Mock Service 1 */}
                                     <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
                                         <div className="preview-service-tag">⭐ BEST SELLER</div>
-                                        <div className="preview-service-title">Case Interview Strategy</div>
+                                        <div className="preview-service-title">1:1 Call Mentorship</div>
                                         <div className="preview-service-footer">
                                             <div className="preview-service-price">₹499</div>
                                             <button className="preview-book-btn">Book Now</button>
@@ -221,8 +261,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                                     {/* Mock Service 2 */}
                                     <div className="preview-service-card">
-                                        <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>🎁 RESOURCE</div>
-                                        <div className="preview-service-title">Marketing Prep Material</div>
+                                        <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
+                                        <div className="preview-service-title">Resume Review</div>
                                         <div className="preview-service-footer">
                                             <div className="preview-service-price">₹199</div>
                                             <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
