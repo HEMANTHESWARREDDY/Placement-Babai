@@ -22,12 +22,19 @@ function App() {
   const [showLocSuggestions, setShowLocSuggestions] = useState(false);
   const [searchExperience, setSearchExperience] = useState('');
   const [currentView, setCurrentView] = useState(() => {
+    const savedView = sessionStorage.getItem('currentView');
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === 'true') {
       return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login';
     }
+    if (savedView) return savedView;
     return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'home';
   });
+
+  useEffect(() => {
+    sessionStorage.setItem('currentView', currentView);
+  }, [currentView]);
+
   const [adminData, setAdminData] = useState(() => {
     const token = localStorage.getItem('adminToken');
     const username = localStorage.getItem('adminUsername');

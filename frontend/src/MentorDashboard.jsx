@@ -21,10 +21,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 const data = await res.json();
                 setProfile({
                     ...data,
-                    // Parse JSON fields or default them
-                    topics: data.topics ? JSON.parse(data.topics) : '',
-                    education: data.education ? JSON.parse(data.education) : '',
-                    workExperience: data.workExperience ? JSON.parse(data.workExperience) : '',
+                    // topics, education, workExperience are now stored as plain strings
+                    topics: data.topics || '',
+                    education: data.education || '',
+                    workExperience: data.workExperience || '',
                     services: data.services ? JSON.parse(data.services) : []
                 });
             } else {
@@ -65,9 +65,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         try {
             const payload = {
                 ...profile,
-                topics: JSON.stringify(profile.topics || ''),
-                education: JSON.stringify(profile.education || ''),
-                workExperience: JSON.stringify(profile.workExperience || ''),
+                topics: profile.topics || '',
+                education: profile.education || '',
+                workExperience: profile.workExperience || '',
                 services: JSON.stringify(profile.services || [])
             };
 
@@ -84,7 +84,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 setMessage('Profile saved successfully!');
                 setTimeout(() => setMessage(''), 3000);
             } else {
-                setMessage('Error saving profile.');
+                let errStr = 'Error saving profile.';
+                try {
+                    const errObj = await res.json();
+                    if (errObj.error) errStr = `Error: ${errObj.error}`;
+                } catch(e) {}
+                setMessage(errStr);
+                setTimeout(() => setMessage(''), 5000);
             }
         } catch (e) {
             setMessage('Network error saving profile.');
