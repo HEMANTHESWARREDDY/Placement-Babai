@@ -238,6 +238,37 @@
     padding-top: 1.5rem;
 }
 
+.rm-credentials-section {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.rm-credentials-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.2rem;
+}
+
+.rm-credentials-sub {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.hide-on-mobile {
+    display: flex;
+}
+
+@media (max-width: 600px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+}
+
 .rm-cancel-btn {
     padding: 0.7rem 1.5rem;
     border-radius: 12px;

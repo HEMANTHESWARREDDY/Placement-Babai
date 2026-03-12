@@ -11,4 +11,12 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     List<Mentor> findByStatusOrderByCreatedAtDesc(String status);
 
     List<Mentor> findAllByOrderByCreatedAtDesc();
+
+    java.util.Optional<Mentor> findByUsername(String username);
+
+    java.util.Optional<Mentor> findByEmail(String email);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

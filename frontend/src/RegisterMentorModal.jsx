@@ -12,7 +12,10 @@ function RegisterMentorModal({ onClose }) {
         experience: '',
         linkedin: '',
         skills: '',
-        bio: ''
+        bio: '',
+        username: '',
+        password: '',
+        confirmPassword: ''
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,6 +40,16 @@ function RegisterMentorModal({ onClose }) {
         e.preventDefault();
         setIsSubmitting(true);
         try {
+            if (formData.password.length < 6) {
+                alert('Password must be at least 6 characters.');
+                setIsSubmitting(false);
+                return;
+            }
+            if (formData.password !== formData.confirmPassword) {
+                alert('Passwords do not match!');
+                setIsSubmitting(false);
+                return;
+            }
             const response = await fetch(`${API_BASE_URL}/api/mentors/apply`, {
                 method: 'POST',
                 headers: {
@@ -51,7 +64,8 @@ function RegisterMentorModal({ onClose }) {
                     onClose();
                 }, 2500);
             } else {
-                alert('There was an issue submitting your application.');
+                const errorData = await response.json();
+                alert(errorData.error || 'There was an issue submitting your application.');
             }
         } catch (error) {
             console.error('Error applying as mentor:', error);
@@ -131,6 +145,26 @@ function RegisterMentorModal({ onClose }) {
                             <div className="rm-form-group rm-full-width">
                                 <label>Short Bio *</label>
                                 <textarea name="bio" required placeholder="Tell us a bit about your journey and what you can help mentees with..." rows="4" value={formData.bio} onChange={handleChange}></textarea>
+                            </div>
+
+                            <div className="rm-credentials-section">
+                                <div className="rm-credentials-title">🔐 Create Login Credentials</div>
+                                <div className="rm-credentials-sub">You'll use these to log in once your application is approved</div>
+                                <div className="rm-form-grid">
+                                    <div className="rm-form-group">
+                                        <label>Username *</label>
+                                        <input type="text" name="username" required placeholder="Choose a unique username" value={formData.username} onChange={handleChange} />
+                                    </div>
+                                    <div className="rm-form-group hide-on-mobile"></div>
+                                    <div className="rm-form-group">
+                                        <label>Password *</label>
+                                        <input type="password" name="password" required placeholder="Min 6 characters" value={formData.password} onChange={handleChange} />
+                                    </div>
+                                    <div className="rm-form-group">
+                                        <label>Confirm Password *</label>
+                                        <input type="password" name="confirmPassword" required placeholder="Re-enter password" value={formData.confirmPassword} onChange={handleChange} />
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="rm-form-actions">

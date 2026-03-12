@@ -25,6 +25,11 @@ public class Mentor {
 
     private String status; // PENDING, APPROVED, REJECTED
 
+    // Login credentials set at registration
+    @Column(unique = true)
+    private String username;
+    private String password; // stored as BCrypt hash
+
     private LocalDateTime createdAt;
 
     // Fields used when approved
