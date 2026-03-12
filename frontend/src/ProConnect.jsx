@@ -74,7 +74,7 @@ const pros = [
     }
 ];
 
-function ProConnect() {
+function ProConnect({ onMentorLoginClick }) {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [searchExperience, setSearchExperience] = useState('');
     const [selectedPro, setSelectedPro] = useState(null);
@@ -223,7 +223,10 @@ function ProConnect() {
 
             {/* Render Become Mentor Modal */}
             {showRegisterMentor && (
-                <RegisterMentorModal onClose={() => setShowRegisterMentor(false)} />
+                <RegisterMentorModal 
+                    onClose={() => setShowRegisterMentor(false)} 
+                    onLoginClick={onMentorLoginClick}
+                />
             )}
         </div>
     );

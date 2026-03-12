@@ -6,6 +6,8 @@ import CustomSelect from './CustomSelect';
 import LegalModal from './LegalModal';
 import AllJobsModal from './AllJobsModal';
 import ProConnect from './ProConnect';
+import MentorLogin from './MentorLogin';
+import MentorDashboard from './MentorDashboard';
 import { API_BASE_URL } from './config';
 import './App.css';
 
@@ -31,6 +33,12 @@ function App() {
     const username = localStorage.getItem('adminUsername');
     const email = localStorage.getItem('adminEmail');
     return token ? { token, username, email } : null;
+  });
+  const [mentorData, setMentorData] = useState(() => {
+    const token = localStorage.getItem('mentorToken');
+    const username = localStorage.getItem('mentorUsername');
+    const id = localStorage.getItem('mentorId');
+    return token ? { token, username, id } : null;
   });
   const [selectedJob, setSelectedJob] = useState(null);
   const [showAll, setShowAll] = useState(false);
@@ -593,6 +601,19 @@ function App() {
     setCurrentView('home');
   };
 
+  const handleMentorLogin = (data) => {
+    setMentorData(data);
+    setCurrentView('mentor-dashboard');
+  };
+
+  const handleMentorLogout = () => {
+    localStorage.removeItem('mentorToken');
+    localStorage.removeItem('mentorUsername');
+    localStorage.removeItem('mentorId');
+    setMentorData(null);
+    setCurrentView('home');
+  };
+
   // Opens a job and updates the URL so it can be shared
   const openJob = (job) => {
     setSelectedJob(job);
@@ -616,6 +637,14 @@ function App() {
 
   if (currentView === 'admin-dashboard' && adminData) {
     return <AdminDashboard adminData={adminData} onLogout={handleAdminLogout} />;
+  }
+
+  if (currentView === 'mentor-login') {
+    return <MentorLogin onLoginSuccess={handleMentorLogin} onBack={() => setCurrentView('home')} />;
+  }
+
+  if (currentView === 'mentor-dashboard' && mentorData) {
+    return <MentorDashboard mentorAuth={mentorData} onLogout={handleMentorLogout} />;
   }
 
   const newJobsToday = jobs.filter(job => {
@@ -1154,7 +1183,7 @@ function App() {
           </section >
         </>
       ) : (
-        <ProConnect />
+        <ProConnect onMentorLoginClick={() => setCurrentView('mentor-login')} />
       )}
 
       {/* Featured Companies Marquee */}

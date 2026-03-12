@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/jobs/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/admin/**").authenticated()
+                        .requestMatchers("/api/mentors/me").authenticated()
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

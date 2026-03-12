@@ -6,6 +6,7 @@ import com.findmyjob.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -119,5 +120,73 @@ public class MentorController {
         // Remove passwords from response
         approved.forEach(m -> m.setPassword(null));
         return ResponseEntity.ok(approved);
+    }
+
+    // Protected API to get logged-in mentor profile
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyProfile() {
+        String authUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (authUser == null || !authUser.startsWith("mentor_")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        Long id;
+        try {
+            id = Long.parseLong(authUser.substring(7));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<Mentor> mentorOpt = mentorRepository.findById(id);
+        if (mentorOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Mentor mentor = mentorOpt.get();
+        mentor.setPassword(null);
+        return ResponseEntity.ok(mentor);
+    }
+    
+    // Protected API to update logged-in mentor profile
+    @PutMapping("/me")
+    public ResponseEntity<?> updateMyProfile(@RequestBody Mentor updatedInfo) {
+        String authUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (authUser == null || !authUser.startsWith("mentor_")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        Long id;
+        try {
+            id = Long.parseLong(authUser.substring(7));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<Mentor> mentorOpt = mentorRepository.findById(id);
+        if (mentorOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Mentor mentor = mentorOpt.get();
+        
+        // Update all editable profile details
+        mentor.setName(updatedInfo.getName() != null ? updatedInfo.getName() : mentor.getName());
+        mentor.setBio(updatedInfo.getBio() != null ? updatedInfo.getBio() : mentor.getBio());
+        mentor.setImage(updatedInfo.getImage() != null ? updatedInfo.getImage() : mentor.getImage());
+        mentor.setHeaderBg(updatedInfo.getHeaderBg() != null ? updatedInfo.getHeaderBg() : mentor.getHeaderBg());
+        mentor.setRole(updatedInfo.getRole() != null ? updatedInfo.getRole() : mentor.getRole());
+        mentor.setCompany(updatedInfo.getCompany() != null ? updatedInfo.getCompany() : mentor.getCompany());
+        mentor.setExperience(updatedInfo.getExperience() != null ? updatedInfo.getExperience() : mentor.getExperience());
+        mentor.setLinkedin(updatedInfo.getLinkedin() != null ? updatedInfo.getLinkedin() : mentor.getLinkedin());
+        mentor.setInstagram(updatedInfo.getInstagram() != null ? updatedInfo.getInstagram() : mentor.getInstagram());
+        mentor.setTopics(updatedInfo.getTopics() != null ? updatedInfo.getTopics() : mentor.getTopics());
+        mentor.setEducation(updatedInfo.getEducation() != null ? updatedInfo.getEducation() : mentor.getEducation());
+        mentor.setWorkExperience(updatedInfo.getWorkExperience() != null ? updatedInfo.getWorkExperience() : mentor.getWorkExperience());
+        mentor.setServices(updatedInfo.getServices() != null ? updatedInfo.getServices() : mentor.getServices());
+        
+        Mentor saved = mentorRepository.save(mentor);
+        saved.setPassword(null);
+        
+        return ResponseEntity.ok(saved);
     }
 }

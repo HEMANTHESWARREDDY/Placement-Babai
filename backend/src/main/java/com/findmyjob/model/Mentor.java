@@ -38,6 +38,20 @@ public class Mentor {
     private String image;
     private Double rating;
     private Integer reviews;
+    private String instagram;
+    
+    // JSON strings for complex structures
+    @Column(columnDefinition = "TEXT")
+    private String topics;
+    
+    @Column(columnDefinition = "TEXT")
+    private String education;
+    
+    @Column(columnDefinition = "TEXT")
+    private String workExperience;
+    
+    @Column(columnDefinition = "TEXT")
+    private String services;
 
     @PrePersist
     protected void onCreate() {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from './config';
 import './RegisterMentorModal.css';
 
-function RegisterMentorModal({ onClose }) {
+function RegisterMentorModal({ onClose, onLoginClick }) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -101,9 +101,9 @@ function RegisterMentorModal({ onClose }) {
                                     <div className="rm-already-mentor-sub">Log in to your mentor dashboard</div>
                                 </div>
                             </div>
-                            <a href="mailto:mentor@placementbabai.com" className="rm-mentor-login-btn">
+                            <button type="button" onClick={() => { onClose(); if(onLoginClick) onLoginClick(); }} className="rm-mentor-login-btn" style={{border: 'none', cursor: 'pointer'}}>
                                 Login Here →
-                            </a>
+                            </button>
                         </div>
 
                         <form className="rm-form" onSubmit={handleSubmit}>
