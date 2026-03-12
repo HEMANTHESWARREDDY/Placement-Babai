@@ -92,6 +92,11 @@ public class MentorController {
 
         Mentor mentor = mentorOpt.get();
 
+        if (mentor.getPassword() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Your account doesn't have a password set. Please contact support."));
+        }
+
         if (!passwordEncoder.matches(password, mentor.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid username or password"));

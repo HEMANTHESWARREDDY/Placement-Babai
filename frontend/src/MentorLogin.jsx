@@ -43,17 +43,15 @@ function MentorLogin({ onLoginSuccess, onBack }) {
 
     return (
         <div className="admin-login-container">
-            <div className="admin-login-card">
-                <button className="back-btn" onClick={onBack}>← Back to Home</button>
-                <div className="admin-login-header">
-                    <h2>Mentor Portal Login</h2>
-                    <p>Enter your credentials to access your dashboard</p>
-                </div>
+            <div className="admin-login-box">
+                <button className="back-home-btn" onClick={onBack}>← Back to Home</button>
+                <h2>Mentor Portal Login</h2>
+                <p className="admin-subtitle">Enter your credentials to access your dashboard</p>
 
-                <form className="admin-login-form" onSubmit={handleSubmit}>
-                    {error && <div className="admin-login-error">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    {error && <div className="error-message">{error}</div>}
 
-                    <div className="admin-input-group">
+                    <div className="form-group">
                         <label>Username or Email</label>
                         <input
                             type="text"
@@ -65,7 +63,7 @@ function MentorLogin({ onLoginSuccess, onBack }) {
                         />
                     </div>
 
-                    <div className="admin-input-group">
+                    <div className="form-group">
                         <label>Password</label>
                         <input
                             type="password"
@@ -77,7 +75,7 @@ function MentorLogin({ onLoginSuccess, onBack }) {
                         />
                     </div>
 
-                    <button type="submit" className="admin-login-btn" disabled={loading}>
+                    <button type="submit" className="submit-btn" disabled={loading}>
                         {loading ? 'Logging in...' : 'Log In'}
                     </button>
                 </form>
