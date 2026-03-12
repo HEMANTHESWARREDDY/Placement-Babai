@@ -33,8 +33,11 @@ public class Mentor {
     private LocalDateTime createdAt;
 
     // Fields used when approved
+    @Column(columnDefinition = "LONGTEXT")
     private String headerBg;
     private String avatarBg;
+    
+    @Column(columnDefinition = "LONGTEXT")
     private String image;
     private Double rating;
     private Integer reviews;

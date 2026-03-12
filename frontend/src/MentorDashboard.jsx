@@ -93,9 +93,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
-    if (loading) return <div className="mentor-dashboard-container">Loading your dashboard...</div>;
-    if (!profile) return <div className="mentor-dashboard-container error-message">{message}</div>;
-
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', type: 'text' });
 
     const openEdit = (field, label, type = 'text') => {
@@ -110,6 +107,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         setProfile(prev => ({ ...prev, [editModal.field]: editModal.value }));
         closeEdit();
     };
+
+    if (loading) return <div className="mentor-dashboard-container">Loading your dashboard...</div>;
+    if (!profile) return <div className="mentor-dashboard-container error-message">{message}</div>;
 
     const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : '??';
     
