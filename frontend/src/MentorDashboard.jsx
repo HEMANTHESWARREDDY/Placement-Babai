@@ -159,108 +159,39 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             )}
 
             <div className="mentor-layout">
-                {isEditingProfile ? (
-                    <form className="mentor-edit-form" onSubmit={handleSave}>
-                        <h2>Edit Your Public Profile</h2>
 
-                        <div className="mentor-form-group">
-                            <label>Display Name</label>
-                            <input type="text" name="name" value={profile.name || ''} onChange={handleChange} />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Profile Picture (Upload)</label>
-                            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'image')} />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Banner Image (Upload)</label>
-                            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'headerBg')} />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Backup Avatar Color (Hex)</label>
-                            <input type="text" name="avatarBg" value={profile.avatarBg || ''} onChange={handleChange} placeholder="#0ea5e9" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Job Role</label>
-                            <input type="text" name="role" value={profile.role || ''} onChange={handleChange} placeholder="e.g. Strategy" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Company</label>
-                            <input type="text" name="company" value={profile.company || ''} onChange={handleChange} placeholder="e.g. Meesho" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Years of Experience Text</label>
-                            <input type="text" name="experience" value={profile.experience || ''} onChange={handleChange} placeholder="e.g. 4 years of Experience" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Top Mentor Tag line</label>
-                            <input type="text" name="topics" value={profile.topics || ''} onChange={handleChange} placeholder="e.g. Top 15 Unstoppable Mentor" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>About You</label>
-                            <textarea name="bio" value={profile.bio || ''} onChange={handleChange} rows="4" placeholder="Winner & Finalist in 23+ Int'l & Nat'l..." />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Education</label>
-                            <textarea name="education" value={profile.education || ''} onChange={handleChange} rows="2" placeholder="e.g. MBA from IIM Lucknow" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Work Experience</label>
-                            <textarea name="workExperience" value={profile.workExperience || ''} onChange={handleChange} rows="3" placeholder="e.g. Strategy @ Meesho" />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>Email Address</label>
-                            <input type="email" name="email" value={profile.email || ''} onChange={handleChange} />
-                        </div>
-
-                        <div className="mentor-form-group">
-                            <label>LinkedIn URL</label>
-                            <input type="text" name="linkedin" value={profile.linkedin || ''} onChange={handleChange} />
-                        </div>
-
-                        <button type="submit" className="mentor-save-btn" disabled={saving}>
-                            {saving ? 'Saving...' : 'Save Changes'}
-                        </button>
-                    </form>
-                ) : (
-                <div className="mentor-preview">
+                <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '800px', width: '100%' }}>
                     <div className="preview-header" style={{background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
-                        <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>
+                        {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
                     </div>
                     <div className="preview-body">
                         <div className="preview-avatar-wrapper">
                             <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                 {!profile.image && initials}
-                                <button className="inline-edit-btn inline-edit-avatar" onClick={() => document.getElementById('avatarUpload').click()}>✏️</button>
+                                {isEditingProfile && <button className="inline-edit-btn inline-edit-avatar" onClick={() => document.getElementById('avatarUpload').click()}>✏️</button>}
                             </div>
                         </div>
 
                         <div className="preview-title-row">
                             <h3>
                                 {profile.name} <span className="preview-rating">⭐ {profile.rating || 'New'}</span>
+                                {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('name', 'Display Name', 'text')}>✏️</button>}
                             </h3>
                             <div className="preview-socials">
                                 {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
                                 {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
+                                {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('email', 'Email Address', 'email')}>✏️ Edit Socials</button>}
                             </div>
                         </div>
 
                         <div className="preview-subtitle">
                             {profile.role} @ {profile.company} {profile.topics ? `| ${profile.topics}` : ''}
+                            {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('role', 'Job Role', 'text')}>✏️</button>}
                         </div>
 
                         <div className="preview-badges">
                             <div className="preview-badge">💼 {profile.experience || 'Experience'}</div>
+                            {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
                         </div>
 
                         <div className="preview-content-grid">
@@ -268,18 +199,21 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
                                 
                                 <div className="preview-accordion">
+                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('bio', 'About', 'textarea')}>✏️</button>}
                                     <div className="preview-accordion-header">About <span>^</span></div>
                                     <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
                                         {profile.bio || "No about added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion">
+                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('education', 'Education', 'textarea')}>✏️</button>}
                                     <div className="preview-accordion-header">Education <span>^</span></div>
                                     <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
                                         {profile.education || "No education added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion">
+                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('workExperience', 'Work Experience', 'textarea')}>✏️</button>}
                                     <div className="preview-accordion-header">Work Experience <span>^</span></div>
                                     <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
                                         {profile.workExperience || "No work experience added yet."}
@@ -318,10 +252,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
                                 </div>
                             </div>
-                            </div>
                         </div>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );
