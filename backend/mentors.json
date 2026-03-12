@@ -1,0 +1,122 @@
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp without time zone",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "rating",
+    "data_type": "double precision",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "reviews",
+    "data_type": "integer",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "services",
+    "data_type": "text",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "email",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "experience",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "header_bg",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "image",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "linkedin",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "name",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "phone",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "topics",
+    "data_type": "text",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "work_experience",
+    "data_type": "text",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "role",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "skills",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "status",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "password",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "username",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "education",
+    "data_type": "text",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "instagram",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "avatar_bg",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  },
+  {
+    "column_name": "bio",
+    "data_type": "text",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "company",
+    "data_type": "character varying",
+    "character_maximum_length": 255
+  }
+]
