@@ -96,9 +96,10 @@
 
 /* Mentor Profile Preview (Full Mode) */
 .mentor-preview {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
+    flex: 1;
+    min-width: 400px;
+    position: sticky;
+    top: 2rem;
     background: white;
     border-radius: 16px;
     overflow: hidden;
