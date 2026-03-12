@@ -12,9 +12,9 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
     List<Mentor> findAllByOrderByCreatedAtDesc();
 
-    java.util.Optional<Mentor> findByUsername(String username);
+    java.util.Optional<Mentor> findFirstByUsernameOrderByIdDesc(String username);
 
-    java.util.Optional<Mentor> findByEmail(String email);
+    java.util.Optional<Mentor> findFirstByEmailOrderByIdDesc(String email);
 
     boolean existsByUsername(String username);
 

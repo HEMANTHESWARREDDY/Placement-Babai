@@ -79,10 +79,10 @@ public class MentorController {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        Optional<Mentor> mentorOpt = mentorRepository.findByUsername(username);
+        Optional<Mentor> mentorOpt = mentorRepository.findFirstByUsernameOrderByIdDesc(username);
         if (mentorOpt.isEmpty()) {
             // Try by email
-            mentorOpt = mentorRepository.findByEmail(username);
+            mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(username);
         }
 
         if (mentorOpt.isEmpty()) {
