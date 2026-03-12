@@ -18,8 +18,8 @@ const pros = [
         education: ["MBA @XIMB", "BTech @VIT"],
         workExperience: ["Assistant Manager HR @ Wipro", "Ex-TCS", "Nestlé"],
         services: [
-            { type: '1:1 Call', title: 'Mock Interview (HR)', price: '₹399', tag: 'Best Seller' },
-            { type: 'Query', title: 'Resume Review', price: '₹199', tag: 'Resource' }
+            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
+            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
         ]
     },
     {
@@ -34,9 +34,8 @@ const pros = [
         education: ["MBA from IIM Lucknow"],
         workExperience: ["Strategy @ Meesho", "Analyst @ Deloitte"],
         services: [
-            { type: '1:1 Call', title: 'Case Interview Strategy', price: '₹499', tag: 'Best Seller' },
-            { type: 'Query', title: 'Marketing Prep Material', price: '₹199', tag: 'Resource' },
-            { type: 'Query', title: 'Winning Case Competitions Guide', price: '₹99', tag: 'Resource' }
+            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
+            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
         ]
     },
     {
@@ -52,7 +51,8 @@ const pros = [
         education: ["MBA (Gold Medalist)", "B.Com Hons"],
         workExperience: ["Consulting Analyst @ Accenture"],
         services: [
-            { type: '1:1 Call', title: 'Guesstimate Practice', price: '₹349', tag: 'Best Seller' }
+            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
+            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
         ]
     },
     {
@@ -68,8 +68,8 @@ const pros = [
         education: ["MBA @ MDI Gurgaon'24"],
         workExperience: ["Product @ Telstra", "APM @ Byjus"],
         services: [
-            { type: '1:1 Call', title: 'PM Mock Interview', price: '₹599', tag: 'Best Seller' },
-            { type: 'Query', title: 'Product Portfolio Review', price: '₹299', tag: 'Resource' }
+            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
+            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
         ]
     }
 ];

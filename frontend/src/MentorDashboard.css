@@ -94,24 +94,25 @@
     font-size: 1rem;
 }
 
-/* Mentor Profile Preview */
+/* Mentor Profile Preview (Full Mode) */
 .mentor-preview {
-    flex: 1;
-    min-width: 400px;
-    position: sticky;
-    top: 2rem;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     background: white;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .preview-header {
-    height: 120px;
+    height: 150px;
+    position: relative;
 }
 
 .preview-body {
-    padding: 0 2rem 2rem 2rem;
+    padding: 0 3rem 3rem 3rem;
     position: relative;
 }
 
@@ -123,8 +124,8 @@
 }
 
 .preview-avatar {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     border: 4px solid white;
     display: flex;
@@ -135,11 +136,47 @@
     font-weight: bold;
     background-size: cover;
     background-position: center;
+    position: relative;
+}
+
+.inline-edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: bold;
+    color: #333;
+    z-index: 10;
+    transition: 0.2s;
+}
+
+.inline-edit-btn:hover {
+    background: white;
+    transform: scale(1.05);
+}
+
+.inline-edit-avatar {
+    top: auto;
+    bottom: 5px;
+    right: -10px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .availability-badge {
     position: absolute;
-    bottom: -5px;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
     background: #10b981;
@@ -157,12 +194,16 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
+    position: relative;
 }
 
 .preview-title-row h3 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin: 0;
     color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .preview-rating {
@@ -178,15 +219,19 @@
 }
 
 .preview-subtitle {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: #475569;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .preview-badges {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 2rem;
+    position: relative;
 }
 
 .preview-badge {
@@ -204,6 +249,7 @@
 .preview-socials {
     display: flex;
     gap: 0.5rem;
+    position: relative;
 }
 
 .preview-social-icon {
@@ -221,7 +267,7 @@
 .preview-content-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .preview-section h4 {
@@ -235,8 +281,19 @@
 .preview-accordion {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     padding: 1rem;
+    position: relative;
+}
+
+.preview-accordion:hover .inline-edit-btn {
+    opacity: 1;
+}
+
+.preview-accordion .inline-edit-btn {
+    top: 6px;
+    right: 6px;
+    opacity: 0;
 }
 
 .preview-accordion-header {
@@ -294,4 +351,48 @@
 .error-message {
     color: #ef4444;
     padding: 1rem;
+}
+
+.edit-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.edit-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 450px;
+    max-width: 90%;
+}
+
+.edit-modal h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.edit-modal input, .edit-modal textarea {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.edit-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
 }

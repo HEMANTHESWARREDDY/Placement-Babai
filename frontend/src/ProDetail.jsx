@@ -24,7 +24,7 @@ function ProDetail({ pro, onClose }) {
         setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
 
-    const tabs = ['All', '1:1 Call', 'Query'];
+    const tabs = ['All', '1:1 Call', 'Resume Review'];
 
     const renderServices = () => {
         const filteredServices = pro.services.filter(s => activeTab === 'All' || s.type === activeTab);
