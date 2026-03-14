@@ -38,20 +38,34 @@ function ProDetail({ pro, onClose }) {
                         <div className="preview-header" style={{ 
                             background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
                                        (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
-                                       pro.headerBg || '#fbcfe8'
+                                       pro.headerBg || '#fbcfe8',
+                            position: 'relative'
                         }}>
-                        </div>
-                        <div className="preview-body">
-                            <div className="preview-avatar-wrapper">
-                                <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
-                                    {!pro.image && initials}
-                                </div>
-                                {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
-                            </div>
-
-                            <div className="preview-socials-row" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
-                                <span className="preview-rating">⭐ {pro.rating || '4.8'}</span>
-                                <div className="preview-socials">
+                            <div className="preview-header-meta" style={{ 
+                                position: 'absolute', 
+                                bottom: '15px', 
+                                right: '25px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '12px',
+                                zIndex: 10
+                            }}>
+                                <span className="preview-rating" style={{ 
+                                    background: 'white', 
+                                    padding: '5px 12px', 
+                                    borderRadius: '20px', 
+                                    border: '1px solid #e2e8f0',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '700',
+                                    color: '#eab308',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                }}>
+                                    ⭐ {pro.rating || '4.8'}
+                                </span>
+                                <div className="preview-socials" style={{ gap: '12px' }}>
                                     {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon-raw">✉️</a>}
                                     {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                     <div className="preview-social-icon-raw pointer" title="Share" onClick={() => {
@@ -66,6 +80,16 @@ function ProDetail({ pro, onClose }) {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="preview-body">
+                            <div className="preview-avatar-wrapper">
+                                <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
+                                    {!pro.image && initials}
+                                </div>
+                                {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
+                            </div>
+
+
 
 
 
