@@ -1,78 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProDetail from './ProDetail';
 import AllMentorsList from './AllMentorsList';
 import RegisterMentorModal from './RegisterMentorModal';
+import { API_BASE_URL } from './config';
 import './ProConnect.css';
-
-const pros = [
-    {
-        id: 1, name: "Vedansh Dubey", role: "Assistant Manager HR @ Wipro | MBA @XIMB, Ex-TCS, Nestlé", exp: "4 years",
-        rating: "4.9", reviews: "346",
-        expertise: "HR, Resume Review", initials: "VD",
-        image: "https://randomuser.me/api/portraits/men/45.jpg",
-        headerBg: "linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)", avatarBg: "#fcd34d",
-        about: "Guided 500+ students towards successful placements. specialized in MBA HR roles and tech recruitment.",
-        topics: ["Mock Interviews", "Resume Formatting", "Salary Negotiation"],
-        skills: ["HR Consulting", "Recruitment", "Communication"],
-        fluentIn: ["English", "Hindi"],
-        education: ["MBA @XIMB", "BTech @VIT"],
-        workExperience: ["Assistant Manager HR @ Wipro", "Ex-TCS", "Nestlé"],
-        services: [
-            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
-            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
-        ]
-    },
-    {
-        id: 2, name: "Vaibhav Sharma", role: "Strategy @ Meesho | IIM Lucknow | Top 15 Unstoppable Mentor", exp: "4 years",
-        rating: "4.8", reviews: "210",
-        expertise: "Consulting", initials: "VS",
-        headerBg: "linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)", avatarBg: "#0ea5e9",
-        about: "Winner & Finalist in 23+ Int'l & Nat'l Corporate Case Competitions Recognized as Top 100 Unstoppable B-School Leaders 2024.",
-        topics: ["Case Interviews", "B-School Strategy", "Marketing Prep"],
-        skills: ["Strategy", "Problem Solving", "Marketing"],
-        fluentIn: ["English", "Hindi"],
-        education: ["MBA from IIM Lucknow"],
-        workExperience: ["Strategy @ Meesho", "Analyst @ Deloitte"],
-        services: [
-            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
-            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
-        ]
-    },
-    {
-        id: 3, name: "Palak Gupta", role: "Consulting Analyst @ Accenture | MBA (Gold Medalist) @ IIM ...", exp: "3 years",
-        rating: "4.9", reviews: "152",
-        expertise: "Analytics, Consulting", initials: "PG",
-        image: "https://randomuser.me/api/portraits/women/68.jpg",
-        headerBg: "linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)", avatarBg: "#ec4899",
-        about: "Gold medalist with deep expertise in analytics and management consulting. Helped 50+ candidates crack MBB.",
-        topics: ["Consulting Cases", "Data Frameworks", "Guesstimates"],
-        skills: ["Data Analytics", "Consulting", "Excel/SQL"],
-        fluentIn: ["English"],
-        education: ["MBA (Gold Medalist)", "B.Com Hons"],
-        workExperience: ["Consulting Analyst @ Accenture"],
-        services: [
-            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
-            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
-        ]
-    },
-    {
-        id: 4, name: "Shiri Agarwal", role: "Product @ Telstra | MBA @ MDI Gurgaon'24 | Rank 6th ...", exp: "5 years",
-        rating: "4.9", reviews: "258",
-        expertise: "Product Management", initials: "SA",
-        image: "https://randomuser.me/api/portraits/women/44.jpg",
-        headerBg: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)", avatarBg: "#8b5cf6",
-        about: "Product Manager deeply passionate about building consumer tech. Ranked 6th across India in PM competitions.",
-        topics: ["PM Interviews", "Product Teardowns", "Portfolio Review"],
-        skills: ["Product Strategy", "Figma", "User Research"],
-        fluentIn: ["English"],
-        education: ["MBA @ MDI Gurgaon'24"],
-        workExperience: ["Product @ Telstra", "APM @ Byjus"],
-        services: [
-            { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
-            { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
-        ]
-    }
-];
 
 function ProConnect({ onMentorLoginClick }) {
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -80,8 +11,50 @@ function ProConnect({ onMentorLoginClick }) {
     const [selectedPro, setSelectedPro] = useState(null);
     const [showAllMentors, setShowAllMentors] = useState(false);
     const [showRegisterMentor, setShowRegisterMentor] = useState(false);
+    const [mentors, setMentors] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const filteredPros = pros.filter(pro => {
+    useEffect(() => {
+        fetchMentors();
+    }, []);
+
+    const fetchMentors = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/mentors`);
+            if (res.ok) {
+                const data = await res.json();
+                const processed = data.map(m => ({
+                    ...m,
+                    id: m.id,
+                    name: m.name,
+                    role: m.role || 'Industry Expert',
+                    exp: m.experience ? `${m.experience} years` : '1 year',
+                    rating: m.rating || '4.8',
+                    reviews: m.reviews || '0',
+                    expertise: m.skills || '',
+                    initials: m.name ? m.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M',
+                    image: m.image || null,
+                    headerBg: m.headerBg || 'linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)',
+                    avatarBg: m.avatarBg || '#1e293b',
+                    about: m.bio || '',
+                    topics: m.topics || '',
+                    education: m.education || '',
+                    workExperience: m.workExperience || '',
+                    services: m.services ? JSON.parse(m.services) : [
+                        { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
+                        { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
+                    ]
+                }));
+                setMentors(processed);
+            }
+        } catch (e) {
+            console.error('Error fetching mentors:', e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredPros = mentors.filter(pro => {
         let matchKw = true;
         if (searchKeyword.trim()) {
             const kw = searchKeyword.toLowerCase();
@@ -107,11 +80,15 @@ function ProConnect({ onMentorLoginClick }) {
     if (showAllMentors) {
         return (
             <div className="pro-connect-container">
-                <AllMentorsList
-                    mentors={filteredPros}
-                    onBack={() => setShowAllMentors(false)}
-                    onSelectPro={setSelectedPro}
-                />
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '5rem', color: '#64748b', fontSize: '1.25rem' }}>Loading mentors...</div>
+                ) : (
+                    <AllMentorsList
+                        mentors={filteredPros}
+                        onBack={() => setShowAllMentors(false)}
+                        onSelectPro={setSelectedPro}
+                    />
+                )}
                 {selectedPro && (
                     <ProDetail pro={selectedPro} onClose={() => setSelectedPro(null)} />
                 )}
@@ -189,7 +166,11 @@ function ProConnect({ onMentorLoginClick }) {
                     </button>
                 </div>
 
-                {filteredPros.length === 0 ? (
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.1rem' }}>
+                        Loading mentors...
+                    </div>
+                ) : filteredPros.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.1rem' }}>
                         No mentors found matching your search criteria. Try a different search!
                     </div>
