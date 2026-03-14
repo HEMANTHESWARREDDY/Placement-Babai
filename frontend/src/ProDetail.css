@@ -101,7 +101,7 @@
 }
 
 .preview-body {
-    padding: 0 1.5rem 2rem 1.5rem;
+    padding: 0 1.5rem 2rem 1rem;
     position: relative;
 }
 
@@ -403,7 +403,7 @@
     }
 
     .preview-body {
-        padding: 0 0.75rem 2rem 0.75rem;
+        padding: 0 0.75rem 2rem 0.4rem;
     }
 
     .preview-avatar-wrapper {
