@@ -38,9 +38,10 @@ function ProDetail({ pro, onClose }) {
                                 {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
                             </div>
 
-                            <div className="preview-title-row" style={{marginBottom: '0.2rem'}}>
-                                <h3 style={{fontSize: '2rem'}}>{pro.name} <span className="preview-rating">⭐ {pro.rating || '4.8'}</span></h3>
+                            <div className="preview-title-row">
+                                <h3>{pro.name}</h3>
                                 <div className="preview-socials">
+                                    <span className="preview-rating">⭐ {pro.rating || '4.8'}</span>
                                     {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon">✉️</a>}
                                     {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
                                     <div className="preview-social-icon pointer" title="Share" onClick={() => {
