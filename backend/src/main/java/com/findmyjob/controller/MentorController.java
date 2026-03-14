@@ -44,18 +44,21 @@ public class MentorController {
             }
         }
 
-        // Validate password match
+        // Validate password (min 6 chars, 1 number, 1 special char)
         String password = payload.get("password");
         String confirmPassword = payload.get("confirmPassword");
-        if (password.length() < 6) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 6 characters"));
+        if (!password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*(),.?\":{}|<>]).{6,}$")) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 6 characters and include 1 number and 1 special character"));
         }
         if (!password.equals(confirmPassword)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Passwords do not match"));
         }
 
-        // Check uniqueness
+        // Validate username (min 3 alphabets, alphanumeric + underscore)
         String username = payload.get("username");
+        if (!username.matches("^(?=(?:.*[a-zA-Z]){3,})[a-zA-Z0-9_]+$")) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Username must have min 3 alphabets and only contain letters, numbers, or underscores"));
+        }
         String email = payload.get("email");
         String phone = payload.get("phone");
 

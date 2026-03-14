@@ -46,13 +46,19 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
         if (!formData.phone) newErrors.phone = "Phone number is required";
         else if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) newErrors.phone = "Invalid phone number (min 10 digits)";
 
-        // Username validation
+        // Username validation (min 3 letters, only letters, numbers, underscores)
+        const usernameRegex = /^(?=(?:.*[a-zA-Z]){3,})[a-zA-Z0-9_]+$/;
         if (!formData.username) newErrors.username = "Username is required";
-        else if (formData.username.length < 3) newErrors.username = "Username must be at least 3 characters";
+        else if (!usernameRegex.test(formData.username)) {
+            newErrors.username = "Min 3 alphabets, only letters, numbers, and underscores allowed";
+        }
 
-        // Password validation
+        // Password validation (min 6 chars, at least 1 number, 1 special char)
+        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
         if (!formData.password) newErrors.password = "Password is required";
-        else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters";
+        else if (!passwordRegex.test(formData.password)) {
+            newErrors.password = "Min 6 characters, must include 1 number and 1 special character";
+        }
 
         if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = "Passwords do not match";
@@ -213,13 +219,13 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
                                 <div className="rm-form-grid">
                                     <div className="rm-form-group">
                                         <label>Username *</label>
-                                        <input type="text" name="username" required placeholder="Choose a unique username" value={formData.username} onChange={handleChange} className={errors.username ? 'input-error' : ''} />
+                                        <input type="text" name="username" required placeholder="Min 3 alphabets (e.g. john_123)" value={formData.username} onChange={handleChange} className={errors.username ? 'input-error' : ''} />
                                         {errors.username && <div className="rm-error-msg">{errors.username}</div>}
                                     </div>
                                     <div className="rm-form-group hide-on-mobile"></div>
                                     <div className="rm-form-group">
                                         <label>Password *</label>
-                                        <input type="password" name="password" required placeholder="Min 6 characters" value={formData.password} onChange={handleChange} className={errors.password ? 'input-error' : ''} />
+                                        <input type="password" name="password" required placeholder="Min 6 chars, 1 number, 1 symbol" value={formData.password} onChange={handleChange} className={errors.password ? 'input-error' : ''} />
                                         {errors.password && <div className="rm-error-msg">{errors.password}</div>}
                                     </div>
                                     <div className="rm-form-group">
