@@ -64,7 +64,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                         {pro.initials}
                                     </div>
                                 )}
-                                <div className="aml-trophy">🏆</div>
+
                             </div>
 
                             {/* Info Right */}

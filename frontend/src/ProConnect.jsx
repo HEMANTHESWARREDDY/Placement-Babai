@@ -200,7 +200,7 @@ function ProConnect({ onMentorLoginClick }) {
                                     <div className="tm-avatar" style={{ backgroundColor: pro.avatarBg }}>
                                         {pro.image ? <img src={pro.image} alt={pro.name} className="tm-avatar-img" /> : pro.initials}
                                     </div>
-                                    <div className="tm-trophy">🏆</div>
+
                                 </div>
                                 <div className="tm-content">
                                     <h3 className="tm-name">{pro.name}</h3>
