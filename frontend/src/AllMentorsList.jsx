@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import './AllMentorsList.css';
 
 function AllMentorsList({ mentors, onBack, onSelectPro }) {
+    const [sortBy, setSortBy] = useState('newest');
+
+    const sortedMentors = useMemo(() => {
+        let result = [...mentors];
+        if (sortBy === 'name-asc') {
+            result.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortBy === 'name-desc') {
+            result.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (sortBy === 'newest') {
+            // Prefer id if available, otherwise createdAt
+            result.sort((a, b) => (b.id || 0) - (a.id || 0));
+        } else if (sortBy === 'oldest') {
+            result.sort((a, b) => (a.id || 0) - (b.id || 0));
+        }
+        return result;
+    }, [mentors, sortBy]);
     return (
         <div className="aml-container">
             <div className="aml-header" style={{ marginBottom: '1.5rem', marginTop: '-1rem' }}>
@@ -36,9 +52,17 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                     <button className="aml-filter-btn aml-filter-active">
                         Top Mentor
                     </button>
-                    <button className="aml-filter-btn">
-                        ⇕ Sort By
-                    </button>
+                    <select 
+                        className="aml-filter-btn" 
+                        value={sortBy} 
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{ outline: 'none', cursor: 'pointer', appearance: 'none', paddingRight: '2.5rem', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%2364748b\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.8rem center' }}
+                    >
+                        <option value="newest">New to Old</option>
+                        <option value="oldest">Old to New</option>
+                        <option value="name-asc">Alphabetical (A-Z)</option>
+                        <option value="name-desc">Alphabetical (Z-A)</option>
+                    </select>
                 </div>
                 <div className="aml-filters-right">
                     <div className="aml-featured-pill">
@@ -48,7 +72,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             </div>
 
             <div className="aml-list">
-                {mentors.map((pro, idx) => (
+                {sortedMentors.map((pro, idx) => (
                     <div className="aml-card" key={pro.id || idx} style={{ cursor: 'pointer' }} onClick={(e) => {
                         if (!e.target.closest('.aml-services-row')) {
                             onSelectPro(pro);
