@@ -202,7 +202,7 @@ function ProConnect({ onMentorLoginClick }) {
                 {/* Popular Searches for Mentors */}
                 <div className="popular-searches">
                     <span className="popular-label">🔥 Trending:</span>
-                    {['Java Developer', 'Frontend', 'Data Scientist', 'Backend', 'Product Manager'].map(tag => (
+                    {['AI Developer', 'Machine Learning', 'Data Science', 'Generative AI', 'Python'].map(tag => (
                         <button key={tag} className="popular-tag" onClick={() => {
                             setSearchKeyword(tag);
                             document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
