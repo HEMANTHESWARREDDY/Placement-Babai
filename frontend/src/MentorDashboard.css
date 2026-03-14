@@ -419,16 +419,17 @@
     overflow: hidden;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
 }
 
 .preview-modal-scroll {
     overflow-y: auto;
-    flex: 1;
+    max-height: 90vh;
+    margin: 0;
+    padding: 0;
 }
 
 /* Hide scrollbar for elegant look */
+.preview-modal-scroll::-webkit-scrollbar,
 .preview-modal-content::-webkit-scrollbar {
     width: 0px;
     background: transparent;

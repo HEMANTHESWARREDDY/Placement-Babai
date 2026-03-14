@@ -176,7 +176,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             <div className="mentor-layout">
                 <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
                     <div className="preview-header" style={{background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
-                        <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>
+                        {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
                     </div>
                     <div className="preview-body">
                         <div className="preview-avatar-wrapper">
