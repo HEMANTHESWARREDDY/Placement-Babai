@@ -100,23 +100,34 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
-    const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', type: 'text' });
+    const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [activeServiceTab, setActiveServiceTab] = useState('All');
 
     const openEdit = (field, label, type = 'text') => {
-        setEditModal({ isOpen: true, field, label, value: profile[field] || '', type });
+        setEditModal({ 
+            isOpen: true, 
+            field, 
+            label, 
+            value: field === 'socials' ? (profile.email || '') : (profile[field] || ''), 
+            value2: field === 'socials' ? (profile.linkedin || '') : '',
+            type 
+        });
     };
 
     const closeEdit = () => {
-        setEditModal({ isOpen: false, field: '', label: '', value: '', type: 'text' });
+        setEditModal({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
     };
 
     const confirmEdit = () => {
-        let val = editModal.value;
-        if (editModal.type === 'checkbox') val = editModal.value === 'true' || editModal.value === true;
-        setProfile(prev => ({ ...prev, [editModal.field]: val }));
+        if (editModal.field === 'socials') {
+            setProfile(prev => ({ ...prev, email: editModal.value, linkedin: editModal.value2 }));
+        } else {
+            let val = editModal.value;
+            if (editModal.type === 'checkbox') val = editModal.value === 'true' || editModal.value === true;
+            setProfile(prev => ({ ...prev, [editModal.field]: val }));
+        }
         closeEdit();
     };
 
@@ -163,7 +174,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="edit-modal-overlay">
                     <div className="edit-modal">
                         <h3>Edit {editModal.label}</h3>
-                        {editModal.type === 'textarea' ? (
+                        {editModal.field === 'socials' ? (
+                            <div className="social-edit-fields">
+                                <div className="rm-form-group" style={{marginBottom: '1rem'}}>
+                                    <label style={{display:'block', marginBottom:'5px', fontSize:'0.9rem', color:'#64748b'}}>Email Address</label>
+                                    <input type="email" value={editModal.value} onChange={(e) => setEditModal({...editModal, value: e.target.value})} placeholder="email@example.com" />
+                                </div>
+                                <div className="rm-form-group">
+                                    <label style={{display:'block', marginBottom:'5px', fontSize:'0.9rem', color:'#64748b'}}>LinkedIn URL</label>
+                                    <input type="url" value={editModal.value2} onChange={(e) => setEditModal({...editModal, value2: e.target.value})} placeholder="https://linkedin.com/in/..." />
+                                </div>
+                            </div>
+                        ) : editModal.type === 'textarea' ? (
                             <textarea rows="5" value={editModal.value} onChange={(e) => setEditModal({...editModal, value: e.target.value})} />
                         ) : editModal.type === 'checkbox' ? (
                             <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'1.5rem'}}>
@@ -246,7 +268,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div className="preview-social-icon cursor-pointer" title="Share">
                                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                 </div>
-                                {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('email', 'Email Address', 'email')}>✏️ Edit Socials</button>}
+                                {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('socials', 'Social Links')}>✏️ Edit Socials</button>}
                             </div>
                         </div>
 
