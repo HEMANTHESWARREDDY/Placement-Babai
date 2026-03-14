@@ -416,9 +416,16 @@
     max-width: 900px;
     max-height: 90vh;
     border-radius: 20px;
-    overflow-y: auto;
+    overflow: hidden;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-modal-scroll {
+    overflow-y: auto;
+    flex: 1;
 }
 
 /* Hide scrollbar for elegant look */

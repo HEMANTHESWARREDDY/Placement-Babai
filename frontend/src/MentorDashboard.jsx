@@ -277,9 +277,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="preview-modal-overlay" onClick={() => setShowPreviewModal(false)}>
                     <div className="preview-modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>✕</button>
-                        
-                        <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '20px', border: 'none' }}>
-                            <div className="preview-header" style={{height: '120px', borderRadius: '20px 20px 0 0', background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
+                        <div className="preview-modal-scroll">
+                        <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
+                            <div className="preview-header" style={{height: '150px', background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) top center / cover` : headerBgColor}}>
                             </div>
                             <div className="preview-body">
                                 <div className="preview-avatar-wrapper">
@@ -360,6 +360,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 </div>
                             </div>
                         </div>
+                        </div>{/* end preview-modal-scroll */}
                     </div>
                 </div>
             )}
