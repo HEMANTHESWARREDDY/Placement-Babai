@@ -115,10 +115,9 @@
 
 .preview-modal-scroll .preview-header {
     height: 220px;
-    background-size: contain;
-    background-position: center;
+    background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
-    background-color: #f1f5f9;
 }
 
 .preview-body {
