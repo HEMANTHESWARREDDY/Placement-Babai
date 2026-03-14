@@ -14,18 +14,19 @@ function ProDetail({ pro, onClose }) {
         };
     }, [onClose]);
 
-    const avatarBgColor = pro.avatarBg || '#0ea5e9';
-    const initials = pro.name ? pro.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : '??';
+    const avatarBgColor = pro.avatarBg || '#1e293b';
+    const initials = pro.name ? pro.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M';
 
     return (
         <div className="preview-modal-overlay" onClick={onClose}>
             <div className="preview-modal-content" onClick={(e) => e.stopPropagation()}>
                 <button className="preview-modal-close" onClick={onClose}>✕</button>
                 <div className="preview-modal-scroll">
+                    {/* Reusing exact same structure as MentorDashboard preview */}
                     <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
                         <div className="preview-header" style={{ 
-                            background: pro.headerBg?.includes('gradient') ? pro.headerBg : (pro.headerBg ? `url(${pro.headerBg}) center/cover no-repeat` : '#f1f5f9'),
-                            backgroundColor: (!pro.headerBg || (!pro.headerBg.includes('gradient') && !pro.headerBg.startsWith('http') && !pro.headerBg.startsWith('data:'))) ? pro.headerBg : 'transparent'
+                            backgroundImage: pro.headerBg?.startsWith('data:image') || pro.headerBg?.startsWith('http') ? `url(${pro.headerBg})` : 'none', 
+                            backgroundColor: pro.headerBg && !pro.headerBg.startsWith('data:image') && !pro.headerBg.startsWith('http') ? pro.headerBg : '#f1f5f9'
                         }}>
                         </div>
                         <div className="preview-body">
@@ -41,7 +42,7 @@ function ProDetail({ pro, onClose }) {
                                 <div className="preview-socials">
                                     {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon">✉️</a>}
                                     {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
-                                    <div className="preview-social-icon cursor-pointer" title="Share" onClick={() => {
+                                    <div className="preview-social-icon pointer" title="Share" onClick={() => {
                                         if (navigator.share) {
                                             navigator.share({ title: pro.name, text: pro.role, url: window.location.href }).catch(() => {});
                                         } else {
@@ -54,12 +55,12 @@ function ProDetail({ pro, onClose }) {
                                 </div>
                             </div>
 
-                            <div className="preview-subtitle" style={{color: '#64748b', marginBottom: '1.5rem', fontSize: '1.05rem'}}>
+                            <div className="preview-subtitle" style={{color: '#475569', marginBottom: '1.5rem', fontSize: '1rem'}}>
                                 {pro.role} {pro.company ? `@ ${pro.company}` : ''} {pro.topics ? `| ${pro.topics}` : ''}
                             </div>
 
                             <div className="preview-badges">
-                                <div className="preview-badge" style={{background: 'white', border: '1px solid #e2e8f0', color: '#64748b', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'}}>💼 {pro.exp || '1 year of Experience'}</div>
+                                <div className="preview-badge" style={{background: '#f1f5f9', color: '#334155', border: 'none'}}>💼 {pro.exp || '1 year of Experience'}</div>
                             </div>
 
                             <div className="preview-content-grid">
