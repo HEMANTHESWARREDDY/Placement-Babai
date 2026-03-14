@@ -322,28 +322,28 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div className="preview-accordion">
                                     {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('bio', 'About', 'textarea')}>✏️</button>}
                                     <div className="preview-accordion-header">About <span>^</span></div>
-                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                         {profile.bio || "No about added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion">
                                     {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('topics', 'Topics of Expertise', 'text')}>✏️</button>}
                                     <div className="preview-accordion-header">Topics of Expertise <span>^</span></div>
-                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                         {profile.topics || "No topics added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion">
                                     {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('education', 'Education', 'textarea')}>✏️</button>}
                                     <div className="preview-accordion-header">Education <span>^</span></div>
-                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                         {profile.education || "No education added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion">
                                     {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('workExperience', 'Work Experience', 'textarea')}>✏️</button>}
                                     <div className="preview-accordion-header">Work Experience <span>^</span></div>
-                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                         {profile.workExperience || "No work experience added yet."}
                                     </div>
                                 </div>
@@ -478,25 +478,25 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header">About <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                 {profile.bio || "No about added yet."}
                                             </div>
                                         </div>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header">Topics of Expertise <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                 {profile.topics || "No topics added yet."}
                                             </div>
                                         </div>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header">Education <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                 {profile.education || "No education added yet."}
                                             </div>
                                         </div>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header">Work Experience <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                 {profile.workExperience || "No work experience added yet."}
                                             </div>
                                         </div>

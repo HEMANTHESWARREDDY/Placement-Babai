@@ -106,6 +106,10 @@
 .preview-body {
     padding: 0 2.5rem 2rem 2.5rem !important;
     position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .preview-avatar-wrapper {
@@ -186,7 +190,10 @@
     margin-bottom: 1.5rem;
     line-height: 1.6;
     word-wrap: break-word;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    width: 100%;
+    display: block;
 }
 
 .preview-badges {
@@ -331,14 +338,24 @@
     margin-bottom: 1rem;
     padding: 1.25rem;
     background: #ffffff;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .preview-accordion-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-weight: 700;
     color: #1e293b;
     font-size: 1rem;
+    width: 100%;
+    gap: 1rem;
+}
+
+.preview-accordion-header span {
+    flex-shrink: 0;
 }
 
 .preview-service-card {
@@ -447,7 +464,8 @@
     }
 
     .preview-body {
-        padding: 0 1.5rem 2rem 1.5rem !important;
+        padding: 0 1rem 2rem 1rem !important;
+        width: 100%;
     }
 
     .preview-avatar-wrapper {

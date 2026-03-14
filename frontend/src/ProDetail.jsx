@@ -128,7 +128,7 @@ function ProDetail({ pro, onClose }) {
                                                 About <span>{expandedSections.about ? 'v' : '^'}</span>
                                             </div>
                                             {expandedSections.about && (
-                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                     {pro.about || pro.bio || "No about added yet."}
                                                 </div>
                                             )}
@@ -138,7 +138,7 @@ function ProDetail({ pro, onClose }) {
                                                 Topics of Expertise <span>{expandedSections.topics ? 'v' : '^'}</span>
                                             </div>
                                             {expandedSections.topics && (
-                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                     {pro.topics || "No topics added yet."}
                                                 </div>
                                             )}
@@ -148,7 +148,7 @@ function ProDetail({ pro, onClose }) {
                                                 Education <span>{expandedSections.education ? 'v' : '^'}</span>
                                             </div>
                                             {expandedSections.education && (
-                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                     {pro.education || "No education added yet."}
                                                 </div>
                                             )}
@@ -158,7 +158,7 @@ function ProDetail({ pro, onClose }) {
                                                 Work Experience <span>{expandedSections.work ? 'v' : '^'}</span>
                                             </div>
                                             {expandedSections.work && (
-                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                                     {pro.workExperience || "No work experience added yet."}
                                                 </div>
                                             )}
