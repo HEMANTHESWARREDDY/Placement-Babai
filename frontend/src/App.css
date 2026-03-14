@@ -141,6 +141,10 @@
   background: #e11d48;
 }
 
+.mobile-pro-connect-btn {
+  display: none;
+}
+
 .mobile-menu-btn {
   display: none;
 }
@@ -1033,6 +1037,28 @@
     object-fit: contain;
   }
 
+  .mobile-pro-connect-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: var(--primary-purple);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    order: 3;
+    transition: all 0.2s;
+    flex: 0 0 auto;
+  }
+
+  .mobile-pro-connect-btn:active {
+    background: #e2e8f0;
+    transform: scale(0.92);
+  }
+
   .mobile-menu-btn {
     display: block;
     background: none;
@@ -1041,7 +1067,7 @@
     cursor: pointer;
     color: var(--primary-purple);
     padding: 0.2rem;
-    order: 3;
+    order: 4;
     flex: 0 0 auto;
   }
 
