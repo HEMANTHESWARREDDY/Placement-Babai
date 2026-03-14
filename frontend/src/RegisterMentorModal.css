@@ -169,13 +169,6 @@
     margin-bottom: 0.5rem;
 }
 
-.rm-header p {
-    color: #64748b;
-    font-size: 1rem;
-    line-height: 1.5;
-    max-width: 600px;
-    margin: 0 auto;
-}
 
 @media (max-width: 600px) {
     .rm-modal-unified {
@@ -187,11 +180,6 @@
         font-size: 1.5rem;
     }
 
-    .rm-header p {
-        font-size: 0.9rem;
-        max-width: 260px;
-        margin: 0 auto;
-    }
 
     .rm-already-mentor-banner {
         flex-direction: column;

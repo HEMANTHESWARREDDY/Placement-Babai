@@ -147,7 +147,6 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
                     <>
                         <div className="rm-header">
                             <h2>Join as a <span style={{ color: '#0ea5e9' }}>Mentor</span></h2>
-                            <p>Share your expertise, guide the next generation, and grow your personal brand.</p>
                         </div>
 
                         <div className="rm-already-mentor-banner">
