@@ -108,16 +108,16 @@ public class AnalyticsController {
         stats.put("last1HourJobs", jobRepository.countByPostedDateAfter(now.minusHours(1)));
 
         // Add mentor stats
-        stats.put("lifetimeMentors", mentorRepository.count());
-        stats.put("last7DaysMentors", mentorRepository.countByCreatedAtAfter(now.minusDays(7)));
-        stats.put("todayMentors", mentorRepository.countByCreatedAtAfter(now.toLocalDate().atStartOfDay()));
-        stats.put("last1HourMentors", mentorRepository.countByCreatedAtAfter(now.minusHours(1)));
+        stats.put("lifetimeMentors", mentorRepository.countByStatus("APPROVED"));
+        stats.put("last7DaysMentors", mentorRepository.countByStatusAndCreatedAtAfter("APPROVED", now.minusDays(7)));
+        stats.put("todayMentors", mentorRepository.countByStatusAndCreatedAtAfter("APPROVED", now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourMentors", mentorRepository.countByStatusAndCreatedAtAfter("APPROVED", now.minusHours(1)));
 
-        // Add mentor applicant stats
-        stats.put("lifetimeMentorApplicants", mentorApplicantRepository.count());
-        stats.put("last7DaysMentorApplicants", mentorApplicantRepository.countByCreatedAtAfter(now.minusDays(7)));
-        stats.put("todayMentorApplicants", mentorApplicantRepository.countByCreatedAtAfter(now.toLocalDate().atStartOfDay()));
-        stats.put("last1HourMentorApplicants", mentorApplicantRepository.countByCreatedAtAfter(now.minusHours(1)));
+        // Add mentor applicant stats (Pending applications)
+        stats.put("lifetimeMentorApplicants", mentorApplicantRepository.countByStatus("PENDING"));
+        stats.put("last7DaysMentorApplicants", mentorApplicantRepository.countByStatusAndCreatedAtAfter("PENDING", now.minusDays(7)));
+        stats.put("todayMentorApplicants", mentorApplicantRepository.countByStatusAndCreatedAtAfter("PENDING", now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourMentorApplicants", mentorApplicantRepository.countByStatusAndCreatedAtAfter("PENDING", now.minusHours(1)));
 
         return ResponseEntity.ok(stats);
     }
@@ -167,8 +167,8 @@ public class AnalyticsController {
             long views = websiteViewRepository.countByViewedAtBetween(startOfDay, endOfDay);
             long applies = jobApplyRepository.countByAppliedAtBetween(startOfDay, endOfDay);
             long jobsCreated = jobRepository.countByPostedDateBetween(startOfDay, endOfDay);
-            long mentorsJoined = mentorRepository.countByCreatedAtBetween(startOfDay, endOfDay);
-            long mentorApplicants = mentorApplicantRepository.countByCreatedAtBetween(startOfDay, endOfDay);
+            long mentorsJoined = mentorRepository.countByStatusAndCreatedAtBetween("APPROVED", startOfDay, endOfDay);
+            long mentorApplicants = mentorApplicantRepository.countByStatusAndCreatedAtBetween("PENDING", startOfDay, endOfDay);
             List<Object[]> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay,
                     PageRequest.of(0, 5));
             List<Map<String, Object>> topSearches = searches.stream().map(row -> {
