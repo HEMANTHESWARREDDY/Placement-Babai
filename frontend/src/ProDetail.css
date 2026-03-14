@@ -25,6 +25,7 @@
     max-height: 90vh;
     border-radius: 20px;
     overflow: hidden;
+    overflow-x: hidden;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     animation: pdSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -43,6 +44,7 @@
 
 .preview-modal-scroll {
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 90vh;
     margin: 0;
     padding: 0;
@@ -52,8 +54,10 @@
 
 .preview-modal-scroll::-webkit-scrollbar,
 .preview-modal-content::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
+    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
+    background: transparent !important;
 }
 
 .preview-modal-close {
@@ -357,10 +361,11 @@
 
 @media (max-width: 850px) {
     .main-tabs-container {
-        gap: 0.5rem;
+        gap: 1.5rem;
         margin-bottom: 1rem;
-        overflow-x: auto;
+        overflow-x: hidden; /* Prevent horizontal movement */
         padding-bottom: 0.25rem;
+        flex-wrap: nowrap;
     }
 
     .main-tab-btn {
