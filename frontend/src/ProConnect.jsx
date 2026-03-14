@@ -202,6 +202,19 @@ function ProConnect({ onMentorLoginClick }) {
                         Search Mentors
                     </button>
                 </div>
+
+                {/* Popular Searches for Mentors */}
+                <div className="popular-searches">
+                    <span className="popular-label">🔥 Trending:</span>
+                    {['Java Developer', 'Frontend', 'Data Scientist', 'Backend', 'Product Manager'].map(tag => (
+                        <button key={tag} className="popular-tag" onClick={() => {
+                            setSearchKeyword(tag);
+                            document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+                        }}>
+                            {tag}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className="pro-profiles-section">
