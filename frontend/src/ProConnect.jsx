@@ -191,7 +191,12 @@ function ProConnect({ onMentorLoginClick }) {
                     <div className="pro-grid">
                         {filteredPros.map(pro => (
                             <div className="tm-card" key={pro.id}>
-                                <div className="tm-header" style={{ background: pro.headerBg }}></div>
+                                <div className="tm-header" style={{ 
+                                    backgroundImage: pro.headerBg?.startsWith('data:image') || pro.headerBg?.startsWith('http') ? `url(${pro.headerBg})` : 'none', 
+                                    backgroundColor: pro.headerBg && !pro.headerBg.startsWith('data:image') && !pro.headerBg.startsWith('http') ? pro.headerBg : '#fbcfe8',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center'
+                                }}></div>
                                 <div className="tm-avatar-container">
                                     <div className="tm-avatar" style={{ backgroundColor: pro.avatarBg }}>
                                         {pro.image ? <img src={pro.image} alt={pro.name} className="tm-avatar-img" /> : pro.initials}
