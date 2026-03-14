@@ -214,25 +214,26 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </button>
                                 )}
                             </div>
-                            {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
-                        </div>
-
-                        {isEditingProfile && (
-                            <div style={{position:'absolute', top:'20px', right:'3rem'}}>
+                            {isEditingProfile ? (
                                 <button 
-                                    className="mentor-save-btn" 
+                                    className="availability-badge" 
                                     style={{
-                                        background: profile.isAvailable ? '#fecaca' : '#dcfce3', 
-                                        color: profile.isAvailable ? '#991b1b' : '#166534',
-                                        fontSize: '0.85rem',
-                                        padding: '0.5rem 1rem'
+                                        cursor: 'pointer',
+                                        background: profile.isAvailable ? '#10b981' : '#ef4444',
+                                        transition: '0.2s',
+                                        zIndex: 20
                                     }}
                                     onClick={() => setProfile(prev => ({...prev, isAvailable: !prev.isAvailable}))}
+                                    title={profile.isAvailable ? "Click to mark as Unavailable" : "Click to mark as Available"}
                                 >
-                                    {profile.isAvailable ? '🚫 Mark Unavailable' : '✅ Mark Available'}
+                                    {profile.isAvailable ? '⚡ Available' : '🚫 Unavailable'}
                                 </button>
-                            </div>
-                        )}
+                            ) : (
+                                profile.isAvailable && <div className="availability-badge">⚡ Available</div>
+                            )}
+                        </div>
+
+
 
                         <div className="preview-title-row">
                             <h3>
