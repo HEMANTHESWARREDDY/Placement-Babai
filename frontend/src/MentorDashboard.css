@@ -106,7 +106,7 @@
 }
 
 .preview-header {
-    height: 180px;
+    height: 150px; /* Reduced from 180px */
     position: relative;
     background-size: cover !important;
     background-position: center !important;
@@ -116,7 +116,7 @@
 }
 
 .preview-modal-scroll .preview-header {
-    height: 250px;
+    height: 180px; /* Reduced from 250px */
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
