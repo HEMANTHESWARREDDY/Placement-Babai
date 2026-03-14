@@ -104,6 +104,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [activeServiceTab, setActiveServiceTab] = useState('All');
+    const [mainTab, setMainTab] = useState('About');
     const [expandedSections, setExpandedSections] = useState({
         about: true,
         topics: false,
@@ -325,8 +326,24 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
                         </div>
 
+                        {/* Main Tabs (Visible on Mobile) */}
+                        <div className="main-tabs-container">
+                            <button 
+                                className={`main-tab-btn ${mainTab === 'About' ? 'active' : ''}`}
+                                onClick={() => setMainTab('About')}
+                            >
+                                👤 About Mentor
+                            </button>
+                            <button 
+                                className={`main-tab-btn ${mainTab === 'Services' ? 'active' : ''}`}
+                                onClick={() => setMainTab('Services')}
+                            >
+                                📅 Available Services
+                            </button>
+                        </div>
+
                         <div className="preview-content-grid">
-                            <div className="preview-section-left">
+                            <div className={`preview-section-left ${mainTab === 'About' ? 'tab-visible' : 'tab-hidden'}`}>
                                 <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
                                 
                                 <div className="preview-accordion">
@@ -367,7 +384,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 </div>
                             </div>
 
-                            <div className="preview-section-right">
+                            <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                 <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
                                 <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                     
@@ -496,8 +513,24 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div className="preview-badge" style={{background: 'white', border: '1px solid #e2e8f0', color: '#64748b', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'}}>💼 {profile.experience ? (profile.experience.toLowerCase().includes('year') ? profile.experience : `${profile.experience} Years of experience`) : '4 Years of experience'}</div>
                                 </div>
 
+                                {/* Main Tabs (Visible on Mobile) */}
+                                <div className="main-tabs-container">
+                                    <button 
+                                        className={`main-tab-btn ${mainTab === 'About' ? 'active' : ''}`}
+                                        onClick={() => setMainTab('About')}
+                                    >
+                                        👤 About Mentor
+                                    </button>
+                                    <button 
+                                        className={`main-tab-btn ${mainTab === 'Services' ? 'active' : ''}`}
+                                        onClick={() => setMainTab('Services')}
+                                    >
+                                        📅 Available Services
+                                    </button>
+                                </div>
+
                                 <div className="preview-content-grid">
-                                    <div className="preview-section-left">
+                                    <div className={`preview-section-left ${mainTab === 'About' ? 'tab-visible' : 'tab-hidden'}`}>
                                         <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header" onClick={() => toggleAccordion('about')} style={{cursor: 'pointer'}}>About <span>{expandedSections.about ? '^' : 'v'}</span></div>
@@ -533,7 +566,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         </div>
                                     </div>
 
-                                    <div className="preview-section-right">
+                                    <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                         <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>

@@ -472,6 +472,24 @@
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
+
+    .tab-hidden {
+        display: none !important;
+    }
+
+    .tab-visible {
+        display: block !important;
+    }
+}
+
+@media (min-width: 851px) {
+    .main-tabs-container {
+        display: none !important;
+    }
+    
+    .tab-hidden {
+        display: block !important;
+    }
 }
 
 @media (max-width: 768px) {
