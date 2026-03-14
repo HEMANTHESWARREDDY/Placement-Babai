@@ -85,7 +85,8 @@ public class AdminMentorController {
             mentor.setHeaderBg("linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)");
             mentor.setAvatarBg("#818cf8");
             mentor.setImage(""); // We could configure randomized avatars
-
+            mentor.setIsAvailable(false);
+            
             Mentor savedMentor = mentorRepository.save(mentor);
             mentorApplicantRepository.delete(applicant);
             return ResponseEntity.ok(savedMentor);

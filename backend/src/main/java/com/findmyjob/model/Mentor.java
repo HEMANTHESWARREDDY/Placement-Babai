@@ -56,6 +56,8 @@ public class Mentor {
     @Column(columnDefinition = "TEXT")
     private String services;
 
+    private Boolean isAvailable;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -25,7 +25,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     topics: data.topics || '',
                     education: data.education || '',
                     workExperience: data.workExperience || '',
-                    isAvailable: data.isAvailable !== undefined ? data.isAvailable : false,
+                    isAvailable: data.isAvailable === true,
                     services: data.services ? JSON.parse(data.services) : []
                 });
             } else {

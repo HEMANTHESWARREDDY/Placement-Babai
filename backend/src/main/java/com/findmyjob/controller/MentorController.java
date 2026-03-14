@@ -193,6 +193,7 @@ public class MentorController {
         mentor.setEducation(updatedInfo.getEducation() != null ? updatedInfo.getEducation() : mentor.getEducation());
         mentor.setWorkExperience(updatedInfo.getWorkExperience() != null ? updatedInfo.getWorkExperience() : mentor.getWorkExperience());
         mentor.setServices(updatedInfo.getServices() != null ? updatedInfo.getServices() : mentor.getServices());
+        mentor.setIsAvailable(updatedInfo.getIsAvailable() != null ? updatedInfo.getIsAvailable() : mentor.getIsAvailable());
         
         Mentor saved = mentorRepository.save(mentor);
         saved.setPassword(null);
