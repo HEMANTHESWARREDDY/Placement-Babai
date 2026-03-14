@@ -1,5 +1,5 @@
 .mentor-dashboard-container {
-    padding: 2rem;
+    padding: 0;
     background: #f1f5f9;
     min-height: 100vh;
 }
@@ -8,7 +8,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    padding: 2rem;
+    margin-bottom: 0;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .mentor-header h1 {
@@ -97,27 +100,27 @@
 /* Mentor Profile Preview (Full Mode) */
 .mentor-preview {
     flex: 1;
-    min-width: 400px;
+    width: 100%;
     position: relative;
     background: white;
-    border-radius: 16px;
+    border-radius: 0;
     overflow: hidden;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
 .preview-header {
-    height: 150px;
+    height: 250px;
     position: relative;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
 .preview-modal-scroll .preview-header {
-    height: 220px;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
+    height: 250px;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
 .preview-body {

@@ -173,12 +173,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             )}
 
             {/* Main Editing Dashboard Mode */}
-            <div className="mentor-layout">
-                <div className="mentor-preview" style={{ margin: '0', width: '100%' }}>
+            <div className="mentor-layout" style={{ display: 'block' }}>
+                <div className="mentor-preview">
                     <div className="preview-header" style={{backgroundImage: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg})` : 'none', backgroundColor: profile.headerBg && !profile.headerBg.startsWith('data:image') && !profile.headerBg.startsWith('http') ? profile.headerBg : '#fbcfe8'}}>
                         {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
                     </div>
-                    <div className="preview-body">
+                    <div className="preview-body" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem 3rem 2rem' }}>
                         <div className="preview-avatar-wrapper">
                             <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                 {!profile.image && initials}
