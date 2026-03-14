@@ -13,7 +13,9 @@ import './App.css';
 
 function App() {
   const [jobs, setJobs] = useState([]);
+  const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mentorsLoading, setMentorsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isSearchResult, setIsSearchResult] = useState(false);
@@ -435,6 +437,7 @@ function App() {
 
   useEffect(() => {
     fetchJobs();
+    fetchMentors();
     fetch(`${API_BASE_URL}/api/analytics/view/website`, { method: 'POST' }).catch(() => { });
 
     fetch(`${API_BASE_URL}/api/analytics/applies/grouped`)
@@ -502,6 +505,21 @@ function App() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMentors = async () => {
+    try {
+      setMentorsLoading(true);
+      const response = await fetch(`${API_BASE_URL}/api/mentors`);
+      if (response.ok) {
+        const data = await response.json();
+        setMentors(data);
+      }
+    } catch (err) {
+      console.error('Error fetching mentors:', err);
+    } finally {
+      setMentorsLoading(false);
     }
   };
 
@@ -660,6 +678,11 @@ function App() {
     return new Date(job.postedDate).toDateString() === new Date().toDateString();
   }).length;
 
+  const newMentorsToday = mentors.filter(mentor => {
+    if (!mentor.createdAt) return false;
+    return new Date(mentor.createdAt).toDateString() === new Date().toDateString();
+  }).length;
+
   return (
     <div className="App">
       {/* Job Detail Modal */}
@@ -698,17 +721,21 @@ function App() {
           </div>
 
           <div className="header-badge" onClick={() => {
-            setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
-            setShowAll(true);
-            setIsMobileMenuOpen(false);
-            if (filterBarRef.current) {
-              setTimeout(() => {
-                filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
-              }, 100);
+            if (activeMainTab === 'pro-connect') {
+              document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
+              setShowAll(true);
+              setIsMobileMenuOpen(false);
+              if (filterBarRef.current) {
+                setTimeout(() => {
+                  filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
+                }, 100);
+              }
+              document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
             }
-            document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
           }}>
-            🔥 {newJobsToday} New Jobs Today
+            🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : `${newJobsToday} New Jobs Today`}
           </div>
 
           <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
