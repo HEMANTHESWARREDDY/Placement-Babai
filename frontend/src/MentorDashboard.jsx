@@ -264,9 +264,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             }}>
                                 <span className="preview-rating" style={{ 
                                     background: 'white', 
-                                    padding: '5px 12px', 
+                                    padding: '0 12px', 
                                     borderRadius: '20px', 
                                     border: '1px solid #e2e8f0',
+                                    height: '36px',
                                     fontSize: '0.85rem',
                                     fontWeight: '700',
                                     color: '#eab308',
@@ -277,7 +278,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     ⭐ {profile.rating || 'New'}
                                 </span>
-                                <div className="preview-socials" style={{ gap: '12px', display: 'flex', alignItems: 'center' }}>
+                                <div className="preview-socials" style={{ gap: '8px', display: 'flex', alignItems: 'center' }}>
                                     {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
                                     {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                     <div className="preview-social-icon-raw cursor-pointer" title="Share">
@@ -434,9 +435,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     <span className="preview-rating" style={{ 
                                         background: 'white', 
-                                        padding: '5px 12px', 
+                                        padding: '0 12px', 
                                         borderRadius: '20px', 
                                         border: '1px solid #e2e8f0',
+                                        height: '36px',
                                         fontSize: '0.85rem',
                                         fontWeight: '700',
                                         color: '#eab308',
@@ -447,7 +449,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     }}>
                                         ⭐ {profile.rating || '4.8'}
                                     </span>
-                                    <div className="preview-socials" style={{ gap: '12px', display: 'flex', alignItems: 'center' }}>
+                                    <div className="preview-socials" style={{ gap: '8px', display: 'flex', alignItems: 'center' }}>
                                         {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
                                         {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                         <div className="preview-social-icon-raw cursor-pointer" title="Share">

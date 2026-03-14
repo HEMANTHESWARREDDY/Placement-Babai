@@ -57,9 +57,10 @@ function ProDetail({ pro, onClose }) {
                                 }}>
                                     <span className="preview-rating" style={{ 
                                         background: 'white', 
-                                        padding: '5px 12px', 
+                                        padding: '0 12px', 
                                         borderRadius: '20px', 
                                         border: '1px solid #e2e8f0',
+                                        height: '36px',
                                         fontSize: '0.9rem',
                                         fontWeight: '700',
                                         color: '#eab308',
@@ -70,7 +71,7 @@ function ProDetail({ pro, onClose }) {
                                     }}>
                                         ⭐ {pro.rating || '4.8'}
                                     </span>
-                                    <div className="preview-socials" style={{ gap: '12px', display: 'flex', alignItems: 'center' }}>
+                                    <div className="preview-socials" style={{ gap: '8px', display: 'flex', alignItems: 'center' }}>
                                         {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon-raw">✉️</a>}
                                         {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                         <div className="preview-social-icon-raw pointer" title="Share" onClick={() => {
