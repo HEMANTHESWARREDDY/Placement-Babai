@@ -200,7 +200,7 @@ function ProConnect({ onMentorLoginClick }) {
                                 </div>
                                 <div className="tm-content">
                                     <h3 className="tm-name">{pro.name}</h3>
-                                    <div className="tm-rating">⭐ {pro.rating} <span>({pro.reviews} Reviews)</span></div>
+                                    <div className="tm-rating">⭐ {pro.rating}</div>
                                     <p className="tm-role">{pro.role}</p>
                                     <button className="tm-btn" onClick={() => setSelectedPro(pro)}>View Profile</button>
                                 </div>

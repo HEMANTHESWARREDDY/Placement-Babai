@@ -82,7 +82,7 @@ function ProDetail({ pro, onClose }) {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                                 </a>
                             )}
-                            <button className="pd-social-btn" title="Share" onClick={() => {
+                            <div className="pd-social-btn" title="Share" style={{ cursor: 'pointer' }} onClick={() => {
                                 if (navigator.share) {
                                     navigator.share({ title: pro.name, text: pro.role, url: window.location.href }).catch(() => {});
                                 } else {
@@ -90,8 +90,8 @@ function ProDetail({ pro, onClose }) {
                                     alert('Link copied to clipboard!');
                                 }
                             }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                            </button>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,36 +105,57 @@ function ProDetail({ pro, onClose }) {
                     <div className="pd-details-col">
                         <h3 className="pd-section-title">👤 About Mentor</h3>
 
-                        {Object.keys(expandedSections).map(sectionKey => {
-                            const sectionTitle = sectionKey.replace(/([A-Z])/g, ' $1').trim();
-                            const dataKey = sectionKey.charAt(0).toLowerCase() + sectionKey.slice(1);
-                            const content = pro[dataKey];
-
-                            if (!content || (Array.isArray(content) && content.length === 0)) return null;
-
-                            return (
-                                <div className="pd-accordion-item" key={sectionKey}>
-                                    <button className="pd-accordion-header" onClick={() => toggleSection(sectionKey)}>
-                                        <span>{sectionTitle}</span>
-                                        <svg className={`pd-chevron ${expandedSections[sectionKey] ? 'pd-chevron-up' : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                    </button>
-
-                                    {expandedSections[sectionKey] && (
-                                        <div className="pd-accordion-content">
-                                            {typeof content === 'string' ? (
-                                                <p>{content}</p>
-                                            ) : (
-                                                <ul>
-                                                    {content.map((item, idx) => (
-                                                        <li key={idx}><span style={{ color: '#94a3b8' }}>•</span> {item}</li>
-                                                    ))}
-                                                </ul>
-                                            )}
-                                        </div>
-                                    )}
+                        {/* About */}
+                        <div className="pd-accordion-item">
+                            <button className="pd-accordion-header" onClick={() => toggleSection('About')}>
+                                <span>About</span>
+                                <svg className={`pd-chevron ${expandedSections.About ? 'pd-chevron-up' : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            {expandedSections.About && (
+                                <div className="pd-accordion-content" style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
+                                    {pro.about || "No about added yet."}
                                 </div>
-                            );
-                        })}
+                            )}
+                        </div>
+
+                        {/* Topics of Expertise */}
+                        <div className="pd-accordion-item">
+                            <button className="pd-accordion-header" onClick={() => toggleSection('Topics')}>
+                                <span>Topics of Expertise</span>
+                                <svg className={`pd-chevron ${expandedSections.Topics ? 'pd-chevron-up' : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            {expandedSections.Topics && (
+                                <div className="pd-accordion-content" style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
+                                    {pro.topics || "No topics added yet."}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Education */}
+                        <div className="pd-accordion-item">
+                            <button className="pd-accordion-header" onClick={() => toggleSection('Education')}>
+                                <span>Education</span>
+                                <svg className={`pd-chevron ${expandedSections.Education ? 'pd-chevron-up' : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            {expandedSections.Education && (
+                                <div className="pd-accordion-content" style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
+                                    {pro.education || "No education added yet."}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Work Experience */}
+                        <div className="pd-accordion-item">
+                            <button className="pd-accordion-header" onClick={() => toggleSection('WorkExperience')}>
+                                <span>Work Experience</span>
+                                <svg className={`pd-chevron ${expandedSections.WorkExperience ? 'pd-chevron-up' : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            {expandedSections.WorkExperience && (
+                                <div className="pd-accordion-content" style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
+                                    {pro.workExperience || "No work experience added yet."}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Right: Services */}

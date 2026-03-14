@@ -78,7 +78,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 </div>
 
                                 <div className="aml-rating">
-                                    ⭐ {pro.rating} <span>({pro.reviews} Reviews)</span>
+                                    ⭐ {pro.rating}
                                 </div>
 
                                 <div className="aml-role-desc">
