@@ -71,10 +71,10 @@ function ProDetail({ pro, onClose }) {
                                     }}>
                                         ⭐ {pro.rating || '4.8'}
                                     </span>
-                                    <div className="preview-socials" style={{ gap: '4px', display: 'flex', alignItems: 'center' }}>
+                                    <div className="preview-socials" style={{ gap: '6px', display: 'flex', alignItems: 'center' }}>
                                         {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon-raw">✉️</a>}
                                         {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
-                                        <div className="preview-social-icon-raw pointer" title="Share" onClick={() => {
+                                        <div className="preview-social-icon-raw pointer" title="Share" style={{ color: '#475569' }} onClick={() => {
                                             if (navigator.share) {
                                                 navigator.share({ title: pro.name, text: pro.role, url: window.location.href }).catch(() => {});
                                             } else {
@@ -82,7 +82,7 @@ function ProDetail({ pro, onClose }) {
                                                 alert('Link copied to clipboard!');
                                             }
                                         }}>
-                                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                         </div>
                                     </div>
                                 </div>
