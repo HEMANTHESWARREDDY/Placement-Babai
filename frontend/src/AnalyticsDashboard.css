@@ -160,7 +160,7 @@
 
 .historical-content {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1.8fr 1fr;
     gap: 1.5rem;
     align-items: flex-start;
 }
@@ -180,16 +180,25 @@
 }
 
 .day-views-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 }
 
 .day-views {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 120px;
+    min-height: 100px;
+    padding: 1rem;
+}
+
+.day-views h3 {
+    font-size: 0.8rem;
+}
+
+.day-views p {
+    font-size: 1.5rem !important;
 }
 
 .day-searches .searches-container {
