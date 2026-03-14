@@ -100,7 +100,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', type: 'text' });
-    const [isEditingProfile, setIsEditingProfile] = useState(true);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
 
     const openEdit = (field, label, type = 'text') => {
@@ -133,8 +133,17 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <button className="mentor-save-btn" onClick={() => setShowPreviewModal(true)}>
                         👀 View Profile Preview
                     </button>
-                    <button className="mentor-save-btn" onClick={handleSave} disabled={saving}>
-                        {saving ? 'Saving...' : 'Save Profile'}
+                    {isEditingProfile ? (
+                        <button className="mentor-save-btn" onClick={handleSave} disabled={saving}>
+                            {saving ? 'Saving...' : '💾 Save Profile'}
+                        </button>
+                    ) : null}
+                    <button
+                        className={isEditingProfile ? 'mentor-logout-btn' : 'mentor-save-btn'}
+                        style={isEditingProfile ? {} : {background: '#7c3aed'}}
+                        onClick={() => setIsEditingProfile(!isEditingProfile)}
+                    >
+                        {isEditingProfile ? '✅ Done Editing' : '✏️ Edit Profile'}
                     </button>
                     <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
                 </div>
