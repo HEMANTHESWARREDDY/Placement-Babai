@@ -127,14 +127,6 @@ function ProConnect({ onMentorLoginClick }) {
                     Connect faster. Grow faster. Get hired faster. 🚀
                 </div>
 
-                <div style={{ marginTop: '1.5rem' }}>
-                    <button
-                        className="become-mentor-hero-btn"
-                        onClick={() => setShowRegisterMentor(true)}
-                    >
-                        Become a Mentor
-                    </button>
-                </div>
 
                 {/* Search Bar for Pros */}
                 <div className="search-container" style={{ marginTop: '2.5rem', position: 'relative' }}>
@@ -218,6 +210,15 @@ function ProConnect({ onMentorLoginClick }) {
                             {tag}
                         </button>
                     ))}
+                </div>
+
+                <div style={{ marginTop: '2.5rem' }}>
+                    <button
+                        className="become-mentor-hero-btn"
+                        onClick={() => setShowRegisterMentor(true)}
+                    >
+                        Become a Mentor
+                    </button>
                 </div>
             </div>
 
