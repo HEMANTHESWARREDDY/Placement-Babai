@@ -522,7 +522,7 @@
     }
 
     .preview-body {
-        padding: 0 0.5rem 2rem 0.5rem !important;
+        padding: 0 0.5rem 2rem 1.25rem !important;
         overflow: visible !important;
         width: 100% !important;
     }
