@@ -337,6 +337,7 @@
     color: #64748b;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .pd-tab.active {

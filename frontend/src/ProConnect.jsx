@@ -23,28 +23,41 @@ function ProConnect({ onMentorLoginClick }) {
             const res = await fetch(`${API_BASE_URL}/api/mentors`);
             if (res.ok) {
                 const data = await res.json();
-                const processed = data.map(m => ({
-                    ...m,
-                    id: m.id,
-                    name: m.name,
-                    role: m.role || 'Industry Expert',
-                    exp: m.experience ? `${m.experience} years` : '1 year',
-                    rating: m.rating || '4.8',
-                    reviews: m.reviews || '0',
-                    expertise: m.skills || '',
-                    initials: m.name ? m.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M',
-                    image: m.image || null,
-                    headerBg: m.headerBg || 'linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)',
-                    avatarBg: m.avatarBg || '#1e293b',
-                    about: m.bio || '',
-                    topics: m.topics || '',
-                    education: m.education || '',
-                    workExperience: m.workExperience || '',
-                    services: m.services ? JSON.parse(m.services) : [
+                const processed = data.map(m => {
+                    let parsedServices = [];
+                    try {
+                        if (m.services) {
+                            parsedServices = JSON.parse(m.services);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing services for mentor', m.id, e);
+                    }
+
+                    const finalServices = (parsedServices && parsedServices.length > 0) ? parsedServices : [
                         { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
                         { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
-                    ]
-                }));
+                    ];
+
+                    return {
+                        ...m,
+                        id: m.id,
+                        name: m.name,
+                        role: m.role || 'Industry Expert',
+                        exp: m.experience ? (m.experience.includes('year') ? m.experience : `${m.experience} years`) : '1 year',
+                        rating: m.rating || '4.8',
+                        reviews: m.reviews || '0',
+                        expertise: m.skills || '',
+                        initials: m.name ? m.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M',
+                        image: m.image || null,
+                        headerBg: m.headerBg || 'linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)',
+                        avatarBg: m.avatarBg || '#1e293b',
+                        about: m.bio || '',
+                        topics: m.topics || '',
+                        education: m.education || '',
+                        workExperience: m.workExperience || '',
+                        services: finalServices
+                    };
+                });
                 setMentors(processed);
             }
         } catch (e) {

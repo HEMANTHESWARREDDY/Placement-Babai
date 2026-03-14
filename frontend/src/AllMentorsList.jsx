@@ -15,9 +15,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             <div className="aml-categories-row">
                 {[
                     { icon: '📄', label: 'CV Review' },
-                    { icon: '🎓', label: 'MBA Preparation' },
-                    { icon: '🏆', label: 'Case Competition' },
-                    { icon: '🤝', label: 'Placement Support' },
                     { icon: '👨‍💻', label: 'Interview Preparation' },
                     { icon: '💼', label: 'Career Guidance' },
                     { icon: '✨', label: 'Personal Branding' }
