@@ -177,8 +177,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             <div className="mentor-layout">
                 <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
                     <div className="preview-header" style={{ 
-                        background: profile.headerBg?.includes('gradient') ? profile.headerBg : (profile.headerBg ? `url(${profile.headerBg}) center/cover no-repeat` : '#fbcfe8'),
-                        backgroundColor: (!profile.headerBg || (!profile.headerBg.includes('gradient') && !profile.headerBg.startsWith('http') && !profile.headerBg.startsWith('data:'))) ? profile.headerBg : 'transparent'
+                        background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
+                                   (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
+                                   profile.headerBg || '#fbcfe8'
                     }}>
                         {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
                     </div>
@@ -320,8 +321,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div className="preview-modal-scroll">
                         <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
                         <div className="preview-header" style={{ 
-                            background: profile.headerBg?.includes('gradient') ? profile.headerBg : (profile.headerBg ? `url(${profile.headerBg}) center/cover no-repeat` : '#f1f5f9'),
-                            backgroundColor: (!profile.headerBg || (!profile.headerBg.includes('gradient') && !profile.headerBg.startsWith('http') && !profile.headerBg.startsWith('data:'))) ? profile.headerBg : 'transparent'
+                            background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
+                                       (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
+                                       profile.headerBg || '#fbcfe8'
                         }}>
                         </div>
                             <div className="preview-body">

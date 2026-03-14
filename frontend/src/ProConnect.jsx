@@ -49,7 +49,7 @@ function ProConnect({ onMentorLoginClick }) {
                         expertise: m.skills || '',
                         initials: m.name ? m.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M',
                         image: m.image || null,
-                        headerBg: m.headerBg || 'linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%)',
+                        headerBg: (m.headerBg && m.headerBg.trim() !== '') ? m.headerBg : 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
                         avatarBg: m.avatarBg || '#1e293b',
                         about: m.bio || '',
                         topics: m.topics || '',
@@ -192,10 +192,9 @@ function ProConnect({ onMentorLoginClick }) {
                         {filteredPros.map(pro => (
                             <div className="tm-card" key={pro.id}>
                                 <div className="tm-header" style={{ 
-                                    backgroundImage: pro.headerBg?.startsWith('data:image') || pro.headerBg?.startsWith('http') ? `url(${pro.headerBg})` : 'none', 
-                                    backgroundColor: pro.headerBg && !pro.headerBg.startsWith('data:image') && !pro.headerBg.startsWith('http') ? pro.headerBg : '#fbcfe8',
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center'
+                                    background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
+                                               (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
+                                               pro.headerBg || '#fbcfe8'
                                 }}></div>
                                 <div className="tm-avatar-container">
                                     <div className="tm-avatar" style={{ backgroundColor: pro.avatarBg }}>

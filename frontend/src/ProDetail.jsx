@@ -25,8 +25,9 @@ function ProDetail({ pro, onClose }) {
                     {/* Reusing exact same structure as MentorDashboard preview */}
                     <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
                         <div className="preview-header" style={{ 
-                            backgroundImage: pro.headerBg?.startsWith('data:image') || pro.headerBg?.startsWith('http') ? `url(${pro.headerBg})` : 'none', 
-                            backgroundColor: pro.headerBg && !pro.headerBg.startsWith('data:image') && !pro.headerBg.startsWith('http') ? pro.headerBg : '#f1f5f9'
+                            background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
+                                       (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
+                                       pro.headerBg || '#fbcfe8'
                         }}>
                         </div>
                         <div className="preview-body">
