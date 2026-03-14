@@ -15,7 +15,8 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
         bio: '',
         username: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        isAvailable: true
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);

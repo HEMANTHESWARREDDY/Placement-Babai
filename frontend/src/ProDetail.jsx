@@ -35,7 +35,7 @@ function ProDetail({ pro, onClose }) {
                                 <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
                                     {!pro.image && initials}
                                 </div>
-                                <div className="availability-badge">⚡ Available</div>
+                                {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
                             </div>
 
                             <div className="preview-title-row" style={{marginBottom: '0.2rem'}}>

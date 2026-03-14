@@ -25,6 +25,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     topics: data.topics || '',
                     education: data.education || '',
                     workExperience: data.workExperience || '',
+                    isAvailable: data.isAvailable !== undefined ? data.isAvailable : true,
                     services: data.services ? JSON.parse(data.services) : []
                 });
             } else {
@@ -113,7 +114,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const confirmEdit = () => {
-        setProfile(prev => ({ ...prev, [editModal.field]: editModal.value }));
+        let val = editModal.value;
+        if (editModal.type === 'checkbox') val = editModal.value === 'true' || editModal.value === true;
+        setProfile(prev => ({ ...prev, [editModal.field]: val }));
         closeEdit();
     };
 
@@ -162,6 +165,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <h3>Edit {editModal.label}</h3>
                         {editModal.type === 'textarea' ? (
                             <textarea rows="5" value={editModal.value} onChange={(e) => setEditModal({...editModal, value: e.target.value})} />
+                        ) : editModal.type === 'checkbox' ? (
+                            <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'1.5rem'}}>
+                                <input 
+                                    type="checkbox" 
+                                    checked={editModal.value === 'true' || editModal.value === true} 
+                                    style={{width:'auto', margin:'0'}}
+                                    onChange={(e) => setEditModal({...editModal, value: e.target.checked})} 
+                                />
+                                <label style={{margin:'0'}}>I am available for mentorship</label>
+                            </div>
                         ) : (
                             <input type={editModal.type} value={editModal.value} onChange={(e) => setEditModal({...editModal, value: e.target.value})} />
                         )}
@@ -189,7 +202,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 {!profile.image && initials}
                                 {isEditingProfile && <button className="inline-edit-btn inline-edit-avatar" onClick={() => document.getElementById('avatarUpload').click()}>✏️</button>}
                             </div>
-                            <div className="availability-badge">⚡ Available</div>
+                            {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
+                            {isEditingProfile && (
+                                <button 
+                                    className="inline-edit-btn" 
+                                    style={{position:'absolute', bottom: '-40px', left: '50%', transform: 'translateX(-50%)', whiteSpace:'nowrap'}}
+                                    onClick={() => openEdit('isAvailable', 'Availability', 'checkbox')}
+                                >
+                                    ✏️ {profile.isAvailable ? 'Mark Unavailable' : 'Mark Available'}
+                                </button>
+                            )}
                         </div>
 
                         <div className="preview-title-row">
@@ -331,7 +353,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                         {!profile.image && initials}
                                     </div>
-                                    <div className="availability-badge">⚡ Available</div>
+                                    {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
                                 </div>
 
                                 <div className="preview-title-row" style={{marginBottom: '0.2rem'}}>

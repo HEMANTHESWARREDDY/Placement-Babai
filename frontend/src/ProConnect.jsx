@@ -55,6 +55,7 @@ function ProConnect({ onMentorLoginClick }) {
                         topics: m.topics || '',
                         education: m.education || '',
                         workExperience: m.workExperience || '',
+                        isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
                         services: finalServices
                     };
                 });
@@ -87,7 +88,9 @@ function ProConnect({ onMentorLoginClick }) {
             }
         }
 
-        return matchKw && matchExp;
+        let matchAvail = pro.isAvailable !== false;
+
+        return matchKw && matchExp && matchAvail;
     });
 
     if (showAllMentors) {
