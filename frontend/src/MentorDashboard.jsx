@@ -194,25 +194,45 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                    (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
                                    profile.headerBg || '#fbcfe8'
                     }}>
-                        {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
+                        {isEditingProfile && (
+                            <button className="inline-edit-btn" style={{top:'20px', right:'20px', background:'white', color:'#0f172a', border:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.1)'}} onClick={() => document.getElementById('bannerUpload').click()}>
+                                📷 Change Banner
+                            </button>
+                        )}
                     </div>
                     <div className="preview-body">
                         <div className="preview-avatar-wrapper">
                             <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                 {!profile.image && initials}
-                                {isEditingProfile && <button className="inline-edit-btn inline-edit-avatar" onClick={() => document.getElementById('avatarUpload').click()}>✏️</button>}
+                                {isEditingProfile && (
+                                    <button 
+                                        className="inline-edit-btn inline-edit-avatar" 
+                                        style={{top: '5px', right: '-5px', bottom:'auto'}} 
+                                        onClick={() => document.getElementById('avatarUpload').click()}
+                                    >
+                                        ✏️
+                                    </button>
+                                )}
                             </div>
                             {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
-                            {isEditingProfile && (
-                                <button 
-                                    className="inline-edit-btn" 
-                                    style={{position:'absolute', bottom: '-40px', left: '50%', transform: 'translateX(-50%)', whiteSpace:'nowrap'}}
-                                    onClick={() => openEdit('isAvailable', 'Availability', 'checkbox')}
-                                >
-                                    ✏️ {profile.isAvailable ? 'Mark Unavailable' : 'Mark Available'}
-                                </button>
-                            )}
                         </div>
+
+                        {isEditingProfile && (
+                            <div style={{position:'absolute', top:'20px', right:'3rem'}}>
+                                <button 
+                                    className="mentor-save-btn" 
+                                    style={{
+                                        background: profile.isAvailable ? '#fecaca' : '#dcfce3', 
+                                        color: profile.isAvailable ? '#991b1b' : '#166534',
+                                        fontSize: '0.85rem',
+                                        padding: '0.5rem 1rem'
+                                    }}
+                                    onClick={() => setProfile(prev => ({...prev, isAvailable: !prev.isAvailable}))}
+                                >
+                                    {profile.isAvailable ? '🚫 Mark Unavailable' : '✅ Mark Available'}
+                                </button>
+                            </div>
+                        )}
 
                         <div className="preview-title-row">
                             <h3>
