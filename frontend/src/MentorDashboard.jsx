@@ -214,17 +214,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <div className="preview-header" style={{ 
                         background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
                                    (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
-                                   profile.headerBg || '#fbcfe8',
-                        position: 'relative'
+                                   profile.headerBg || '#fbcfe8'
                     }}>
                         {isEditingProfile && (
                             <button className="inline-edit-btn" style={{top:'20px', right:'20px', background:'white', color:'#0f172a', border:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.1)'}} onClick={() => document.getElementById('bannerUpload').click()}>
                                 📷 Change Banner
                             </button>
                         )}
+                    </div>
+                    <div className="preview-body">
                         <div className="preview-header-meta" style={{ 
                             position: 'absolute', 
-                            bottom: '15px', 
+                            top: '15px', 
                             right: '25px', 
                             display: 'flex', 
                             alignItems: 'center', 
@@ -246,7 +247,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             }}>
                                 ⭐ {profile.rating || 'New'}
                             </span>
-                            <div className="preview-socials" style={{ gap: '12px' }}>
+                            <div className="preview-socials" style={{ gap: '12px', display: 'flex', alignItems: 'center' }}>
                                 {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
                                 {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                 <div className="preview-social-icon-raw cursor-pointer" title="Share">
@@ -255,8 +256,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </div>
                             {isEditingProfile && <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('socials', 'Social Links')}>✏️</button>}
                         </div>
-                    </div>
-                    <div className="preview-body">
                         <div className="preview-avatar-wrapper">
                             <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                 {!profile.image && initials}
@@ -416,12 +415,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div className="preview-header" style={{ 
                             background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
                                        (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
-                                       profile.headerBg || '#fbcfe8',
-                            position: 'relative'
+                                       profile.headerBg || '#fbcfe8'
                         }}>
+                        </div>
+                        <div className="preview-body">
                             <div className="preview-header-meta" style={{ 
                                 position: 'absolute', 
-                                bottom: '15px', 
+                                top: '15px', 
                                 right: '25px', 
                                 display: 'flex', 
                                 alignItems: 'center', 
@@ -443,7 +443,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     ⭐ {profile.rating || '4.8'}
                                 </span>
-                                <div className="preview-socials" style={{ gap: '12px' }}>
+                                <div className="preview-socials" style={{ gap: '12px', display: 'flex', alignItems: 'center' }}>
                                     {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
                                     {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                     <div className="preview-social-icon-raw cursor-pointer" title="Share">
@@ -451,8 +451,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="preview-body">
                             <div className="preview-avatar-wrapper">
                                 <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                     {!profile.image && initials}

@@ -1,4 +1,8 @@
 /* ProDetail.css - Shared with MentorDashboard Preview styles */
+* {
+    box-sizing: border-box;
+}
+
 
 .preview-modal-overlay {
     position: fixed;
@@ -24,8 +28,7 @@
     max-width: 900px;
     max-height: 90vh;
     border-radius: 20px;
-    overflow: hidden;
-    overflow-x: hidden;
+    overflow: hidden !important;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     animation: pdSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -160,6 +163,8 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .preview-rating {
@@ -181,7 +186,7 @@
     margin-bottom: 1.5rem;
     line-height: 1.6;
     word-wrap: break-word;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
 }
 
 .preview-badges {

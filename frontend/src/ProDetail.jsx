@@ -38,12 +38,13 @@ function ProDetail({ pro, onClose }) {
                         <div className="preview-header" style={{ 
                             background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
                                        (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
-                                       pro.headerBg || '#fbcfe8',
-                            position: 'relative'
+                                       pro.headerBg || '#fbcfe8'
                         }}>
+                        </div>
+                        <div className="preview-body">
                             <div className="preview-header-meta" style={{ 
                                 position: 'absolute', 
-                                bottom: '15px', 
+                                top: '15px', 
                                 right: '25px', 
                                 display: 'flex', 
                                 alignItems: 'center', 
@@ -65,7 +66,7 @@ function ProDetail({ pro, onClose }) {
                                 }}>
                                     ⭐ {pro.rating || '4.8'}
                                 </span>
-                                <div className="preview-socials" style={{ gap: '12px' }}>
+                                <div className="preview-socials" style={{ gap: '12px', display: 'flex', alignItems: 'center' }}>
                                     {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon-raw">✉️</a>}
                                     {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                     <div className="preview-social-icon-raw pointer" title="Share" onClick={() => {
@@ -80,8 +81,6 @@ function ProDetail({ pro, onClose }) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="preview-body">
                             <div className="preview-avatar-wrapper">
                                 <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
                                     {!pro.image && initials}
