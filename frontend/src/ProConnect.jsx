@@ -129,7 +129,7 @@ function ProConnect({ onMentorLoginClick }) {
 
 
                 {/* Search Bar for Pros */}
-                <div className="search-container" style={{ marginTop: '2.5rem', position: 'relative' }}>
+                <div className="search-container" style={{ marginTop: '1.5rem', position: 'relative' }}>
                     <div className="search-input-group" style={{ flex: '1.2' }}>
                         <span className="search-icon">🔍</span>
                         <input
@@ -212,7 +212,7 @@ function ProConnect({ onMentorLoginClick }) {
                     ))}
                 </div>
 
-                <div style={{ marginTop: '2.5rem' }}>
+                <div style={{ marginTop: '1.5rem' }}>
                     <button
                         className="become-mentor-hero-btn"
                         onClick={() => setShowRegisterMentor(true)}
