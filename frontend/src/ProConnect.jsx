@@ -270,7 +270,7 @@ function ProConnect({ onMentorLoginClick }) {
                                         display: 'flex', 
                                         gap: '0.8rem', 
                                         justifyContent: 'flex-end', 
-                                        marginBottom: '0.5rem',
+                                        marginBottom: '0',
                                         paddingRight: '0.2rem'
                                     }}>
                                         {pro.email && (

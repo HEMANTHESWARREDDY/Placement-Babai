@@ -229,7 +229,8 @@
 }
 
 .tm-content {
-    padding: 0.5rem 1.25rem 1.5rem;
+    padding: 0 1.25rem 1.25rem;
+    margin-top: -1.2rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
