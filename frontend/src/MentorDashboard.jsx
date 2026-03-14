@@ -279,7 +279,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>✕</button>
                         <div className="preview-modal-scroll">
                         <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
-                            <div className="preview-header" style={{height: '150px', background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) top center / cover` : headerBgColor}}>
+                            <div className="preview-header" style={{backgroundImage: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg})` : 'none', backgroundColor: profile.headerBg && !profile.headerBg.startsWith('data:image') && !profile.headerBg.startsWith('http') ? profile.headerBg : '#f1f5f9'}}>
                             </div>
                             <div className="preview-body">
                                 <div className="preview-avatar-wrapper">

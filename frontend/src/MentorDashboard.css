@@ -98,18 +98,27 @@
 .mentor-preview {
     flex: 1;
     min-width: 400px;
-    position: sticky;
-    top: 2rem;
+    position: relative;
     background: white;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    position: relative;
 }
 
 .preview-header {
     height: 150px;
     position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.preview-modal-scroll .preview-header {
+    height: 220px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #f1f5f9;
 }
 
 .preview-body {
