@@ -100,7 +100,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', type: 'text' });
-    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingProfile, setIsEditingProfile] = useState(true);
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
 
     const openEdit = (field, label, type = 'text') => {
         setEditModal({ isOpen: true, field, label, value: profile[field] || '', type });
@@ -125,30 +126,19 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const avatarBgColor = profile.avatarBg || '#0ea5e9';
 
     return (
-        <div className={`mentor-dashboard-container ${!isEditingProfile ? 'preview-mode' : ''}`}>
-            {isEditingProfile ? (
-                <div className="mentor-header">
-                    <h1>Welcome back, {profile.name} 👋</h1>
-                    <div className="header-actions">
-                        <button className="mentor-save-btn" onClick={() => setIsEditingProfile(false)}>
-                            👀 View Profile Preview
-                        </button>
-                        <button className="mentor-save-btn" onClick={handleSave} disabled={saving}>
-                            {saving ? 'Saving...' : 'Save Profile'}
-                        </button>
-                        <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
-                    </div>
-                </div>
-            ) : (
-                <div style={{ position: 'fixed', top: '15px', right: '15px', zIndex: 1000, display: 'flex', gap: '10px' }}>
-                    <button className="mentor-save-btn" style={{boxShadow: '0 4px 12px rgba(0,0,0,0.15)'}} onClick={() => setIsEditingProfile(true)}>
-                        🔙 Back to Edit Mode
+        <div className={`mentor-dashboard-container`}>
+            <div className="mentor-header">
+                <h1>Welcome back, {profile.name} 👋</h1>
+                <div className="header-actions">
+                    <button className="mentor-save-btn" onClick={() => setShowPreviewModal(true)}>
+                        👀 View Profile Preview
                     </button>
-                    <button className="mentor-logout-btn" style={{background: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.15)'}} onClick={onLogout}>
-                        Log Out
+                    <button className="mentor-save-btn" onClick={handleSave} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save Profile'}
                     </button>
+                    <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
                 </div>
-            )}
+            </div>
 
             {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
 
@@ -173,11 +163,11 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 </div>
             )}
 
+            {/* Main Editing Dashboard Mode */}
             <div className="mentor-layout">
-
-                <div className="mentor-preview" style={{ width: '100%', margin: '0' }}>
+                <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
                     <div className="preview-header" style={{background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
-                        {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
+                        <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>
                     </div>
                     <div className="preview-body">
                         <div className="preview-avatar-wrapper">
@@ -271,6 +261,96 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 </div>
             </div>
+
+            {/* Profile Preview Modal */}
+            {showPreviewModal && (
+                <div className="preview-modal-overlay" onClick={() => setShowPreviewModal(false)}>
+                    <div className="preview-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>✕</button>
+                        
+                        <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none' }}>
+                            <div className="preview-header" style={{background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
+                            </div>
+                            <div className="preview-body">
+                                <div className="preview-avatar-wrapper">
+                                    <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
+                                        {!profile.image && initials}
+                                    </div>
+                                </div>
+
+                                <div className="preview-title-row">
+                                    <h3>{profile.name} <span className="preview-rating">⭐ {profile.rating || 'New'}</span></h3>
+                                    <div className="preview-socials">
+                                        {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
+                                        {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
+                                    </div>
+                                </div>
+
+                                <div className="preview-subtitle">
+                                    {profile.role} @ {profile.company} {profile.topics ? `| ${profile.topics}` : ''}
+                                </div>
+
+                                <div className="preview-badges">
+                                    <div className="preview-badge">💼 {profile.experience || 'Experience'}</div>
+                                </div>
+
+                                <div className="preview-content-grid">
+                                    <div className="preview-section-left">
+                                        <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header">About <span>^</span></div>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                {profile.bio || "No about added yet."}
+                                            </div>
+                                        </div>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header">Education <span>^</span></div>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                {profile.education || "No education added yet."}
+                                            </div>
+                                        </div>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header">Work Experience <span>^</span></div>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                {profile.workExperience || "No work experience added yet."}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="preview-section-right">
+                                        <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
+                                        <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
+                                                <button style={{flex: 1, background: 'white', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 'bold', color: '#1e293b', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>All</button>
+                                                <button style={{flex: 1, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', color: '#64748b', fontWeight: '500'}}>1:1 Call</button>
+                                                <button style={{flex: 1, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', color: '#64748b', fontWeight: '500'}}>Resume Review</button>
+                                            </div>
+
+                                            <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
+                                                <div className="preview-service-tag">⭐ BEST SELLER</div>
+                                                <div className="preview-service-title">1:1 Call Mentorship</div>
+                                                <div className="preview-service-footer">
+                                                    <div className="preview-service-price">₹499</div>
+                                                    <button className="preview-book-btn">Book Now</button>
+                                                </div>
+                                            </div>
+
+                                            <div className="preview-service-card">
+                                                <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
+                                                <div className="preview-service-title">Resume Review</div>
+                                                <div className="preview-service-footer">
+                                                    <div className="preview-service-price">₹199</div>
+                                                    <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

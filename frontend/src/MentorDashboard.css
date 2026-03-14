@@ -4,11 +4,6 @@
     min-height: 100vh;
 }
 
-.mentor-dashboard-container.preview-mode {
-    padding: 0;
-    background: white;
-}
-
 .mentor-header {
     display: flex;
     justify-content: space-between;
@@ -112,20 +107,9 @@
     position: relative;
 }
 
-.mentor-dashboard-container.preview-mode .mentor-preview {
-    border-radius: 0;
-    box-shadow: none;
-    top: 0;
-}
-
 .preview-header {
     height: 150px;
     position: relative;
-    transition: height 0.3s ease;
-}
-
-.mentor-dashboard-container.preview-mode .preview-header {
-    height: 250px;
 }
 
 .preview-body {
@@ -412,4 +396,57 @@
 .header-actions {
     display: flex;
     gap: 1rem;
+}
+
+/* Preview Modal Specific Styles */
+.preview-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.preview-modal-content {
+    background: white;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 20px;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Hide scrollbar for elegant look */
+.preview-modal-content::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+.preview-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 100;
+    transition: background 0.2s;
+}
+
+.preview-modal-close:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
