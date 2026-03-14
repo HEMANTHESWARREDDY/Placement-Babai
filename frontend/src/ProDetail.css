@@ -423,18 +423,45 @@
 }
 
 @media (max-width: 850px) {
+    .preview-top-row {
+        justify-content: flex-start !important;
+        gap: 1.5rem !important;
+    }
+
     .main-tabs-container {
         display: flex;
         gap: 1.5rem;
         margin-bottom: 1rem;
-        overflow-x: hidden; /* Prevent horizontal movement */
+        overflow-x: hidden;
         padding-bottom: 0.25rem;
         flex-wrap: nowrap;
+        border-bottom: 1px solid #e2e8f0;
     }
 
     .main-tab-btn {
         font-size: 0.85rem;
         white-space: nowrap;
+        background: none;
+        border: none;
+        padding: 0.5rem 0;
+        color: #64748b;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .main-tab-btn.active {
+        color: #2563eb;
+        font-weight: 600;
+    }
+
+    .main-tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #2563eb;
     }
 
     .shared-content-area {
@@ -449,106 +476,98 @@
 
 @media (max-width: 768px) {
     .preview-modal-overlay {
-        padding: 8px;
+        padding: 0;
         align-items: flex-end;
     }
 
     .preview-modal-content {
-        border-radius: 16px 16px 12px 12px;
-        max-height: 95vh;
-    }
-
-    .preview-modal-scroll {
-        max-height: 95vh;
-    }
-
-    .preview-header {
-        height: 140px;
-    }
-
-    .preview-body {
-        padding: 0 1rem 2rem 1rem !important;
+        border-radius: 24px 24px 0 0;
+        max-height: 96vh;
         width: 100%;
     }
 
+    .preview-modal-scroll {
+        max-height: 96vh;
+    }
+
+    .preview-header {
+        height: 160px;
+    }
+
+    .preview-body {
+        padding: 0 1.25rem 2rem 1.25rem !important;
+        overflow: visible !important;
+    }
+
     .preview-avatar-wrapper {
-        margin-top: -40px;
-        margin-bottom: 0.7rem;
+        margin-top: -60px;
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-top-row {
+        justify-content: flex-start !important;
+        gap: 0.8rem !important;
+        margin-bottom: 0.5rem !important;
+        align-items: flex-end !important;
+        width: 100% !important;
     }
 
     .preview-avatar {
-        width: 90px;
-        height: 90px;
-        font-size: 1.8rem;
-        border-width: 3px;
+        width: 110px;
+        height: 110px;
+        border-width: 4px;
+        font-size: 2rem;
     }
 
-    .preview-socials-container {
-        justify-content: flex-end !important;
-        margin-bottom: 0.2rem !important;
-    }
-
-    .preview-title-row {
+    .preview-header-meta {
+        padding-bottom: 12px !important;
+        gap: 8px !important;
+        display: flex !important;
         flex-direction: row !important;
-        align-items: flex-start !important;
-        justify-content: space-between !important;
-        gap: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-
-    .preview-title-row h3 {
-        font-size: 1.3rem !important;
-        line-height: 1.2;
-        max-width: 70%;
-    }
-
-    .preview-socials {
-        gap: 0.4rem;
-    }
-
-    .preview-social-icon {
-        width: 32px;
-        height: 32px;
-        font-size: 0.75rem;
+        align-items: center !important;
     }
 
     .preview-rating {
+        height: 32px !important;
+        padding: 0 10px !important;
         font-size: 0.8rem !important;
-        padding: 0.15rem 0.5rem;
+    }
+
+
+    .preview-title-row h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.25rem;
     }
 
     .preview-subtitle {
-        font-size: 0.88rem;
-        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
     }
 
-    .preview-badges {
+    .main-tabs-container {
+        gap: 1.25rem;
         margin-bottom: 1.25rem;
     }
 
-    .preview-badge {
-        font-size: 0.78rem;
-        padding: 0.35rem 0.75rem;
-    }
-
-    .preview-section-left h4,
-    .preview-section-right h4 {
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
+    .main-tab-btn {
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding-bottom: 0.5rem;
     }
 
     .main-tab-btn.active::after {
-        bottom: -0.25rem;
+        bottom: -1px;
+        height: 2px;
     }
 
     .preview-accordion {
-        padding: 0.9rem;
-        border-radius: 10px;
-        margin-bottom: 0.75rem;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
     }
 
     .preview-accordion-header {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
 
     .preview-service-card {
@@ -558,17 +577,17 @@
     }
 
     .preview-service-title {
-        font-size: 0.95rem;
+        font-size: 1rem;
         margin-bottom: 1rem;
     }
 
     .preview-service-price {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 
     .preview-book-btn {
-        padding: 0.45rem 0.9rem;
-        font-size: 0.82rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
         border-radius: 8px;
     }
 }
