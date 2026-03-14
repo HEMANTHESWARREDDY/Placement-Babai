@@ -56,24 +56,23 @@
 
 .pro-tagline {
     display: inline-block;
-    background: rgba(167, 139, 250, 0.2);
-    border: 1px solid rgba(167, 139, 250, 0.4);
-    padding: 0.6rem 2rem;
-    border-radius: 50px;
+    background: transparent;
+    border: none;
+    padding: 0.2rem 0;
     font-weight: 600;
     color: #ddd6fe;
     font-size: 1.1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
 }
 
 .become-mentor-hero-btn {
     background: transparent;
     border: 2px solid #0ea5e9;
     color: #fff;
-    padding: 0.7rem 2.5rem;
+    padding: 0.5rem 1.8rem;
     border-radius: 50px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
@@ -382,7 +381,7 @@
 
     .pro-tagline {
         font-size: 0.85rem;
-        padding: 0.4rem 1.1rem;
+        padding: 0;
     }
 
     /* Mobile Search Bar Tweaks */

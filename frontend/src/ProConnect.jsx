@@ -124,7 +124,7 @@ function ProConnect({ onMentorLoginClick }) {
                     A dedicated space to connect with industry professionals, mentors, and experienced engineers.
                 </p>
                 <div className="pro-tagline">
-                    Connect faster. Grow faster. Get hired faster. 🚀
+                    Connect faster. Grow faster. Get hired faster.
                 </div>
 
 
@@ -202,7 +202,7 @@ function ProConnect({ onMentorLoginClick }) {
                 {/* Popular Searches for Mentors */}
                 <div className="popular-searches">
                     <span className="popular-label">🔥 Trending:</span>
-                    {['AI Developer', 'Machine Learning', 'Data Science', 'Generative AI', 'Python'].map(tag => (
+                    {['AI Developer', 'Machine Learning', 'Data Science', 'Generative AI', 'Python'].slice(0, 2).map(tag => (
                         <button key={tag} className="popular-tag" onClick={() => {
                             setSearchKeyword(tag);
                             document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
