@@ -374,9 +374,7 @@
     }
 
     .pro-subtitle {
-        font-size: 0.95rem;
-        padding: 0 1rem;
-        margin-bottom: 0.8rem;
+        display: none;
     }
 
     .pro-tagline {
