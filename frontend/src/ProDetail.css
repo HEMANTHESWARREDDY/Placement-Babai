@@ -228,6 +228,34 @@
     transform: translateY(-2px);
 }
 
+.preview-social-icon-raw {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 1.2rem;
+}
+
+.preview-social-icon-raw:hover {
+    color: #1e293b;
+    transform: scale(1.1);
+}
+
+.preview-socials-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 0.5rem;
+}
+
+.preview-socials {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
 /* Main Tabs Styling */
 .main-tabs-container {
     display: flex;

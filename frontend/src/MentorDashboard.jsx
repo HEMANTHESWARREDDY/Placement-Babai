@@ -214,46 +214,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <div className="preview-header" style={{ 
                         background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
                                    (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
-                                   profile.headerBg || '#fbcfe8',
-                        position: 'relative'
+                                   profile.headerBg || '#fbcfe8'
                     }}>
                         {isEditingProfile && (
                             <button className="inline-edit-btn" style={{top:'20px', right:'20px', background:'white', color:'#0f172a', border:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.1)'}} onClick={() => document.getElementById('bannerUpload').click()}>
                                 📷 Change Banner
                             </button>
                         )}
-                        <div className="preview-socials-container" style={{ 
-                            position: 'absolute',
-                            bottom: '15px',
-                            right: '20px',
-                            zIndex: 10,
-                            display: 'flex',
-                            gap: '0.5rem',
-                            alignItems: 'center'
-                        }}>
-                            <div className="preview-socials">
-                                {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
-                                {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
-                                <div className="preview-social-icon cursor-pointer" title="Share">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                                </div>
-                                <span className="preview-rating" style={{ 
-                                    height: '36px', 
-                                    display: 'flex', 
-                                    alignItems: 'center',
-                                    background: 'white',
-                                    padding: '0 10px',
-                                    borderRadius: '18px',
-                                    border: '1px solid #e2e8f0',
-                                    fontSize: '0.85rem',
-                                    color: '#eab308',
-                                    fontWeight: '700'
-                                }}>
-                                    ⭐ {profile.rating || 'New'}
-                                </span>
-                            </div>
-                            {isEditingProfile && <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('socials', 'Social Links')}>✏️</button>}
-                        </div>
                     </div>
                     <div className="preview-body">
                         <div className="preview-avatar-wrapper">
@@ -286,6 +253,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             ) : (
                                 profile.isAvailable && <div className="availability-badge">⚡ Available</div>
                             )}
+                        </div>
+
+                        <div className="preview-socials-row" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
+                            <span className="preview-rating">⭐ {profile.rating || 'New'}</span>
+                            <div className="preview-socials">
+                                {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
+                                {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
+                                <div className="preview-social-icon-raw cursor-pointer" title="Share">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                </div>
+                            </div>
+                            {isEditingProfile && <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('socials', 'Social Links')}>✏️</button>}
                         </div>
 
 
@@ -413,48 +392,43 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div className="preview-header" style={{ 
                             background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
                                        (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
-                                       profile.headerBg || '#fbcfe8',
-                            position: 'relative'
+                                       profile.headerBg || '#fbcfe8'
                         }}>
-                            <div className="preview-socials-container" style={{ 
-                                position: 'absolute',
-                                bottom: '15px',
-                                right: '20px',
-                                zIndex: 10
-                            }}>
+                        </div>
+                        <div className="preview-body">
+                            <div className="preview-avatar-wrapper">
+                                <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
+                                    {!profile.image && initials}
+                                </div>
+                                {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
+                            </div>
+
+                            <div className="preview-socials-row" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
+                                <span className="preview-rating" style={{ 
+                                    height: '36px', 
+                                    display: 'flex', 
+                                    alignItems: 'center',
+                                    background: '#fefce8',
+                                    padding: '0 12px',
+                                    borderRadius: '18px',
+                                    border: '1px solid #fef08a',
+                                    fontSize: '0.85rem',
+                                    color: '#eab308',
+                                    fontWeight: '700'
+                                }}>
+                                    ⭐ {profile.rating || '4.8'}
+                                </span>
                                 <div className="preview-socials">
-                                    {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
-                                    {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
-                                    <div className="preview-social-icon cursor-pointer" title="Share">
-                                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                    {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
+                                    {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
+                                    <div className="preview-social-icon-raw cursor-pointer" title="Share">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                     </div>
-                                    <span className="preview-rating" style={{ 
-                                        height: '36px', 
-                                        display: 'flex', 
-                                        alignItems: 'center',
-                                        background: 'white',
-                                        padding: '0 10px',
-                                        borderRadius: '18px',
-                                        border: '1px solid #e2e8f0',
-                                        fontSize: '0.85rem',
-                                        color: '#eab308',
-                                        fontWeight: '700'
-                                    }}>
-                                        ⭐ {profile.rating || '4.8'}
-                                    </span>
                                 </div>
                             </div>
-                        </div>
-                            <div className="preview-body">
-                                <div className="preview-avatar-wrapper">
-                                    <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
-                                        {!profile.image && initials}
-                                    </div>
-                                    {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
-                                </div>
 
                                 <div className="preview-title-row" style={{marginBottom: '0.2rem'}}>
-                                    <h3 style={{fontSize: '2rem'}}>{profile.name} <span className="preview-rating">⭐ {profile.rating || '4.8'}</span></h3>
+                                    <h3 style={{fontSize: '2rem'}}>{profile.name}</h3>
                                 </div>
 
                                 <div className="preview-subtitle" style={{color: '#64748b', marginBottom: '1.5rem', fontSize: '1.05rem'}}>
