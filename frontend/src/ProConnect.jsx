@@ -68,14 +68,17 @@ function ProConnect({ onMentorLoginClick }) {
         }
     };
 
+    const isSearching = searchKeyword.trim() !== '' || searchExperience !== '';
+
     const filteredPros = mentors.filter(pro => {
         let matchKw = true;
         if (searchKeyword.trim()) {
             const kw = searchKeyword.toLowerCase();
             matchKw =
-                pro.name.toLowerCase().includes(kw) ||
-                pro.role.toLowerCase().includes(kw) ||
-                pro.expertise.toLowerCase().includes(kw);
+                (pro.name && pro.name.toLowerCase().includes(kw)) ||
+                (pro.role && pro.role.toLowerCase().includes(kw)) ||
+                (pro.company && pro.company.toLowerCase().includes(kw)) ||
+                (pro.expertise && pro.expertise.toLowerCase().includes(kw));
         }
 
         let matchExp = true;
@@ -174,12 +177,19 @@ function ProConnect({ onMentorLoginClick }) {
             <div className="pro-profiles-section">
                 <div className="pro-section-header">
                     <div className="pro-section-title">
-                        <h2>Top Mentors</h2>
-                        <p>Unlock your potential with elite mentorship. Connect with top industry experts and accelerate your career growth.</p>
+                        <h2>{isSearching ? 'Search Results' : 'Top Mentors'}</h2>
+                        <p>
+                            {isSearching 
+                                ? `Found ${filteredPros.length} mentor${filteredPros.length === 1 ? '' : 's'} matching your criteria.`
+                                : 'Unlock your potential with elite mentorship. Connect with top industry experts and accelerate your career growth.'
+                            }
+                        </p>
                     </div>
-                    <button className="pro-view-all-btn" onClick={() => setShowAllMentors(true)}>
-                        View All <span className="pro-view-all-arrow">❯</span>
-                    </button>
+                    {!isSearching && (
+                        <button className="pro-view-all-btn" onClick={() => setShowAllMentors(true)}>
+                            View All <span className="pro-view-all-arrow">❯</span>
+                        </button>
+                    )}
                 </div>
 
                 {loading ? (
@@ -208,7 +218,9 @@ function ProConnect({ onMentorLoginClick }) {
                                 <div className="tm-content">
                                     <h3 className="tm-name">{pro.name}</h3>
                                     <div className="tm-rating">⭐ {pro.rating}</div>
-                                    <p className="tm-role">{pro.role}</p>
+                                    <p className="tm-role">
+                                        {pro.role} @ {pro.company || 'Industry'} | {pro.expertise}
+                                    </p>
                                     <button className="tm-btn" onClick={() => setSelectedPro(pro)}>View Profile</button>
                                 </div>
                             </div>
