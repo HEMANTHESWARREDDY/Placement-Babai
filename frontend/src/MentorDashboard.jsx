@@ -176,7 +176,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             {/* Main Editing Dashboard Mode */}
             <div className="mentor-layout">
                 <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
-                    <div className="preview-header" style={{backgroundImage: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg})` : 'none', backgroundColor: profile.headerBg && !profile.headerBg.startsWith('data:image') && !profile.headerBg.startsWith('http') ? profile.headerBg : '#fbcfe8'}}>
+                    <div className="preview-header" style={{ 
+                        background: profile.headerBg?.includes('gradient') ? profile.headerBg : (profile.headerBg ? `url(${profile.headerBg}) center/cover no-repeat` : '#fbcfe8'),
+                        backgroundColor: (!profile.headerBg || (!profile.headerBg.includes('gradient') && !profile.headerBg.startsWith('http') && !profile.headerBg.startsWith('data:'))) ? profile.headerBg : 'transparent'
+                    }}>
                         {isEditingProfile && <button className="inline-edit-btn" onClick={() => document.getElementById('bannerUpload').click()}>✏️ Edit Banner</button>}
                     </div>
                     <div className="preview-body">
@@ -196,6 +199,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <div className="preview-socials">
                                 {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
                                 {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
+                                <div className="preview-social-icon cursor-pointer" title="Share">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                </div>
                                 {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('email', 'Email Address', 'email')}>✏️ Edit Socials</button>}
                             </div>
                         </div>
@@ -219,6 +225,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className="preview-accordion-header">About <span>^</span></div>
                                     <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
                                         {profile.bio || "No about added yet."}
+                                    </div>
+                                </div>
+                                <div className="preview-accordion">
+                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('topics', 'Topics of Expertise', 'text')}>✏️</button>}
+                                    <div className="preview-accordion-header">Topics of Expertise <span>^</span></div>
+                                    <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                        {profile.topics || "No topics added yet."}
                                     </div>
                                 </div>
                                 <div className="preview-accordion">
@@ -301,8 +314,11 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>✕</button>
                         <div className="preview-modal-scroll">
                         <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
-                            <div className="preview-header" style={{backgroundImage: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg})` : 'none', backgroundColor: profile.headerBg && !profile.headerBg.startsWith('data:image') && !profile.headerBg.startsWith('http') ? profile.headerBg : '#f1f5f9'}}>
-                            </div>
+                        <div className="preview-header" style={{ 
+                            background: profile.headerBg?.includes('gradient') ? profile.headerBg : (profile.headerBg ? `url(${profile.headerBg}) center/cover no-repeat` : '#f1f5f9'),
+                            backgroundColor: (!profile.headerBg || (!profile.headerBg.includes('gradient') && !profile.headerBg.startsWith('http') && !profile.headerBg.startsWith('data:'))) ? profile.headerBg : 'transparent'
+                        }}>
+                        </div>
                             <div className="preview-body">
                                 <div className="preview-avatar-wrapper">
                                     <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
@@ -316,6 +332,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className="preview-socials">
                                         {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
                                         {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
+                                        <div className="preview-social-icon cursor-pointer" title="Share">
+                                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -334,6 +353,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             <div className="preview-accordion-header">About <span>^</span></div>
                                             <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
                                                 {profile.bio || "No about added yet."}
+                                            </div>
+                                        </div>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header">Topics of Expertise <span>^</span></div>
+                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                {profile.topics || "No topics added yet."}
                                             </div>
                                         </div>
                                         <div className="preview-accordion">
