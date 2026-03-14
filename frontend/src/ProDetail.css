@@ -46,6 +46,8 @@
     max-height: 90vh;
     margin: 0;
     padding: 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
 }
 
 .preview-modal-scroll::-webkit-scrollbar,
