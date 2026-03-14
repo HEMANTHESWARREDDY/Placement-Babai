@@ -175,6 +175,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 {!profile.image && initials}
                                 {isEditingProfile && <button className="inline-edit-btn inline-edit-avatar" onClick={() => document.getElementById('avatarUpload').click()}>✏️</button>}
                             </div>
+                            <div className="availability-badge">⚡ Available</div>
                         </div>
 
                         <div className="preview-title-row">
@@ -195,7 +196,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </div>
 
                         <div className="preview-badges">
-                            <div className="preview-badge">💼 {profile.experience || 'Experience'}</div>
+                            <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💼 {profile.experience || 'Experience'}</div>
+                            <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💬 210 Reviews</div>
                             {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
                         </div>
 
@@ -276,22 +278,25 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                         {!profile.image && initials}
                                     </div>
+                                    <div className="availability-badge">⚡ Available</div>
                                 </div>
 
-                                <div className="preview-title-row">
-                                    <h3>{profile.name} <span className="preview-rating">⭐ {profile.rating || 'New'}</span></h3>
+                                <div className="preview-title-row" style={{marginBottom: '0.2rem'}}>
+                                    <h3 style={{fontSize: '2rem'}}>{profile.name} <span className="preview-rating">⭐ {profile.rating || '4.8'}</span></h3>
                                     <div className="preview-socials">
-                                        {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
-                                        {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
+                                        <div className="preview-social-icon cursor-pointer">📸</div>
+                                        {profile.linkedin ? <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a> : <div className="preview-social-icon cursor-pointer">in</div>}
+                                        <div className="preview-social-icon cursor-pointer">🔗</div>
                                     </div>
                                 </div>
 
-                                <div className="preview-subtitle">
+                                <div className="preview-subtitle" style={{color: '#64748b', marginBottom: '1.5rem', fontSize: '1.05rem'}}>
                                     {profile.role} @ {profile.company} {profile.topics ? `| ${profile.topics}` : ''}
                                 </div>
 
                                 <div className="preview-badges">
-                                    <div className="preview-badge">💼 {profile.experience || 'Experience'}</div>
+                                    <div className="preview-badge" style={{background: 'white', border: '1px solid #e2e8f0', color: '#64748b', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'}}>💼 {profile.experience || '4 years of Experience'}</div>
+                                    <div className="preview-badge" style={{background: 'white', border: '1px solid #e2e8f0', color: '#64748b', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'}}>💬 210 Reviews</div>
                                 </div>
 
                                 <div className="preview-content-grid">
