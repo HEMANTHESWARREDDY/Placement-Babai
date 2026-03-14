@@ -10,4 +10,5 @@ public interface MentorApplicantRepository extends JpaRepository<MentorApplicant
     List<MentorApplicant> findByStatusOrderByCreatedAtDesc(String status);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
+    boolean existsByPhone(String phone);
 }

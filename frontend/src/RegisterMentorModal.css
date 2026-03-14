@@ -229,6 +229,32 @@
     box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
 }
 
+.input-error {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+}
+
+.rm-error-msg {
+    color: #ef4444;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: -2px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    animation: rm-error-fade 0.2s ease;
+}
+
+.rm-error-msg::before {
+    content: "⚠️";
+    font-size: 0.8rem;
+}
+
+@keyframes rm-error-fade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .rm-form-actions {
     display: flex;
     justify-content: flex-end;

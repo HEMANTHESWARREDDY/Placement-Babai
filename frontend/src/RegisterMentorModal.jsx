@@ -21,6 +21,7 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -32,25 +33,63 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
         };
     }, [onClose]);
 
+    const validateForm = () => {
+        const newErrors = {};
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email) newErrors.email = "Email is required";
+        else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email format";
+
+        // Phone validation (simple check for 10 digits)
+        const phoneRegex = /^\+?\d{10,13}$/;
+        if (!formData.phone) newErrors.phone = "Phone number is required";
+        else if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) newErrors.phone = "Invalid phone number (min 10 digits)";
+
+        // Username validation
+        if (!formData.username) newErrors.username = "Username is required";
+        else if (formData.username.length < 3) newErrors.username = "Username must be at least 3 characters";
+
+        // Password validation
+        if (!formData.password) newErrors.password = "Password is required";
+        else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters";
+
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = "Passwords do not match";
+        }
+
+        // Mandatory fields
+        const requiredFields = ['name', 'linkedin', 'company', 'role', 'experience', 'skills', 'bio'];
+        requiredFields.forEach(field => {
+            if (!formData[field]) {
+                newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+            }
+        });
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear error when user types
+        if (errors[name]) {
+            setErrors(prev => {
+                const updated = { ...prev };
+                delete updated[name];
+                return updated;
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!validateForm()) return;
+
         setIsSubmitting(true);
         try {
-            if (formData.password.length < 6) {
-                alert('Password must be at least 6 characters.');
-                setIsSubmitting(false);
-                return;
-            }
-            if (formData.password !== formData.confirmPassword) {
-                alert('Passwords do not match!');
-                setIsSubmitting(false);
-                return;
-            }
             const response = await fetch(`${API_BASE_URL}/api/mentors/apply`, {
                 method: 'POST',
                 headers: {
@@ -66,7 +105,18 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
                 }, 2500);
             } else {
                 const errorData = await response.json();
-                alert(errorData.error || 'There was an issue submitting your application.');
+                const backendError = errorData.error || 'There was an issue submitting your application.';
+                
+                // Map backend errors to specific fields if possible
+                if (backendError.toLowerCase().includes('username')) {
+                    setErrors(prev => ({ ...prev, username: backendError }));
+                } else if (backendError.toLowerCase().includes('email')) {
+                    setErrors(prev => ({ ...prev, email: backendError }));
+                } else if (backendError.toLowerCase().includes('phone')) {
+                    setErrors(prev => ({ ...prev, phone: backendError }));
+                } else {
+                    alert(backendError);
+                }
             }
         } catch (error) {
             console.error('Error applying as mentor:', error);
@@ -107,45 +157,54 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
                             </button>
                         </div>
 
-                        <form className="rm-form" onSubmit={handleSubmit}>
+                        <form className="rm-form" onSubmit={handleSubmit} noValidate>
                             <div className="rm-form-grid">
                                 <div className="rm-form-group">
                                     <label>Full Name *</label>
-                                    <input type="text" name="name" required placeholder="John Doe" value={formData.name} onChange={handleChange} />
+                                    <input type="text" name="name" required placeholder="John Doe" value={formData.name} onChange={handleChange} className={errors.name ? 'input-error' : ''} />
+                                    {errors.name && <div className="rm-error-msg">{errors.name}</div>}
                                 </div>
                                 <div className="rm-form-group">
                                     <label>Email Address *</label>
-                                    <input type="email" name="email" required placeholder="john@example.com" value={formData.email} onChange={handleChange} />
+                                    <input type="email" name="email" required placeholder="john@example.com" value={formData.email} onChange={handleChange} className={errors.email ? 'input-error' : ''} />
+                                    {errors.email && <div className="rm-error-msg">{errors.email}</div>}
                                 </div>
                                 <div className="rm-form-group">
-                                    <label>Phone Number</label>
-                                    <input type="tel" name="phone" placeholder="+91 9876543210" value={formData.phone} onChange={handleChange} />
+                                    <label>Phone Number *</label>
+                                    <input type="tel" name="phone" required placeholder="+91 9876543210" value={formData.phone} onChange={handleChange} className={errors.phone ? 'input-error' : ''} />
+                                    {errors.phone && <div className="rm-error-msg">{errors.phone}</div>}
                                 </div>
                                 <div className="rm-form-group">
                                     <label>LinkedIn Profile URL *</label>
-                                    <input type="url" name="linkedin" required placeholder="https://linkedin.com/in/johndoe" value={formData.linkedin} onChange={handleChange} />
+                                    <input type="url" name="linkedin" required placeholder="https://linkedin.com/in/johndoe" value={formData.linkedin} onChange={handleChange} className={errors.linkedin ? 'input-error' : ''} />
+                                    {errors.linkedin && <div className="rm-error-msg">{errors.linkedin}</div>}
                                 </div>
                                 <div className="rm-form-group">
                                     <label>Current Company *</label>
-                                    <input type="text" name="company" required placeholder="Google, Microsoft, etc." value={formData.company} onChange={handleChange} />
+                                    <input type="text" name="company" required placeholder="Google, Microsoft, etc." value={formData.company} onChange={handleChange} className={errors.company ? 'input-error' : ''} />
+                                    {errors.company && <div className="rm-error-msg">{errors.company}</div>}
                                 </div>
                                 <div className="rm-form-group">
                                     <label>Job Title/Role *</label>
-                                    <input type="text" name="role" required placeholder="Senior Software Engineer" value={formData.role} onChange={handleChange} />
+                                    <input type="text" name="role" required placeholder="Senior Software Engineer" value={formData.role} onChange={handleChange} className={errors.role ? 'input-error' : ''} />
+                                    {errors.role && <div className="rm-error-msg">{errors.role}</div>}
                                 </div>
                                 <div className="rm-form-group">
                                     <label>Years of Experience *</label>
-                                    <input type="number" name="experience" min="0" required placeholder="e.g. 5" value={formData.experience} onChange={handleChange} />
+                                    <input type="number" name="experience" min="0" required placeholder="e.g. 5" value={formData.experience} onChange={handleChange} className={errors.experience ? 'input-error' : ''} />
+                                    {errors.experience && <div className="rm-error-msg">{errors.experience}</div>}
                                 </div>
                                 <div className="rm-form-group">
                                     <label>Expertise/Skills (comma separated) *</label>
-                                    <input type="text" name="skills" required placeholder="React, Node.js, System Design" value={formData.skills} onChange={handleChange} />
+                                    <input type="text" name="skills" required placeholder="React, Node.js, System Design" value={formData.skills} onChange={handleChange} className={errors.skills ? 'input-error' : ''} />
+                                    {errors.skills && <div className="rm-error-msg">{errors.skills}</div>}
                                 </div>
                             </div>
 
                             <div className="rm-form-group rm-full-width">
                                 <label>Short Bio *</label>
-                                <textarea name="bio" required placeholder="Tell us a bit about your journey and what you can help mentees with..." rows="4" value={formData.bio} onChange={handleChange}></textarea>
+                                <textarea name="bio" required placeholder="Tell us a bit about your journey and what you can help mentees with..." rows="4" value={formData.bio} onChange={handleChange} className={errors.bio ? 'input-error' : ''}></textarea>
+                                {errors.bio && <div className="rm-error-msg">{errors.bio}</div>}
                             </div>
 
                             <div className="rm-credentials-section">
@@ -154,16 +213,19 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
                                 <div className="rm-form-grid">
                                     <div className="rm-form-group">
                                         <label>Username *</label>
-                                        <input type="text" name="username" required placeholder="Choose a unique username" value={formData.username} onChange={handleChange} />
+                                        <input type="text" name="username" required placeholder="Choose a unique username" value={formData.username} onChange={handleChange} className={errors.username ? 'input-error' : ''} />
+                                        {errors.username && <div className="rm-error-msg">{errors.username}</div>}
                                     </div>
                                     <div className="rm-form-group hide-on-mobile"></div>
                                     <div className="rm-form-group">
                                         <label>Password *</label>
-                                        <input type="password" name="password" required placeholder="Min 6 characters" value={formData.password} onChange={handleChange} />
+                                        <input type="password" name="password" required placeholder="Min 6 characters" value={formData.password} onChange={handleChange} className={errors.password ? 'input-error' : ''} />
+                                        {errors.password && <div className="rm-error-msg">{errors.password}</div>}
                                     </div>
                                     <div className="rm-form-group">
                                         <label>Confirm Password *</label>
-                                        <input type="password" name="confirmPassword" required placeholder="Re-enter password" value={formData.confirmPassword} onChange={handleChange} />
+                                        <input type="password" name="confirmPassword" required placeholder="Re-enter password" value={formData.confirmPassword} onChange={handleChange} className={errors.confirmPassword ? 'input-error' : ''} />
+                                        {errors.confirmPassword && <div className="rm-error-msg">{errors.confirmPassword}</div>}
                                     </div>
                                 </div>
                             </div>

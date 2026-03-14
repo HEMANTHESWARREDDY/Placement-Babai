@@ -36,26 +36,37 @@ public class MentorController {
     // Public API to submit a new mentor application
     @PostMapping("/apply")
     public ResponseEntity<?> applyAsMentor(@RequestBody Map<String, String> payload) {
+        // Validation for mandatory fields
+        String[] requiredFields = {"name", "email", "phone", "company", "role", "experience", "linkedin", "skills", "bio", "username", "password", "confirmPassword"};
+        for (String field : requiredFields) {
+            if (payload.get(field) == null || payload.get(field).isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("error", field.substring(0, 1).toUpperCase() + field.substring(1) + " is required"));
+            }
+        }
+
         // Validate password match
         String password = payload.get("password");
         String confirmPassword = payload.get("confirmPassword");
-        if (password == null || password.length() < 6) {
+        if (password.length() < 6) {
             return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 6 characters"));
         }
         if (!password.equals(confirmPassword)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Passwords do not match"));
         }
 
-        // Check username uniqueness
+        // Check uniqueness
         String username = payload.get("username");
-        if (username == null || username.isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Username is required"));
-        }
+        String email = payload.get("email");
+        String phone = payload.get("phone");
+
         if (mentorRepository.existsByUsername(username) || mentorApplicantRepository.existsByUsername(username)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Username already taken"));
         }
-        if (mentorRepository.existsByEmail(payload.get("email")) || mentorApplicantRepository.existsByEmail(payload.get("email"))) {
+        if (mentorRepository.existsByEmail(email) || mentorApplicantRepository.existsByEmail(email)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already registered"));
+        }
+        if (mentorRepository.existsByPhone(phone) || mentorApplicantRepository.existsByPhone(phone)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Phone number already registered"));
         }
 
         MentorApplicant applicant = new MentorApplicant();

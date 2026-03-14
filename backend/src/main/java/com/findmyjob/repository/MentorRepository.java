@@ -19,4 +19,5 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
 }
