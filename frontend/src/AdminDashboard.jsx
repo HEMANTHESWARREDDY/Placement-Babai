@@ -628,7 +628,12 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
             ) : activeTab === 'deleted' ? (
                 <div className="jobs-management">
                     <div className="jobs-list-header">
-                        <h2>Deleted Jobs History ({deletedJobs.length})</h2>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <button className="btn-back" onClick={() => changeTab('jobs')}>
+                                ← Back to Jobs
+                            </button>
+                            <h2>Deleted Jobs History ({deletedJobs.length})</h2>
+                        </div>
                         <p style={{ color: '#64748b' }}>Jobs are permanently deleted after 15 days.</p>
                     </div>
                     {deletedLoading ? (
