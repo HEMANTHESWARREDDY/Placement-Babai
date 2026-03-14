@@ -5,6 +5,17 @@ function ProDetail({ pro, onClose }) {
     const [activeTab, setActiveTab] = useState('All');
     const [mainTab, setMainTab] = useState('About');
 
+    const [expandedSections, setExpandedSections] = useState({
+        about: true,
+        topics: false,
+        education: false,
+        work: false
+    });
+
+    const toggleSection = (section) => {
+        setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+    };
+
     useEffect(() => {
         const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
         document.addEventListener('keydown', handleKey);
@@ -92,28 +103,44 @@ function ProDetail({ pro, onClose }) {
                                 {mainTab === 'About' ? (
                                     <div className="about-content-tab">
                                         <div className="preview-accordion">
-                                            <div className="preview-accordion-header">About <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
-                                                {pro.about || pro.bio || "No about added yet."}
+                                            <div className="preview-accordion-header" onClick={() => toggleSection('about')} style={{cursor: 'pointer'}}>
+                                                About <span>{expandedSections.about ? 'v' : '^'}</span>
                                             </div>
+                                            {expandedSections.about && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                    {pro.about || pro.bio || "No about added yet."}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="preview-accordion">
-                                            <div className="preview-accordion-header">Topics of Expertise <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
-                                                {pro.topics || "No topics added yet."}
+                                            <div className="preview-accordion-header" onClick={() => toggleSection('topics')} style={{cursor: 'pointer'}}>
+                                                Topics of Expertise <span>{expandedSections.topics ? 'v' : '^'}</span>
                                             </div>
+                                            {expandedSections.topics && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                    {pro.topics || "No topics added yet."}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="preview-accordion">
-                                            <div className="preview-accordion-header">Education <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
-                                                {pro.education || "No education added yet."}
+                                            <div className="preview-accordion-header" onClick={() => toggleSection('education')} style={{cursor: 'pointer'}}>
+                                                Education <span>{expandedSections.education ? 'v' : '^'}</span>
                                             </div>
+                                            {expandedSections.education && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                    {pro.education || "No education added yet."}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="preview-accordion">
-                                            <div className="preview-accordion-header">Work Experience <span>^</span></div>
-                                            <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
-                                                {pro.workExperience || "No work experience added yet."}
+                                            <div className="preview-accordion-header" onClick={() => toggleSection('work')} style={{cursor: 'pointer'}}>
+                                                Work Experience <span>{expandedSections.work ? 'v' : '^'}</span>
                                             </div>
+                                            {expandedSections.work && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap'}}>
+                                                    {pro.workExperience || "No work experience added yet."}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
