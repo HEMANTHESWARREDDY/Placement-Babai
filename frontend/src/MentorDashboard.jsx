@@ -197,7 +197,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                         <div className="preview-badges">
                             <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💼 {profile.experience || 'Experience'}</div>
-                            <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💬 210 Reviews</div>
                             {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
                         </div>
 
@@ -270,8 +269,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <div className="preview-modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>✕</button>
                         
-                        <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none' }}>
-                            <div className="preview-header" style={{background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
+                        <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '20px', border: 'none' }}>
+                            <div className="preview-header" style={{height: '120px', borderRadius: '20px 20px 0 0', background: profile.headerBg?.startsWith('data:image') || profile.headerBg?.startsWith('http') ? `url(${profile.headerBg}) center/cover` : headerBgColor}}>
                             </div>
                             <div className="preview-body">
                                 <div className="preview-avatar-wrapper">
@@ -296,7 +295,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                                 <div className="preview-badges">
                                     <div className="preview-badge" style={{background: 'white', border: '1px solid #e2e8f0', color: '#64748b', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'}}>💼 {profile.experience || '4 years of Experience'}</div>
-                                    <div className="preview-badge" style={{background: 'white', border: '1px solid #e2e8f0', color: '#64748b', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'}}>💬 210 Reviews</div>
                                 </div>
 
                                 <div className="preview-content-grid">
