@@ -125,23 +125,32 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const avatarBgColor = profile.avatarBg || '#0ea5e9';
 
     return (
-        <div className="mentor-dashboard-container">
-            <div className="mentor-header">
-                <h1>Welcome back, {profile.name} 👋</h1>
-                <div className="header-actions">
-                    <button className="mentor-save-btn" onClick={() => setIsEditingProfile(!isEditingProfile)}>
-                        {isEditingProfile ? '👀 View Profile Preview' : '✏️ Edit Profile Info'}
-                    </button>
-                    {isEditingProfile && (
+        <div className={`mentor-dashboard-container ${!isEditingProfile ? 'preview-mode' : ''}`}>
+            {isEditingProfile ? (
+                <div className="mentor-header">
+                    <h1>Welcome back, {profile.name} 👋</h1>
+                    <div className="header-actions">
+                        <button className="mentor-save-btn" onClick={() => setIsEditingProfile(false)}>
+                            👀 View Profile Preview
+                        </button>
                         <button className="mentor-save-btn" onClick={handleSave} disabled={saving}>
                             {saving ? 'Saving...' : 'Save Profile'}
                         </button>
-                    )}
-                    <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
+                        <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div style={{ position: 'fixed', top: '15px', right: '15px', zIndex: 1000, display: 'flex', gap: '10px' }}>
+                    <button className="mentor-save-btn" style={{boxShadow: '0 4px 12px rgba(0,0,0,0.15)'}} onClick={() => setIsEditingProfile(true)}>
+                        🔙 Back to Edit Mode
+                    </button>
+                    <button className="mentor-logout-btn" style={{background: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.15)'}} onClick={onLogout}>
+                        Log Out
+                    </button>
+                </div>
+            )}
 
-            {message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
+            {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
 
             {/* Hidden File Inputs for quick image setting */}
             <input type="file" id="bannerUpload" style={{display: 'none'}} accept="image/*" onChange={(e) => handleImageUpload(e, 'headerBg')} />

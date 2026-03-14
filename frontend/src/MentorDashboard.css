@@ -4,6 +4,11 @@
     min-height: 100vh;
 }
 
+.mentor-dashboard-container.preview-mode {
+    padding: 0;
+    background: white;
+}
+
 .mentor-header {
     display: flex;
     justify-content: space-between;
@@ -107,9 +112,20 @@
     position: relative;
 }
 
+.mentor-dashboard-container.preview-mode .mentor-preview {
+    border-radius: 0;
+    box-shadow: none;
+    top: 0;
+}
+
 .preview-header {
     height: 150px;
     position: relative;
+    transition: height 0.3s ease;
+}
+
+.mentor-dashboard-container.preview-mode .preview-header {
+    height: 250px;
 }
 
 .preview-body {
