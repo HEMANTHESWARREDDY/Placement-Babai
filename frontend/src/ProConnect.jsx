@@ -147,16 +147,20 @@ function ProConnect({ onMentorLoginClick }) {
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                         />
-                        {searchKeyword.trim() !== '' && (
-                            <div className="search-suggestions">
-                                {mentors
-                                    .filter(m => 
-                                        m.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-                                        (m.role && m.role.toLowerCase().includes(searchKeyword.toLowerCase())) ||
-                                        (m.company && m.company.toLowerCase().includes(searchKeyword.toLowerCase()))
-                                    )
-                                    .slice(0, 2)
-                                    .map(suggestion => (
+                        {(() => {
+                            const suggestions = mentors
+                                .filter(m => 
+                                    m.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+                                    (m.role && m.role.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+                                    (m.company && m.company.toLowerCase().includes(searchKeyword.toLowerCase()))
+                                )
+                                .slice(0, 2);
+                            
+                            if (searchKeyword.trim() === '' || suggestions.length === 0) return null;
+
+                            return (
+                                <div className="search-suggestions">
+                                    {suggestions.map(suggestion => (
                                         <div 
                                             key={suggestion.id} 
                                             className="suggestion-item"
@@ -173,10 +177,10 @@ function ProConnect({ onMentorLoginClick }) {
                                                 <div className="suggestion-meta">{suggestion.role} @ {suggestion.company}</div>
                                             </div>
                                         </div>
-                                    ))
-                                }
-                            </div>
-                        )}
+                                    ))}
+                                </div>
+                            );
+                        })()}
                     </div>
 
                     <div className="search-input-group search-exp-input-group" style={{ flex: '0.9', borderLeft: '1px solid #e2e8f0', paddingLeft: '1.4rem' }}>
