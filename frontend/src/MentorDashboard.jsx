@@ -102,6 +102,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', type: 'text' });
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
+    const [activeServiceTab, setActiveServiceTab] = useState('All');
 
     const openEdit = (field, label, type = 'text') => {
         setEditModal({ isOpen: true, field, label, value: profile[field] || '', type });
@@ -241,30 +242,51 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                     
                                     <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
-                                        <button style={{flex: 1, background: 'white', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 'bold', color: '#1e293b', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>All</button>
-                                        <button style={{flex: 1, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', color: '#64748b', fontWeight: '500'}}>1:1 Call</button>
-                                        <button style={{flex: 1, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', color: '#64748b', fontWeight: '500'}}>Resume Review</button>
+                                        {['All', '1:1 Call', 'Resume Review'].map(tab => (
+                                            <button 
+                                                key={tab}
+                                                onClick={() => setActiveServiceTab(tab)}
+                                                style={{
+                                                    flex: 1, 
+                                                    background: activeServiceTab === tab ? 'white' : 'transparent', 
+                                                    border: 'none', 
+                                                    cursor: 'pointer', 
+                                                    textAlign: 'center', 
+                                                    padding: '0.4rem', 
+                                                    borderRadius: '6px', 
+                                                    fontSize: '0.85rem', 
+                                                    fontWeight: activeServiceTab === tab ? 'bold' : '500', 
+                                                    color: activeServiceTab === tab ? '#1e293b' : '#64748b', 
+                                                    boxShadow: activeServiceTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                }}
+                                            >
+                                                {tab}
+                                            </button>
+                                        ))}
                                     </div>
 
-                                    {/* Mock Service 1 */}
-                                    <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
-                                        <div className="preview-service-tag">⭐ BEST SELLER</div>
-                                        <div className="preview-service-title">1:1 Call Mentorship</div>
-                                        <div className="preview-service-footer">
-                                            <div className="preview-service-price">₹499</div>
-                                            <button className="preview-book-btn">Book Now</button>
+                                    {/* Filtered Services */}
+                                    {(activeServiceTab === 'All' || activeServiceTab === '1:1 Call') && (
+                                        <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
+                                            <div className="preview-service-tag">⭐ BEST SELLER</div>
+                                            <div className="preview-service-title">1:1 Call Mentorship</div>
+                                            <div className="preview-service-footer">
+                                                <div className="preview-service-price">₹499</div>
+                                                <button className="preview-book-btn">Book Now</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    {/* Mock Service 2 */}
-                                    <div className="preview-service-card">
-                                        <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
-                                        <div className="preview-service-title">Resume Review</div>
-                                        <div className="preview-service-footer">
-                                            <div className="preview-service-price">₹199</div>
-                                            <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                    {(activeServiceTab === 'All' || activeServiceTab === 'Resume Review') && (
+                                        <div className="preview-service-card">
+                                            <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
+                                            <div className="preview-service-title">Resume Review</div>
+                                            <div className="preview-service-footer">
+                                                <div className="preview-service-price">₹199</div>
+                                                <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -333,28 +355,50 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
-                                                <button style={{flex: 1, background: 'white', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 'bold', color: '#1e293b', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>All</button>
-                                                <button style={{flex: 1, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', color: '#64748b', fontWeight: '500'}}>1:1 Call</button>
-                                                <button style={{flex: 1, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'center', padding: '0.4rem', borderRadius: '6px', fontSize: '0.85rem', color: '#64748b', fontWeight: '500'}}>Resume Review</button>
+                                                {['All', '1:1 Call', 'Resume Review'].map(tab => (
+                                                    <button 
+                                                        key={tab}
+                                                        onClick={() => setActiveServiceTab(tab)}
+                                                        style={{
+                                                            flex: 1, 
+                                                            background: activeServiceTab === tab ? 'white' : 'transparent', 
+                                                            border: 'none', 
+                                                            cursor: 'pointer', 
+                                                            textAlign: 'center', 
+                                                            padding: '0.4rem', 
+                                                            borderRadius: '6px', 
+                                                            fontSize: '0.85rem', 
+                                                            fontWeight: activeServiceTab === tab ? 'bold' : '500', 
+                                                            color: activeServiceTab === tab ? '#1e293b' : '#64748b', 
+                                                            boxShadow: activeServiceTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                        }}
+                                                    >
+                                                        {tab}
+                                                    </button>
+                                                ))}
                                             </div>
 
-                                            <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
-                                                <div className="preview-service-tag">⭐ BEST SELLER</div>
-                                                <div className="preview-service-title">1:1 Call Mentorship</div>
-                                                <div className="preview-service-footer">
-                                                    <div className="preview-service-price">₹499</div>
-                                                    <button className="preview-book-btn">Book Now</button>
+                                            {(activeServiceTab === 'All' || activeServiceTab === '1:1 Call') && (
+                                                <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
+                                                    <div className="preview-service-tag">⭐ BEST SELLER</div>
+                                                    <div className="preview-service-title">1:1 Call Mentorship</div>
+                                                    <div className="preview-service-footer">
+                                                        <div className="preview-service-price">₹499</div>
+                                                        <button className="preview-book-btn">Book Now</button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
 
-                                            <div className="preview-service-card">
-                                                <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
-                                                <div className="preview-service-title">Resume Review</div>
-                                                <div className="preview-service-footer">
-                                                    <div className="preview-service-price">₹199</div>
-                                                    <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                            {(activeServiceTab === 'All' || activeServiceTab === 'Resume Review') && (
+                                                <div className="preview-service-card">
+                                                    <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
+                                                    <div className="preview-service-title">Resume Review</div>
+                                                    <div className="preview-service-footer">
+                                                        <div className="preview-service-price">₹199</div>
+                                                        <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
