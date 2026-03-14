@@ -436,10 +436,23 @@
     }
 
     .pro-section-header {
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: flex-start;
-        gap: 0.6rem;
+        gap: 0.5rem;
         padding-top: 1.5rem;
         margin-bottom: 1rem;
+    }
+
+    .pro-view-all-btn {
+        padding: 0.35rem 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    .pro-view-all-arrow {
+        width: 14px;
+        height: 14px;
+        font-size: 0.5rem;
     }
 }
