@@ -43,7 +43,7 @@ function ProConnect({ onMentorLoginClick }) {
                         id: m.id,
                         name: m.name,
                         role: m.role || 'Industry Expert',
-                        exp: m.experience ? (m.experience.includes('year') ? m.experience : `${m.experience} years`) : '1 year',
+                        exp: m.experience ? (m.experience.toLowerCase().includes('year') ? m.experience : `${m.experience} Years of experience`) : '1 Year of experience',
                         rating: m.rating || '4.8',
                         reviews: m.reviews || '0',
                         expertise: m.skills || '',
