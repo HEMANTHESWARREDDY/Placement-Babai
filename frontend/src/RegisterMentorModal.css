@@ -173,6 +173,53 @@
     color: #64748b;
     font-size: 1rem;
     line-height: 1.5;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .rm-modal-unified {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .rm-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .rm-header p {
+        font-size: 0.9rem;
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    .rm-already-mentor-banner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .rm-already-mentor-left {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .rm-already-mentor-title {
+        font-size: 1rem;
+    }
+
+    .rm-already-mentor-sub {
+        font-size: 0.8rem;
+    }
+
+    .rm-mentor-login-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 0.25rem;
+        padding: 0.5rem 1rem;
+    }
 }
 
 .rm-form {
