@@ -367,18 +367,68 @@
 
 @media (max-width: 768px) {
     .pro-hero {
-        padding: 3.5rem 1.5rem 5rem;
+        padding: 2.5rem 1rem 3.5rem;
     }
 
     .pro-hero h1 {
-        font-size: 2.8rem;
+        font-size: 2.6rem;
     }
 
     .pro-subtitle {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+
+    .pro-tagline {
+        font-size: 0.95rem;
+        padding: 0.5rem 1.2rem;
+    }
+
+    /* Mobile Search Bar Tweaks */
+    .pro-hero .search-container {
+        padding: 0.25rem 0.25rem 0.25rem 1rem;
+        border-radius: 40px;
+        margin-top: 1.2rem !important;
+    }
+
+    .pro-hero .search-btn {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.8rem;
+        border-radius: 30px;
+    }
+
+    .pro-hero .search-input::placeholder {
+        font-size: 0.9rem;
+    }
+
+    /* Popular searches should show more or wrap better */
+    .pro-hero .popular-searches {
+        margin-top: 1rem;
+        gap: 0.4rem;
+        padding: 0 0.5rem;
+    }
+
+    /* Override App.css hiding tags */
+    .pro-hero .popular-tag:nth-of-type(n+3) {
+        display: inline-block !important;
+    }
+
+    .pro-hero .popular-tag {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.7rem;
     }
 
     .pro-profiles-section {
-        margin-top: -2.5rem;
+        margin-top: -1.5rem;
+    }
+
+    .pro-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .pro-section-title h2 {
+        font-size: 1.6rem;
     }
 }
