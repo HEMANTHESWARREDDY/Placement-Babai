@@ -89,14 +89,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                     <div className="aml-stat-item">
                                         💼 <span>{pro.exp || "1 Year"}</span>
                                     </div>
-                                    <div className="aml-stat-divider"></div>
-                                    <div className="aml-stat-item">
-                                        💬 <span>{pro.sessions || "1,917"} Sessions</span>
-                                    </div>
-                                    <div className="aml-stat-divider"></div>
-                                    <div className="aml-stat-item">
-                                        📅 <span>{pro.attendance || "96%"} Avg. Attendance</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -112,13 +104,18 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                         <div className="aml-service-title">{srv.title}</div>
                                     </div>
                                     <div className="aml-service-pricing">
-                                        <span className="aml-old-price">₹{parseInt(srv.price.replace('₹', '')) + 200 || 499}</span>
+                                        <span className="aml-old-price">₹{parseInt(srv.price?.replace('₹', '') || 499) + 200}</span>
                                         <span className={`aml-new-price ${srv.price === 'Free' ? 'free-badge' : ''}`}>{srv.price}</span>
                                     </div>
                                 </div>
                             ))}
-                            <button className="aml-view-all-services">
-                                View All
+                            {pro.services && pro.services.length > 2 && (
+                                <button className="aml-view-all-services" onClick={() => onSelectPro(pro)}>
+                                    View All
+                                </button>
+                            )}
+                            <button className="aml-view-all-services" style={{ borderColor: '#0ea5e9', color: '#0ea5e9' }} onClick={() => onSelectPro(pro)}>
+                                View Details
                             </button>
                         </div>
                     </div>
