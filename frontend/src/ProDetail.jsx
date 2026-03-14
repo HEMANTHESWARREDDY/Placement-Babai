@@ -42,7 +42,7 @@ function ProDetail({ pro, onClose }) {
                         }}>
                         </div>
                         <div className="preview-body">
-                            <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.4rem', marginBottom: '1rem' }}>
+                            <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', width: '100%', marginBottom: '1rem' }}>
                                 <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
                                     <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
                                         {!pro.image && initials}
