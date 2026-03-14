@@ -1,6 +1,6 @@
 .pro-connect-container {
-    min-height: 80vh;
-    padding-bottom: 4rem;
+    min-height: 40vh;
+    padding-bottom: 0.5rem;
     background: #f8fafc;
 }
 
@@ -86,7 +86,7 @@
 
 .pro-profiles-section {
     max-width: 1280px;
-    margin: 1.5rem auto 4rem;
+    margin: 1.5rem auto 1rem;
     position: relative;
     z-index: 10;
     padding: 0 1.5rem;
@@ -162,7 +162,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 4rem;
+    margin-bottom: 1.5rem;
 }
 
 .tm-card {
@@ -246,10 +246,14 @@
     font-size: 0.85rem;
     font-weight: 700;
     color: #eab308;
-    margin-bottom: 0.3rem;
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.2rem;
+    background: #fefce8;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid #fef08a;
+    flex-shrink: 0;
 }
 
 .tm-rating span {
