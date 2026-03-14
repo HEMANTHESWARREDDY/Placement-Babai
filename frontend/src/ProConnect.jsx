@@ -175,7 +175,7 @@ function ProConnect({ onMentorLoginClick }) {
                 <div className="pro-section-header">
                     <div className="pro-section-title">
                         <h2>Top Mentors</h2>
-                        <p>In search of excellence? Explore the highest-rated mentors as recognized by the learner community.</p>
+                        <p>Unlock your potential with elite mentorship. Connect with top industry experts and accelerate your career growth.</p>
                     </div>
                     <button className="pro-view-all-btn" onClick={() => setShowAllMentors(true)}>
                         View All <span className="pro-view-all-arrow">❯</span>
