@@ -561,9 +561,20 @@
     }
 
     .preview-rating {
-        height: 32px !important;
-        padding: 0 10px !important;
+        height: 28px !important;
+        padding: 0 8px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .preview-social-icon-raw {
+        width: 28px !important;
+        height: 28px !important;
         font-size: 0.8rem !important;
+    }
+
+    .preview-social-icon-raw svg {
+        width: 16px !important;
+        height: 16px !important;
     }
 
 
