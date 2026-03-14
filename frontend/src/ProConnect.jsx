@@ -55,7 +55,7 @@ function ProConnect({ onMentorLoginClick }) {
                         topics: m.topics || '',
                         education: m.education || '',
                         workExperience: m.workExperience || '',
-                        isAvailable: m.isAvailable !== undefined ? m.isAvailable : true,
+                        isAvailable: m.isAvailable !== undefined ? m.isAvailable : false,
                         services: finalServices
                     };
                 });
