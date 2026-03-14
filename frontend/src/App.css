@@ -1041,22 +1041,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: transparent;
+    border: none;
     color: var(--primary-purple);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
     cursor: pointer;
     margin-right: 0.5rem;
     order: 3;
     transition: all 0.2s;
     flex: 0 0 auto;
+    padding: 0.2rem;
   }
 
   .mobile-pro-connect-btn:active {
-    background: #e2e8f0;
-    transform: scale(0.92);
+    transform: scale(0.9);
   }
 
   .mobile-menu-btn {
