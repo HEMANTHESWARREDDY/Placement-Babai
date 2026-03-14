@@ -314,9 +314,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div className="preview-title-row" style={{marginBottom: '0.2rem'}}>
                                     <h3 style={{fontSize: '2rem'}}>{profile.name} <span className="preview-rating">⭐ {profile.rating || '4.8'}</span></h3>
                                     <div className="preview-socials">
-                                        <div className="preview-social-icon cursor-pointer">📸</div>
-                                        {profile.linkedin ? <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a> : <div className="preview-social-icon cursor-pointer">in</div>}
-                                        <div className="preview-social-icon cursor-pointer">🔗</div>
+                                        {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon">✉️</a>}
+                                        {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon">in</a>}
                                     </div>
                                 </div>
 
