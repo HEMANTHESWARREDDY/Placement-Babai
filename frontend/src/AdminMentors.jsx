@@ -16,21 +16,32 @@ function AdminMentors() {
         setLoading(true);
         try {
             const token = localStorage.getItem('adminToken');
-            const endpoint = activeSubTab === 'PENDING'
-                ? `${API_BASE_URL}/api/admin/mentors/applications`
-                : `${API_BASE_URL}/api/admin/mentors`;
-
-            const response = await fetch(endpoint, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (activeSubTab !== 'PENDING') {
-                    setMentors(data.filter(m => m.status === activeSubTab));
-                } else {
-                    setMentors(data);
-                }
+            
+            // If tab is APPROVED, fetch from Mentors table
+            // If tab is PENDING or REJECTED, fetch from MentorApplicant table (applications endpoint needs to return all, or we fetch applications)
+            // But wait, our backend `/api/admin/mentors/applications` only returns PENDING.
+            // Let's change the endpoint logic slightly, or we can just fetch both if REJECTED.
+            // Let's modify the frontend to always filter client-side:
+            
+            let data = [];
+            if (activeSubTab === 'APPROVED') {
+                const res = await fetch(`${API_BASE_URL}/api/admin/mentors`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) data = await res.json();
+                setMentors(data.filter(m => m.status === 'APPROVED'));
+            } else if (activeSubTab === 'PENDING') {
+                const res = await fetch(`${API_BASE_URL}/api/admin/mentors/applications`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) data = await res.json();
+                setMentors(data.filter(m => m.status === 'PENDING'));
+            } else if (activeSubTab === 'REJECTED') {
+                // Rejected can be in both tables
+                const res1 = await fetch(`${API_BASE_URL}/api/admin/mentors`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const res2 = await fetch(`${API_BASE_URL}/api/admin/mentors/applications/all`, { headers: { 'Authorization': `Bearer ${token}` } });
+                let data1 = [], data2 = [];
+                if (res1.ok) data1 = await res1.json();
+                if (res2.ok) data2 = await res2.json();
+                
+                const allData = [...data1, ...data2];
+                setMentors(allData.filter(m => m.status === 'REJECTED'));
             }
         } catch (error) {
             console.error('Error fetching mentors:', error);

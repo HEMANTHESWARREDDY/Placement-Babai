@@ -1,6 +1,8 @@
 package com.findmyjob.controller;
 
 import com.findmyjob.model.Mentor;
+import com.findmyjob.model.MentorApplicant;
+import com.findmyjob.repository.MentorApplicantRepository;
 import com.findmyjob.repository.MentorRepository;
 import com.findmyjob.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class MentorController {
 
     @Autowired
     private MentorRepository mentorRepository;
+
+    @Autowired
+    private MentorApplicantRepository mentorApplicantRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -46,28 +51,28 @@ public class MentorController {
         if (username == null || username.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Username is required"));
         }
-        if (mentorRepository.existsByUsername(username)) {
+        if (mentorRepository.existsByUsername(username) || mentorApplicantRepository.existsByUsername(username)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Username already taken"));
         }
-        if (mentorRepository.existsByEmail(payload.get("email"))) {
+        if (mentorRepository.existsByEmail(payload.get("email")) || mentorApplicantRepository.existsByEmail(payload.get("email"))) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already registered"));
         }
 
-        Mentor mentor = new Mentor();
-        mentor.setName(payload.get("name"));
-        mentor.setEmail(payload.get("email"));
-        mentor.setPhone(payload.get("phone"));
-        mentor.setCompany(payload.get("company"));
-        mentor.setRole(payload.get("role"));
-        mentor.setExperience(payload.get("experience"));
-        mentor.setLinkedin(payload.get("linkedin"));
-        mentor.setSkills(payload.get("skills"));
-        mentor.setBio(payload.get("bio"));
-        mentor.setUsername(username);
-        mentor.setPassword(passwordEncoder.encode(password));
-        mentor.setStatus("PENDING");
+        MentorApplicant applicant = new MentorApplicant();
+        applicant.setName(payload.get("name"));
+        applicant.setEmail(payload.get("email"));
+        applicant.setPhone(payload.get("phone"));
+        applicant.setCompany(payload.get("company"));
+        applicant.setRole(payload.get("role"));
+        applicant.setExperience(payload.get("experience"));
+        applicant.setLinkedin(payload.get("linkedin"));
+        applicant.setSkills(payload.get("skills"));
+        applicant.setBio(payload.get("bio"));
+        applicant.setUsername(username);
+        applicant.setPassword(passwordEncoder.encode(password));
+        applicant.setStatus("PENDING");
 
-        Mentor saved = mentorRepository.save(mentor);
+        MentorApplicant saved = mentorApplicantRepository.save(applicant);
         // Don't return password in response
         saved.setPassword(null);
         return ResponseEntity.ok(saved);

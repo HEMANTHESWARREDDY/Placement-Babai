@@ -16,7 +16,9 @@ com\findmyjob\controller\AnalyticsController.class
 com\findmyjob\repository\AdminRepository.class
 com\findmyjob\util\JwtUtil.class
 com\findmyjob\service\JobSchedulerService.class
+com\findmyjob\repository\MentorApplicantRepository.class
 com\findmyjob\config\SecurityConfig.class
+com\findmyjob\model\MentorApplicant.class
 com\findmyjob\service\JobService.class
 com\findmyjob\repository\WebsiteViewRepository.class
 com\findmyjob\controller\JobController.class

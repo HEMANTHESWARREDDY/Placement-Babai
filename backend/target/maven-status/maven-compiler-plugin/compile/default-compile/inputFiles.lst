@@ -19,10 +19,12 @@ C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\f
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\model\Job.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\service\JobParserService.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\model\JobView.java
+C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\repository\MentorApplicantRepository.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\model\WebsiteView.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\service\AtsService.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\controller\AtsController.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\repository\JobApplyRepository.java
+C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\model\MentorApplicant.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\model\Mentor.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\config\WebConfig.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\service\JobSchedulerService.java

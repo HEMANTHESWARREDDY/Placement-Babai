@@ -1,6 +1,8 @@
 package com.findmyjob.controller;
 
 import com.findmyjob.model.Mentor;
+import com.findmyjob.model.MentorApplicant;
+import com.findmyjob.repository.MentorApplicantRepository;
 import com.findmyjob.repository.MentorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,19 @@ public class AdminMentorController {
     @Autowired
     private MentorRepository mentorRepository;
 
+    @Autowired
+    private MentorApplicantRepository mentorApplicantRepository;
+
     // Get all mentor applications (PENDING)
     @GetMapping("/applications")
-    public ResponseEntity<List<Mentor>> getPendingApplications() {
-        return ResponseEntity.ok(mentorRepository.findByStatusOrderByCreatedAtDesc("PENDING"));
+    public ResponseEntity<List<MentorApplicant>> getPendingApplications() {
+        return ResponseEntity.ok(mentorApplicantRepository.findByStatusOrderByCreatedAtDesc("PENDING"));
+    }
+
+    // Get all mentor applications (ANY STATUS)
+    @GetMapping("/applications/all")
+    public ResponseEntity<List<MentorApplicant>> getAllApplications() {
+        return ResponseEntity.ok(mentorApplicantRepository.findAll());
     }
 
     // Get all mentors (any status, or maybe just approved/rejected for management)
@@ -38,39 +49,69 @@ public class AdminMentorController {
             return ResponseEntity.badRequest().body("Invalid status");
         }
 
-        Optional<Mentor> mentorOpt = mentorRepository.findById(id);
-        if (mentorOpt.isEmpty()) {
+        Optional<MentorApplicant> applicantOpt = mentorApplicantRepository.findById(id);
+        if (applicantOpt.isEmpty()) {
+            // Also allow updating status if they are already in the Mentor table for some reason
+            Optional<Mentor> mentorOpt = mentorRepository.findById(id);
+            if (mentorOpt.isPresent()) {
+                Mentor m = mentorOpt.get();
+                m.setStatus(newStatus);
+                return ResponseEntity.ok(mentorRepository.save(m));
+            }
             return ResponseEntity.notFound().build();
         }
 
-        Mentor mentor = mentorOpt.get();
-        mentor.setStatus(newStatus);
+        MentorApplicant applicant = applicantOpt.get();
 
-        // Setup initial default fields if approved and missing
         if (newStatus.equals("APPROVED")) {
-            if (mentor.getRating() == null)
-                mentor.setRating(5.0);
-            if (mentor.getReviews() == null)
-                mentor.setReviews(0);
-            if (mentor.getHeaderBg() == null)
-                mentor.setHeaderBg("linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)");
-            if (mentor.getAvatarBg() == null)
-                mentor.setAvatarBg("#818cf8");
-            if (mentor.getImage() == null)
-                mentor.setImage(""); // We could configure randomized avatars
-        }
+            // Move to Mentor table
+            Mentor mentor = new Mentor();
+            mentor.setName(applicant.getName());
+            mentor.setEmail(applicant.getEmail());
+            mentor.setPhone(applicant.getPhone());
+            mentor.setCompany(applicant.getCompany());
+            mentor.setRole(applicant.getRole());
+            mentor.setExperience(applicant.getExperience());
+            mentor.setLinkedin(applicant.getLinkedin());
+            mentor.setSkills(applicant.getSkills());
+            mentor.setBio(applicant.getBio());
+            mentor.setUsername(applicant.getUsername());
+            mentor.setPassword(applicant.getPassword());
+            mentor.setStatus("APPROVED");
 
-        Mentor updatedMentor = mentorRepository.save(mentor);
-        return ResponseEntity.ok(updatedMentor);
+            // Setup initial default fields
+            mentor.setRating(5.0);
+            mentor.setReviews(0);
+            mentor.setHeaderBg("linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)");
+            mentor.setAvatarBg("#818cf8");
+            mentor.setImage(""); // We could configure randomized avatars
+
+            Mentor savedMentor = mentorRepository.save(mentor);
+            mentorApplicantRepository.delete(applicant);
+            return ResponseEntity.ok(savedMentor);
+        } else {
+            applicant.setStatus(newStatus);
+            MentorApplicant updatedApplicant = mentorApplicantRepository.save(applicant);
+            return ResponseEntity.ok(updatedApplicant);
+        }
     }
 
     // Delete mentor application completely
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMentor(@PathVariable Long id) {
-        if (!mentorRepository.existsById(id)) {
+        boolean deleted = false;
+        if (mentorApplicantRepository.existsById(id)) {
+            mentorApplicantRepository.deleteById(id);
+            deleted = true;
+        }
+        if (mentorRepository.existsById(id)) {
+            mentorRepository.deleteById(id);
+            deleted = true;
+        }
+        
+        if (!deleted) {
             return ResponseEntity.notFound().build();
         }
-        mentorRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 }
