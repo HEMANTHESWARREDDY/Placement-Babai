@@ -126,7 +126,7 @@ function ProDetail({ pro, onClose }) {
                                     <div className="about-content-tab">
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header" onClick={() => toggleSection('about')} style={{cursor: 'pointer'}}>
-                                                About <span>{expandedSections.about ? 'v' : '^'}</span>
+                                                About <span>{expandedSections.about ? '^' : 'v'}</span>
                                             </div>
                                             {expandedSections.about && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
@@ -136,7 +136,7 @@ function ProDetail({ pro, onClose }) {
                                         </div>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header" onClick={() => toggleSection('topics')} style={{cursor: 'pointer'}}>
-                                                Topics of Expertise <span>{expandedSections.topics ? 'v' : '^'}</span>
+                                                Topics of Expertise <span>{expandedSections.topics ? '^' : 'v'}</span>
                                             </div>
                                             {expandedSections.topics && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
@@ -146,7 +146,7 @@ function ProDetail({ pro, onClose }) {
                                         </div>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header" onClick={() => toggleSection('education')} style={{cursor: 'pointer'}}>
-                                                Education <span>{expandedSections.education ? 'v' : '^'}</span>
+                                                Education <span>{expandedSections.education ? '^' : 'v'}</span>
                                             </div>
                                             {expandedSections.education && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
@@ -156,7 +156,7 @@ function ProDetail({ pro, onClose }) {
                                         </div>
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header" onClick={() => toggleSection('work')} style={{cursor: 'pointer'}}>
-                                                Work Experience <span>{expandedSections.work ? 'v' : '^'}</span>
+                                                Work Experience <span>{expandedSections.work ? '^' : 'v'}</span>
                                             </div>
                                             {expandedSections.work && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
