@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './MentorDashboard.css';
+import './ProDetail.css';
 import { API_BASE_URL } from './config';
 
 function MentorDashboard({ mentorAuth, onLogout }) {
@@ -385,7 +386,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </div>
 
                             <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
-                                <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
+                                <h4>📅 Available Services</h4>
                                 <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                     
                                     <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
