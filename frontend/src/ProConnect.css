@@ -239,14 +239,14 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: #1e293b;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.1rem;
 }
 
 .tm-rating {
     font-size: 0.85rem;
     font-weight: 700;
     color: #eab308;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.3rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;

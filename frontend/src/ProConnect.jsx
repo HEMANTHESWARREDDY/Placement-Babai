@@ -264,13 +264,13 @@ function ProConnect({ onMentorLoginClick }) {
 
                                 </div>
                                 <div className="tm-content">
-                                    <h3 className="tm-name">{pro.name}</h3>
                                     <div className="tm-rating">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#eab308' }}>
                                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                         </svg>
                                         {pro.rating}
                                     </div>
+                                    <h3 className="tm-name">{pro.name}</h3>
                                     <p className="tm-role">
                                         {pro.role} @ {pro.company || 'Industry'} | {pro.expertise}
                                     </p>
