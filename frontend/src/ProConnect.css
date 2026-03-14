@@ -367,7 +367,7 @@
 
 @media (max-width: 768px) {
     .pro-hero {
-        padding: 1.2rem 1rem 2.5rem;
+        padding: 1.2rem 1rem 1.2rem;
     }
 
     .pro-hero h1 {
@@ -439,7 +439,7 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.8rem;
-        padding-top: 1rem;
+        padding-top: 0.4rem;
         margin-bottom: 1.2rem;
     }
 }
