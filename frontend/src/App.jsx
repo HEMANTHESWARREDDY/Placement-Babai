@@ -694,7 +694,7 @@ function App() {
         <div className="header-content">
           <div className="logo" onClick={() => { setSearchKeyword(''); setSearchLocation(''); setShowAll(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); fetchJobs(); }}>
             <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
-            <span className="header-tagline">Explore. Apply. Get Hired.</span>
+            <span className="header-tagline">{activeMainTab === 'pro-connect' ? 'Connect. Learn. Grow.' : 'Explore. Apply. Get Hired.'}</span>
           </div>
 
           <div className="header-badge" onClick={() => {
