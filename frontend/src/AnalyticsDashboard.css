@@ -16,9 +16,9 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
 }
 
 .stat-card {
@@ -46,7 +46,7 @@
 
 .stat-card p {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 800;
     color: #0284c7;
 }

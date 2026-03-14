@@ -9,6 +9,8 @@ import com.findmyjob.repository.JobViewRepository;
 import com.findmyjob.repository.SearchQueryLogRepository;
 import com.findmyjob.repository.WebsiteViewRepository;
 import com.findmyjob.repository.JobRepository;
+import com.findmyjob.repository.MentorRepository;
+import com.findmyjob.repository.MentorApplicantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,12 @@ public class AnalyticsController {
 
     @Autowired
     private JobRepository jobRepository;
+
+    @Autowired
+    private MentorRepository mentorRepository;
+
+    @Autowired
+    private MentorApplicantRepository mentorApplicantRepository;
 
     @PostMapping("/view/website")
     public ResponseEntity<?> recordWebsiteView() {
@@ -99,6 +107,18 @@ public class AnalyticsController {
         stats.put("todayJobs", jobRepository.countByPostedDateAfter(now.toLocalDate().atStartOfDay()));
         stats.put("last1HourJobs", jobRepository.countByPostedDateAfter(now.minusHours(1)));
 
+        // Add mentor stats
+        stats.put("lifetimeMentors", mentorRepository.count());
+        stats.put("last7DaysMentors", mentorRepository.countByCreatedAtAfter(now.minusDays(7)));
+        stats.put("todayMentors", mentorRepository.countByCreatedAtAfter(now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourMentors", mentorRepository.countByCreatedAtAfter(now.minusHours(1)));
+
+        // Add mentor applicant stats
+        stats.put("lifetimeMentorApplicants", mentorApplicantRepository.count());
+        stats.put("last7DaysMentorApplicants", mentorApplicantRepository.countByCreatedAtAfter(now.minusDays(7)));
+        stats.put("todayMentorApplicants", mentorApplicantRepository.countByCreatedAtAfter(now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourMentorApplicants", mentorApplicantRepository.countByCreatedAtAfter(now.minusHours(1)));
+
         return ResponseEntity.ok(stats);
     }
 
@@ -147,6 +167,8 @@ public class AnalyticsController {
             long views = websiteViewRepository.countByViewedAtBetween(startOfDay, endOfDay);
             long applies = jobApplyRepository.countByAppliedAtBetween(startOfDay, endOfDay);
             long jobsCreated = jobRepository.countByPostedDateBetween(startOfDay, endOfDay);
+            long mentorsJoined = mentorRepository.countByCreatedAtBetween(startOfDay, endOfDay);
+            long mentorApplicants = mentorApplicantRepository.countByCreatedAtBetween(startOfDay, endOfDay);
             List<Object[]> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay,
                     PageRequest.of(0, 5));
             List<Map<String, Object>> topSearches = searches.stream().map(row -> {
@@ -161,6 +183,8 @@ public class AnalyticsController {
             dayStat.put("views", views);
             dayStat.put("applies", applies);
             dayStat.put("jobsCreated", jobsCreated);
+            dayStat.put("mentorsJoined", mentorsJoined);
+            dayStat.put("mentorApplicants", mentorApplicants);
             dayStat.put("topSearches", topSearches);
             history.add(dayStat);
         }

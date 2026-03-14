@@ -60,6 +60,14 @@ function AnalyticsDashboard() {
             last1Hour = websiteStats.last1HourJobs;
             today = websiteStats.todayJobs;
             last7Days = websiteStats.last7DaysJobs;
+        } else if (selectedMetric === 'mentors') {
+            last1Hour = websiteStats.last1HourMentors;
+            today = websiteStats.todayMentors;
+            last7Days = websiteStats.last7DaysMentors;
+        } else if (selectedMetric === 'mentorApplicants') {
+            last1Hour = websiteStats.last1HourMentorApplicants;
+            today = websiteStats.todayMentorApplicants;
+            last7Days = websiteStats.last7DaysMentorApplicants;
         }
 
         return (
@@ -98,6 +106,14 @@ function AnalyticsDashboard() {
                             <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Total Jobs Created</h3>
                             <p style={{ color: 'white' }}>{websiteStats.lifetimeJobs}</p>
                         </div>
+                        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', color: 'white' }}>
+                            <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Total Mentors</h3>
+                            <p style={{ color: 'white' }}>{websiteStats.lifetimeMentors}</p>
+                        </div>
+                        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', color: 'white' }}>
+                            <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Mentor Applicants</h3>
+                            <p style={{ color: 'white' }}>{websiteStats.lifetimeMentorApplicants}</p>
+                        </div>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
@@ -110,6 +126,8 @@ function AnalyticsDashboard() {
                             <option value="views">Website Traffic (Overall)</option>
                             <option value="applies">Total Job Applies</option>
                             <option value="jobs">Total Jobs Created</option>
+                            <option value="mentors">Mentors Joined</option>
+                            <option value="mentorApplicants">Mentor Applicants</option>
                         </select>
                     </div>
                     {renderMetricGrid()}
@@ -149,6 +167,14 @@ function AnalyticsDashboard() {
                             <div className="stat-card day-views">
                                 <h3>Total Jobs Created</h3>
                                 <p>{activeDayData.jobsCreated}</p>
+                            </div>
+                            <div className="stat-card day-views">
+                                <h3>Mentors Joined</h3>
+                                <p>{activeDayData.mentorsJoined}</p>
+                            </div>
+                            <div className="stat-card day-views">
+                                <h3>Mentor Applicants</h3>
+                                <p>{activeDayData.mentorApplicants}</p>
                             </div>
                         </div>
 

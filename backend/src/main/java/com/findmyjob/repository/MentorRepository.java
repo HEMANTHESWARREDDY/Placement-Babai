@@ -20,4 +20,7 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
+
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
+    long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }
