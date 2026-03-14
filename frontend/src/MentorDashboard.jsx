@@ -223,7 +223,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         )}
                     </div>
                     <div className="preview-body">
-                        <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.8rem', marginBottom: '1rem' }}>
+                        <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.4rem', marginBottom: '1rem' }}>
                             <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
                                 <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                     {!profile.image && initials}
@@ -259,7 +259,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <div className="preview-header-meta" style={{ 
                                 display: 'flex', 
                                 alignItems: 'center', 
-                                gap: '12px',
+                                gap: '6px',
                                 paddingBottom: '10px'
                             }}>
                                 <span className="preview-rating" style={{ 
@@ -278,7 +278,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     ⭐ {profile.rating || 'New'}
                                 </span>
-                                <div className="preview-socials" style={{ gap: '8px', display: 'flex', alignItems: 'center' }}>
+                                <div className="preview-socials" style={{ gap: '4px', display: 'flex', alignItems: 'center' }}>
                                     {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
                                     {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                     <div className="preview-social-icon-raw cursor-pointer" title="Share">
@@ -420,7 +420,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         }}>
                         </div>
                         <div className="preview-body">
-                            <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.8rem', marginBottom: '1rem' }}>
+                            <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.4rem', marginBottom: '1rem' }}>
                                 <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
                                     <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
                                         {!profile.image && initials}
@@ -430,7 +430,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div className="preview-header-meta" style={{ 
                                     display: 'flex', 
                                     alignItems: 'center', 
-                                    gap: '12px',
+                                    gap: '6px',
                                     paddingBottom: '10px'
                                 }}>
                                     <span className="preview-rating" style={{ 
@@ -449,7 +449,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     }}>
                                         ⭐ {profile.rating || '4.8'}
                                     </span>
-                                    <div className="preview-socials" style={{ gap: '8px', display: 'flex', alignItems: 'center' }}>
+                                    <div className="preview-socials" style={{ gap: '4px', display: 'flex', alignItems: 'center' }}>
                                         {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
                                         {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                         <div className="preview-social-icon-raw cursor-pointer" title="Share">

@@ -42,7 +42,7 @@ function ProDetail({ pro, onClose }) {
                         }}>
                         </div>
                         <div className="preview-body">
-                            <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.8rem', marginBottom: '1rem' }}>
+                            <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.4rem', marginBottom: '1rem' }}>
                                 <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
                                     <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
                                         {!pro.image && initials}
@@ -52,7 +52,7 @@ function ProDetail({ pro, onClose }) {
                                 <div className="preview-header-meta" style={{ 
                                     display: 'flex', 
                                     alignItems: 'center', 
-                                    gap: '12px',
+                                    gap: '6px',
                                     paddingBottom: '10px'
                                 }}>
                                     <span className="preview-rating" style={{ 
@@ -71,7 +71,7 @@ function ProDetail({ pro, onClose }) {
                                     }}>
                                         ⭐ {pro.rating || '4.8'}
                                     </span>
-                                    <div className="preview-socials" style={{ gap: '8px', display: 'flex', alignItems: 'center' }}>
+                                    <div className="preview-socials" style={{ gap: '4px', display: 'flex', alignItems: 'center' }}>
                                         {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon-raw">✉️</a>}
                                         {pro.linkedin && <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
                                         <div className="preview-social-icon-raw pointer" title="Share" onClick={() => {
