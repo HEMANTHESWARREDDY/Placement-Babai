@@ -184,15 +184,15 @@
 }
 
 .tm-header {
-    height: 100px;
+    height: 80px;
     width: 100%;
 }
 
 .tm-avatar-container {
     position: relative;
-    width: 86px;
-    height: 86px;
-    margin: -43px auto 0 1.5rem;
+    width: 64px;
+    height: 64px;
+    margin: -32px auto 0 1.2rem;
 }
 
 .tm-avatar {
@@ -229,24 +229,24 @@
 }
 
 .tm-content {
-    padding: 1.2rem 1.5rem 1.8rem;
+    padding: 1rem 1.25rem 1.5rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
 .tm-name {
-    font-size: 1.35rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #1e293b;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
 }
 
 .tm-rating {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: #eab308;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -259,10 +259,10 @@
 }
 
 .tm-role {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #64748b;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    margin-bottom: 1.2rem;
     flex-grow: 1;
     overflow: hidden;
     display: -webkit-box;
@@ -277,10 +277,10 @@
     background: transparent;
     color: #475569;
     border: 1px solid #cbd5e1;
-    padding: 0.75rem;
+    padding: 0.6rem;
     border-radius: 30px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
