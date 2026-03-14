@@ -38,21 +38,14 @@ function ProDetail({ pro, onClose }) {
                         <div className="preview-header" style={{ 
                             background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
                                        (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
-                                       pro.headerBg || '#fbcfe8'
+                                       pro.headerBg || '#fbcfe8',
+                            position: 'relative'
                         }}>
-                        </div>
-                        <div className="preview-body">
-                            <div className="preview-avatar-wrapper">
-                                <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
-                                    {!pro.image && initials}
-                                </div>
-                                {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
-                            </div>
-
                             <div className="preview-socials-container" style={{ 
-                                display: 'flex', 
-                                justifyContent: 'flex-end', 
-                                marginBottom: '0.4rem'
+                                position: 'absolute',
+                                bottom: '15px',
+                                right: '20px',
+                                zIndex: 10
                             }}>
                                 <div className="preview-socials">
                                     {pro.email && <a href={`mailto:${pro.email}`} className="preview-social-icon">✉️</a>}
@@ -69,6 +62,16 @@ function ProDetail({ pro, onClose }) {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="preview-body">
+                            <div className="preview-avatar-wrapper">
+                                <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
+                                    {!pro.image && initials}
+                                </div>
+                                {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
+                            </div>
+
+
 
                             <div className="preview-title-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                                 <h3 style={{ margin: 0, fontSize: '2rem', flex: 1 }}>{pro.name}</h3>
