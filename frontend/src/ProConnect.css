@@ -108,18 +108,19 @@
 
 .pro-section-title h2 {
     text-align: left;
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.2rem;
     opacity: 1;
     height: auto;
 }
 
 .pro-section-title p {
     color: #64748b;
-    font-size: 1rem;
+    font-size: 0.85rem;
     margin: 0;
+    max-width: 500px;
 }
 
 .pro-view-all-btn {
@@ -420,13 +421,25 @@
         margin-top: -1.5rem;
     }
 
-    .pro-section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    .pro-section-title {
+        border-left-width: 3px;
+        padding-left: 0.8rem;
     }
 
     .pro-section-title h2 {
-        font-size: 1.6rem;
+        font-size: 1.2rem;
+    }
+
+    .pro-section-title p {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .pro-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding-top: 1rem;
+        margin-bottom: 1.2rem;
     }
 }
