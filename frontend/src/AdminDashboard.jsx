@@ -611,19 +611,10 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                             📈 Analytics
                         </button>
                         <button
-                            className={`btn-tab ${activeTab === 'deleted' ? 'active' : ''}`}
-                            onClick={() => changeTab('deleted')}
-                        >
-                            🗑️ History
-                        </button>
-                        <button
                             className={`btn-tab ${activeTab === 'mentors' ? 'active' : ''}`}
                             onClick={() => changeTab('mentors')}
                         >
                             👨‍🏫 Mentors
-                        </button>
-                        <button className="btn-primary" onClick={() => { changeTab('jobs'); setShowForm(!showForm); if (showForm) resetForm(); }}>
-                            {showForm ? '✕ Cancel' : '+ Add New Job'}
                         </button>
                         <button className="btn-logout" onClick={onLogout}>Logout</button>
                     </div>
@@ -973,7 +964,15 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                     {/* Jobs List */}
                     <div className="jobs-management">
                         <div className="jobs-list-header">
-                            <h2>All Jobs ({filteredJobs.length})</h2>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <h2>All Jobs ({filteredJobs.length})</h2>
+                                <button
+                                    className="btn-history-secondary"
+                                    onClick={() => changeTab('deleted')}
+                                >
+                                    🗑️ History
+                                </button>
+                            </div>
                             <div className="jobs-filter-controls">
                                 <input
                                     type="text"
@@ -982,6 +981,9 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="admin-search-input"
                                 />
+                                <button className="btn-primary-compact" onClick={() => { setShowForm(!showForm); if (showForm) resetForm(); }}>
+                                    {showForm ? '✕ Cancel' : '+ Add New Job'}
+                                </button>
                             </div>
                         </div>
 
