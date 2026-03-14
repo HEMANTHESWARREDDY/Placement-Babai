@@ -120,8 +120,9 @@ function ProDetail({ pro, onClose }) {
                                 </button>
                             </div>
 
-                            <div className="shared-content-area">
-                                {mainTab === 'About' ? (
+                            <div className="preview-content-grid">
+                                <div className={`preview-section-left ${mainTab === 'About' ? 'tab-visible' : 'tab-hidden'}`}>
+                                    <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
                                     <div className="about-content-tab">
                                         <div className="preview-accordion">
                                             <div className="preview-accordion-header" onClick={() => toggleSection('about')} style={{cursor: 'pointer'}}>
@@ -164,7 +165,10 @@ function ProDetail({ pro, onClose }) {
                                             )}
                                         </div>
                                     </div>
-                                ) : (
+                                </div>
+
+                                <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
+                                    <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
@@ -215,7 +219,7 @@ function ProDetail({ pro, onClose }) {
                                             )}
                                         </div>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </div>
                     </div>

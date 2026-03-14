@@ -279,9 +279,9 @@
     align-items: center;
 }
 
-/* Main Tabs Styling */
+/* Main Tabs Styling - Hidden on PC */
 .main-tabs-container {
-    display: flex;
+    display: none;
     gap: 1rem;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid #f1f5f9;
@@ -321,7 +321,9 @@
 }
 
 .preview-content-grid {
-    display: block; /* No longer a grid */
+    display: grid;
+    grid-template-columns: 1.5fr 1.2fr;
+    gap: 2.5rem;
     margin-top: 1rem;
 }
 
@@ -422,6 +424,7 @@
 
 @media (max-width: 850px) {
     .main-tabs-container {
+        display: flex;
         gap: 1.5rem;
         margin-bottom: 1rem;
         overflow-x: hidden; /* Prevent horizontal movement */
