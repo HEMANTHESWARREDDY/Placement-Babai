@@ -22,6 +22,21 @@ public class AdminMentorController {
     @Autowired
     private MentorApplicantRepository mentorApplicantRepository;
 
+    @GetMapping("/counts")
+    public ResponseEntity<Map<String, Long>> getMentorCounts() {
+        long pending = mentorApplicantRepository.countByStatus("PENDING");
+        long approved = mentorRepository.countByStatus("APPROVED");
+        long rejectedInApplicants = mentorApplicantRepository.countByStatus("REJECTED");
+        long rejectedInMentors = mentorRepository.countByStatus("REJECTED");
+        
+        Map<String, Long> counts = Map.of(
+            "PENDING", pending,
+            "APPROVED", approved,
+            "REJECTED", rejectedInApplicants + rejectedInMentors
+        );
+        return ResponseEntity.ok(counts);
+    }
+
     // Get all mentor applications (PENDING)
     @GetMapping("/applications")
     public ResponseEntity<List<MentorApplicant>> getPendingApplications() {

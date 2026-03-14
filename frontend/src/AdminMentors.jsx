@@ -7,10 +7,27 @@ function AdminMentors() {
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
     const [activeSubTab, setActiveSubTab] = useState('PENDING');
+    const [counts, setCounts] = useState({ PENDING: 0, APPROVED: 0, REJECTED: 0 });
 
     useEffect(() => {
+        fetchCounts();
         fetchMentors();
     }, [activeSubTab]);
+
+    const fetchCounts = async () => {
+        try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_BASE_URL}/api/admin/mentors/counts`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCounts(data);
+            }
+        } catch (error) {
+            console.error('Error fetching counts:', error);
+        }
+    };
 
     const fetchMentors = async () => {
         setLoading(true);
@@ -68,6 +85,7 @@ function AdminMentors() {
             if (response.ok) {
                 // Remove from current view
                 setMentors(prev => prev.filter(m => m.id !== id));
+                fetchCounts(); // Refresh counts
             } else {
                 alert('Failed to update status.');
             }
@@ -94,6 +112,7 @@ function AdminMentors() {
 
             if (response.ok) {
                 setMentors(prev => prev.filter(m => m.id !== id));
+                fetchCounts(); // Refresh counts
             } else {
                 alert('Failed to delete mentor.');
             }
@@ -114,19 +133,19 @@ function AdminMentors() {
                         className={`mentor-subtab ${activeSubTab === 'PENDING' ? 'active' : ''}`}
                         onClick={() => setActiveSubTab('PENDING')}
                     >
-                        Pending Applications
+                        Pending Applications ({counts.PENDING})
                     </button>
                     <button
                         className={`mentor-subtab ${activeSubTab === 'APPROVED' ? 'active' : ''}`}
                         onClick={() => setActiveSubTab('APPROVED')}
                     >
-                        Approved Mentors
+                        Approved Mentors ({counts.APPROVED})
                     </button>
                     <button
                         className={`mentor-subtab ${activeSubTab === 'REJECTED' ? 'active' : ''}`}
                         onClick={() => setActiveSubTab('REJECTED')}
                     >
-                        Rejected
+                        Rejected ({counts.REJECTED})
                     </button>
                 </div>
             </div>
