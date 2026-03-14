@@ -1,8 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import './AllMentorsList.css';
 
 function AllMentorsList({ mentors, onBack, onSelectPro }) {
     const [sortBy, setSortBy] = useState('newest');
+    const [showSortMenu, setShowSortMenu] = useState(false);
+    const sortMenuRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (sortMenuRef.current && !sortMenuRef.current.contains(event.target)) {
+                setShowSortMenu(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [sortMenuRef]);
 
     const sortedMentors = useMemo(() => {
         let result = [...mentors];
@@ -52,17 +64,42 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                     <button className="aml-filter-btn aml-filter-active">
                         Top Mentor
                     </button>
-                    <select 
-                        className="aml-filter-btn" 
-                        value={sortBy} 
-                        onChange={(e) => setSortBy(e.target.value)}
-                        style={{ outline: 'none', cursor: 'pointer', appearance: 'none', paddingRight: '2.5rem', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%2364748b\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.8rem center' }}
-                    >
-                        <option value="newest">New to Old</option>
-                        <option value="oldest">Old to New</option>
-                        <option value="name-asc">Alphabetical (A-Z)</option>
-                        <option value="name-desc">Alphabetical (Z-A)</option>
-                    </select>
+                    <div className="aml-dropdown-container" ref={sortMenuRef}>
+                        <button 
+                            className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
+                            onClick={() => setShowSortMenu(!showSortMenu)}
+                        >
+                            <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
+                        </button>
+                        {showSortMenu && (
+                            <div className="aml-dropdown-menu">
+                                <div 
+                                    className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
+                                    onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                >
+                                    Newest First
+                                </div>
+                                <div 
+                                    className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
+                                    onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
+                                >
+                                    Oldest First
+                                </div>
+                                <div 
+                                    className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
+                                    onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
+                                >
+                                    Alphabetical (A-Z)
+                                </div>
+                                <div 
+                                    className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
+                                    onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
+                                >
+                                    Alphabetical (Z-A)
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div className="aml-filters-right">
                     <div className="aml-featured-pill">
