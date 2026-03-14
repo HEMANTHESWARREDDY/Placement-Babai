@@ -237,6 +237,20 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div className="preview-social-icon cursor-pointer" title="Share">
                                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                 </div>
+                                <span className="preview-rating" style={{ 
+                                    height: '36px', 
+                                    display: 'flex', 
+                                    alignItems: 'center',
+                                    background: 'white',
+                                    padding: '0 10px',
+                                    borderRadius: '18px',
+                                    border: '1px solid #e2e8f0',
+                                    fontSize: '0.85rem',
+                                    color: '#eab308',
+                                    fontWeight: '700'
+                                }}>
+                                    ⭐ {profile.rating || 'New'}
+                                </span>
                             </div>
                             {isEditingProfile && <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('socials', 'Social Links')}>✏️</button>}
                         </div>
@@ -278,7 +292,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                         <div className="preview-title-row">
                             <h3>
-                                {profile.name} <span className="preview-rating">⭐ {profile.rating || 'New'}</span>
+                                {profile.name}
                                 {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('name', 'Display Name', 'text')}>✏️</button>}
                             </h3>
                         </div>
@@ -414,6 +428,20 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className="preview-social-icon cursor-pointer" title="Share">
                                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                     </div>
+                                    <span className="preview-rating" style={{ 
+                                        height: '36px', 
+                                        display: 'flex', 
+                                        alignItems: 'center',
+                                        background: 'white',
+                                        padding: '0 10px',
+                                        borderRadius: '18px',
+                                        border: '1px solid #e2e8f0',
+                                        fontSize: '0.85rem',
+                                        color: '#eab308',
+                                        fontWeight: '700'
+                                    }}>
+                                        ⭐ {profile.rating || '4.8'}
+                                    </span>
                                 </div>
                             </div>
                         </div>
