@@ -269,9 +269,9 @@ function ProConnect({ onMentorLoginClick }) {
                                     <div className="tm-socials" style={{ 
                                         display: 'flex', 
                                         gap: '0.8rem', 
-                                        justifyContent: 'flex-start', 
+                                        justifyContent: 'flex-end', 
                                         marginBottom: '0.5rem',
-                                        paddingLeft: '0.2rem'
+                                        paddingRight: '0.2rem'
                                     }}>
                                         {pro.email && (
                                             <a href={`mailto:${pro.email}`} className="tm-social-icon" title="Email" onClick={(e) => e.stopPropagation()} style={{ color: '#64748b', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
