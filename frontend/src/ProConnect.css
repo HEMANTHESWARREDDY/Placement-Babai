@@ -41,9 +41,9 @@
 }
 
 .pro-title-bottom {
-    font-size: 1.8rem;
+    font-size: 2.2rem; /* Increased from 1.8rem */
     font-weight: 700;
-    color: #cbd5e1;
+    color: #ffffff; /* Changed to White */
     line-height: 1.3;
 }
 
