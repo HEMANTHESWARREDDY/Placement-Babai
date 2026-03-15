@@ -41,10 +41,11 @@
 }
 
 .pro-title-bottom {
-    font-size: 2.2rem; /* Increased from 1.8rem */
-    font-weight: 700;
-    color: #ffffff; /* Changed to White */
-    line-height: 1.3;
+    font-size: 3.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
 }
 
 .highlight-violet {
