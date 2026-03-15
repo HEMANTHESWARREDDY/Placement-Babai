@@ -501,10 +501,9 @@
     }
 
     .pro-connect-container .hero-stats {
-        margin-top: 1rem;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: space-between;
+        margin-top: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         gap: 0;
         padding: 0;
         width: 100%;
@@ -512,27 +511,26 @@
     }
 
     .pro-connect-container .hero-stat {
-        flex: 1;
-        width: auto;
-        padding: 0.1rem;
+        padding: 0 0.1rem;
         text-align: center;
     }
 
     .pro-connect-container .pro-stat-number {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         color: #a78bfa !important;
     }
 
     .pro-connect-container .pro-stat-label {
-        font-size: 0.35rem;
+        font-size: 0.32rem;
         white-space: normal;
-        word-break: break-all;
+        word-break: normal;
         line-height: 1.1;
-        letter-spacing: 0;
+        letter-spacing: -0.01em;
+        margin-top: 0.1rem;
     }
 
     .pro-connect-container .hero-stat-divider {
-        height: 24px;
+        display: none;
     }
 }
 
