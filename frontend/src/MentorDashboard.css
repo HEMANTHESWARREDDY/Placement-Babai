@@ -590,20 +590,21 @@
 
     .edit-buttons-stack {
         display: flex;
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: row;
+        gap: 8px;
         width: 100%;
-        align-items: stretch;
+        align-items: center;
     }
 
     .edit-buttons-stack .inline-edit-btn {
-        width: 100% !important;
+        flex: 1;
         justify-content: center;
-        padding: 0.8rem 1rem;
+        padding: 0.4rem 0.6rem;
         background: white;
         border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        font-size: 0.9rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        min-width: 0;
     }
 
     .inline-edit-btn {
