@@ -248,7 +248,7 @@ function ProConnect({ onMentorLoginClick }) {
                     ))}
                 </div>
 
-                <div style={{ marginTop: '1.5rem' }}>
+                <div className="pro-hero-btn-wrapper">
                     <button
                         className="become-mentor-hero-btn"
                         onClick={() => setShowRegisterMentor(true)}
