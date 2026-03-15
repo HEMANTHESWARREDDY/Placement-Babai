@@ -576,14 +576,14 @@
     }
 
     .pro-stat-number {
-        font-size: 11px !important; /* Slightly increased for readability from 10px */
+        font-size: 14px !important; 
         color: #a78bfa !important;
         font-weight: 800;
         line-height: 1.2;
     }
 
     .pro-stat-label {
-        font-size: 8px !important; /* Slightly increased from 7px */
+        font-size: 10px !important;
         white-space: normal;
         word-break: normal;
         line-height: 1.1;
