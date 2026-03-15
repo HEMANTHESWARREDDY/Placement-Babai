@@ -593,6 +593,36 @@
         white-space: nowrap;
     }
 
+    .aml-dropdown-menu {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90% !important;
+        max-width: 320px !important;
+        z-index: 9999 !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+        border: none !important;
+    }
+
+    /* Backdrop for mobile dropdown */
+    .aml-dropdown-container::before {
+        content: '';
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 9998;
+        backdrop-filter: blur(2px);
+    }
+
+    .aml-dropdown-container:has(.aml-dropdown-menu)::before {
+        display: block;
+    }
+
     .aml-list {
         gap: 1.2rem;
     }
