@@ -611,12 +611,12 @@
         grid-template-columns: none !important;
         overflow-x: auto !important;
         scroll-snap-type: x mandatory;
-        gap: 1rem;
-        padding-bottom: 1.5rem;
+        gap: 1.2rem;
+        padding-bottom: 2rem;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        padding-left: 2rem; /* Pushed further to start after the violet bar line */
-        padding-right: 1.5rem;
+        padding-left: 4rem; /* Significant shift to the right to leave empty space on the left */
+        padding-right: 2rem;
     }
 
     .pro-grid.top-mentors-grid::-webkit-scrollbar {
