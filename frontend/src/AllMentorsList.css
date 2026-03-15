@@ -531,14 +531,18 @@
         font-size: 1.5rem !important;
     }
 
+    .aml-header {
+        margin-bottom: 0.4rem !important;
+    }
+
     .aml-categories-wrapper {
         position: relative;
-        margin-bottom: 2rem;
+        margin-bottom: 0.4rem;
     }
 
     .aml-categories-row {
         gap: 0.8rem;
-        padding-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
         margin-bottom: 0;
     }
 
@@ -564,7 +568,7 @@
 
     .aml-filters-wrapper {
         position: relative;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .aml-filters-scroll-btn {
