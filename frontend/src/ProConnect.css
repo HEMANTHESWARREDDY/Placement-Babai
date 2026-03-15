@@ -615,7 +615,7 @@
         padding-bottom: 1.5rem;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        padding-left: 1.5rem; /* Align first card with violet bar */
+        padding-left: 2rem; /* Pushed further to start after the violet bar line */
         padding-right: 1.5rem;
     }
 
