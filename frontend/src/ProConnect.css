@@ -506,11 +506,12 @@
     }
 
     .pro-hero-stats {
-        margin-top: 0.2rem;
+        margin-top: 0;
+        padding-top: 0.2rem;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        padding: 0;
+        padding-bottom: 0; /* Tighten bottom as well */
         width: 88%;
         margin-left: auto;
         margin-right: auto;
@@ -518,7 +519,7 @@
     }
 
     .pro-hero-btn-wrapper {
-        margin-top: 1rem;
+        margin-top: 0.6rem;
     }
 
     .pro-hero-stat {
