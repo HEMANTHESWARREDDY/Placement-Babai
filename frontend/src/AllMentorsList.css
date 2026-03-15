@@ -523,6 +523,36 @@
         font-size: 1.5rem !important;
     }
 
+    .aml-filters-row {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        justify-content: flex-start;
+        gap: 0.6rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .aml-filters-row::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    .aml-filters-left {
+        gap: 0.6rem;
+    }
+
+    .aml-filter-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .aml-featured-pill {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
     .aml-list {
         gap: 1.2rem;
     }
