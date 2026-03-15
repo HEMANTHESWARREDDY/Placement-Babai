@@ -24,12 +24,30 @@
     pointer-events: none;
 }
 
-.pro-hero h1 {
-    font-size: 2.8rem;
+.pro-hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.pro-title-top {
+    font-size: 3.8rem;
     font-weight: 900;
-    margin-bottom: 0.5rem;
+    line-height: 1;
     letter-spacing: -0.03em;
-    line-height: 1.2;
+}
+
+.pro-title-bottom {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    line-height: 1.3;
+}
+
+.highlight-violet {
+    color: #a78bfa;
 }
 
 .pro-hero .highlight-text {
@@ -377,8 +395,17 @@
         padding: 1.2rem 1rem 1.2rem;
     }
 
-    .pro-hero h1 {
-        font-size: 1.4rem;
+    .pro-hero-title {
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .pro-title-top {
+        font-size: 2.2rem;
+    }
+
+    .pro-title-bottom {
+        font-size: 1.1rem;
         padding: 0 0.5rem;
     }
 
