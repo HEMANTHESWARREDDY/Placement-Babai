@@ -155,10 +155,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     return (
         <div className={`mentor-dashboard-container`}>
             <div className="mentor-header">
-                <h1>
-                    <span className="welcome-text">Welcome back,</span>
-                    <span className="mentor-name">{profile.name} 👋</span>
-                </h1>
+                <div className="mentor-title-container">
+                    <h1>
+                        <span className="welcome-text">Welcome back,</span>
+                        <span className="mentor-name">{profile.name} 👋</span>
+                    </h1>
+                    <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
+                </div>
                 <div className="header-actions">
                     <button className="mentor-save-btn" onClick={() => setShowPreviewModal(true)}>
                         👀 View Profile Preview
@@ -175,7 +178,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     >
                         {isEditingProfile ? '✅ Done Editing' : '✏️ Edit Profile'}
                     </button>
-                    <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
                 </div>
             </div>
 

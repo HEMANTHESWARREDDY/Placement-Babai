@@ -469,22 +469,58 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
+.mentor-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.mentor-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 1rem;
+}
+
+/* On Desktop, make it row if needed, but the current design benefits from vertical stacking of Header vs Actions */
+@media (min-width: 1025px) {
+    .mentor-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    
+    .mentor-title-container {
+        width: auto;
+    }
+    
+    .header-actions {
+        justify-content: flex-end;
+    }
+}
+
 @media (max-width: 768px) {
     .mentor-header {
-        flex-direction: column;
-        align-items: flex-start;
         gap: 1.5rem;
     }
 
     .mentor-header h1 {
         display: flex;
         flex-direction: column;
-        font-size: 1.8rem; /* Restore PC font size for the header */
-        width: 100%;
+        font-size: 1.8rem;
+        width: auto;
         margin: 0;
         gap: 0.1rem;
         white-space: normal;
         overflow: visible;
+    }
+
+    .mentor-logout-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        height: fit-content;
     }
 
     .welcome-text {
