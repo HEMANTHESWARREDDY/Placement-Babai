@@ -554,7 +554,7 @@
 
 
     .pro-hero-stats {
-        margin-top: 1.5rem !important; /* Increased from 0.5rem to provide more distance */
+        margin-top: 1rem !important; 
         padding-top: 0 !important;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -568,7 +568,7 @@
     }
 
     .pro-hero-btn-wrapper {
-        margin-top: 2rem !important; /* Increased from 1.2rem to provide clear separation */
+        margin-top: 1.2rem !important; 
     }
 
     .pro-hero-stat {
