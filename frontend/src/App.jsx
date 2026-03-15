@@ -57,7 +57,11 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [appliesCount, setAppliesCount] = useState({});
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
-  const [activeMainTab, setActiveMainTab] = useState(() => sessionStorage.getItem('activeMainTab') || 'jobs');
+  const [activeMainTab, setActiveMainTab] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pro')) return 'pro-connect';
+    return sessionStorage.getItem('activeMainTab') || 'jobs';
+  });
 
   useEffect(() => {
     sessionStorage.setItem('activeMainTab', activeMainTab);
