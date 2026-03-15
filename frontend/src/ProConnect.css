@@ -519,12 +519,12 @@
     }
 
     .pro-connect-container .stat-number {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         color: #a78bfa !important;
     }
 
     .pro-connect-container .stat-label {
-        font-size: 0.5rem;
+        font-size: 0.45rem;
         white-space: normal;
         word-break: break-word;
         letter-spacing: 0;
@@ -557,7 +557,7 @@
 }
 
 .pro-connect-container .stat-number {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: #a78bfa !important; /* Violet highlight color */
     line-height: 1;
