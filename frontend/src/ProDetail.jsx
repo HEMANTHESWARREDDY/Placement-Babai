@@ -252,7 +252,10 @@ function ProDetail({ pro, onClose }) {
                 </div>
             </div>
             {lightbox && (
-                <div className="pd-lightbox-overlay" onClick={() => setLightbox(null)}>
+                <div className="pd-lightbox-overlay" onClick={(e) => {
+                    e.stopPropagation(); 
+                    setLightbox(null);
+                }}>
                     <button className="pd-lightbox-close" onClick={() => setLightbox(null)}>✕</button>
                     <div className="pd-lightbox-content" onClick={(e) => e.stopPropagation()}>
                         {lightbox.type === 'image' && (
