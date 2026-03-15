@@ -329,7 +329,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                         <div className="preview-badges">
                             <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💼 {profile.experience ? (profile.experience.toLowerCase().includes('year') ? profile.experience : `${profile.experience} Years of experience`) : 'Experience'}</div>
-                            {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
+                            {isEditingProfile && <button className="inline-edit-btn-mini" style={{position:'static', marginLeft:'12px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
                         </div>
 
                         {/* Main Tabs (Visible on Mobile) */}
@@ -353,8 +353,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
                                 
                                 <div className="preview-accordion">
-                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('bio', 'About', 'textarea')}>✏️</button>}
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('about')} style={{cursor: 'pointer'}}>About <span>{expandedSections.about ? '^' : 'v'}</span></div>
+                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('about')} style={{cursor: 'pointer'}}>
+                                        About 
+                                        <span className="accordion-action-wrapper">
+                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('bio', 'About', 'textarea'); }}>✏️</button>}
+                                            {expandedSections.about ? '^' : 'v'}
+                                        </span>
+                                    </div>
                                     {expandedSections.about && (
                                         <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                             {profile.bio || "No about added yet."}
@@ -362,8 +367,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     )}
                                 </div>
                                 <div className="preview-accordion">
-                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('topics', 'Topics of Expertise', 'text')}>✏️</button>}
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('topics')} style={{cursor: 'pointer'}}>Topics of Expertise <span>{expandedSections.topics ? '^' : 'v'}</span></div>
+                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('topics')} style={{cursor: 'pointer'}}>
+                                        Topics of Expertise 
+                                        <span className="accordion-action-wrapper">
+                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('topics', 'Topics of Expertise', 'text'); }}>✏️</button>}
+                                            {expandedSections.topics ? '^' : 'v'}
+                                        </span>
+                                    </div>
                                     {expandedSections.topics && (
                                         <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                             {profile.topics || "No topics added yet."}
@@ -371,8 +381,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     )}
                                 </div>
                                 <div className="preview-accordion">
-                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('education', 'Education', 'textarea')}>✏️</button>}
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('education')} style={{cursor: 'pointer'}}>Education <span>{expandedSections.education ? '^' : 'v'}</span></div>
+                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('education')} style={{cursor: 'pointer'}}>
+                                        Education 
+                                        <span className="accordion-action-wrapper">
+                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('education', 'Education', 'textarea'); }}>✏️</button>}
+                                            {expandedSections.education ? '^' : 'v'}
+                                        </span>
+                                    </div>
                                     {expandedSections.education && (
                                         <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                             {profile.education || "No education added yet."}
@@ -380,8 +395,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     )}
                                 </div>
                                 <div className="preview-accordion">
-                                    {isEditingProfile && <button className="inline-edit-btn" onClick={() => openEdit('workExperience', 'Work Experience', 'textarea')}>✏️</button>}
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('work')} style={{cursor: 'pointer'}}>Work Experience <span>{expandedSections.work ? '^' : 'v'}</span></div>
+                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('work')} style={{cursor: 'pointer'}}>
+                                        Work Experience 
+                                        <span className="accordion-action-wrapper">
+                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('workExperience', 'Work Experience', 'textarea'); }}>✏️</button>}
+                                            {expandedSections.work ? '^' : 'v'}
+                                        </span>
+                                    </div>
                                     {expandedSections.work && (
                                         <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
                                             {profile.workExperience || "No work experience added yet."}
