@@ -20,18 +20,28 @@ function ProConnect({ onMentorLoginClick }) {
     const checkScroll = () => {
         if (scrollRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-            setCanScrollLeft(scrollLeft > 10);
-            setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+            // Threshold for tiny sub-pixel differences
+            const threshold = 15; 
+            
+            // Content is scrollable only if width is greater than container
+            const isScrollable = scrollWidth > clientWidth + threshold;
+            
+            setCanScrollLeft(isScrollable && scrollLeft > threshold);
+            setCanScrollRight(isScrollable && (scrollLeft + clientWidth < scrollWidth - threshold));
         }
     };
 
     useEffect(() => {
-        if (!loading && !showAllMentors) {
-            // Check after a short delay to ensure DOM is rendered
-            const timeout = setTimeout(checkScroll, 500);
-            return () => clearTimeout(timeout);
+        if (!loading && !showAllMentors && !searchKeyword.trim()) {
+            // Initialize visibility states
+            const timer = setTimeout(checkScroll, 300);
+            window.addEventListener('resize', checkScroll);
+            return () => {
+                clearTimeout(timer);
+                window.removeEventListener('resize', checkScroll);
+            };
         }
-    }, [loading, showAllMentors, mentors]);
+    }, [loading, showAllMentors, mentors, searchKeyword, filteredPros.length]);
 
     const scrollNext = () => {
         if (scrollRef.current) {
