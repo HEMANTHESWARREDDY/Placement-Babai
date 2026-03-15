@@ -4,6 +4,7 @@ import './ProDetail.css';
 function ProDetail({ pro, onClose }) {
     const [activeTab, setActiveTab] = useState('All');
     const [mainTab, setMainTab] = useState('About');
+    const [lightbox, setLightbox] = useState(null);
 
     const [expandedSections, setExpandedSections] = useState({
         about: true,
@@ -35,16 +36,41 @@ function ProDetail({ pro, onClose }) {
                 <button className="preview-modal-close" onClick={onClose}>✕</button>
                 <div className="preview-modal-scroll">
                     <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
-                        <div className="preview-header" style={{ 
-                            background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
-                                       (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
-                                       pro.headerBg || '#fbcfe8'
-                        }}>
+                        <div className="preview-header" 
+                            style={{ 
+                                background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
+                                           (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
+                                           pro.headerBg || '#fbcfe8',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                                const bg = pro.headerBg;
+                                if (bg && (bg.startsWith('http') || bg.startsWith('data:image'))) {
+                                    setLightbox({ type: 'image', src: bg });
+                                } else if (bg && bg.includes('gradient')) {
+                                    setLightbox({ type: 'gradient', src: bg });
+                                } else {
+                                    setLightbox({ type: 'color', src: bg || '#fbcfe8' });
+                                }
+                            }}
+                        >
                         </div>
                         <div className="preview-body">
                             <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', width: '100%', marginBottom: '1rem' }}>
                                 <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
-                                    <div className="preview-avatar" style={{background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor}}>
+                                    <div className="preview-avatar" 
+                                        style={{
+                                            background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor,
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={() => {
+                                            if (pro.image) {
+                                                setLightbox({ type: 'image', src: pro.image });
+                                            } else {
+                                                setLightbox({ type: 'initials', src: avatarBgColor, initials: initials });
+                                            }
+                                        }}
+                                    >
                                         {!pro.image && initials}
                                     </div>
                                     {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
@@ -225,6 +251,27 @@ function ProDetail({ pro, onClose }) {
                     </div>
                 </div>
             </div>
+            {lightbox && (
+                <div className="pd-lightbox-overlay" onClick={() => setLightbox(null)}>
+                    <button className="pd-lightbox-close" onClick={() => setLightbox(null)}>✕</button>
+                    <div className="pd-lightbox-content" onClick={(e) => e.stopPropagation()}>
+                        {lightbox.type === 'image' && (
+                            <img src={lightbox.src} alt="Enlarged view" className="pd-lightbox-img" />
+                        )}
+                        {lightbox.type === 'gradient' && (
+                            <div className="pd-lightbox-bg" style={{ background: lightbox.src }}></div>
+                        )}
+                        {lightbox.type === 'color' && (
+                            <div className="pd-lightbox-bg" style={{ background: lightbox.src }}></div>
+                        )}
+                        {lightbox.type === 'initials' && (
+                            <div className="pd-lightbox-initials" style={{ background: lightbox.src }}>
+                                {lightbox.initials}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

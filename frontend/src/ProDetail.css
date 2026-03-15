@@ -664,4 +664,70 @@
         font-size: 0.85rem;
         border-radius: 8px;
     }
+
+    /* Lightbox Styles for Mobile */
+    .pd-lightbox-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: pdFadeIn 0.2s ease;
+    }
+
+    .pd-lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 3001;
+    }
+
+    .pd-lightbox-content {
+        max-width: 100%;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pd-lightbox-img {
+        max-width: 100%;
+        max-height: 80vh;
+        border-radius: 12px;
+        object-fit: contain;
+    }
+
+    .pd-lightbox-bg {
+        width: 100vw;
+        height: 30vh;
+        border-radius: 0;
+    }
+
+    .pd-lightbox-initials {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
 }
