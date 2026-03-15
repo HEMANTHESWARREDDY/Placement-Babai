@@ -158,14 +158,7 @@ function ProConnect({ onMentorLoginClick }) {
     return (
         <div className="pro-connect-container">
             <div className="pro-hero">
-                <h1>Pro <span className="highlight-text">Connect</span></h1>
-
-                <p className="pro-subtitle">
-                    A dedicated space to connect with industry professionals, mentors, and experienced engineers.
-                </p>
-                <div className="pro-tagline">
-                    Connect faster. Grow faster. Get hired faster.
-                </div>
+                <h1>Pro <span className="highlight-text">Connect</span>: Let PlacementBabai Connect You with Experts</h1>
 
 
                 {/* Search Bar for Pros */}

@@ -25,10 +25,11 @@
 }
 
 .pro-hero h1 {
-    font-size: 3.8rem;
+    font-size: 2.8rem;
     font-weight: 900;
     margin-bottom: 0.5rem;
     letter-spacing: -0.03em;
+    line-height: 1.2;
 }
 
 .pro-hero .highlight-text {
@@ -377,7 +378,8 @@
     }
 
     .pro-hero h1 {
-        font-size: 2.1rem;
+        font-size: 1.4rem;
+        padding: 0 0.5rem;
     }
 
     .pro-subtitle {
