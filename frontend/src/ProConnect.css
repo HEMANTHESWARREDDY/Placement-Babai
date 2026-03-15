@@ -393,7 +393,7 @@
 
 @media (max-width: 768px) {
     .pro-hero {
-        padding: 1.2rem 1rem 1.2rem;
+        padding: 1.2rem 1rem 0.5rem;
     }
 
     .pro-hero-title {
@@ -501,7 +501,7 @@
     }
 
     .pro-hero-stats {
-        margin-top: 1.5rem;
+        margin-top: 0.6rem;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
