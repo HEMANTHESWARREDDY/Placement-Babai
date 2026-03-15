@@ -468,5 +468,44 @@
 .preview-modal-close:hover {
     background: rgba(255, 255, 255, 0.4);
 }
-@ m e d i a   ( m a x - w i d t h :   7 6 8 p x )   {   . p r e v i e w - b o d y   {   p a d d i n g - r i g h t :   0 . 5 r e m   ! i m p o r t a n t ;   }   . p r e v i e w - a c c o r d i o n   {   m a r g i n - r i g h t :   0   ! i m p o r t a n t ;   w i d t h :   1 0 0 %   ! i m p o r t a n t ;   }   }  
- 
+
+@media (max-width: 768px) {
+    .mentor-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .mentor-header h1 {
+        font-size: 1.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        width: 100%;
+    }
+
+    .header-actions button {
+        margin: 0;
+        padding: 0.6rem 0.4rem;
+        font-size: 0.75rem;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .preview-body {
+        padding: 0 1.5rem 2rem 1.5rem !important;
+    }
+
+    .preview-accordion {
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+}
