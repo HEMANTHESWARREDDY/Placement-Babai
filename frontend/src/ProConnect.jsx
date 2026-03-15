@@ -310,7 +310,7 @@ function ProConnect({ onMentorLoginClick }) {
                         No mentors found matching your search criteria. Try a different search!
                     </div>
                 ) : (
-                    <div className="pro-grid">
+                    <div className={`pro-grid ${!isSearching ? 'top-mentors-grid' : ''}`}>
                         {filteredPros.map(pro => (
                             <div className="tm-card" key={pro.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedPro(pro)}>
                                 <div className="tm-header" style={{ 

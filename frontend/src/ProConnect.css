@@ -599,4 +599,35 @@
     .pro-hero-stat-divider {
         display: none;
     }
+
+    /* Horizontal Sliding for Top Mentors on Mobile */
+    .pro-grid.top-mentors-grid {
+        display: flex !important;
+        grid-template-columns: none !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        gap: 1.2rem;
+        padding-bottom: 1.5rem;
+        scrollbar-width: none; /* Hide scrollbar Firefox */
+        -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .pro-grid.top-mentors-grid::-webkit-scrollbar {
+        display: none; /* Hide scrollbar Chrome/Safari */
+    }
+
+    .pro-grid.top-mentors-grid .tm-card {
+        flex: 0 0 280px; /* Card width */
+        scroll-snap-align: start;
+        margin-bottom: 0;
+    }
+
+    /* Limit to recent 4 cards on mobile */
+    .pro-grid.top-mentors-grid .tm-card:nth-child(n+5) {
+        display: none !important;
+    }
 }
