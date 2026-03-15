@@ -56,6 +56,31 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
         }
     };
 
+    const categoriesRowRef = useRef(null);
+    const [canScrollLeftCats, setCanScrollLeftCats] = useState(false);
+    const [canScrollRightCats, setCanScrollRightCats] = useState(false);
+
+    const checkCategoriesScroll = () => {
+        if (categoriesRowRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = categoriesRowRef.current;
+            setCanScrollLeftCats(scrollLeft > 1);
+            setCanScrollRightCats(scrollLeft < scrollWidth - clientWidth - 1);
+        }
+    };
+
+    useEffect(() => {
+        setTimeout(checkCategoriesScroll, 100);
+        window.addEventListener('resize', checkCategoriesScroll);
+        return () => window.removeEventListener('resize', checkCategoriesScroll);
+    }, []);
+
+    const scrollCategories = (direction) => {
+        if (categoriesRowRef.current) {
+            const scrollAmount = direction === 'left' ? -180 : 180;
+            categoriesRowRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className="aml-container">
             <div className="aml-header" style={{ marginBottom: '1.5rem', marginTop: '-1rem' }}>
@@ -66,19 +91,26 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             </div>
 
             {/* Categories Row */}
-            <div className="aml-categories-row">
-                {[
-                    { icon: '📄', label: 'CV Review' },
-                    { icon: '👨‍💻', label: 'Interview Preparation' },
-                    { icon: '💼', label: 'Career Guidance' },
-                    { icon: '✨', label: 'Personal Branding' }
-                ].map((cat, i) => (
-                    <div className="aml-category-card" key={i}>
-                        <div className="aml-cat-icon">{cat.icon}</div>
-                        <div className="aml-cat-label">{cat.label}</div>
-                    </div>
-                ))}
-                <button className="aml-cat-next">❯</button>
+            <div className="aml-categories-wrapper">
+                {canScrollLeftCats && (
+                    <button className="aml-filters-scroll-btn left" style={{ zIndex: 10 }} onClick={() => scrollCategories('left')}>❮</button>
+                )}
+                <div className="aml-categories-row" ref={categoriesRowRef} onScroll={checkCategoriesScroll}>
+                    {[
+                        { icon: '📄', label: 'CV Review' },
+                        { icon: '👨‍💻', label: 'Interview Preparation' },
+                        { icon: '💼', label: 'Career Guidance' },
+                        { icon: '✨', label: 'Personal Branding' }
+                    ].map((cat, i) => (
+                        <div className="aml-category-card" key={i}>
+                            <div className="aml-cat-icon">{cat.icon}</div>
+                            <div className="aml-cat-label">{cat.label}</div>
+                        </div>
+                    ))}
+                </div>
+                {canScrollRightCats && (
+                    <button className="aml-filters-scroll-btn right" style={{ zIndex: 10 }} onClick={() => scrollCategories('right')}>❯</button>
+                )}
             </div>
 
             {/* Filters Row */}

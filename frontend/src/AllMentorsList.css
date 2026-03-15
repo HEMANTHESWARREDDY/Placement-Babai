@@ -531,6 +531,37 @@
         font-size: 1.5rem !important;
     }
 
+    .aml-categories-wrapper {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .aml-categories-row {
+        gap: 0.8rem;
+        padding-bottom: 0.8rem;
+        margin-bottom: 0;
+    }
+
+    .aml-category-card {
+        min-width: 100px;
+        height: 90px;
+        padding: 0.8rem 0.5rem;
+        border-radius: 12px;
+        gap: 0.4rem;
+    }
+
+    .aml-cat-icon {
+        font-size: 1.4rem;
+    }
+
+    .aml-cat-label {
+        font-size: 0.75rem;
+    }
+
+    .aml-cat-next {
+        display: none;
+    }
+
     .aml-filters-wrapper {
         position: relative;
         margin-bottom: 1.5rem;
