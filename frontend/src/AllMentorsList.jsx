@@ -30,6 +30,32 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
         }
         return result;
     }, [mentors, sortBy]);
+    const filtersRowRef = useRef(null);
+    const [canScrollLeftFilters, setCanScrollLeftFilters] = useState(false);
+    const [canScrollRightFilters, setCanScrollRightFilters] = useState(false);
+
+    const checkFiltersScroll = () => {
+        if (filtersRowRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = filtersRowRef.current;
+            setCanScrollLeftFilters(scrollLeft > 1);
+            setCanScrollRightFilters(scrollLeft < scrollWidth - clientWidth - 1);
+        }
+    };
+
+    useEffect(() => {
+        // Initial check and set up listeners
+        setTimeout(checkFiltersScroll, 100);
+        window.addEventListener('resize', checkFiltersScroll);
+        return () => window.removeEventListener('resize', checkFiltersScroll);
+    }, [sortedMentors]); // Also re-check if mentors list changes
+
+    const scrollFilters = (direction) => {
+        if (filtersRowRef.current) {
+            const scrollAmount = direction === 'left' ? -150 : 150;
+            filtersRowRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className="aml-container">
             <div className="aml-header" style={{ marginBottom: '1.5rem', marginTop: '-1rem' }}>
@@ -56,56 +82,64 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             </div>
 
             {/* Filters Row */}
-            <div className="aml-filters-row">
-                <div className="aml-filters-left">
-                    <button className="aml-filter-btn">
-                        <span style={{ fontSize: '1.1rem' }}>▤</span> Filters <span className="aml-filter-badge">1</span>
-                    </button>
-                    <button className="aml-filter-btn aml-filter-active">
-                        Top Mentor
-                    </button>
-                    <div className="aml-dropdown-container" ref={sortMenuRef}>
-                        <button 
-                            className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
-                            onClick={() => setShowSortMenu(!showSortMenu)}
-                        >
-                            <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
+            <div className="aml-filters-wrapper">
+                {canScrollLeftFilters && (
+                    <button className="aml-filters-scroll-btn left" onClick={() => scrollFilters('left')}>❮</button>
+                )}
+                <div className="aml-filters-row" ref={filtersRowRef} onScroll={checkFiltersScroll}>
+                    <div className="aml-filters-left">
+                        <button className="aml-filter-btn">
+                            <span style={{ fontSize: '1.1rem' }}>▤</span> Filters <span className="aml-filter-badge">1</span>
                         </button>
-                        {showSortMenu && (
-                            <div className="aml-dropdown-menu">
-                                <div 
-                                    className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
-                                    onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
-                                >
-                                    Newest First
+                        <button className="aml-filter-btn aml-filter-active">
+                            Top Mentor
+                        </button>
+                        <div className="aml-dropdown-container" ref={sortMenuRef}>
+                            <button 
+                                className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
+                                onClick={() => setShowSortMenu(!showSortMenu)}
+                            >
+                                <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
+                            </button>
+                            {showSortMenu && (
+                                <div className="aml-dropdown-menu">
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                    >
+                                        Newest First
+                                    </div>
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
+                                    >
+                                        Oldest First
+                                    </div>
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
+                                    >
+                                        Alphabetical (A-Z)
+                                    </div>
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
+                                    >
+                                        Alphabetical (Z-A)
+                                    </div>
                                 </div>
-                                <div 
-                                    className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
-                                    onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
-                                >
-                                    Oldest First
-                                </div>
-                                <div 
-                                    className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
-                                    onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
-                                >
-                                    Alphabetical (A-Z)
-                                </div>
-                                <div 
-                                    className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
-                                    onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
-                                >
-                                    Alphabetical (Z-A)
-                                </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+                    </div>
+                    <div className="aml-filters-right">
+                        <div className="aml-featured-pill" style={{ marginLeft: '0.6rem' }}>
+                            Featured
+                        </div>
                     </div>
                 </div>
-                <div className="aml-filters-right">
-                    <div className="aml-featured-pill">
-                        Featured
-                    </div>
-                </div>
+                {canScrollRightFilters && (
+                    <button className="aml-filters-scroll-btn right" onClick={() => scrollFilters('right')}>❯</button>
+                )}
             </div>
 
             <div className="aml-list">
