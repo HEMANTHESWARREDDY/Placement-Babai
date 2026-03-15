@@ -13,11 +13,35 @@ function ProConnect({ onMentorLoginClick }) {
     const [showRegisterMentor, setShowRegisterMentor] = useState(false);
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
     const scrollRef = useRef(null);
+
+    const checkScroll = () => {
+        if (scrollRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+            setCanScrollLeft(scrollLeft > 10);
+            setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+        }
+    };
+
+    useEffect(() => {
+        if (!loading && !showAllMentors) {
+            // Check after a short delay to ensure DOM is rendered
+            const timeout = setTimeout(checkScroll, 500);
+            return () => clearTimeout(timeout);
+        }
+    }, [loading, showAllMentors, mentors]);
 
     const scrollNext = () => {
         if (scrollRef.current) {
             scrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+        }
+    };
+
+    const scrollPrev = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
         }
     };
 
@@ -321,6 +345,7 @@ function ProConnect({ onMentorLoginClick }) {
                         <div 
                             className={`pro-grid ${!isSearching ? 'top-mentors-grid' : ''}`}
                             ref={!isSearching ? scrollRef : null}
+                            onScroll={!isSearching ? checkScroll : null}
                         >
                             {filteredPros.map(pro => (
                                 <div className="tm-card" key={pro.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedPro(pro)}>
@@ -382,11 +407,22 @@ function ProConnect({ onMentorLoginClick }) {
                             ))}
                         </div>
                         {!isSearching && filteredPros.length > 1 && (
-                            <button className="pro-slider-arrow" onClick={scrollNext} aria-label="Next">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
-                            </button>
+                            <>
+                                {canScrollLeft && (
+                                    <button className="pro-slider-arrow prev" onClick={scrollPrev} aria-label="Previous">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="15 18 9 12 15 6"></polyline>
+                                        </svg>
+                                    </button>
+                                )}
+                                {canScrollRight && (
+                                    <button className="pro-slider-arrow next" onClick={scrollNext} aria-label="Next">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </button>
+                                )}
+                            </>
                         )}
                     </div>
                 )}
