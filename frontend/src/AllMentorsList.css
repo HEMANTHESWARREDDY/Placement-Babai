@@ -218,9 +218,9 @@
 .aml-filter-badge {
     background: #0ea5e9;
     color: white;
-    font-size: 0.75rem;
-    width: 20px;
-    height: 20px;
+    font-size: 0.7rem; /* Slightly smaller for mobile if needed */
+    width: 18px; /* Slightly smaller */
+    height: 18px; /* Slightly smaller */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -617,15 +617,24 @@
     }
 
     .aml-filter-btn {
-        padding: 0.4rem 0.8rem;
+        padding: 0 0.8rem;
+        height: 32px; /* Fixed height for consistency */
         font-size: 0.75rem;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .aml-featured-pill {
-        padding: 0.4rem 0.8rem;
+        padding: 0 0.8rem;
+        height: 32px; /* Match filter button height */
         font-size: 0.75rem;
         white-space: nowrap;
+        border-radius: 30px; /* Unify radius with filter buttons */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .aml-dropdown-menu {
