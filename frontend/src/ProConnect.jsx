@@ -49,13 +49,13 @@ function ProConnect({ onMentorLoginClick }) {
         if (scrollRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
             const sl = Math.ceil(scrollLeft);
-            const threshold = 15; 
             
-            const isScrollable = scrollWidth > clientWidth + 10;
+            // Only show arrows if the container is truly scrollable
+            const isScrollable = scrollWidth > clientWidth + 20;
             
-            // Strictly hide at the very start (buffer of 5px)
-            setCanScrollLeft(isScrollable && sl > 5);
-            setCanScrollRight(isScrollable && (sl + clientWidth < scrollWidth - threshold));
+            // Use a larger threshold (40px) to ensure no phantom arrow at start
+            setCanScrollLeft(isScrollable && sl > 40);
+            setCanScrollRight(isScrollable && (sl + clientWidth < scrollWidth - 20));
         }
     };
 
