@@ -553,10 +553,11 @@
 
 
     .pro-hero-stats {
-        margin-top: 0.5rem !important; /* Fixed: Removed negative margin to prevent overlap */
+        margin-top: 0.5rem !important; 
         padding-top: 0 !important;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
+        align-items: flex-start; /* Ensure all numbers start at the same top line */
         gap: 0;
         padding-bottom: 0 !important;
         width: 90%;
