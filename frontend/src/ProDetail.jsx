@@ -3,7 +3,7 @@ import './ProDetail.css';
 
 function ProDetail({ pro, onClose }) {
     const [activeTab, setActiveTab] = useState('All');
-    const [mainTab, setMainTab] = useState('About');
+    const [mainTab, setMainTab] = useState('Services');
     const [lightbox, setLightbox] = useState(null);
 
     const [expandedSections, setExpandedSections] = useState({
