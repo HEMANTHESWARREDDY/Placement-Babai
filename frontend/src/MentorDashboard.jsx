@@ -320,7 +320,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div className="preview-subtitle">
                             {profile.role} @ {profile.company} {profile.topics ? `| ${profile.topics}` : ''}
                             {isEditingProfile && (
-                                <div style={{ display: 'inline-flex', gap: '5px' }}>
+                                <div className="edit-buttons-wrapper">
                                     <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('role', 'Job Role', 'text')}>✏️ Role</button>
                                     <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('company', 'Company Name', 'text')}>✏️ Company</button>
                                 </div>
