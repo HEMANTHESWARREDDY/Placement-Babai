@@ -59,7 +59,7 @@
     font-size: 1.35rem;
     font-weight: 500;
     margin-bottom: 1rem;
-    color: #e2e8f0;
+    color: #ffffff; /* Changed to White */
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
@@ -68,7 +68,7 @@
 
 .pro-desc {
     font-size: 1.05rem;
-    color: #cbd5e1;
+    color: #ffffff; /* Changed to White */
     max-width: 700px;
     margin: 0 auto 1.5rem; /* Reduced from 2.5rem for better grouping */
     line-height: 1.7;
