@@ -500,8 +500,7 @@
         font-size: 0.5rem;
     }
 
-    /* Hero Stats - Mobile Overrides */
-    .hero-stats {
+    .pro-connect-container .hero-stats {
         margin-top: 1rem;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -512,32 +511,32 @@
         box-sizing: border-box;
     }
 
-    .hero-stat {
+    .pro-connect-container .hero-stat {
         flex: 1;
         width: auto;
         padding: 0.25rem;
         text-align: center;
     }
 
-    .stat-number {
+    .pro-connect-container .stat-number {
         font-size: 0.75rem;
         color: #a78bfa !important;
     }
 
-    .stat-label {
+    .pro-connect-container .stat-label {
         font-size: 0.5rem;
         white-space: normal;
         word-break: break-word;
         letter-spacing: 0;
     }
 
-    .hero-stat-divider {
+    .pro-connect-container .hero-stat-divider {
         height: 24px;
     }
 }
 
 /* Hero Stats - Base */
-.hero-stats {
+.pro-connect-container .hero-stats {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -550,7 +549,7 @@
     margin-right: auto;
 }
 
-.hero-stat {
+.pro-connect-container .hero-stat {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -564,7 +563,7 @@
     line-height: 1;
 }
 
-.stat-label {
+.pro-connect-container .stat-label {
     font-size: 0.72rem;
     color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
@@ -574,7 +573,7 @@
     white-space: nowrap;
 }
 
-.hero-stat-divider {
+.pro-connect-container .hero-stat-divider {
     width: 1px;
     height: 36px;
     background: rgba(255, 255, 255, 0.25);
