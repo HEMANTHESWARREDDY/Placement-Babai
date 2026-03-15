@@ -38,14 +38,23 @@ function ProConnect({ onMentorLoginClick }) {
 
     // Update URL when selectedPro changes
     useEffect(() => {
+        if (loading && mentors.length === 0) return; // Wait until initial load
+        
         const url = new URL(window.location.href);
+        const currentProId = url.searchParams.get('pro');
+        
         if (selectedPro) {
-            url.searchParams.set('pro', selectedPro.id);
+            if (String(currentProId) !== String(selectedPro.id)) {
+                url.searchParams.set('pro', selectedPro.id);
+                window.history.pushState({}, '', url.toString());
+            }
         } else {
-            url.searchParams.delete('pro');
+            if (currentProId) {
+                url.searchParams.delete('pro');
+                window.history.pushState({}, '', url.toString());
+            }
         }
-        window.history.pushState({}, '', url.toString());
-    }, [selectedPro]);
+    }, [selectedPro, loading, mentors]);
 
     const fetchMentors = async () => {
         try {
