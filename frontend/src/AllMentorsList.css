@@ -595,7 +595,7 @@
 
     .aml-dropdown-menu {
         position: fixed !important;
-        top: 280px !important; /* Moved lower to align with filter row */
+        top: 310px !important; /* Moved even lower to clear the filter row */
         left: 50% !important;
         transform: translateX(-50%) scale(0.95) !important;
         width: auto !important;
