@@ -601,33 +601,70 @@
     }
 
     /* Horizontal Sliding for Top Mentors on Mobile */
+    .pro-grid-slider-wrapper {
+        position: relative;
+        margin: 0 -1.5rem; /* Break out of section padding */
+    }
+
     .pro-grid.top-mentors-grid {
         display: flex !important;
         grid-template-columns: none !important;
         overflow-x: auto !important;
         scroll-snap-type: x mandatory;
-        gap: 1.2rem;
+        gap: 1rem;
         padding-bottom: 1.5rem;
-        scrollbar-width: none; /* Hide scrollbar Firefox */
-        -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
-        margin-left: -1.5rem;
-        margin-right: -1.5rem;
-        padding-left: 1.5rem;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-left: 1.5rem; /* Align first card with violet bar */
         padding-right: 1.5rem;
     }
 
     .pro-grid.top-mentors-grid::-webkit-scrollbar {
-        display: none; /* Hide scrollbar Chrome/Safari */
+        display: none;
     }
 
     .pro-grid.top-mentors-grid .tm-card {
-        flex: 0 0 280px; /* Card width */
+        flex: 0 0 280px;
         scroll-snap-align: start;
         margin-bottom: 0;
     }
 
+    /* Side Icon to move (Floating Arrow) */
+    .pro-slider-arrow {
+        position: absolute;
+        right: 10%;
+        top: 45%;
+        transform: translateY(-50%);
+        background: #ffffff;
+        color: #ef4444; /* Red as requested */
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
+        z-index: 30;
+        cursor: pointer;
+        opacity: 0.9;
+        border: 1px solid rgba(239, 68, 68, 0.1);
+    }
+
+    .pro-slider-arrow svg {
+        width: 28px;
+        height: 28px;
+    }
+
     /* Limit to recent 4 cards on mobile */
     .pro-grid.top-mentors-grid .tm-card:nth-child(n+5) {
+        display: none !important;
+    }
+}
+
+/* Hide slider arrow on PC */
+@media (min-width: 769px) {
+    .pro-slider-arrow {
         display: none !important;
     }
 }

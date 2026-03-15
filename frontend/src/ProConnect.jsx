@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ProDetail from './ProDetail';
 import AllMentorsList from './AllMentorsList';
 import RegisterMentorModal from './RegisterMentorModal';
@@ -13,6 +13,13 @@ function ProConnect({ onMentorLoginClick }) {
     const [showRegisterMentor, setShowRegisterMentor] = useState(false);
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
+    const scrollRef = useRef(null);
+
+    const scrollNext = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+        }
+    };
 
     useEffect(() => {
         sessionStorage.setItem('showAllMentors', showAllMentors);
@@ -310,9 +317,13 @@ function ProConnect({ onMentorLoginClick }) {
                         No mentors found matching your search criteria. Try a different search!
                     </div>
                 ) : (
-                    <div className={`pro-grid ${!isSearching ? 'top-mentors-grid' : ''}`}>
-                        {filteredPros.map(pro => (
-                            <div className="tm-card" key={pro.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedPro(pro)}>
+                    <div className="pro-grid-slider-wrapper">
+                        <div 
+                            className={`pro-grid ${!isSearching ? 'top-mentors-grid' : ''}`}
+                            ref={!isSearching ? scrollRef : null}
+                        >
+                            {filteredPros.map(pro => (
+                                <div className="tm-card" key={pro.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedPro(pro)}>
                                 <div className="tm-header" style={{ 
                                     background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
                                                (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
@@ -368,7 +379,15 @@ function ProConnect({ onMentorLoginClick }) {
                                     <button className="tm-btn" onClick={() => setSelectedPro(pro)}>View Profile</button>
                                 </div>
                             </div>
-                        ))}
+                            ))}
+                        </div>
+                        {!isSearching && filteredPros.length > 1 && (
+                            <button className="pro-slider-arrow" onClick={scrollNext} aria-label="Next">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
