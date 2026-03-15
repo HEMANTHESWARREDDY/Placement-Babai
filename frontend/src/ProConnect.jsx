@@ -162,10 +162,12 @@ function ProConnect({ onMentorLoginClick }) {
                     <div className="pro-title-top">Pro <span className="highlight-text">Connect</span></div>
                     <div className="pro-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Connect <span className="mobile-break">You with Experts</span></div>
                 </h1>
-
+                
+                <p className="pro-subtitle">Guidance from Industry Professionals for Your Career Growth</p>
+                <p className="pro-desc">Connect, ask, learn, and improve</p>
 
                 {/* Search Bar for Pros */}
-                <div className="search-container" style={{ marginTop: '1.5rem', position: 'relative' }}>
+                <div className="search-container" style={{ position: 'relative' }}>
                     <div className="search-input-group" style={{ flex: '1.2' }}>
                         <span className="search-icon">🔍</span>
                         <input

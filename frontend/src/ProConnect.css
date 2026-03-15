@@ -70,7 +70,7 @@
     font-size: 1.05rem;
     color: #cbd5e1;
     max-width: 700px;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto 1.5rem; /* Reduced from 2.5rem for better grouping */
     line-height: 1.7;
 }
 
@@ -470,8 +470,8 @@
         margin-top: 0.2rem;
     }
 
-    .pro-subtitle {
-        display: none;
+    .pro-subtitle, .pro-desc {
+        display: none !important;
     }
 
     .pro-tagline {
