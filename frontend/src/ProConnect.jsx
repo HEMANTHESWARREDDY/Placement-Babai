@@ -258,23 +258,23 @@ function ProConnect({ onMentorLoginClick }) {
                 </div>
 
                 {/* Hero Stats */}
-                <div className="hero-stats">
-                    <div className="hero-stat">
+                <div className="pro-hero-stats">
+                    <div className="pro-hero-stat">
                         <span className="pro-stat-number">50+</span>
                         <span className="pro-stat-label">Mentors</span>
                     </div>
-                    <div className="hero-stat-divider" />
-                    <div className="hero-stat">
+                    <div className="pro-hero-stat-divider" />
+                    <div className="pro-hero-stat">
                         <span className="pro-stat-number">25+</span>
                         <span className="pro-stat-label">Companies</span>
                     </div>
-                    <div className="hero-stat-divider" />
-                    <div className="hero-stat">
+                    <div className="pro-hero-stat-divider" />
+                    <div className="pro-hero-stat">
                         <span className="pro-stat-number">1,000+</span>
                         <span className="pro-stat-label">Students Guided</span>
                     </div>
-                    <div className="hero-stat-divider" />
-                    <div className="hero-stat">
+                    <div className="pro-hero-stat-divider" />
+                    <div className="pro-hero-stat">
                         <span className="pro-stat-number">200+</span>
                         <span className="pro-stat-label">Career Sessions</span>
                     </div>

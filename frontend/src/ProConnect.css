@@ -500,42 +500,47 @@
         font-size: 0.5rem;
     }
 
-    .pro-connect-container .hero-stats {
+    .pro-hero-stats {
         margin-top: 1.5rem;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
         padding: 0;
-        width: 100%;
+        width: 88%;
+        margin-left: auto;
+        margin-right: auto;
         box-sizing: border-box;
     }
 
-    .pro-connect-container .hero-stat {
-        padding: 0 0.1rem;
+    .pro-hero-stat {
+        padding: 0 0.05rem;
         text-align: center;
+        min-width: 0;
     }
 
-    .pro-connect-container .pro-stat-number {
+    .pro-stat-number {
         font-size: 0.65rem;
         color: #a78bfa !important;
+        font-weight: 800;
     }
 
-    .pro-connect-container .pro-stat-label {
+    .pro-stat-label {
         font-size: 0.32rem;
         white-space: normal;
         word-break: normal;
         line-height: 1.1;
         letter-spacing: -0.01em;
         margin-top: 0.1rem;
+        color: rgba(255, 255, 255, 0.7);
     }
 
-    .pro-connect-container .hero-stat-divider {
+    .pro-hero-stat-divider {
         display: none;
     }
 }
 
 /* Hero Stats - Base */
-.pro-connect-container .hero-stats {
+.pro-hero-stats {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -548,22 +553,22 @@
     margin-right: auto;
 }
 
-.pro-connect-container .hero-stat {
+.pro-hero-stat {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0 1.5rem;
 }
 
-.pro-connect-container .pro-stat-number {
-    font-size: 1.0rem;
+.pro-stat-number {
+    font-size: 1.5rem;
     font-weight: 800;
     color: #a78bfa !important; /* Violet highlight color */
     line-height: 1;
 }
 
-.pro-connect-container .pro-stat-label {
-    font-size: 0.55rem;
+.pro-stat-label {
+    font-size: 0.72rem;
     color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
     text-transform: uppercase;
@@ -572,7 +577,7 @@
     white-space: nowrap;
 }
 
-.pro-connect-container .hero-stat-divider {
+.pro-hero-stat-divider {
     width: 1px;
     height: 36px;
     background: rgba(255, 255, 255, 0.25);
