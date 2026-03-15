@@ -521,6 +521,7 @@
 
     .stat-number {
         font-size: 0.9rem;
+        color: #a78bfa !important;
     }
 
     .stat-label {
@@ -556,10 +557,10 @@
     padding: 0 1.5rem;
 }
 
-.stat-number {
+.pro-connect-container .stat-number {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #a78bfa; /* Violet highlight color */
+    color: #a78bfa !important; /* Violet highlight color */
     line-height: 1;
 }
 
