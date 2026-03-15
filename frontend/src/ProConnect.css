@@ -553,7 +553,7 @@
 
 
     .pro-hero-stats {
-        margin-top: -0.8rem !important; /* Move it up even more */
+        margin-top: 0.5rem !important; /* Fixed: Removed negative margin to prevent overlap */
         padding-top: 0 !important;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -566,7 +566,7 @@
     }
 
     .pro-hero-btn-wrapper {
-        margin-top: 0.3rem !important; /* Reduce gap significantly */
+        margin-top: 1.2rem !important; /* Increased from 0.3rem to provide clear separation */
     }
 
     .pro-hero-stat {
