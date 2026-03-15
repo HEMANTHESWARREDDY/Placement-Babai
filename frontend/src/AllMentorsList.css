@@ -595,7 +595,7 @@
 
     .aml-dropdown-menu {
         position: fixed !important;
-        top: 130px !important; /* Positioned just below filter row */
+        top: 280px !important; /* Moved lower to align with filter row */
         left: 50% !important;
         transform: translateX(-50%) scale(0.95) !important;
         width: auto !important;
@@ -604,6 +604,7 @@
         z-index: 9999 !important;
         box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
         border: 1px solid #e2e8f0 !important;
+        background: white !important;
         animation: aml-mobile-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
         transform-origin: top center !important;
     }
@@ -613,27 +614,21 @@
         to { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
     }
 
-    /* Lighter Backdrop for mobile dropdown */
-    .aml-dropdown-container::before {
-        content: '';
-        display: none;
+    /* Proper Backdrop for mobile dropdown */
+    .aml-dropdown-backdrop {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(255,255,255,0.1); /* Very light overlay */
+        background: rgba(0,0,0,0.2);
         z-index: 9998;
-        backdrop-filter: blur(1px);
+        display: block;
     }
 
     .aml-dropdown-item {
         padding: 0.6rem 1rem !important;
         font-size: 0.85rem !important;
-    }
-
-    .aml-dropdown-container:has(.aml-dropdown-menu)::before {
-        display: block;
     }
 
     .aml-list {

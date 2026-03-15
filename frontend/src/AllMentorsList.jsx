@@ -102,32 +102,35 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
                             </button>
                             {showSortMenu && (
-                                <div className="aml-dropdown-menu">
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
-                                    >
-                                        Newest First
+                                <>
+                                    <div className="aml-dropdown-backdrop" onClick={() => setShowSortMenu(false)}></div>
+                                    <div className="aml-dropdown-menu">
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                        >
+                                            Newest First
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
+                                        >
+                                            Oldest First
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
+                                        >
+                                            Alphabetical (A-Z)
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
+                                        >
+                                            Alphabetical (Z-A)
+                                        </div>
                                     </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
-                                    >
-                                        Oldest First
-                                    </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
-                                    >
-                                        Alphabetical (A-Z)
-                                    </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
-                                    >
-                                        Alphabetical (Z-A)
-                                    </div>
-                                </div>
+                                </>
                             )}
                         </div>
                     </div>
