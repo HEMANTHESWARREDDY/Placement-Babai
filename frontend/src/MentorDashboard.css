@@ -542,12 +542,13 @@
     }
 
     .mentor-logout-btn {
-        padding: 0.3rem 1.2rem;
-        font-size: 0.65rem;
+        padding: 0.5rem 1.5rem;
+        font-size: 0.95rem;
         height: fit-content;
-        min-width: 80px;
+        min-width: 100px;
         text-align: center;
         line-height: 1.2;
+        border-radius: 8px;
     }
 
     .welcome-text {
