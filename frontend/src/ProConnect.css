@@ -87,7 +87,7 @@
 
 .become-mentor-hero-btn {
     background: transparent;
-    border: 2px solid #0ea5e9;
+    border: 2px solid #a78bfa; /* Change to Violet */
     color: #fff;
     padding: 0.5rem 1.8rem;
     border-radius: 50px;
@@ -95,13 +95,14 @@
     font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3); /* Violet Shadow */
 }
 
 .become-mentor-hero-btn:hover {
-    background: #0ea5e9;
+    background: #7c3aed; /* Violet Hover */
+    border-color: #7c3aed;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.5);
 }
 
 
@@ -553,7 +554,7 @@
 
 
     .pro-hero-stats {
-        margin-top: 0.5rem !important; 
+        margin-top: 1.5rem !important; /* Increased from 0.5rem to provide more distance */
         padding-top: 0 !important;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -567,7 +568,7 @@
     }
 
     .pro-hero-btn-wrapper {
-        margin-top: 1.2rem !important; /* Increased from 0.3rem to provide clear separation */
+        margin-top: 2rem !important; /* Increased from 1.2rem to provide clear separation */
     }
 
     .pro-hero-stat {
