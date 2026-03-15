@@ -393,6 +393,7 @@
 @media (max-width: 768px) {
     .pro-hero {
         padding: 1.2rem 1rem 1.2rem;
+        background: linear-gradient(90deg, #0f172a 50%, #1e1b4b 50%);
     }
 
     .pro-hero-title {
