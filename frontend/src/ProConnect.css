@@ -603,7 +603,7 @@
     /* Horizontal Sliding for Top Mentors on Mobile */
     .pro-grid-slider-wrapper {
         position: relative;
-        margin: 0 -1.5rem; /* Break out of section padding */
+        margin: 0; /* Align with header section */
     }
 
     .pro-grid.top-mentors-grid {
@@ -611,12 +611,20 @@
         grid-template-columns: none !important;
         overflow-x: auto !important;
         scroll-snap-type: x mandatory;
+        scroll-padding-left: 1.5rem;
         gap: 1.2rem;
-        padding-bottom: 2rem;
+        padding-bottom: 2.5rem;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        padding-left: 4rem; /* Significant shift to the right to leave empty space on the left */
-        padding-right: 2rem;
+        padding-left: 0; /* Rely on spacer and wrapper alignment */
+        padding-right: 1.5rem;
+    }
+
+    /* Spacer to create the empty space on the left of the first card */
+    .pro-grid.top-mentors-grid::before {
+        content: '';
+        flex: 0 0 1.5rem; /* This creates the visible gap on the left of the first card */
+        pointer-events: none;
     }
 
     .pro-grid.top-mentors-grid::-webkit-scrollbar {
