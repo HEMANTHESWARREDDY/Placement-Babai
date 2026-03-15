@@ -519,17 +519,17 @@
     }
 
     .pro-stat-number {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         color: #a78bfa !important;
         font-weight: 800;
     }
 
     .pro-stat-label {
-        font-size: 0.32rem;
+        font-size: 0.28rem;
         white-space: normal;
         word-break: normal;
         line-height: 1.1;
-        letter-spacing: -0.01em;
+        letter-spacing: -0.02em;
         margin-top: 0.1rem;
         color: rgba(255, 255, 255, 0.7);
     }
