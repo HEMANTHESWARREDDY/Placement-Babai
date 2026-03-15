@@ -505,8 +505,8 @@
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: space-between;
-        gap: 0.25rem;
-        padding: 0.5rem 0.25rem;
+        gap: 0;
+        padding: 0;
         width: 100%;
         box-sizing: border-box;
     }
@@ -514,19 +514,20 @@
     .pro-connect-container .hero-stat {
         flex: 1;
         width: auto;
-        padding: 0.25rem;
+        padding: 0.1rem;
         text-align: center;
     }
 
     .pro-connect-container .pro-stat-number {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
         color: #a78bfa !important;
     }
 
     .pro-connect-container .pro-stat-label {
         font-size: 0.35rem;
         white-space: normal;
-        word-break: break-word;
+        word-break: break-all;
+        line-height: 1.1;
         letter-spacing: 0;
     }
 
