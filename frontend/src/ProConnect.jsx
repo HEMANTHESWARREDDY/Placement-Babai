@@ -256,6 +256,29 @@ function ProConnect({ onMentorLoginClick }) {
                         Become a Mentor
                     </button>
                 </div>
+
+                {/* Hero Stats */}
+                <div className="hero-stats">
+                    <div className="hero-stat">
+                        <span className="stat-number">50+</span>
+                        <span className="stat-label">Mentors</span>
+                    </div>
+                    <div className="hero-stat-divider" />
+                    <div className="hero-stat">
+                        <span className="stat-number">25+</span>
+                        <span className="stat-label">Companies</span>
+                    </div>
+                    <div className="hero-stat-divider" />
+                    <div className="hero-stat">
+                        <span className="stat-number">1,000+</span>
+                        <span className="stat-label">Students Guided</span>
+                    </div>
+                    <div className="hero-stat-divider" />
+                    <div className="hero-stat">
+                        <span className="stat-number">200+</span>
+                        <span className="stat-label">Career Sessions</span>
+                    </div>
+                </div>
             </div>
 
             <div className="pro-profiles-section">
