@@ -160,7 +160,7 @@ function ProConnect({ onMentorLoginClick }) {
             <div className="pro-hero">
                 <h1 className="pro-hero-title">
                     <div className="pro-title-top">Pro <span className="highlight-text">Connect</span></div>
-                    <div className="pro-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Connect You with Experts</div>
+                    <div className="pro-title-bottom">Let Placement<span className="highlight-violet">Babai</span> <span className="mobile-break">Connect You with Experts</span></div>
                 </h1>
 
 
