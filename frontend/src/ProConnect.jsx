@@ -9,14 +9,43 @@ function ProConnect({ onMentorLoginClick }) {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [searchExperience, setSearchExperience] = useState('');
     const [selectedPro, setSelectedPro] = useState(null);
-    const [showAllMentors, setShowAllMentors] = useState(false);
+    const [showAllMentors, setShowAllMentors] = useState(() => sessionStorage.getItem('showAllMentors') === 'true');
     const [showRegisterMentor, setShowRegisterMentor] = useState(false);
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        sessionStorage.setItem('showAllMentors', showAllMentors);
+    }, [showAllMentors]);
+
+    useEffect(() => {
         fetchMentors();
     }, []);
+
+    // Deep linking for mentor profile
+    useEffect(() => {
+        if (mentors.length === 0) return;
+        const params = new URLSearchParams(window.location.search);
+        const proId = params.get('pro');
+        if (proId) {
+            const found = mentors.find(m => String(m.id) === String(proId));
+            if (found) {
+                setSelectedPro(found);
+                setShowAllMentors(true); // Ensure they are on the list view if they following a direct profile link
+            }
+        }
+    }, [mentors]);
+
+    // Update URL when selectedPro changes
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        if (selectedPro) {
+            url.searchParams.set('pro', selectedPro.id);
+        } else {
+            url.searchParams.delete('pro');
+        }
+        window.history.pushState({}, '', url.toString());
+    }, [selectedPro]);
 
     const fetchMentors = async () => {
         try {
@@ -253,7 +282,7 @@ function ProConnect({ onMentorLoginClick }) {
                 ) : (
                     <div className="pro-grid">
                         {filteredPros.map(pro => (
-                            <div className="tm-card" key={pro.id}>
+                            <div className="tm-card" key={pro.id} style={{ cursor: 'pointer' }} onClick={() => setSelectedPro(pro)}>
                                 <div className="tm-header" style={{ 
                                     background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
                                                (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 

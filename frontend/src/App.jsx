@@ -58,6 +58,11 @@ function App() {
   const [appliesCount, setAppliesCount] = useState({});
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState(() => sessionStorage.getItem('activeMainTab') || 'jobs');
+
+  useEffect(() => {
+    sessionStorage.setItem('activeMainTab', activeMainTab);
+  }, [activeMainTab]);
+
   const filterBarRef = useRef(null);
   const jobsGridRef = useRef(null);
 
