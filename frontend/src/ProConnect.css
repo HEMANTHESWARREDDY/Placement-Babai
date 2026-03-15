@@ -518,13 +518,13 @@
         text-align: center;
     }
 
-    .pro-connect-container .stat-number {
-        font-size: 0.8rem;
+    .pro-connect-container .pro-stat-number {
+        font-size: 0.7rem;
         color: #a78bfa !important;
     }
 
-    .pro-connect-container .stat-label {
-        font-size: 0.45rem;
+    .pro-connect-container .pro-stat-label {
+        font-size: 0.4rem;
         white-space: normal;
         word-break: break-word;
         letter-spacing: 0;
@@ -556,15 +556,15 @@
     padding: 0 1.5rem;
 }
 
-.pro-connect-container .stat-number {
-    font-size: 1.5rem;
+.pro-connect-container .pro-stat-number {
+    font-size: 1.15rem;
     font-weight: 800;
     color: #a78bfa !important; /* Violet highlight color */
     line-height: 1;
 }
 
-.pro-connect-container .stat-label {
-    font-size: 0.72rem;
+.pro-connect-container .pro-stat-label {
+    font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
     text-transform: uppercase;
