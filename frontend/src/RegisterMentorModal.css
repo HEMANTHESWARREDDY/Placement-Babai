@@ -58,8 +58,10 @@
 }
 
 .rm-already-mentor-emoji {
-    font-size: 2rem;
-    line-height: 1;
+    font-size: 1.2rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
     animation: pulse 2s infinite;
 }
 
@@ -190,12 +192,14 @@
     }
 
     .rm-already-mentor-left {
-        flex-direction: column;
-        gap: 0.5rem;
+        flex-direction: row;
+        gap: 0;
+        width: 100%;
     }
 
-    .rm-already-mentor-title {
-        font-size: 1rem;
+    .rm-already-mentor-emoji {
+        font-size: 1.2rem;
+        margin-right: 6px;
     }
 
     .rm-already-mentor-sub {
