@@ -105,7 +105,7 @@ const BookingModal = ({ pro, service, onClose }) => {
         e.preventDefault();
         setLoading(true);
         
-        const finalTime = useCustomTime ? `${customTime || 'Custom Time'}` : `${selectedTime} ${timePeriod}`;
+        const finalTime = useCustomTime ? (customTime || 'Custom Time') : selectedTime;
         
         const payload = {
             mentorId: pro.id,
@@ -190,8 +190,8 @@ const BookingModal = ({ pro, service, onClose }) => {
                                     <input 
                                         type="date" 
                                         value={selectedDate} 
-                                        min={today}
-                                        max={fourteenDaysMax}
+                                        min={todayStr}
+                                        max={fifteenDaysMax}
                                         onChange={(e) => setSelectedDate(e.target.value)}
                                         className="simple-input"
                                     />
