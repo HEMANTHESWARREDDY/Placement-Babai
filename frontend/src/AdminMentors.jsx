@@ -6,7 +6,7 @@ function AdminMentors() {
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [activeSubTab, setActiveSubTab] = useState('PENDING');
+    const [activeSubTab, setActiveSubTab] = useState(() => localStorage.getItem('adminMentorsTab') || 'PENDING');
     const [counts, setCounts] = useState({ PENDING: 0, APPROVED: 0, REJECTED: 0 });
 
     useEffect(() => {
@@ -131,19 +131,19 @@ function AdminMentors() {
                 <div className="mentor-subtabs">
                     <button
                         className={`mentor-subtab ${activeSubTab === 'PENDING' ? 'active' : ''}`}
-                        onClick={() => setActiveSubTab('PENDING')}
+                        onClick={() => { setActiveSubTab('PENDING'); localStorage.setItem('adminMentorsTab', 'PENDING'); }}
                     >
                         Pending Applications ({counts.PENDING})
                     </button>
                     <button
                         className={`mentor-subtab ${activeSubTab === 'APPROVED' ? 'active' : ''}`}
-                        onClick={() => setActiveSubTab('APPROVED')}
+                        onClick={() => { setActiveSubTab('APPROVED'); localStorage.setItem('adminMentorsTab', 'APPROVED'); }}
                     >
                         Approved Mentors ({counts.APPROVED})
                     </button>
                     <button
                         className={`mentor-subtab ${activeSubTab === 'REJECTED' ? 'active' : ''}`}
-                        onClick={() => setActiveSubTab('REJECTED')}
+                        onClick={() => { setActiveSubTab('REJECTED'); localStorage.setItem('adminMentorsTab', 'REJECTED'); }}
                     >
                         Rejected ({counts.REJECTED})
                     </button>

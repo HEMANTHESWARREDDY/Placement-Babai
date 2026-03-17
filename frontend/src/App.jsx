@@ -24,7 +24,7 @@ function App() {
   const [showLocSuggestions, setShowLocSuggestions] = useState(false);
   const [searchExperience, setSearchExperience] = useState('');
   const [currentView, setCurrentView] = useState(() => {
-    const savedView = sessionStorage.getItem('currentView');
+    const savedView = localStorage.getItem('currentView');
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === 'true') {
       return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login';
@@ -34,7 +34,7 @@ function App() {
   });
 
   useEffect(() => {
-    sessionStorage.setItem('currentView', currentView);
+    localStorage.setItem('currentView', currentView);
   }, [currentView]);
 
   const [adminData, setAdminData] = useState(() => {
@@ -60,11 +60,11 @@ function App() {
   const [activeMainTab, setActiveMainTab] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('pro')) return 'pro-connect';
-    return sessionStorage.getItem('activeMainTab') || 'jobs';
+    return localStorage.getItem('activeMainTab') || 'jobs';
   });
 
   useEffect(() => {
-    sessionStorage.setItem('activeMainTab', activeMainTab);
+    localStorage.setItem('activeMainTab', activeMainTab);
   }, [activeMainTab]);
 
   const filterBarRef = useRef(null);

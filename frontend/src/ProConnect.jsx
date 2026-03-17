@@ -9,7 +9,7 @@ function ProConnect({ onMentorLoginClick }) {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [searchExperience, setSearchExperience] = useState('');
     const [selectedPro, setSelectedPro] = useState(null);
-    const [showAllMentors, setShowAllMentors] = useState(() => sessionStorage.getItem('showAllMentors') === 'true');
+    const [showAllMentors, setShowAllMentors] = useState(() => localStorage.getItem('showAllMentors') === 'true');
     const [showRegisterMentor, setShowRegisterMentor] = useState(false);
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -83,7 +83,7 @@ function ProConnect({ onMentorLoginClick }) {
     };
 
     useEffect(() => {
-        sessionStorage.setItem('showAllMentors', showAllMentors);
+        localStorage.setItem('showAllMentors', showAllMentors);
     }, [showAllMentors]);
 
     useEffect(() => {

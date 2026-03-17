@@ -43,15 +43,17 @@
     flex-wrap: wrap;
     align-items: flex-end;
     gap: 1.5rem;
-    margin-bottom: 0.75rem; /* Reduced from 1.5rem */
+    margin-bottom: 0.75rem;
 }
 
-.form-row-side .form-group-simple:first-child {
-    flex: 0 0 200px; /* Fixed width for date to reduce internal spacing */
+.form-row-side > .form-group-simple {
+    flex: 1;
+    min-width: 200px;
 }
 
-.form-row-side .form-group-simple:last-child {
-    flex: 1; /* Allow period toggle to take remaining space */
+/* Specific override for Step 1 Date vs Period Toggle */
+.booking-step:first-of-type .form-row-side .form-group-simple:first-child {
+    flex: 0 0 200px;
 }
 
 @keyframes slideUp {

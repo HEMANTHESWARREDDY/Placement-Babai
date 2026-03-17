@@ -263,29 +263,31 @@ const BookingModal = ({ pro, service, onClose }) => {
                 ) : (
                     <div className="booking-step">
                         <form onSubmit={handleSubmit} className="booking-form-simple">
-                            <div className="form-group-simple">
-                                <label>Full Name</label>
-                                <input 
-                                    type="text" 
-                                    name="guestName" 
-                                    required 
-                                    value={formData.guestName} 
-                                    onChange={handleInputChange}
-                                    placeholder="Enter your name"
-                                    className="simple-input"
-                                />
-                            </div>
-                            <div className="form-group-simple">
-                                <label>Email Address</label>
-                                <input 
-                                    type="email" 
-                                    name="guestEmail" 
-                                    required 
-                                    value={formData.guestEmail} 
-                                    onChange={handleInputChange}
-                                    placeholder="yourname@example.com"
-                                    className="simple-input"
-                                />
+                            <div className="form-row-side">
+                                <div className="form-group-simple">
+                                    <label>Full Name</label>
+                                    <input 
+                                        type="text" 
+                                        name="guestName" 
+                                        required 
+                                        value={formData.guestName} 
+                                        onChange={handleInputChange}
+                                        placeholder="Enter your name"
+                                        className="simple-input"
+                                    />
+                                </div>
+                                <div className="form-group-simple">
+                                    <label>Email Address</label>
+                                    <input 
+                                        type="email" 
+                                        name="guestEmail" 
+                                        required 
+                                        value={formData.guestEmail} 
+                                        onChange={handleInputChange}
+                                        placeholder="yourname@example.com"
+                                        className="simple-input"
+                                    />
+                                </div>
                             </div>
                             <div className="form-group-simple">
                                 <label>WhatsApp Number</label>

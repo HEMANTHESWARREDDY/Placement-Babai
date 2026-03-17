@@ -99,7 +99,7 @@ function AdminDashboard({ adminData, onLogout }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilters, setActiveFilters] = useState({});
     const [sortType, setSortType] = useState('');
-    const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('adminActiveTab') || 'jobs'); // 'jobs', 'analytics', 'deleted', 'mentors'
+    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('adminActiveTab') || 'jobs'); // 'jobs', 'analytics', 'deleted', 'mentors'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
@@ -117,7 +117,7 @@ function AdminDashboard({ adminData, onLogout }) {
 
     const changeTab = (tab) => {
         setActiveTab(tab);
-        sessionStorage.setItem('adminActiveTab', tab);
+        localStorage.setItem('adminActiveTab', tab);
     };
 
     const toggleFilter = (group, value) => {
