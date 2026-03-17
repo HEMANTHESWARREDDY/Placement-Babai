@@ -43,7 +43,7 @@
     flex-wrap: wrap;
     align-items: flex-end;
     gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem; /* Reduced from 1.5rem */
 }
 
 .form-row-side .form-group-simple:first-child {
@@ -230,9 +230,28 @@
 }
 
 .time-slots-section-modern {
-    margin-top: 1rem;
-    padding-top: 1.5rem;
+    margin-top: 0.5rem; /* Reduced from 1rem */
+    padding-top: 1rem; /* Reduced from 1.5rem */
     border-top: 1px solid #f1f5f9;
+}
+
+.booking-error-msg {
+    background: #fff1f2;
+    color: #e11d48;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border: 1px solid #ffe4e6;
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
 .section-small-label {

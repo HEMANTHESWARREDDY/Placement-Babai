@@ -35,19 +35,68 @@ const BookingModal = ({ pro, service, onClose }) => {
     const amSlots = getSlots('AM');
     const pmSlots = getSlots('PM');
 
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const today = new Date().toISOString().split('T')[0];
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 14);
-    const fourteenDaysMax = maxDate.toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split('T')[0];
+    const maxDay = new Date();
+    maxDay.setDate(maxDay.getDate() + 15);
+    const fifteenDaysMax = maxDay.toISOString().split('T')[0];
+
+    const validateStep1 = () => {
+        setError('');
+        
+        // Date Validation
+        if (!selectedDate) {
+            setError('Please select a date.');
+            return false;
+        }
+        if (selectedDate < todayStr) {
+            setError('You cannot book a date in the past.');
+            return false;
+        }
+        if (selectedDate > fifteenDaysMax) {
+            setError(`Booking is only allowed within the next 15 days (until ${fifteenDaysMax}).`);
+            return false;
+        }
+
+        // Time Validation
+        if (useCustomTime) {
+            if (!customTime) {
+                setError('Please provide a specific custom time.');
+                return false;
+            }
+            // Regular expression for HH:MM AM/PM
+            const timeRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM)$/i;
+            if (!timeRegex.test(customTime)) {
+                setError('Invalid time format. Please use HH:MM AM/PM (e.g. 10:30 AM).');
+                return false;
+            }
+
+            // check 9:00 AM limit
+            const [time, ampm] = customTime.toUpperCase().split(' ');
+            const [hrs, mins] = time.split(':').map(Number);
+            if (ampm === 'AM') {
+                if (hrs < 9 || hrs === 12) {
+                    setError('Meetings can only be scheduled from 9:00 AM onwards.');
+                    return false;
+                }
+            }
+        } else if (!selectedTime) {
+            setError('Please pick a convenient time slot.');
+            return false;
+        }
+
+        return true;
+    };
 
     useEffect(() => {
-        if (!selectedDate) setSelectedDate(today);
+        if (!selectedDate) setSelectedDate(todayStr);
     }, []);
 
     const handleInputChange = (e) => {
+        if (error) setError('');
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
@@ -167,6 +216,8 @@ const BookingModal = ({ pro, service, onClose }) => {
                                 </div>
                             </div>
 
+                            {error && <div className="booking-error-msg">{error}</div>}
+
                             <div className="time-slots-section-modern">
                                 {!useCustomTime ? (
                                     <>
@@ -201,8 +252,9 @@ const BookingModal = ({ pro, service, onClose }) => {
                         <div className="booking-footer">
                             <button 
                                 className="booking-next-btn-simple" 
-                                disabled={!selectedDate || (!useCustomTime && !selectedTime) || (useCustomTime && !customTime)}
-                                onClick={() => setStep(2)}
+                                onClick={() => {
+                                    if (validateStep1()) setStep(2);
+                                }}
                             >
                                 Continue to Details →
                             </button>
