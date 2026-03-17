@@ -39,10 +39,19 @@
 }
 
 .form-row-side {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
+}
+
+.form-row-side .form-group-simple:first-child {
+    flex: 0 0 200px; /* Fixed width for date to reduce internal spacing */
+}
+
+.form-row-side .form-group-simple:last-child {
+    flex: 1; /* Allow period toggle to take remaining space */
 }
 
 @keyframes slideUp {
