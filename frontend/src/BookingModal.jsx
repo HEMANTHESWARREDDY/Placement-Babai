@@ -118,6 +118,7 @@ const BookingModal = ({ pro, service, onClose }) => {
                 <div className="booking-modal-header">
                     <h3>Book {service.title}</h3>
                     <div className="mentor-mini-profile">
+                        <p>with {pro.name}</p>
                         {pro.image ? (
                             <img src={pro.image} alt={pro.name} className="mentor-header-avatar" />
                         ) : (
@@ -125,7 +126,6 @@ const BookingModal = ({ pro, service, onClose }) => {
                                 {pro.name?.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
                             </div>
                         )}
-                        <p>with {pro.name}</p>
                     </div>
                 </div>
 
