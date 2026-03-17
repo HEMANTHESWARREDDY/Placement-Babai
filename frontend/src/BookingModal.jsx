@@ -117,7 +117,16 @@ const BookingModal = ({ pro, service, onClose }) => {
                 
                 <div className="booking-modal-header">
                     <h3>Book {service.title}</h3>
-                    <p>with {pro.name}</p>
+                    <div className="mentor-mini-profile">
+                        {pro.image ? (
+                            <img src={pro.image} alt={pro.name} className="mentor-header-avatar" />
+                        ) : (
+                            <div className="mentor-header-initials">
+                                {pro.name?.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
+                            </div>
+                        )}
+                        <p>with {pro.name}</p>
+                    </div>
                 </div>
 
                 <div className="booking-steps-indicator">
