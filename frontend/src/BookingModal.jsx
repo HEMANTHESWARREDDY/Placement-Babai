@@ -6,6 +6,10 @@ const BookingModal = ({ pro, service, onClose }) => {
     const [step, setStep] = useState(1); // 1: Date/Time, 2: Details
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
+    const [timePeriod, setTimePeriod] = useState('AM'); // 'AM' or 'PM'
+    const [customTime, setCustomTime] = useState('');
+    const [useCustomTime, setUseCustomTime] = useState(false);
+    
     const [formData, setFormData] = useState({
         guestName: '',
         guestEmail: '',
@@ -28,19 +32,24 @@ const BookingModal = ({ pro, service, onClose }) => {
         });
     }
 
-    // Generate time slots (9 AM to 9 PM, 30 min intervals)
-    const timeSlots = [];
-    let start = 9 * 60; // 9:00 AM in minutes
-    const end = 21 * 60; // 9:00 PM in minutes
-    while (start < end) {
-        const hours = Math.floor(start / 60);
-        const mins = start % 60;
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const displayHours = hours > 12 ? hours - 12 : hours;
-        const timeStr = `${displayHours}:${mins === 0 ? '00' : '30'} ${period}`;
-        timeSlots.push(timeStr);
-        start += 30;
-    }
+    // Generate time slots
+    const getSlots = (period) => {
+        const slots = [];
+        let start = period === 'AM' ? 9 * 60 : 12 * 60;
+        const end = period === 'AM' ? 12 * 60 : 21 * 60;
+        while (start < end) {
+            const hours = Math.floor(start / 60);
+            const mins = start % 60;
+            const displayHours = hours > 12 ? hours - 12 : (hours === 0 ? 12 : hours);
+            const timeStr = `${displayHours}:${mins === 0 ? '00' : '30'}`;
+            slots.push(timeStr);
+            start += 30;
+        }
+        return slots;
+    };
+
+    const amSlots = getSlots('AM');
+    const pmSlots = getSlots('PM');
 
     useEffect(() => {
         if (!selectedDate) setSelectedDate(dates[0].full);
@@ -55,13 +64,15 @@ const BookingModal = ({ pro, service, onClose }) => {
         e.preventDefault();
         setLoading(true);
         
+        const finalTime = useCustomTime ? `${customTime || 'Custom Time'}` : `${selectedTime} ${timePeriod}`;
+        
         const payload = {
             mentorId: pro.id,
             mentorName: pro.name,
             serviceType: service.title,
             ...formData,
             bookingDate: selectedDate,
-            bookingTime: selectedTime
+            bookingTime: finalTime
         };
 
         try {
@@ -90,7 +101,8 @@ const BookingModal = ({ pro, service, onClose }) => {
                 <div className="booking-modal-content success-view">
                     <div className="success-icon">✅</div>
                     <h2>Booking Confirmed!</h2>
-                    <p>We've received your request for <strong>{service.title}</strong> with <strong>{pro.name}</strong> on <strong>{selectedDate}</strong> at <strong>{selectedTime}</strong>.</p>
+                    <p>We've received your request for <strong>{service.title}</strong> with <strong>{pro.name}</strong> on <strong>{selectedDate}</strong>.</p>
+                    <p>Meeting Time: <strong>{useCustomTime ? customTime : `${selectedTime} ${timePeriod}`}</strong></p>
                     <p>We'll reach out to you on WhatsApp ({formData.guestWhatsapp}) or Email shortly.</p>
                     <button onClick={onClose} className="booking-close-btn">Close</button>
                 </div>
@@ -100,7 +112,7 @@ const BookingModal = ({ pro, service, onClose }) => {
 
     return (
         <div className="booking-modal-overlay" onClick={onClose}>
-            <div className="booking-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="booking-modal-content large" onClick={e => e.stopPropagation()}>
                 <button className="booking-modal-close" onClick={onClose}>✕</button>
                 
                 <div className="booking-modal-header">
@@ -116,71 +128,108 @@ const BookingModal = ({ pro, service, onClose }) => {
 
                 {step === 1 ? (
                     <div className="booking-step">
-                        <h4>Select Date</h4>
-                        <div className="date-selector">
-                            {dates.map((d, index) => (
-                                <div 
-                                    key={index} 
-                                    className={`date-card ${selectedDate === d.full ? 'selected' : ''}`}
-                                    onClick={() => setSelectedDate(d.full)}
-                                >
-                                    <span className="date-month">{d.month}</span>
-                                    <span className="date-num">{d.date}</span>
-                                    <span className="date-day">{d.day}</span>
-                                </div>
-                            ))}
-                        </div>
+                        <section className="booking-section-wrapper">
+                            <h4>1. Select Date</h4>
+                            <div className="date-selector">
+                                {dates.map((d, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`date-card ${selectedDate === d.full ? 'selected' : ''}`}
+                                        onClick={() => setSelectedDate(d.full)}
+                                    >
+                                        <span className="date-month">{d.month}</span>
+                                        <span className="date-num">{d.date}</span>
+                                        <span className="date-day">{d.day}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
 
-                        <h4>Select Time Slot</h4>
-                        <div className="time-selector">
-                            {timeSlots.map((time, index) => (
-                                <button 
-                                    key={index} 
-                                    className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
-                                    onClick={() => setSelectedTime(time)}
-                                >
-                                    {time}
-                                </button>
-                            ))}
-                        </div>
+                        <section className="booking-section-wrapper">
+                            <div className="time-header-flex">
+                                <h4>2. Select Time Slot</h4>
+                                <div className="period-toggle">
+                                    <button 
+                                        className={timePeriod === 'AM' && !useCustomTime ? 'active' : ''} 
+                                        onClick={() => { setTimePeriod('AM'); setUseCustomTime(false); }}
+                                    >AM</button>
+                                    <button 
+                                        className={timePeriod === 'PM' && !useCustomTime ? 'active' : ''} 
+                                        onClick={() => { setTimePeriod('PM'); setUseCustomTime(false); }}
+                                    >PM</button>
+                                    <button 
+                                        className={useCustomTime ? 'active custom-btn' : 'custom-btn'} 
+                                        onClick={() => setUseCustomTime(true)}
+                                    >Custom</button>
+                                </div>
+                            </div>
+
+                            {useCustomTime ? (
+                                <div className="custom-time-input-group">
+                                    <p>Enter your preferred specific time (e.g., 10:45 AM or 4:15 PM)</p>
+                                    <input 
+                                        type="text" 
+                                        placeholder="e.g. 10:45 AM" 
+                                        value={customTime}
+                                        onChange={(e) => setCustomTime(e.target.value)}
+                                        className="custom-time-input"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="time-selector grid-view">
+                                    {(timePeriod === 'AM' ? amSlots : pmSlots).map((time, index) => (
+                                        <button 
+                                            key={index} 
+                                            className={`time-slot-pill ${selectedTime === time ? 'selected' : ''}`}
+                                            onClick={() => setSelectedTime(time)}
+                                        >
+                                            {time}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
 
                         <div className="booking-footer">
                             <button 
                                 className="booking-next-btn" 
-                                disabled={!selectedDate || !selectedTime}
+                                disabled={!selectedDate || (!useCustomTime && !selectedTime) || (useCustomTime && !customTime)}
                                 onClick={() => setStep(2)}
                             >
-                                Next: Your Details
+                                Continue to Details →
                             </button>
                         </div>
                     </div>
                 ) : (
                     <div className="booking-step">
-                        <h4>Your Details</h4>
-                        <form onSubmit={handleSubmit} className="booking-form">
-                            <div className="form-group">
-                                <label>Full Name</label>
-                                <input 
-                                    type="text" 
-                                    name="guestName" 
-                                    required 
-                                    value={formData.guestName} 
-                                    onChange={handleInputChange}
-                                    placeholder="Enter your name"
-                                />
+                        <h4 className="step-title">3. Your Contact Details</h4>
+                        <form onSubmit={handleSubmit} className="booking-form-rich">
+                            <div className="form-row">
+                                <div className="form-group-rich">
+                                    <label>Full Name</label>
+                                    <input 
+                                        type="text" 
+                                        name="guestName" 
+                                        required 
+                                        value={formData.guestName} 
+                                        onChange={handleInputChange}
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+                                <div className="form-group-rich">
+                                    <label>Email Address</label>
+                                    <input 
+                                        type="email" 
+                                        name="guestEmail" 
+                                        required 
+                                        value={formData.guestEmail} 
+                                        onChange={handleInputChange}
+                                        placeholder="john@example.com"
+                                    />
+                                </div>
                             </div>
-                            <div className="form-group">
-                                <label>Email Address</label>
-                                <input 
-                                    type="email" 
-                                    name="guestEmail" 
-                                    required 
-                                    value={formData.guestEmail} 
-                                    onChange={handleInputChange}
-                                    placeholder="email@example.com"
-                                />
-                            </div>
-                            <div className="form-group">
+                            
+                            <div className="form-group-rich">
                                 <label>WhatsApp Number</label>
                                 <input 
                                     type="tel" 
@@ -188,28 +237,37 @@ const BookingModal = ({ pro, service, onClose }) => {
                                     required 
                                     value={formData.guestWhatsapp} 
                                     onChange={handleInputChange}
-                                    placeholder="+91 12345 67890"
+                                    placeholder="+91 98765 43210"
                                 />
+                                <small>We'll use this to send the meeting link.</small>
                             </div>
-                            <div className="form-group">
-                                <label>What do you want to discuss? (Custom Request)</label>
+
+                            <div className="form-group-rich">
+                                <label>Any specific help you need? (Optional)</label>
                                 <textarea 
                                     name="customRequest" 
                                     rows="3"
                                     value={formData.customRequest} 
                                     onChange={handleInputChange}
-                                    placeholder="Briefly describe your requirements..."
+                                    placeholder="I want to discuss about my career path in AI..."
                                 ></textarea>
                             </div>
 
-                            <div className="booking-summary-mini">
-                                📅 {selectedDate} at {selectedTime}
+                            <div className="booking-summary-fancy">
+                                <div className="summary-item">
+                                    <span className="summary-icon">📅</span>
+                                    <span>{new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                                </div>
+                                <div className="summary-item">
+                                    <span className="summary-icon">⏰</span>
+                                    <span>{useCustomTime ? customTime : `${selectedTime} ${timePeriod}`}</span>
+                                </div>
                             </div>
 
                             <div className="booking-footer">
-                                <button type="button" className="booking-back-btn" onClick={() => setStep(1)}>Back</button>
-                                <button type="submit" className="booking-submit-btn" disabled={loading}>
-                                    {loading ? 'Processing...' : 'Confirm Booking'}
+                                <button type="button" className="booking-back-btn" onClick={() => setStep(1)}>← Back</button>
+                                <button type="submit" className="booking-submit-btn-rich" disabled={loading}>
+                                    {loading ? 'Processing...' : 'Confirm My Session'}
                                 </button>
                             </div>
                         </form>
