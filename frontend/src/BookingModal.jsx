@@ -97,7 +97,7 @@ const BookingModal = ({ pro, service, onClose }) => {
 
     return (
         <div className="booking-modal-overlay" onClick={onClose}>
-            <div className="booking-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="booking-modal-content large" onClick={e => e.stopPropagation()}>
                 <button className="booking-modal-close" onClick={onClose}>✕</button>
                 
                 <div className="booking-modal-header">
@@ -124,37 +124,39 @@ const BookingModal = ({ pro, service, onClose }) => {
                 {step === 1 ? (
                     <div className="booking-step">
                         <section className="booking-form-simple">
-                            <div className="form-group-simple">
-                                <label>1. Date of Meeting</label>
-                                <input 
-                                    type="date" 
-                                    value={selectedDate} 
-                                    min={today}
-                                    max={fourteenDaysMax}
-                                    onChange={(e) => setSelectedDate(e.target.value)}
-                                    className="simple-input"
-                                />
-                            </div>
+                            <div className="form-row-side">
+                                <div className="form-group-simple">
+                                    <label>1. Date of Meeting</label>
+                                    <input 
+                                        type="date" 
+                                        value={selectedDate} 
+                                        min={today}
+                                        max={fourteenDaysMax}
+                                        onChange={(e) => setSelectedDate(e.target.value)}
+                                        className="simple-input"
+                                    />
+                                </div>
 
-                            <div className="form-group-simple">
-                                <label>2. Preferred Time</label>
-                                <select 
-                                    className="simple-select"
-                                    value={useCustomTime ? 'CUSTOM' : selectedTime}
-                                    onChange={(e) => {
-                                        if (e.target.value === 'CUSTOM') {
-                                            setUseCustomTime(true);
-                                        } else {
-                                            setUseCustomTime(false);
-                                            setSelectedTime(e.target.value);
-                                        }
-                                    }}
-                                >
-                                    {timeSlots.map(time => (
-                                        <option key={time} value={time}>{time}</option>
-                                    ))}
-                                    <option value="CUSTOM">-- Specify Other Time --</option>
-                                </select>
+                                <div className="form-group-simple">
+                                    <label>2. Preferred Time</label>
+                                    <select 
+                                        className="simple-select"
+                                        value={useCustomTime ? 'CUSTOM' : selectedTime}
+                                        onChange={(e) => {
+                                            if (e.target.value === 'CUSTOM') {
+                                                setUseCustomTime(true);
+                                            } else {
+                                                setUseCustomTime(false);
+                                                setSelectedTime(e.target.value);
+                                            }
+                                        }}
+                                    >
+                                        {timeSlots.map(time => (
+                                            <option key={time} value={time}>{time}</option>
+                                        ))}
+                                        <option value="CUSTOM">-- Specify Other Time --</option>
+                                    </select>
+                                </div>
                             </div>
 
                             {useCustomTime && (
