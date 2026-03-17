@@ -16,6 +16,25 @@ const BookingModal = ({ pro, service, onClose }) => {
         guestWhatsapp: '',
         customRequest: ''
     });
+    const getSlots = (period) => {
+        const slots = [];
+        let start = period === 'AM' ? 9 * 60 : 12 * 60;
+        const end = period === 'AM' ? 12 * 60 : 21 * 60;
+        while (start < end) {
+            const hours = Math.floor(start / 60);
+            const mins = start % 60;
+            const displayHours = hours > 12 ? hours - 12 : (hours === 0 ? 12 : hours);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const timeStr = `${displayHours}:${mins === 0 ? '00' : '30'} ${ampm}`;
+            slots.push(timeStr);
+            start += 30;
+        }
+        return slots;
+    };
+
+    const amSlots = getSlots('AM');
+    const pmSlots = getSlots('PM');
+
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -24,16 +43,8 @@ const BookingModal = ({ pro, service, onClose }) => {
     maxDate.setDate(maxDate.getDate() + 14);
     const fourteenDaysMax = maxDate.toISOString().split('T')[0];
 
-    const timeSlots = [
-        "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
-        "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM",
-        "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM",
-        "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM", "08:30 PM"
-    ];
-
     useEffect(() => {
         if (!selectedDate) setSelectedDate(today);
-        if (!selectedTime) setSelectedTime(timeSlots[0]);
     }, []);
 
     const handleInputChange = (e) => {
@@ -138,39 +149,53 @@ const BookingModal = ({ pro, service, onClose }) => {
                                 </div>
 
                                 <div className="form-group-simple">
-                                    <label>2. Preferred Time</label>
-                                    <select 
-                                        className="simple-select"
-                                        value={useCustomTime ? 'CUSTOM' : selectedTime}
-                                        onChange={(e) => {
-                                            if (e.target.value === 'CUSTOM') {
-                                                setUseCustomTime(true);
-                                            } else {
-                                                setUseCustomTime(false);
-                                                setSelectedTime(e.target.value);
-                                            }
-                                        }}
-                                    >
-                                        {timeSlots.map(time => (
-                                            <option key={time} value={time}>{time}</option>
-                                        ))}
-                                        <option value="CUSTOM">-- Specify Other Time --</option>
-                                    </select>
+                                    <label>2. Time Period</label>
+                                    <div className="period-toggle-modern">
+                                        <button 
+                                            className={timePeriod === 'AM' && !useCustomTime ? 'active' : ''} 
+                                            onClick={() => { setTimePeriod('AM'); setUseCustomTime(false); }}
+                                        >AM (Morning)</button>
+                                        <button 
+                                            className={timePeriod === 'PM' && !useCustomTime ? 'active' : ''} 
+                                            onClick={() => { setTimePeriod('PM'); setUseCustomTime(false); }}
+                                        >PM (Afternoon)</button>
+                                        <button 
+                                            className={useCustomTime ? 'active' : ''} 
+                                            onClick={() => setUseCustomTime(true)}
+                                        >Custom</button>
+                                    </div>
                                 </div>
                             </div>
 
-                            {useCustomTime && (
-                                <div className="form-group-simple">
-                                    <label>Enter Specific Time</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="e.g. 10:45 AM" 
-                                        value={customTime}
-                                        onChange={(e) => setCustomTime(e.target.value)}
-                                        className="simple-input"
-                                    />
-                                </div>
-                            )}
+                            <div className="time-slots-section-modern">
+                                {!useCustomTime ? (
+                                    <>
+                                        <label className="section-small-label">Select Available Slot:</label>
+                                        <div className="time-slots-grid-modern">
+                                            {(timePeriod === 'AM' ? amSlots : pmSlots).map(time => (
+                                                <button 
+                                                    key={time} 
+                                                    className={`time-slot-pill-modern ${selectedTime === time ? 'selected' : ''}`}
+                                                    onClick={() => setSelectedTime(time)}
+                                                >
+                                                    {time}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="form-group-simple">
+                                        <label>Specify Your Custom Time</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="e.g. 10:45 AM" 
+                                            value={customTime}
+                                            onChange={(e) => setCustomTime(e.target.value)}
+                                            className="simple-input"
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </section>
 
                         <div className="booking-footer">

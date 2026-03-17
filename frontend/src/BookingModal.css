@@ -183,12 +183,87 @@
     font-weight: 500;
     transition: 0.2s;
     font-family: inherit;
+    width: 100%;
 }
 
 .simple-input:focus, .simple-select:focus {
     outline: none;
     border-color: #7c3aed;
     box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.period-toggle-modern {
+    display: flex;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.period-toggle-modern button {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.period-toggle-modern button.active {
+    background: white;
+    color: #7c3aed;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.time-slots-section-modern {
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.section-small-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+}
+
+.time-slots-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.time-slot-pill-modern {
+    background: white;
+    border: 2px solid #f1f5f9;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.time-slot-pill-modern:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.time-slot-pill-modern.selected {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: white;
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
 }
 
 .booking-footer {
