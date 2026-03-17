@@ -9,10 +9,68 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [bookings, setBookings] = useState([]);
+    const [showBookings, setShowBookings] = useState(false);
+    const [bookingTab, setBookingTab] = useState('Requests'); // 'Requests' or 'History'
+    const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
 
     useEffect(() => {
         fetchProfile();
     }, []);
+
+    useEffect(() => {
+        if (profile?.id) {
+            fetchBookings();
+        }
+    }, [profile?.id]);
+
+    const fetchBookings = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/bookings/mentor/${profile.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setBookings(data);
+            }
+        } catch (e) {
+            console.error("Error fetching bookings:", e);
+        }
+    };
+
+    const updateBookingStatus = async (id, status) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/status?status=${status}`, {
+                method: 'PUT'
+            });
+            if (res.ok) {
+                fetchBookings(); // Refresh list
+            }
+        } catch (e) {
+            console.error("Error updating status:", e);
+        }
+    };
+
+    const deleteBooking = async (id) => {
+        if (!window.confirm("Are you sure you want to reject and delete this request?")) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                fetchBookings(); // Refresh list
+            }
+        } catch (e) {
+            console.error("Error deleting booking:", e);
+        }
+    };
+
+    const sortBookings = (list) => {
+        return [...list].sort((a, b) => {
+            if (sortBy === 'A-Z') return a.guestName.localeCompare(b.guestName);
+            if (sortBy === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+            if (sortBy === 'Oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+            return 0;
+        });
+    };
 
     const fetchProfile = async () => {
         try {
@@ -177,9 +235,22 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <button
                         className={isEditingProfile ? 'mentor-logout-btn' : 'mentor-save-btn'}
                         style={isEditingProfile ? {} : {background: '#7c3aed'}}
-                        onClick={() => setIsEditingProfile(!isEditingProfile)}
+                        onClick={() => {
+                            setIsEditingProfile(!isEditingProfile);
+                            if (!isEditingProfile) setShowBookings(false);
+                        }}
                     >
                         {isEditingProfile ? '✅ Done Editing' : '✏️ Edit Profile'}
+                    </button>
+                    <button 
+                        className="mentor-save-btn" 
+                        style={{background: showBookings ? '#0f172a' : '#1e293b'}}
+                        onClick={() => {
+                            setShowBookings(!showBookings);
+                            if (!showBookings) setIsEditingProfile(false);
+                        }}
+                    >
+                        📩 {showBookings ? 'Hide Requests' : `View Requests (${bookings.filter(b => b.status === 'PENDING').length})`}
                     </button>
                 </div>
             </div>
@@ -224,6 +295,101 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <button className="mentor-logout-btn" onClick={closeEdit}>Cancel</button>
                             <button className="mentor-save-btn" onClick={confirmEdit}>Done</button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {showBookings && (
+                <div className="bookings-section">
+                    <div className="bookings-header">
+                        <div className="bookings-tabs">
+                            <button className={`b-tab ${bookingTab === 'Requests' ? 'active' : ''}`} onClick={() => setBookingTab('Requests')}>
+                                Active Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                            </button>
+                            <button className={`b-tab ${bookingTab === 'History' ? 'active' : ''}`} onClick={() => setBookingTab('History')}>
+                                Booking History ({bookings.filter(b => b.status !== 'PENDING').length})
+                            </button>
+                        </div>
+                        <div className="bookings-sort">
+                            <span>Sort by:</span>
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                                <option value="Newest">Newest First</option>
+                                <option value="Oldest">Oldest First</option>
+                                <option value="A-Z">Guest Name (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="bookings-list">
+                        {sortBookings(bookings.filter(b => bookingTab === 'Requests' ? b.status === 'PENDING' : b.status !== 'PENDING'))
+                            .map(booking => (
+                                <div key={booking.id} className={`booking-card status-${booking.status.toLowerCase()}`}>
+                                    <div className="booking-card-top">
+                                        <div className="guest-info">
+                                            <h4>{booking.guestName}</h4>
+                                            <div className="guest-meta">
+                                                <span>📧 {booking.guestEmail}</span>
+                                                <span>📱 {booking.guestWhatsapp}</span>
+                                            </div>
+                                        </div>
+                                        <div className="booking-status-badge">
+                                            {booking.status}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="booking-details-grid">
+                                        <div className="b-detail">
+                                            <label>Service</label>
+                                            <p>{booking.serviceType}</p>
+                                        </div>
+                                        <div className="b-detail">
+                                            <label>Preferred Date</label>
+                                            <p>📅 {booking.bookingDate}</p>
+                                        </div>
+                                        <div className="b-detail">
+                                            <label>Preferred Time</label>
+                                            <p>⏰ {booking.bookingTime}</p>
+                                        </div>
+                                        <div className="b-detail">
+                                            <label>Requested At</label>
+                                            <p>⏲️ {new Date(booking.createdAt).toLocaleString()}</p>
+                                        </div>
+                                    </div>
+
+                                    {booking.customRequest && (
+                                        <div className="booking-request-msg">
+                                            <label>Additional Message</label>
+                                            <p>{booking.customRequest}</p>
+                                        </div>
+                                    )}
+
+                                    <div className="booking-card-actions">
+                                        {booking.status === 'PENDING' ? (
+                                            <>
+                                                <button className="btn-approve" onClick={() => updateBookingStatus(booking.id, 'APPROVED')}>
+                                                    ✅ Approve
+                                                </button>
+                                                <button className="btn-schedule" onClick={() => updateBookingStatus(booking.id, 'SCHEDULED')}>
+                                                    📅 Mark Scheduled
+                                                </button>
+                                                <button className="btn-reject" onClick={() => updateBookingStatus(booking.id, 'REJECTED')}>
+                                                    ❌ Reject
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button className="btn-delete" onClick={() => deleteBooking(booking.id)}>
+                                                🗑️ Remove from History
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        
+                        {bookings.filter(b => bookingTab === 'Requests' ? b.status === 'PENDING' : b.status !== 'PENDING').length === 0 && (
+                            <div className="empty-bookings">
+                                <p>No {bookingTab.toLowerCase()} found.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

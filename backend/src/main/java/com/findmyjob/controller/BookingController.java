@@ -35,4 +35,23 @@ public class BookingController {
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Booking> updateBookingStatus(@PathVariable Long id, @RequestParam String status) {
+        return bookingRepository.findById(id)
+                .map(booking -> {
+                    booking.setStatus(status);
+                    return ResponseEntity.ok(bookingRepository.save(booking));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+        if (bookingRepository.existsById(id)) {
+            bookingRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
