@@ -19,20 +19,66 @@ const BookingModal = ({ pro, service, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    // Generate next 14 days
-    const dates = [];
-    for (let i = 0; i < 14; i++) {
-        const d = new Date();
-        d.setDate(d.getDate() + i);
-        dates.push({
-            full: d.toISOString().split('T')[0],
-            day: d.toLocaleDateString('en-US', { weekday: 'short' }),
-            date: d.getDate(),
-            month: d.toLocaleDateString('en-US', { month: 'short' })
-        });
-    }
+    // Calendar logic
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+    
+    const getDaysInMonth = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const days = new Date(year, month + 1, 0).getDate();
+        return { firstDay, days };
+    };
 
-    // Generate time slots
+    const calendarData = getDaysInMonth(currentMonth);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const isDateDisabled = (year, month, day) => {
+        const date = new Date(year, month, day);
+        const fourteenDaysFromNow = new Date();
+        fourteenDaysFromNow.setDate(today.getDate() + 14);
+        return date < today || date > fourteenDaysFromNow;
+    };
+
+    const handleDateSelect = (day) => {
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+        setSelectedDate(date.toISOString().split('T')[0]);
+    };
+
+    const changeMonth = (offset) => {
+        const newDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + offset, 1);
+        setCurrentMonth(newDate);
+    };
+
+    const renderCalendar = () => {
+        const { firstDay, days } = calendarData;
+        const slots = [];
+        // Fill empty slots for start of month
+        for (let i = 0; i < firstDay; i++) {
+            slots.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
+        }
+        // Fill actual days
+        for (let d = 1; d <= days; d++) {
+            const dateStr = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), d).toISOString().split('T')[0];
+            const disabled = isDateDisabled(currentMonth.getFullYear(), currentMonth.getMonth(), d);
+            slots.push(
+                <div 
+                    key={d} 
+                    className={`calendar-day ${selectedDate === dateStr ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
+                    onClick={() => !disabled && handleDateSelect(d)}
+                >
+                    {d}
+                </div>
+            );
+        }
+        return slots;
+    };
+
+    useEffect(() => {
+        if (!selectedDate) setSelectedDate(today.toISOString().split('T')[0]);
+    }, []);
+
     const getSlots = (period) => {
         const slots = [];
         let start = period === 'AM' ? 9 * 60 : 12 * 60;
@@ -50,10 +96,6 @@ const BookingModal = ({ pro, service, onClose }) => {
 
     const amSlots = getSlots('AM');
     const pmSlots = getSlots('PM');
-
-    useEffect(() => {
-        if (!selectedDate) setSelectedDate(dates[0].full);
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -139,19 +181,23 @@ const BookingModal = ({ pro, service, onClose }) => {
                 {step === 1 ? (
                     <div className="booking-step">
                         <section className="booking-section-wrapper">
-                            <h4>1. Select Date</h4>
-                            <div className="date-selector">
-                                {dates.map((d, index) => (
-                                    <div 
-                                        key={index} 
-                                        className={`date-card ${selectedDate === d.full ? 'selected' : ''}`}
-                                        onClick={() => setSelectedDate(d.full)}
-                                    >
-                                        <span className="date-month">{d.month}</span>
-                                        <span className="date-num">{d.date}</span>
-                                        <span className="date-day">{d.day}</span>
-                                    </div>
-                                ))}
+                            <div className="calendar-header">
+                                <h4>1. Select Date</h4>
+                                <div className="calendar-nav">
+                                    <button onClick={() => changeMonth(-1)}>❮</button>
+                                    <span>{currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                                    <button onClick={() => changeMonth(1)}>❯</button>
+                                </div>
+                            </div>
+                            <div className="calendar-grid">
+                                <div className="calendar-weekday">Su</div>
+                                <div className="calendar-weekday">Mo</div>
+                                <div className="calendar-weekday">Tu</div>
+                                <div className="calendar-weekday">We</div>
+                                <div className="calendar-weekday">Th</div>
+                                <div className="calendar-weekday">Fr</div>
+                                <div className="calendar-weekday">Sa</div>
+                                {renderCalendar()}
                             </div>
                         </section>
 
