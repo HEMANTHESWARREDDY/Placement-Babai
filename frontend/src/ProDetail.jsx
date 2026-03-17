@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProDetail.css';
+import BookingModal from './BookingModal';
+
 
 function ProDetail({ pro, onClose }) {
     const [activeTab, setActiveTab] = useState('All');
@@ -12,6 +14,8 @@ function ProDetail({ pro, onClose }) {
         education: false,
         work: false
     });
+
+    const [bookingData, setBookingData] = useState(null); // {pro, service}
 
     const toggleSection = (section) => {
         setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -228,7 +232,12 @@ function ProDetail({ pro, onClose }) {
                                                     <div className="preview-service-title">1:1 Call Mentorship</div>
                                                     <div className="preview-service-footer">
                                                         <div className="preview-service-price">₹499</div>
-                                                        <button className="preview-book-btn">Book Now</button>
+                                                        <button 
+                                                            className="preview-book-btn"
+                                                            onClick={() => setBookingData({ pro, service: { title: '1:1 Call Mentorship' } })}
+                                                        >
+                                                            Book Now
+                                                        </button>
                                                     </div>
                                                 </div>
                                             )}
@@ -239,7 +248,13 @@ function ProDetail({ pro, onClose }) {
                                                     <div className="preview-service-title">Resume Review</div>
                                                     <div className="preview-service-footer">
                                                         <div className="preview-service-price">₹199</div>
-                                                        <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                                        <button 
+                                                            className="preview-book-btn" 
+                                                            style={{background: '#0f172a'}}
+                                                            onClick={() => setBookingData({ pro, service: { title: 'Resume Review' } })}
+                                                        >
+                                                            Book Now
+                                                        </button>
                                                     </div>
                                                 </div>
                                             )}
@@ -274,6 +289,14 @@ function ProDetail({ pro, onClose }) {
                         )}
                     </div>
                 </div>
+            )}
+            
+            {bookingData && (
+                <BookingModal 
+                    pro={bookingData.pro} 
+                    service={bookingData.service} 
+                    onClose={() => setBookingData(null)} 
+                />
             )}
         </div>
     );

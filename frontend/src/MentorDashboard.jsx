@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MentorDashboard.css';
 import './ProDetail.css';
+import BookingModal from './BookingModal';
 import { API_BASE_URL } from './config';
 
 function MentorDashboard({ mentorAuth, onLogout }) {
@@ -112,6 +113,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         education: false,
         work: false
     });
+
+    const [bookingData, setBookingData] = useState(null); // {pro, service}
 
     const toggleAccordion = (section) => {
         setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -445,7 +448,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             <div className="preview-service-title">1:1 Call Mentorship</div>
                                             <div className="preview-service-footer">
                                                 <div className="preview-service-price">₹499</div>
-                                                <button className="preview-book-btn">Book Now</button>
+                                                <button 
+                                                    className="preview-book-btn"
+                                                    onClick={() => setBookingData({ pro: profile, service: { title: '1:1 Call Mentorship' } })}
+                                                >
+                                                    Book Now
+                                                </button>
                                             </div>
                                         </div>
                                     )}
@@ -456,7 +464,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             <div className="preview-service-title">Resume Review</div>
                                             <div className="preview-service-footer">
                                                 <div className="preview-service-price">₹199</div>
-                                                <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                                <button 
+                                                    className="preview-book-btn" 
+                                                    style={{background: '#0f172a'}}
+                                                    onClick={() => setBookingData({ pro: profile, service: { title: 'Resume Review' } })}
+                                                >
+                                                    Book Now
+                                                </button>
                                             </div>
                                         </div>
                                     )}
@@ -625,7 +639,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     <div className="preview-service-title">1:1 Call Mentorship</div>
                                                     <div className="preview-service-footer">
                                                         <div className="preview-service-price">₹499</div>
-                                                        <button className="preview-book-btn">Book Now</button>
+                                                        <button 
+                                                            className="preview-book-btn"
+                                                            onClick={() => setBookingData({ pro: profile, service: { title: '1:1 Call Mentorship' } })}
+                                                        >
+                                                            Book Now
+                                                        </button>
                                                     </div>
                                                 </div>
                                             )}
@@ -636,7 +655,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     <div className="preview-service-title">Resume Review</div>
                                                     <div className="preview-service-footer">
                                                         <div className="preview-service-price">₹199</div>
-                                                        <button className="preview-book-btn" style={{background: '#0f172a'}}>Book Now</button>
+                                                        <button 
+                                                            className="preview-book-btn" 
+                                                            style={{background: '#0f172a'}}
+                                                            onClick={() => setBookingData({ pro: profile, service: { title: 'Resume Review' } })}
+                                                        >
+                                                            Book Now
+                                                        </button>
                                                     </div>
                                                 </div>
                                             )}
@@ -648,6 +673,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </div>{/* end preview-modal-scroll */}
                     </div>
                 </div>
+            )}
+            
+            {bookingData && (
+                <BookingModal 
+                    pro={bookingData.pro} 
+                    service={bookingData.service} 
+                    onClose={() => setBookingData(null)} 
+                />
             )}
         </div>
     );
