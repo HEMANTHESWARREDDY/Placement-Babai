@@ -110,11 +110,18 @@ const BookingModal = ({ pro, service, onClose }) => {
         const payload = {
             mentorId: pro.id,
             mentorName: pro.name,
+            mentorEmail: pro.email,
             serviceType: service.title,
-            ...formData,
+            guestName: formData.guestName,
+            guestEmail: formData.guestEmail,
+            whatsappNumber: formData.guestWhatsapp,
+            notes: formData.customRequest,
             bookingDate: selectedDate,
-            bookingTime: finalTime
+            bookingTime: finalTime,
+            status: 'PENDING'
         };
+
+        console.log('Sending booking payload:', payload);
 
         try {
             const res = await fetch(`${API_BASE_URL}/api/bookings/create`, {
@@ -156,7 +163,12 @@ const BookingModal = ({ pro, service, onClose }) => {
     }
 
     return (
-        <div className="booking-modal-overlay" onClick={onClose}>
+        <div 
+            className="booking-modal-overlay" 
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
             <div className="booking-modal-content large" onClick={e => e.stopPropagation()}>
                 <button className="booking-modal-close" onClick={onClose}>✕</button>
                 
@@ -299,6 +311,7 @@ const BookingModal = ({ pro, service, onClose }) => {
                                     onChange={handleInputChange}
                                     placeholder="+91 ...."
                                     className="simple-input"
+                                    style={{ pointerEvents: 'auto' }}
                                 />
                             </div>
 
