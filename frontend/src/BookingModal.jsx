@@ -80,14 +80,15 @@ const BookingModal = ({ pro, service, onClose }) => {
         return (
             <div className="booking-modal-overlay">
                 <div className="booking-modal-content success-view">
-                    <h2 style={{ color: '#28a745' }}>Booking Successful</h2>
+                    <div className="success-icon-wrap">✓</div>
+                    <h2 style={{ color: '#0f172a', fontWeight: '800' }}>Booking Received</h2>
+                    <p style={{ color: '#64748b', marginBottom: '2rem' }}>We've received your request for <strong>{service.title}</strong> with <strong>{pro.name}</strong>.</p>
+                    <div className="booking-summary-fancy">
+                        <div className="summary-item">Scheduled Date: {selectedDate}</div>
+                        <div className="summary-item">Scheduled Time: {useCustomTime ? customTime : selectedTime}</div>
+                    </div>
                     <hr />
-                    <p>Request for: <strong>{service.title}</strong></p>
-                    <p>Mentor: <strong>{pro.name}</strong></p>
-                    <p>Scheduled Date: <strong>{selectedDate}</strong></p>
-                    <p>Scheduled Time: <strong>{useCustomTime ? customTime : selectedTime}</strong></p>
-                    <hr />
-                    <p>We will contact you via WhatsApp ({formData.guestWhatsapp}) or Email shortly with the meeting link.</p>
+                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>We will contact you via WhatsApp ({formData.guestWhatsapp}) or Email shortly with the meeting details.</p>
                     <button onClick={onClose} className="booking-next-btn-simple" style={{ marginTop: '20px' }}>CLOSE</button>
                 </div>
             </div>
@@ -96,7 +97,7 @@ const BookingModal = ({ pro, service, onClose }) => {
 
     return (
         <div className="booking-modal-overlay" onClick={onClose}>
-            <div className="booking-modal-content large" onClick={e => e.stopPropagation()}>
+            <div className="booking-modal-content" onClick={e => e.stopPropagation()}>
                 <button className="booking-modal-close" onClick={onClose}>✕</button>
                 
                 <div className="booking-modal-header">
@@ -176,7 +177,7 @@ const BookingModal = ({ pro, service, onClose }) => {
                                 disabled={!selectedDate || (!useCustomTime && !selectedTime) || (useCustomTime && !customTime)}
                                 onClick={() => setStep(2)}
                             >
-                                CONTINUE
+                                Continue to Details →
                             </button>
                         </div>
                     </div>
@@ -238,9 +239,9 @@ const BookingModal = ({ pro, service, onClose }) => {
                             </div>
 
                             <div className="booking-footer">
-                                <button type="button" className="booking-back-btn" onClick={() => setStep(1)}>BACK</button>
+                                <button type="button" className="booking-back-btn" onClick={() => setStep(1)}>Back</button>
                                 <button type="submit" className="booking-next-btn-simple" disabled={loading}>
-                                    {loading ? 'PLEASE WAIT...' : 'CONFIRM BOOKING'}
+                                    {loading ? 'Please wait...' : 'Confirm My Session'}
                                 </button>
                             </div>
                         </form>

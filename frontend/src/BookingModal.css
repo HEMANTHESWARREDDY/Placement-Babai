@@ -1,89 +1,141 @@
 .booking-modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 10000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .booking-modal-content {
     background: white;
-    width: 95%;
+    width: 100%;
     max-width: 500px;
     padding: 2.5rem;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     position: relative;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .booking-modal-close {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
+    top: 20px;
+    right: 20px;
+    background: #f1f5f9;
     border: none;
-    font-size: 1.5rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     cursor: pointer;
-    color: #666;
+    font-size: 1rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.booking-modal-close:hover {
+    background: #e2e8f0;
+    color: #0f172a;
 }
 
 .booking-modal-header {
     margin-bottom: 2rem;
-    border-bottom: 2px solid #0056b3;
-    padding-bottom: 1rem;
 }
 
 .booking-modal-header h3 {
-    font-size: 1.5rem;
-    color: #333;
+    font-size: 1.75rem;
+    color: #0f172a;
     margin: 0;
+    font-weight: 800;
 }
 
 .mentor-mini-profile {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 12px;
+    width: fit-content;
+}
+
+.mentor-mini-profile p {
+    margin: 0;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
 .mentor-header-avatar {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .mentor-header-initials {
-    width: 30px;
-    height: 30px;
-    background: #0056b3;
+    width: 28px;
+    height: 28px;
+    background: #7c3aed;
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
 .booking-steps-indicator {
     display: flex;
-    gap: 10px;
-    margin-bottom: 2rem;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2.5rem;
 }
 
 .step-dot {
-    padding: 4px 12px;
-    background: #eee;
-    font-weight: bold;
-    border: 1px solid #ddd;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: 0.3s;
 }
 
 .step-dot.active {
-    background: #0056b3;
+    background: #7c3aed;
     color: white;
-    border-color: #004494;
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: #f1f5f9;
+    border-radius: 1px;
 }
 
 .booking-form-simple {
@@ -99,88 +151,113 @@
 }
 
 .form-group-simple label {
-    font-weight: bold;
-    color: #444;
+    font-weight: 700;
+    color: #475569;
+    font-size: 0.9rem;
 }
 
 .simple-input, .simple-select {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px 16px;
+    border: 2px solid #f1f5f9;
+    border-radius: 12px;
     background: white;
     font-size: 1rem;
+    font-weight: 500;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.simple-input:focus, .simple-select:focus {
+    outline: none;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
 }
 
 .booking-footer {
     margin-top: 2rem;
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
-.booking-next-btn-simple, .booking-submit-btn-rich {
-    background: #0056b3;
+.booking-next-btn-simple {
+    background: #7c3aed;
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    font-weight: bold;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
     flex: 1;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.booking-next-btn-simple:hover:not(:disabled) {
+    background: #6d28d9;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.3);
 }
 
 .booking-next-btn-simple:disabled {
-    background: #999;
+    background: #cbd5e1;
+    cursor: not-allowed;
 }
 
 .booking-back-btn {
-    background: #6c757d;
-    color: white;
+    background: #f1f5f9;
+    color: #64748b;
     border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 700;
     cursor: pointer;
+    transition: 0.2s;
 }
 
-/* Step 2 Details */
-.booking-form-rich {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.form-group-rich {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-group-rich label {
-    font-weight: bold;
-}
-
-.form-group-rich input, .form-group-rich textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.booking-back-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
 }
 
 .booking-summary-fancy {
-    background: #f8f9fa;
-    padding: 15px;
-    border: 1px solid #dee2e6;
-    margin-top: 15px;
+    background: #f8fafc;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 2px solid #f1f5f9;
+    margin-top: 0.5rem;
 }
 
 .summary-item {
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
 }
 
 .success-view {
     text-align: center;
+    padding: 3rem 2rem;
 }
 
-.success-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+.success-view hr {
+    border: none;
+    border-top: 2px solid #f1f5f9;
+    margin: 1.5rem 0;
+}
+
+.success-icon-wrap {
+    width: 64px;
+    height: 64px;
+    background: #dcfce7;
+    color: #16a34a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem;
 }
