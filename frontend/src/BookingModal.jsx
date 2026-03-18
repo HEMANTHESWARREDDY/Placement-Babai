@@ -108,14 +108,10 @@ const BookingModal = ({ pro, service, onClose }) => {
         const finalTime = useCustomTime ? (customTime || 'Custom Time') : selectedTime;
         
         const payload = {
-            mentorId: pro.id,
+            mentorId: Number(pro.id),
             mentorName: pro.name,
-            mentorEmail: pro.email,
             serviceType: service.title,
-            guestName: formData.guestName,
-            guestEmail: formData.guestEmail,
-            whatsappNumber: formData.guestWhatsapp,
-            notes: formData.customRequest,
+            ...formData, // guestName, guestEmail, guestWhatsapp, customRequest
             bookingDate: selectedDate,
             bookingTime: finalTime,
             status: 'PENDING'
@@ -133,7 +129,13 @@ const BookingModal = ({ pro, service, onClose }) => {
             if (res.ok) {
                 setSuccess(true);
             } else {
-                alert('Something went wrong. Please try again.');
+                const errorText = await res.text();
+                try {
+                    const errorObj = JSON.parse(errorText);
+                    alert(`Submission failed: ${errorObj.message || errorObj.error || 'Server error'}`);
+                } catch {
+                    alert('Submission failed. Please check your network or try again.');
+                }
             }
         } catch (error) {
             console.error('Booking error:', error);
