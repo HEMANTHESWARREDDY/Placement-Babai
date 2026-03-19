@@ -297,7 +297,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <span className="header-tagline">Connect. Learn. Grow.</span>
                     </div>
 
-                    <div className="header-badge" style={{cursor: 'default', left: '42%'}}>
+                    <div className="header-badge" style={{cursor: 'default', left: '50%'}}>
                         🔥 {todayPending} New Requests Today
                     </div>
 
@@ -314,45 +314,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </li>
                             <li>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}>
-                                    👁️ View Preview
+                                    View Profile Preview
                                 </a>
                             </li>
-                            {isEditingProfile ? (
-                                <>
-                                    <li style={{display: 'flex', alignItems: 'center'}}>
-                                        <span style={{
-                                            fontSize: '0.75rem', 
-                                            fontWeight: '800', 
-                                            textTransform: 'uppercase', 
-                                            color: '#ef4444', 
-                                            background: '#fee2e2', 
-                                            padding: '2px 8px', 
-                                            borderRadius: '4px',
-                                            marginRight: '10px'
-                                        }}>
-                                            Edit Mode
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <a href="#" className="save-nav-btn" style={{color: '#16a34a', fontWeight: '700'}} onClick={(e) => { 
-                                            e.preventDefault(); 
-                                            handleSaveProfile(); 
-                                        }}>
-                                            {saving ? '⏳ Saving...' : '💾 Save Profile'}
-                                        </a>
-                                    </li>
-                                </>
-                            ) : (
-                                <li>
-                                    <a href="#" onClick={(e) => { 
-                                        e.preventDefault(); 
-                                        setIsEditingProfile(true); 
-                                        setShowBookings(false); 
-                                    }}>
-                                        Edit Profile
-                                    </a>
-                                </li>
-                            )}
+                            <li>
+                                <a href="#" className={isEditingProfile ? 'active-nav' : ''} onClick={(e) => { 
+                                    e.preventDefault(); 
+                                    setIsEditingProfile(prev => !prev); 
+                                    setShowBookings(false); 
+                                }}>
+                                    Edit Profile
+                                </a>
+                            </li>
                             <li>
                                 <button className="admin-nav-btn" onClick={onLogout} style={{marginLeft: '1rem', background: '#ef4444'}}>
                                     Logout
@@ -364,7 +337,46 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             </header>
 
             <div style={{padding: '2.5rem 2rem'}}>
-                {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
+                {isEditingProfile && (
+                    <div style={{
+                        maxWidth: '1200px',
+                        margin: '0 auto 1.5rem auto',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <div style={{
+                            fontSize: '0.75rem', 
+                            fontWeight: '800', 
+                            textTransform: 'uppercase', 
+                            color: '#ef4444', 
+                            background: '#fee2e2', 
+                            padding: '4px 12px', 
+                            borderRadius: '6px'
+                        }}>
+                            ✏️ Edit Mode
+                        </div>
+                        <button 
+                            className="mentor-save-btn" 
+                            style={{
+                                background: '#16a34a',
+                                color: 'white',
+                                padding: '8px 20px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px'
+                            }}
+                            onClick={handleSaveProfile}
+                        >
+                            {saving ? '⏳ Saving...' : '💾 Save Changes'}
+                        </button>
+                    </div>
+                )}
+                {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', maxWidth: '1200px', margin: '0 auto 1.5rem auto'}}>{message}</div>}
 
             {/* Hidden File Inputs for quick image setting */}
             <input type="file" id="bannerUpload" style={{display: 'none'}} accept="image/*" onChange={(e) => handleImageUpload(e, 'headerBg')} />
