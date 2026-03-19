@@ -522,7 +522,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             )}
 
             {/* Main Editing Dashboard Mode */}
-            <div className="mentor-layout">
+            {!showBookings && (
+                <div className="mentor-layout">
                 <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
                     <div className="preview-header" style={{ 
                         background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
@@ -773,6 +774,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 </div>
             </div>
+            )}
 
             {/* Profile Preview Modal */}
             {showPreviewModal && (
