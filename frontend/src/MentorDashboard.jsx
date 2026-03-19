@@ -353,19 +353,48 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         alignItems: 'center',
                         padding: '0 10px'
                     }}>
-                        <div style={{
-                            fontSize: '0.75rem', 
-                            fontWeight: '800', 
-                            textTransform: 'uppercase', 
-                            color: '#ef4444', 
-                            background: '#fee2e2', 
-                            padding: '6px 14px', 
-                            borderRadius: '6px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px'
-                        }}>
-                            ✏️ Edit Mode
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                            <button 
+                                onClick={(e) => { 
+                                    e.preventDefault(); 
+                                    if (hasChanges) {
+                                        if (window.confirm("Changes aren't saved! Would you like to save them now?")) {
+                                            handleSaveProfile();
+                                            return;
+                                        } else if (!window.confirm("Are you sure you want to discard changes?")) {
+                                            return;
+                                        }
+                                        setProfile(JSON.parse(JSON.stringify(initialProfile)));
+                                    }
+                                    setIsEditingProfile(false);
+                                }}
+                                style={{
+                                    background: 'white',
+                                    color: '#64748b',
+                                    padding: '6px 14px',
+                                    borderRadius: '6px',
+                                    border: '1px solid #e2e8f0',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    fontSize: '0.85rem'
+                                }}
+                            >
+                                ← Back
+                            </button>
+                            <div style={{
+                                fontSize: '0.75rem', 
+                                fontWeight: '800', 
+                                textTransform: 'uppercase', 
+                                color: '#ef4444', 
+                                background: '#fee2e2', 
+                                padding: '6px 12px', 
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}>
+                                ✏️ Edit Mode
+                            </div>
                         </div>
                         
                         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
