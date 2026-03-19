@@ -114,6 +114,32 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         });
     };
 
+    const handleSaveProfile = async () => {
+        setSaving(true);
+        setMessage('');
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/mentors/me`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${mentorAuth.token}`
+                },
+                body: JSON.stringify(profile)
+            });
+            if (res.ok) {
+                setMessage('Profile updated successfully! ✨');
+                setTimeout(() => setMessage(''), 3000);
+                setIsEditingProfile(false);
+            } else {
+                setMessage('Error updating profile. Please try again.');
+            }
+        } catch (e) {
+            setMessage('Network error updating profile.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const fetchProfile = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/mentors/me`, {
@@ -288,18 +314,45 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </li>
                             <li>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}>
-                                    View Profile Preview
+                                    👁️ View Preview
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" className={isEditingProfile ? 'active-nav' : ''} onClick={(e) => { 
-                                    e.preventDefault(); 
-                                    setIsEditingProfile(!isEditingProfile); 
-                                    setShowBookings(false); 
-                                }}>
-                                    Edit Profile
-                                </a>
-                            </li>
+                            {isEditingProfile ? (
+                                <>
+                                    <li style={{display: 'flex', alignItems: 'center'}}>
+                                        <span style={{
+                                            fontSize: '0.75rem', 
+                                            fontWeight: '800', 
+                                            textTransform: 'uppercase', 
+                                            color: '#ef4444', 
+                                            background: '#fee2e2', 
+                                            padding: '2px 8px', 
+                                            borderRadius: '4px',
+                                            marginRight: '10px'
+                                        }}>
+                                            Edit Mode
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <a href="#" className="save-nav-btn" style={{color: '#16a34a', fontWeight: '700'}} onClick={(e) => { 
+                                            e.preventDefault(); 
+                                            handleSaveProfile(); 
+                                        }}>
+                                            {saving ? '⏳ Saving...' : '💾 Save Profile'}
+                                        </a>
+                                    </li>
+                                </>
+                            ) : (
+                                <li>
+                                    <a href="#" onClick={(e) => { 
+                                        e.preventDefault(); 
+                                        setIsEditingProfile(true); 
+                                        setShowBookings(false); 
+                                    }}>
+                                        Edit Profile
+                                    </a>
+                                </li>
+                            )}
                             <li>
                                 <button className="admin-nav-btn" onClick={onLogout} style={{marginLeft: '1rem', background: '#ef4444'}}>
                                     Logout
