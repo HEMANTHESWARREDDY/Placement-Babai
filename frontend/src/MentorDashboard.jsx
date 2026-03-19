@@ -255,46 +255,63 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const headerBgColor = profile.headerBg || '#fbcfe8';
     const avatarBgColor = profile.avatarBg || '#0ea5e9';
 
+    const todayPending = bookings.filter(b => {
+        if (b.status !== 'PENDING') return false;
+        const createdDate = new Date(b.createdAt).toDateString();
+        const todayDate = new Date().toDateString();
+        return createdDate === todayDate;
+    }).length;
+
     return (
         <div className={`mentor-dashboard-container`}>
-            <div className="mentor-header">
-                <div className="mentor-title-container">
-                    <h1>
-                        <span className="welcome-text">Welcome back,</span>
-                        <span className="mentor-name">{profile.name} 👋</span>
-                    </h1>
-                    <button className="mentor-logout-btn" onClick={onLogout}>Log Out</button>
+            <nav className="mentor-navbar">
+                <div className="mentor-nav-left">
+                    <img src="/logos/logo.png" alt="PlacementBabai" className="mentor-nav-logo" />
+                    <span className="mentor-nav-tagline">Connect. Learn. Grow.</span>
                 </div>
-                <div className="header-actions">
-                    <button className="mentor-save-btn" onClick={() => setShowPreviewModal(true)}>
-                        👀 View Profile Preview
-                    </button>
-                    {isEditingProfile ? (
-                        <button className="mentor-save-btn" onClick={handleSave} disabled={saving}>
-                            {saving ? 'Saving...' : '💾 Save Profile'}
-                        </button>
-                    ) : null}
-                    <button
-                        className={isEditingProfile ? 'mentor-logout-btn' : 'mentor-save-btn'}
-                        style={isEditingProfile ? {} : {background: '#7c3aed'}}
-                        onClick={() => {
-                            setIsEditingProfile(!isEditingProfile);
-                            if (!isEditingProfile) setShowBookings(false);
-                        }}
-                    >
-                        {isEditingProfile ? '✅ Done Editing' : '✏️ Edit Profile'}
-                    </button>
+
+                <div className="mentor-nav-center">
+                    <div className="mentor-today-badge">
+                        🔥 {todayPending} New Requests Today
+                    </div>
+                </div>
+
+                <div className="mentor-nav-right">
                     <button 
-                        className="mentor-save-btn" 
-                        style={{background: showBookings ? '#0f172a' : '#1e293b'}}
+                        className={`nav-action-btn ${showBookings ? 'active' : ''}`}
                         onClick={() => {
                             setShowBookings(!showBookings);
                             if (!showBookings) setIsEditingProfile(false);
                         }}
                     >
-                        📩 {showBookings ? 'Hide Requests' : `View Requests (${bookings.filter(b => b.status === 'PENDING').length})`}
+                        📩 View Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                    </button>
+                    <button className="nav-action-btn" onClick={() => setShowPreviewModal(true)}>
+                        👀 View Profile Preview
+                    </button>
+                    <button 
+                        className={`nav-action-btn ${isEditingProfile ? 'active' : ''}`}
+                        onClick={() => {
+                            setIsEditingProfile(!isEditingProfile);
+                            if (!isEditingProfile) setShowBookings(false);
+                        }}
+                    >
+                        ✏️ {isEditingProfile ? 'Done Editing' : 'Edit Profile'}
+                    </button>
+                    {isEditingProfile && (
+                        <button className="nav-action-btn" style={{background: '#10b981', color: 'white', borderColor: '#10b981'}} onClick={handleSave} disabled={saving}>
+                            {saving ? 'Saving...' : '💾 Save Profile'}
+                        </button>
+                    )}
+                    <button className="nav-logout-btn" onClick={onLogout}>
+                        🚪 Logout
                     </button>
                 </div>
+            </nav>
+
+            <div className="mentor-welcome-banner">
+                <span className="welcome-text">Welcome back,</span>
+                <span className="mentor-name-heavy">{profile.name} 👋</span>
             </div>
 
             {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
