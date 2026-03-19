@@ -9,6 +9,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [initialProfile, setInitialProfile] = useState(null);
+    const [hasChanges, setHasChanges] = useState(false);
     const [bookings, setBookings] = useState([]);
     const [showBookings, setShowBookings] = useState(false);
     const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
@@ -24,6 +26,15 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             fetchBookings();
         }
     }, [profile?.id]);
+
+    useEffect(() => {
+        if (profile && initialProfile) {
+            // Compare relevant fields for changes
+            const profileStr = JSON.stringify({ ...profile, services: JSON.stringify(profile.services) });
+            const initialStr = JSON.stringify({ ...initialProfile, services: JSON.stringify(initialProfile.services) });
+            setHasChanges(profileStr !== initialStr);
+        }
+    }, [profile, initialProfile]);
 
     const fetchBookings = async () => {
         try {
@@ -129,6 +140,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             if (res.ok) {
                 setMessage('Profile updated successfully! ✨');
                 setTimeout(() => setMessage(''), 3000);
+                setInitialProfile(JSON.parse(JSON.stringify(profile)));
+                setHasChanges(false);
                 setIsEditingProfile(false);
             } else {
                 setMessage('Error updating profile. Please try again.');
@@ -147,15 +160,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             });
             if (res.ok) {
                 const data = await res.json();
-                setProfile({
+                const profileData = {
                     ...data,
-                    // topics, education, workExperience are now stored as plain strings
                     topics: data.topics || '',
                     education: data.education || '',
                     workExperience: data.workExperience || '',
                     isAvailable: data.isAvailable === true,
-                    services: data.services ? JSON.parse(data.services) : []
-                });
+                    services: data.services ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) : []
+                };
+                setProfile(profileData);
+                setInitialProfile(JSON.parse(JSON.stringify(profileData)));
             } else {
                 setMessage('Error loading profile. Session might have expired.');
             }
@@ -315,6 +329,15 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <li>
                                 <a href="#" className={isEditingProfile ? 'active-nav' : ''} onClick={(e) => { 
                                     e.preventDefault(); 
+                                    if (isEditingProfile && hasChanges) {
+                                        if (window.confirm("Changes aren't saved! Would you like to save them now?")) {
+                                            handleSaveProfile();
+                                            return;
+                                        } else if (!window.confirm("Discard unsaved changes?")) {
+                                            return;
+                                        }
+                                        setProfile(JSON.parse(JSON.stringify(initialProfile)));
+                                    }
                                     setIsEditingProfile(prev => !prev); 
                                     setShowBookings(false); 
                                 }}>
@@ -380,20 +403,24 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <button 
                                 className="mentor-save-btn" 
                                 style={{
-                                    background: '#16a34a',
+                                    background: hasChanges ? '#16a34a' : '#94a3b8',
                                     color: 'white',
                                     padding: '8px 22px',
                                     borderRadius: '8px',
                                     border: 'none',
                                     fontWeight: '700',
-                                    cursor: 'pointer',
+                                    cursor: hasChanges ? 'pointer' : 'default',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '8px',
-                                    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.2)',
-                                    transition: '0.2s'
+                                    boxShadow: hasChanges ? '0 4px 12px rgba(22, 163, 74, 0.2)' : 'none',
+                                    transition: '0.3s',
+                                    opacity: saving ? 0.7 : 1
                                 }}
-                                onClick={handleSaveProfile}
+                                onClick={() => {
+                                    if (hasChanges) handleSaveProfile();
+                                }}
+                                disabled={!hasChanges || saving}
                             >
                                 {saving ? '⏳ Saving...' : '💾 Save Changes'}
                             </button>
