@@ -63,6 +63,26 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
+    const isSessionReadyToComplete = (bookingDate, bookingTime) => {
+        try {
+            if (!bookingDate || !bookingTime || bookingTime === 'Custom Time') return true; // allow manual if unparseable
+            
+            const [time, ampm] = bookingTime.split(' ');
+            let [hrs, mins] = time.split(':').map(Number);
+            if (ampm === 'PM' && hrs !== 12) hrs += 12;
+            if (ampm === 'AM' && hrs === 12) hrs = 0;
+
+            const sessionDate = new Date(`${bookingDate}T${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:00`);
+            const now = new Date();
+            
+            // Enabled 25 mins after session start
+            const enableTime = new Date(sessionDate.getTime() + 25 * 60 * 1000);
+            return now >= enableTime;
+        } catch (e) {
+            return true; 
+        }
+    };
+
     const sortBookings = (list) => {
         return [...list].sort((a, b) => {
             if (sortBy === 'A-Z') return a.guestName.localeCompare(b.guestName);
@@ -304,10 +324,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <div className="bookings-header">
                         <div className="bookings-tabs">
                             <button className={`b-tab ${bookingTab === 'Requests' ? 'active' : ''}`} onClick={() => setBookingTab('Requests')}>
-                                Active Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                                Active Requests ({bookings.filter(b => ['PENDING', 'APPROVED', 'SCHEDULED'].includes(b.status)).length})
                             </button>
                             <button className={`b-tab ${bookingTab === 'History' ? 'active' : ''}`} onClick={() => setBookingTab('History')}>
-                                Booking History ({bookings.filter(b => b.status !== 'PENDING').length})
+                                History ({bookings.filter(b => ['COMPLETED', 'REJECTED'].includes(b.status)).length})
                             </button>
                         </div>
                         <div className="bookings-sort">
@@ -321,7 +341,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
 
                     <div className="bookings-list">
-                        {sortBookings(bookings.filter(b => bookingTab === 'Requests' ? b.status === 'PENDING' : b.status !== 'PENDING'))
+                        {sortBookings(bookings.filter(b => bookingTab === 'Requests' ? ['PENDING', 'APPROVED', 'SCHEDULED'].includes(b.status) : ['COMPLETED', 'REJECTED'].includes(b.status)))
                             .map(booking => (
                                 <div key={booking.id} className={`booking-card status-${booking.status.toLowerCase()}`}>
                                     <div className="booking-card-top">
@@ -364,19 +384,41 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     )}
 
                                     <div className="booking-card-actions">
-                                        {booking.status === 'PENDING' ? (
+                                        {booking.status === 'PENDING' && (
                                             <>
                                                 <button className="btn-approve" onClick={() => updateBookingStatus(booking.id, 'APPROVED')}>
-                                                    ✅ Approve
-                                                </button>
-                                                <button className="btn-schedule" onClick={() => updateBookingStatus(booking.id, 'SCHEDULED')}>
-                                                    📅 Mark Scheduled
+                                                    ✅ Approve Request
                                                 </button>
                                                 <button className="btn-reject" onClick={() => updateBookingStatus(booking.id, 'REJECTED')}>
                                                     ❌ Reject
                                                 </button>
                                             </>
-                                        ) : (
+                                        )}
+
+                                        {booking.status === 'APPROVED' && (
+                                            <>
+                                                <button className="btn-schedule" onClick={() => updateBookingStatus(booking.id, 'SCHEDULED')}>
+                                                    📅 Mark Scheduled
+                                                </button>
+                                                <button className="btn-reject" onClick={() => updateBookingStatus(booking.id, 'REJECTED')}>
+                                                    ❌ Cancel Request
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {booking.status === 'SCHEDULED' && (
+                                            <button 
+                                                className="btn-approve" 
+                                                disabled={!isSessionReadyToComplete(booking.bookingDate, booking.bookingTime)}
+                                                onClick={() => updateBookingStatus(booking.id, 'COMPLETED')}
+                                                style={{ opacity: !isSessionReadyToComplete(booking.bookingDate, booking.bookingTime) ? 0.5 : 1 }}
+                                                title={!isSessionReadyToComplete(booking.bookingDate, booking.bookingTime) ? "Session can be marked completed 25 mins after start time" : ""}
+                                            >
+                                                🏆 Session Completed
+                                            </button>
+                                        )}
+
+                                        {(booking.status === 'COMPLETED' || booking.status === 'REJECTED') && (
                                             <button className="btn-delete" onClick={() => deleteBooking(booking.id)}>
                                                 🗑️ Remove from History
                                             </button>
