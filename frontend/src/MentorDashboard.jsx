@@ -129,13 +129,17 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         setSaving(true);
         setMessage('');
         try {
+            const payload = {
+                ...profile,
+                services: JSON.stringify(profile.services || [])
+            };
             const res = await fetch(`${API_BASE_URL}/api/mentors/me`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${mentorAuth.token}`
                 },
-                body: JSON.stringify(profile)
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
                 setMessage('Profile updated successfully! ✨');
@@ -200,47 +204,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
-    const handleSave = async (e) => {
-        e.preventDefault();
-        setSaving(true);
-        setMessage('');
-
-        try {
-            const payload = {
-                ...profile,
-                topics: profile.topics || '',
-                education: profile.education || '',
-                workExperience: profile.workExperience || '',
-                services: JSON.stringify(profile.services || [])
-            };
-
-            const res = await fetch(`${API_BASE_URL}/api/mentors/me`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${mentorAuth.token}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                setMessage('Profile saved successfully!');
-                setTimeout(() => setMessage(''), 3000);
-            } else {
-                let errStr = 'Error saving profile.';
-                try {
-                    const errObj = await res.json();
-                    if (errObj.error) errStr = `Error: ${errObj.error}`;
-                } catch(e) {}
-                setMessage(errStr);
-                setTimeout(() => setMessage(''), 5000);
-            }
-        } catch (e) {
-            setMessage('Network error saving profile.');
-        } finally {
-            setSaving(false);
-        }
-    };
 
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
     const [isEditingProfile, setIsEditingProfile] = useState(false);
