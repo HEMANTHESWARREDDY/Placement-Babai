@@ -13,6 +13,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [showBookings, setShowBookings] = useState(false);
     const [bookingTab, setBookingTab] = useState('Requests'); // 'Requests' or 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
+    const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
 
     useEffect(() => {
         fetchProfile();
@@ -38,7 +39,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
     const updateBookingStatus = async (id, status) => {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/status?status=${status}`, {
+            const link = meetLinks[id] || '';
+            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/status?status=${status}&meetLink=${encodeURIComponent(link)}`, {
                 method: 'PUT'
             });
             if (res.ok) {
@@ -374,6 +376,15 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             <label>Requested At</label>
                                             <p>⏲️ {new Date(booking.createdAt).toLocaleString()}</p>
                                         </div>
+                                        {booking.meetLink && (
+                                            <div className="b-detail" style={{gridColumn: 'span 2'}}>
+                                                <label>Meeting Link</label>
+                                                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                                    <p style={{margin: 0, color: '#7c3aed', fontWeight: '600', textDecoration: 'underline'}}>{booking.meetLink}</p>
+                                                    <a href={booking.meetLink} target="_blank" rel="noreferrer" className="btn-approve" style={{padding: '4px 10px', fontSize: '0.75rem', textDecoration: 'none'}}>Join</a>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {booking.customRequest && (
@@ -397,7 +408,23 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                                         {booking.status === 'APPROVED' && (
                                             <>
-                                                <button className="btn-schedule" onClick={() => updateBookingStatus(booking.id, 'SCHEDULED')}>
+                                                <div className="meet-link-input-wrap" style={{marginBottom: '1rem', width: '100%'}}>
+                                                    <label style={{fontSize: '0.8rem', fontWeight: '800', color: '#64748b', display: 'block', marginBottom: '4px'}}>Paste Google Meet / Zoom Link:</label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="simple-input" 
+                                                        placeholder="https://meet.google.com/..." 
+                                                        value={meetLinks[booking.id] || ''}
+                                                        onChange={(e) => setMeetLinks({...meetLinks, [booking.id]: e.target.value})}
+                                                        style={{padding: '10px 14px'}}
+                                                    />
+                                                </div>
+                                                <button 
+                                                    className="btn-schedule" 
+                                                    disabled={!meetLinks[booking.id]}
+                                                    onClick={() => updateBookingStatus(booking.id, 'SCHEDULED')}
+                                                    style={{ opacity: !meetLinks[booking.id] ? 0.5 : 1 }}
+                                                >
                                                     📅 Mark Scheduled
                                                 </button>
                                                 <button className="btn-reject" onClick={() => updateBookingStatus(booking.id, 'REJECTED')}>

@@ -26,6 +26,8 @@ public class Booking {
     @Column(columnDefinition = "TEXT")
     private String customRequest;
     
+    private String meetLink;
+    
     private String status = "PENDING";
     private LocalDateTime createdAt = LocalDateTime.now();
 }

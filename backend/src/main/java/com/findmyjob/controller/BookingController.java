@@ -36,10 +36,16 @@ public class BookingController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Booking> updateBookingStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<Booking> updateBookingStatus(
+            @PathVariable Long id, 
+            @RequestParam String status,
+            @RequestParam(required = false) String meetLink) {
         return bookingRepository.findById(id)
                 .map(booking -> {
                     booking.setStatus(status);
+                    if (meetLink != null) {
+                        booking.setMeetLink(meetLink);
+                    }
                     return ResponseEntity.ok(bookingRepository.save(booking));
                 })
                 .orElse(ResponseEntity.notFound().build());
