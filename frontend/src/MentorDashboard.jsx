@@ -271,7 +271,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <span className="header-tagline">Connect. Learn. Grow.</span>
                     </div>
 
-                    <div className="header-badge" style={{cursor: 'default'}}>
+                    <div className="header-badge" style={{cursor: 'default', left: '42%'}}>
                         🔥 {todayPending} New Requests Today
                     </div>
 
