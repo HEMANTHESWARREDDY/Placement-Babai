@@ -16,6 +16,17 @@ const BookingModal = ({ pro, service, onClose }) => {
         guestWhatsapp: '',
         customRequest: ''
     });
+
+    const [bookedSlots, setBookedSlots] = useState([]);
+
+    const parseTimeToMinutes = (timeStr) => {
+        if (!timeStr || !timeStr.includes(' ')) return 0;
+        const [time, ampm] = timeStr.split(' ');
+        let [hrs, mins] = time.split(':').map(Number);
+        if (ampm === 'PM' && hrs !== 12) hrs += 12;
+        if (ampm === 'AM' && hrs === 12) hrs = 0;
+        return hrs * 60 + mins;
+    };
     const getSlots = (period) => {
         const slots = [];
         let start = period === 'AM' ? 9 * 60 : 12 * 60;
@@ -94,6 +105,40 @@ const BookingModal = ({ pro, service, onClose }) => {
     useEffect(() => {
         if (!selectedDate) setSelectedDate(todayStr);
     }, []);
+
+    useEffect(() => {
+        if (pro && pro.id && selectedDate) {
+            fetchBookedSlots();
+        }
+    }, [pro.id, selectedDate]);
+
+    const fetchBookedSlots = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/bookings/mentor/${pro.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                const alreadyBooked = data
+                    .filter(b => b.bookingDate === selectedDate && b.status !== 'REJECTED')
+                    .map(b => b.bookingTime);
+                setBookedSlots(alreadyBooked);
+            }
+        } catch (error) {
+            console.error('Error fetching booked slots:', error);
+        }
+    };
+
+    const isSlotDisabled = (timeStr) => {
+        if (bookedSlots.includes(timeStr)) return true;
+        
+        if (selectedDate === todayStr) {
+            const now = new Date();
+            const currentMins = now.getHours() * 60 + now.getMinutes();
+            const slotMins = parseTimeToMinutes(timeStr);
+            // Give 15 mins buffer or just strict
+            if (slotMins <= currentMins) return true;
+        }
+        return false;
+    };
 
     const handleInputChange = (e) => {
         if (error) setError('');
@@ -239,15 +284,20 @@ const BookingModal = ({ pro, service, onClose }) => {
                                     <>
                                         <label className="section-small-label">Select Available Slot:</label>
                                         <div className="time-slots-grid-modern">
-                                            {(timePeriod === 'AM' ? amSlots : pmSlots).map(time => (
-                                                <button 
-                                                    key={time} 
-                                                    className={`time-slot-pill-modern ${selectedTime === time ? 'selected' : ''}`}
-                                                    onClick={() => setSelectedTime(time)}
-                                                >
-                                                    {time}
-                                                </button>
-                                            ))}
+                                            {(timePeriod === 'AM' ? amSlots : pmSlots).map(time => {
+                                                const disabled = isSlotDisabled(time);
+                                                return (
+                                                    <button 
+                                                        key={time} 
+                                                        className={`time-slot-pill-modern ${selectedTime === time ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
+                                                        onClick={() => !disabled && setSelectedTime(time)}
+                                                        disabled={disabled}
+                                                        title={disabled ? "Slot unavailable" : ""}
+                                                    >
+                                                        {time}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </>
                                 ) : (
