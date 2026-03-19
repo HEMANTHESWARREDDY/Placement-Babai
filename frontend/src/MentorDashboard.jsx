@@ -85,6 +85,26 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
+    const canRevoke = (bookingDate, bookingTime) => {
+        try {
+            if (!bookingDate || !bookingTime || bookingTime === 'Custom Time') return false;
+            
+            const [time, ampm] = bookingTime.split(' ');
+            let [hrs, mins] = time.split(':').map(Number);
+            if (ampm === 'PM' && hrs !== 12) hrs += 12;
+            if (ampm === 'AM' && hrs === 12) hrs = 0;
+
+            const sessionDate = new Date(`${bookingDate}T${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:00`);
+            const now = new Date();
+            
+            // Can revoke if current time is at least 20 mins before session start
+            const revokeDeadline = new Date(sessionDate.getTime() - 20 * 60 * 1000);
+            return now < revokeDeadline;
+        } catch (e) {
+            return false;
+        }
+    };
+
     const sortBookings = (list) => {
         return [...list].sort((a, b) => {
             if (sortBy === 'A-Z') return a.guestName.localeCompare(b.guestName);
@@ -460,9 +480,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         )}
 
                                         {(booking.status === 'COMPLETED' || booking.status === 'REJECTED') && (
-                                            <button className="btn-delete" onClick={() => deleteBooking(booking.id)}>
-                                                🗑️ Remove from History
-                                            </button>
+                                            <div style={{display: 'flex', gap: '10px'}}>
+                                                {booking.status === 'REJECTED' && canRevoke(booking.bookingDate, booking.bookingTime) && (
+                                                    <button className="btn-approve" onClick={() => updateBookingStatus(booking.id, 'PENDING')}>
+                                                        🔄 Revoke Rejection
+                                                    </button>
+                                                )}
+                                                <button className="btn-delete" onClick={() => deleteBooking(booking.id)}>
+                                                    🗑️ Remove from History
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
