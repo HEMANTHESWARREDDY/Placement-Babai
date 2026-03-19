@@ -486,9 +486,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                         🔄 Revoke Rejection
                                                     </button>
                                                 )}
-                                                <button className="btn-delete" onClick={() => deleteBooking(booking.id)}>
-                                                    🗑️ Remove from History
-                                                </button>
                                             </div>
                                         )}
                                     </div>
