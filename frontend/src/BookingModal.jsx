@@ -159,7 +159,7 @@ const BookingModal = ({ pro, service, onClose }) => {
                         <div className="summary-item">Scheduled Time: {useCustomTime ? customTime : selectedTime}</div>
                     </div>
                     <hr />
-                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>We will contact you via WhatsApp ({formData.guestWhatsapp}) or Email shortly with the meeting details.</p>
+                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>Once the mentor accepts your request, we will contact you via WhatsApp ({formData.guestWhatsapp}) or Email with the meeting details.</p>
                     <button onClick={onClose} className="booking-next-btn-simple" style={{ marginTop: '20px' }}>CLOSE</button>
                 </div>
             </div>
