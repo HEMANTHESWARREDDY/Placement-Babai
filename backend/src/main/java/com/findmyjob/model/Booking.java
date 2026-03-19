@@ -14,7 +14,9 @@ public class Booking {
 
     private Long mentorId;
     private String mentorName;
+    private String mentorEmail;
     private String serviceType;
+    private Double price;
     private String guestName;
     private String guestEmail;
     private String guestWhatsapp;

@@ -234,7 +234,7 @@ function ProDetail({ pro, onClose }) {
                                                         <div className="preview-service-price">₹499</div>
                                                         <button 
                                                             className="preview-book-btn"
-                                                            onClick={() => setBookingData({ pro, service: { title: '1:1 Call Mentorship' } })}
+                                                            onClick={() => setBookingData({ pro, service: { title: '1:1 Call Mentorship', price: 499 } })}
                                                         >
                                                             Book Now
                                                         </button>
@@ -251,7 +251,7 @@ function ProDetail({ pro, onClose }) {
                                                         <button 
                                                             className="preview-book-btn" 
                                                             style={{background: '#0f172a'}}
-                                                            onClick={() => setBookingData({ pro, service: { title: 'Resume Review' } })}
+                                                            onClick={() => setBookingData({ pro, service: { title: 'Resume Review', price: 199 } })}
                                                         >
                                                             Book Now
                                                         </button>

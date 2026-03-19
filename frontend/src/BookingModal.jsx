@@ -110,7 +110,9 @@ const BookingModal = ({ pro, service, onClose }) => {
         const payload = {
             mentorId: Number(pro.id),
             mentorName: pro.name,
+            mentorEmail: pro.email,
             serviceType: service.title,
+            price: Number(service.price) || 0,
             ...formData, // guestName, guestEmail, guestWhatsapp, customRequest
             bookingDate: selectedDate,
             bookingTime: finalTime,
