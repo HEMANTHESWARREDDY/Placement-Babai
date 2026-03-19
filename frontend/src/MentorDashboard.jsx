@@ -310,7 +310,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 </div>
             </header>
 
-            {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
+            <div style={{padding: '2.5rem 2rem'}}>
+                {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
 
             {/* Hidden File Inputs for quick image setting */}
             <input type="file" id="bannerUpload" style={{display: 'none'}} accept="image/*" onChange={(e) => handleImageUpload(e, 'headerBg')} />
@@ -974,6 +975,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     onClose={() => setBookingData(null)} 
                 />
             )}
+            </div>
         </div>
     );
 }
