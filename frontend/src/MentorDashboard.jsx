@@ -263,53 +263,82 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     }).length;
 
     return (
-        <div className={`mentor-dashboard-container`}>
-            <nav className="mentor-navbar">
-                <div className="mentor-nav-left">
-                    <img src="/logos/logo.png" alt="PlacementBabai" className="mentor-nav-logo" />
-                    <span className="mentor-nav-tagline">Connect. Learn. Grow.</span>
-                </div>
+        <div className={`mentor-dashboard-container`} style={{padding: 0}}>
+            <header className="header">
+                <div className="header-content">
+                    <div className="logo" style={{cursor: 'default'}}>
+                        <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
+                        <span className="header-tagline">Connect. Learn. Grow.</span>
+                    </div>
 
-                <div className="mentor-nav-center">
-                    <div className="mentor-today-badge">
+                    <div className="header-badge" style={{cursor: 'default'}}>
                         🔥 {todayPending} New Requests Today
                     </div>
-                </div>
 
-                <div className="mentor-nav-right">
-                    <button 
-                        className={`nav-action-btn ${showBookings ? 'active' : ''}`}
-                        onClick={() => {
-                            setShowBookings(!showBookings);
-                            if (!showBookings) setIsEditingProfile(false);
-                        }}
-                    >
-                        📩 View Requests ({bookings.filter(b => b.status === 'PENDING').length})
-                    </button>
-                    <button className="nav-action-btn" onClick={() => setShowPreviewModal(true)}>
-                        👀 View Profile Preview
-                    </button>
-                    <button 
-                        className={`nav-action-btn ${isEditingProfile ? 'active' : ''}`}
-                        onClick={() => {
-                            setIsEditingProfile(!isEditingProfile);
-                            if (!isEditingProfile) setShowBookings(false);
-                        }}
-                    >
-                        ✏️ {isEditingProfile ? 'Done Editing' : 'Edit Profile'}
-                    </button>
-                    {isEditingProfile && (
-                        <button className="nav-action-btn" style={{background: '#10b981', color: 'white', borderColor: '#10b981'}} onClick={handleSave} disabled={saving}>
-                            {saving ? 'Saving...' : '💾 Save Profile'}
-                        </button>
-                    )}
-                    <button className="nav-logout-btn" onClick={onLogout}>
-                        🚪 Logout
-                    </button>
+                    <nav>
+                        <ul className="nav-links">
+                            <li>
+                                <a href="#" className={showBookings ? 'active-nav' : ''} onClick={(e) => { 
+                                    e.preventDefault(); 
+                                    setShowBookings(!showBookings); 
+                                    setIsEditingProfile(false); 
+                                }}>
+                                    View Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}>
+                                    View Profile Preview
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className={isEditingProfile ? 'active-nav' : ''} onClick={(e) => { 
+                                    e.preventDefault(); 
+                                    setIsEditingProfile(!isEditingProfile); 
+                                    setShowBookings(false); 
+                                }}>
+                                    Edit Profile
+                                </a>
+                            </li>
+                            <li>
+                                <button className="admin-nav-btn" onClick={onLogout} style={{marginLeft: '1rem', background: '#ef4444'}}>
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-            </nav>
+            </header>
 
-            <div className="mentor-welcome-banner">
+            <section className="hero" style={{padding: '3rem 2rem'}}>
+                <div className="hero-content">
+                    <h1>Pro <span className="hero-highlight">Dashboard</span></h1>
+                    <h2 style={{color:'white', textAlign:'center', fontSize:'2.2rem', fontWeight:'700', marginTop:'-0.5rem', marginBottom:'1.5rem'}}>
+                        Manage Your <span style={{color:'#7dd3fc'}}>Mentorship Journey</span>
+                    </h2>
+                    <p className="hero-subtitle" style={{maxWidth: '800px', margin: '0 auto 2rem'}}>
+                        Guidance from Industry Professionals for Student Career Growth.<br/>
+                        Review requests, schedule sessions, and keep your profile updated.
+                    </p>
+                    
+                    <div style={{display: 'flex', justifyContent: 'center', gap: '1rem'}}>
+                        <div style={{background: 'rgba(255,255,255,0.1)', padding: '1rem 2rem', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center'}}>
+                            <div style={{fontSize: '1.8rem', fontWeight: '800', color: '#7dd3fc'}}>{bookings.length}</div>
+                            <div style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px'}}>Total Bookings</div>
+                        </div>
+                        <div style={{background: 'rgba(255,255,255,0.1)', padding: '1rem 2rem', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center'}}>
+                            <div style={{fontSize: '1.8rem', fontWeight: '800', color: '#7dd3fc'}}>{bookings.filter(b => b.status === 'COMPLETED').length}</div>
+                            <div style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px'}}>Sessions Done</div>
+                        </div>
+                        <div style={{background: 'rgba(255,255,255,0.1)', padding: '1rem 2rem', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center'}}>
+                            <div style={{fontSize: '1.8rem', fontWeight: '800', color: '#7dd3fc'}}>⭐ {profile.rating || 'New'}</div>
+                            <div style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px'}}>Average Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div className="mentor-welcome-banner" style={{marginTop: '2rem'}}>
                 <span className="welcome-text">Welcome back,</span>
                 <span className="mentor-name-heavy">{profile.name} 👋</span>
             </div>
