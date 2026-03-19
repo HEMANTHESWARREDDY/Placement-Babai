@@ -310,34 +310,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 </div>
             </header>
 
-            <section className="hero" style={{padding: '3rem 2rem'}}>
-                <div className="hero-content">
-                    <h1>Pro <span className="hero-highlight">Dashboard</span></h1>
-                    <h2 style={{color:'white', textAlign:'center', fontSize:'2.2rem', fontWeight:'700', marginTop:'-0.5rem', marginBottom:'1.5rem'}}>
-                        Manage Your <span style={{color:'#7dd3fc'}}>Mentorship Journey</span>
-                    </h2>
-                    <p className="hero-subtitle" style={{maxWidth: '800px', margin: '0 auto 2rem'}}>
-                        Guidance from Industry Professionals for Student Career Growth.<br/>
-                        Review requests, schedule sessions, and keep your profile updated.
-                    </p>
-                    
-                    <div style={{display: 'flex', justifyContent: 'center', gap: '1rem'}}>
-                        <div style={{background: 'rgba(255,255,255,0.1)', padding: '1rem 2rem', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center'}}>
-                            <div style={{fontSize: '1.8rem', fontWeight: '800', color: '#7dd3fc'}}>{bookings.length}</div>
-                            <div style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px'}}>Total Bookings</div>
-                        </div>
-                        <div style={{background: 'rgba(255,255,255,0.1)', padding: '1rem 2rem', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center'}}>
-                            <div style={{fontSize: '1.8rem', fontWeight: '800', color: '#7dd3fc'}}>{bookings.filter(b => b.status === 'COMPLETED').length}</div>
-                            <div style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px'}}>Sessions Done</div>
-                        </div>
-                        <div style={{background: 'rgba(255,255,255,0.1)', padding: '1rem 2rem', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center'}}>
-                            <div style={{fontSize: '1.8rem', fontWeight: '800', color: '#7dd3fc'}}>⭐ {profile.rating || 'New'}</div>
-                            <div style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px'}}>Average Rating</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <div className="mentor-welcome-banner" style={{marginTop: '2rem'}}>
                 <span className="welcome-text">Welcome back,</span>
                 <span className="mentor-name-heavy">{profile.name} 👋</span>
