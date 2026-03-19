@@ -301,24 +301,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className={isEditingProfile ? 'active-nav' : ''} onClick={(e) => { 
-                                    e.preventDefault(); 
-                                    if (isEditingProfile && hasChanges) {
-                                        if (window.confirm("Changes aren't saved! Would you like to save them now?")) {
-                                            handleSaveProfile();
-                                            return;
-                                        } else if (!window.confirm("Discard unsaved changes?")) {
-                                            return;
-                                        }
-                                        setProfile(JSON.parse(JSON.stringify(initialProfile)));
-                                    }
-                                    setIsEditingProfile(prev => !prev); 
-                                    setShowBookings(false); 
-                                }}>
-                                    Edit Profile
-                                </a>
-                            </li>
-                            <li>
                                 <button className="admin-nav-btn" onClick={onLogout} style={{marginLeft: '1rem', background: '#ef4444'}}>
                                     Logout
                                 </button>
@@ -329,6 +311,39 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             </header>
 
             <div style={{padding: '2.5rem 2rem'}}>
+                {(!showBookings && !isEditingProfile) && (
+                    <div style={{
+                        maxWidth: '1200px',
+                        margin: '0 auto 2rem auto',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '0 10px'
+                    }}>
+                        <div style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1e293b' }}>
+                            Welcome back, {profile.name}! 👋
+                        </div>
+                        <button 
+                            onClick={(e) => { e.preventDefault(); setIsEditingProfile(true); }}
+                            style={{
+                                background: 'white',
+                                color: '#4f46e5',
+                                padding: '10px 24px',
+                                borderRadius: '12px',
+                                border: '1px solid #e2e8f0',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                transition: '0.2s'
+                            }}
+                        >
+                            ✏️ Edit Profile
+                        </button>
+                    </div>
+                )}
                 {isEditingProfile && (
                     <div style={{
                         maxWidth: '1200px',
