@@ -16,6 +16,19 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
+    
+    // Custom UI States
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [confirmDialog, setConfirmDialog] = useState({ 
+        isOpen: false, title: '', message: '', onConfirm: null, onCancel: null, onClose: null, confirmText: '', cancelText: '', type: 'danger' 
+    });
+
+    const showToast = (message, type = 'success') => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
+    };
+
+    const closeDialog = () => setConfirmDialog(prev => ({ ...prev, isOpen: false }));
 
     useEffect(() => {
         fetchProfile();
@@ -63,17 +76,28 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const deleteBooking = async (id) => {
-        if (!window.confirm("Are you sure you want to reject and delete this request?")) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}`, {
-                method: 'DELETE'
-            });
-            if (res.ok) {
-                fetchBookings(); // Refresh list
-            }
-        } catch (e) {
-            console.error("Error deleting booking:", e);
-        }
+        setConfirmDialog({
+            isOpen: true,
+            title: 'Delete Request',
+            message: 'Are you sure you want to reject and delete this request? This action cannot be undone.',
+            confirmText: 'Yes, Delete',
+            cancelText: 'Keep Request',
+            type: 'danger',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/bookings/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        fetchBookings();
+                        showToast('Request deleted successfully');
+                    }
+                } catch (e) {
+                    showToast('Error deleting request', 'error');
+                }
+                closeDialog();
+            },
+            onCancel: closeDialog,
+            onClose: closeDialog
+        });
     };
 
     const isSessionReadyToComplete = (bookingDate, bookingTime) => {
@@ -142,16 +166,15 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                setMessage('Profile updated successfully! ✨');
-                setTimeout(() => setMessage(''), 3000);
+                showToast('Profile updated successfully! ✨');
                 setInitialProfile(JSON.parse(JSON.stringify(profile)));
                 setHasChanges(false);
                 setIsEditingProfile(false);
             } else {
-                setMessage('Error updating profile. Please try again.');
+                showToast('Error updating profile. Please try again.', 'error');
             }
         } catch (e) {
-            setMessage('Network error updating profile.');
+            showToast('Network error updating profile.', 'error');
         } finally {
             setSaving(false);
         }
@@ -358,13 +381,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 onClick={(e) => { 
                                     e.preventDefault(); 
                                     if (hasChanges) {
-                                        if (window.confirm("Changes aren't saved! Would you like to save them now?")) {
-                                            handleSaveProfile();
-                                            return;
-                                        } else if (!window.confirm("Are you sure you want to discard changes?")) {
-                                            return;
-                                        }
-                                        setProfile(JSON.parse(JSON.stringify(initialProfile)));
+                                        setConfirmDialog({
+                                            isOpen: true,
+                                            title: 'Unsaved Changes',
+                                            message: "You have unsaved changes. Would you like to save them now?",
+                                            confirmText: 'Save & Exit',
+                                            cancelText: 'Discard Changes',
+                                            type: 'success',
+                                            onConfirm: () => { handleSaveProfile(); closeDialog(); },
+                                            onCancel: () => { setProfile(JSON.parse(JSON.stringify(initialProfile))); setIsEditingProfile(false); closeDialog(); },
+                                            onClose: closeDialog
+                                        });
+                                        return;
                                     }
                                     setIsEditingProfile(false);
                                 }}
@@ -445,7 +473,32 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </div>
                     </div>
                 )}
-                {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', maxWidth: '1200px', margin: '0 auto 1.5rem auto'}}>{message}</div>}
+                
+                {/* Custom Dialogue Modal */}
+                {confirmDialog.isOpen && (
+                    <div className="mentor-dialog-overlay" onClick={confirmDialog.onClose}>
+                        <div className="mentor-dialog" onClick={e => e.stopPropagation()}>
+                            <div className="mentor-dialog-content">
+                                <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+                                    <h3>{confirmDialog.title}</h3>
+                                    <button onClick={confirmDialog.onClose} style={{background:'transparent', border:'none', fontSize:'1.5rem', cursor:'pointer', color:'#94a3b8'}}>&times;</button>
+                                </div>
+                                <p>{confirmDialog.message}</p>
+                            </div>
+                            <div className="mentor-dialog-actions">
+                                <button className="dialog-cancel" onClick={confirmDialog.onCancel}>{confirmDialog.cancelText || 'Cancel'}</button>
+                                <button className={`dialog-confirm ${confirmDialog.type}`} onClick={confirmDialog.onConfirm}>{confirmDialog.confirmText || 'Confirm'}</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Toast Notification */}
+                {toast.show && (
+                    <div className={`mentor-toast ${toast.type}`}>
+                        {toast.type === 'success' ? '✅' : '❌'} {toast.message}
+                    </div>
+                )}
 
             {/* Hidden File Inputs for quick image setting */}
             <input type="file" id="bannerUpload" style={{display: 'none'}} accept="image/*" onChange={(e) => handleImageUpload(e, 'headerBg')} />
