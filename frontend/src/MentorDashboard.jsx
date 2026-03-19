@@ -11,7 +11,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [message, setMessage] = useState('');
     const [bookings, setBookings] = useState([]);
     const [showBookings, setShowBookings] = useState(false);
-    const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Upcoming', or 'History'
+    const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
 
@@ -328,8 +328,11 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <button className={`b-tab ${bookingTab === 'Pending' ? 'active' : ''}`} onClick={() => setBookingTab('Pending')}>
                                 Requests ({bookings.filter(b => b.status === 'PENDING').length})
                             </button>
-                            <button className={`b-tab ${bookingTab === 'Upcoming' ? 'active' : ''}`} onClick={() => setBookingTab('Upcoming')}>
-                                Confirmed ({bookings.filter(b => ['APPROVED', 'SCHEDULED'].includes(b.status)).length})
+                            <button className={`b-tab ${bookingTab === 'Approved' ? 'active' : ''}`} onClick={() => setBookingTab('Approved')}>
+                                Approved ({bookings.filter(b => b.status === 'APPROVED').length})
+                            </button>
+                            <button className={`b-tab ${bookingTab === 'Scheduled' ? 'active' : ''}`} onClick={() => setBookingTab('Scheduled')}>
+                                Scheduled ({bookings.filter(b => b.status === 'SCHEDULED').length})
                             </button>
                             <button className={`b-tab ${bookingTab === 'History' ? 'active' : ''}`} onClick={() => setBookingTab('History')}>
                                 History ({bookings.filter(b => ['COMPLETED', 'REJECTED'].includes(b.status)).length})
@@ -349,7 +352,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         {sortBookings(
                             bookings.filter(b => {
                                 if (bookingTab === 'Pending') return b.status === 'PENDING';
-                                if (bookingTab === 'Upcoming') return ['APPROVED', 'SCHEDULED'].includes(b.status);
+                                if (bookingTab === 'Approved') return b.status === 'APPROVED';
+                                if (bookingTab === 'Scheduled') return b.status === 'SCHEDULED';
                                 if (bookingTab === 'History') return ['COMPLETED', 'REJECTED'].includes(b.status);
                                 return false;
                             })
@@ -466,7 +470,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         
                         {bookings.filter(b => {
                             if (bookingTab === 'Pending') return b.status === 'PENDING';
-                            if (bookingTab === 'Upcoming') return ['APPROVED', 'SCHEDULED'].includes(b.status);
+                            if (bookingTab === 'Approved') return b.status === 'APPROVED';
+                            if (bookingTab === 'Scheduled') return b.status === 'SCHEDULED';
                             if (bookingTab === 'History') return ['COMPLETED', 'REJECTED'].includes(b.status);
                             return false;
                         }).length === 0 && (
