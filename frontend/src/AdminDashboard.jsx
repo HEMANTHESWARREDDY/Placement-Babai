@@ -5,6 +5,7 @@ import CustomSelect from './CustomSelect';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import JobAnalytics from './JobAnalytics';
 import AdminMentors from './AdminMentors';
+import AdminBookings from './AdminBookings';
 
 const parseRangeLow = (str) => {
     if (!str) return null;
@@ -99,7 +100,7 @@ function AdminDashboard({ adminData, onLogout }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilters, setActiveFilters] = useState({});
     const [sortType, setSortType] = useState('');
-    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('adminActiveTab') || 'jobs'); // 'jobs', 'analytics', 'deleted', 'mentors'
+    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('adminActiveTab') || 'jobs'); // 'jobs', 'analytics', 'deleted', 'mentors', 'sessions'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
@@ -616,6 +617,12 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                         >
                             👨‍🏫 Mentors
                         </button>
+                        <button
+                            className={`btn-tab ${activeTab === 'sessions' ? 'active' : ''}`}
+                            onClick={() => changeTab('sessions')}
+                        >
+                            📅 Sessions
+                        </button>
                         <button className="btn-logout" onClick={onLogout}>Logout</button>
                     </div>
                 </div>
@@ -625,6 +632,8 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                 <AnalyticsDashboard />
             ) : activeTab === 'mentors' ? (
                 <AdminMentors />
+            ) : activeTab === 'sessions' ? (
+                <AdminBookings />
             ) : activeTab === 'deleted' ? (
                 <div className="jobs-management">
                     <div className="jobs-list-header">
