@@ -281,9 +281,20 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <nav>
                         <ul className="nav-links">
                             <li>
+                                <a href="#" 
+                                   className={(!showBookings && !isEditingProfile) ? 'active-nav' : ''} 
+                                   onClick={(e) => { 
+                                       e.preventDefault(); 
+                                       setShowBookings(false); 
+                                       setIsEditingProfile(false); 
+                                   }}>
+                                    Profile
+                                </a>
+                            </li>
+                            <li>
                                 <a href="#" className={showBookings ? 'active-nav' : ''} onClick={(e) => { 
                                     e.preventDefault(); 
-                                    setShowBookings(!showBookings); 
+                                    setShowBookings(true); 
                                     setIsEditingProfile(false); 
                                 }}>
                                     View Requests ({bookings.filter(b => b.status === 'PENDING').length})
