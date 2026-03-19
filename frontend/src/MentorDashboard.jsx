@@ -11,7 +11,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [message, setMessage] = useState('');
     const [bookings, setBookings] = useState([]);
     const [showBookings, setShowBookings] = useState(false);
-    const [bookingTab, setBookingTab] = useState('Requests'); // 'Requests' or 'History'
+    const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Upcoming', or 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
 
@@ -325,8 +325,11 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="bookings-section">
                     <div className="bookings-header">
                         <div className="bookings-tabs">
-                            <button className={`b-tab ${bookingTab === 'Requests' ? 'active' : ''}`} onClick={() => setBookingTab('Requests')}>
-                                Active Requests ({bookings.filter(b => ['PENDING', 'APPROVED', 'SCHEDULED'].includes(b.status)).length})
+                            <button className={`b-tab ${bookingTab === 'Pending' ? 'active' : ''}`} onClick={() => setBookingTab('Pending')}>
+                                Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                            </button>
+                            <button className={`b-tab ${bookingTab === 'Upcoming' ? 'active' : ''}`} onClick={() => setBookingTab('Upcoming')}>
+                                Confirmed ({bookings.filter(b => ['APPROVED', 'SCHEDULED'].includes(b.status)).length})
                             </button>
                             <button className={`b-tab ${bookingTab === 'History' ? 'active' : ''}`} onClick={() => setBookingTab('History')}>
                                 History ({bookings.filter(b => ['COMPLETED', 'REJECTED'].includes(b.status)).length})
@@ -343,7 +346,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
 
                     <div className="bookings-list">
-                        {sortBookings(bookings.filter(b => bookingTab === 'Requests' ? ['PENDING', 'APPROVED', 'SCHEDULED'].includes(b.status) : ['COMPLETED', 'REJECTED'].includes(b.status)))
+                        {sortBookings(
+                            bookings.filter(b => {
+                                if (bookingTab === 'Pending') return b.status === 'PENDING';
+                                if (bookingTab === 'Upcoming') return ['APPROVED', 'SCHEDULED'].includes(b.status);
+                                if (bookingTab === 'History') return ['COMPLETED', 'REJECTED'].includes(b.status);
+                                return false;
+                            })
+                        )
                             .map(booking => (
                                 <div key={booking.id} className={`booking-card status-${booking.status.toLowerCase()}`}>
                                     <div className="booking-card-top">
@@ -454,9 +464,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 </div>
                             ))}
                         
-                        {bookings.filter(b => bookingTab === 'Requests' ? b.status === 'PENDING' : b.status !== 'PENDING').length === 0 && (
+                        {bookings.filter(b => {
+                            if (bookingTab === 'Pending') return b.status === 'PENDING';
+                            if (bookingTab === 'Upcoming') return ['APPROVED', 'SCHEDULED'].includes(b.status);
+                            if (bookingTab === 'History') return ['COMPLETED', 'REJECTED'].includes(b.status);
+                            return false;
+                        }).length === 0 && (
                             <div className="empty-bookings">
-                                <p>No {bookingTab.toLowerCase()} found.</p>
+                                <p>No {bookingTab.toLowerCase()} items found.</p>
                             </div>
                         )}
                     </div>
