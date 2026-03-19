@@ -313,11 +313,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}>
-                                    View Profile Preview
-                                </a>
-                            </li>
-                            <li>
                                 <a href="#" className={isEditingProfile ? 'active-nav' : ''} onClick={(e) => { 
                                     e.preventDefault(); 
                                     setIsEditingProfile(prev => !prev); 
@@ -343,7 +338,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         margin: '0 auto 1.5rem auto',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        padding: '0 10px'
                     }}>
                         <div style={{
                             fontSize: '0.75rem', 
@@ -351,29 +347,57 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             textTransform: 'uppercase', 
                             color: '#ef4444', 
                             background: '#fee2e2', 
-                            padding: '4px 12px', 
-                            borderRadius: '6px'
+                            padding: '6px 14px', 
+                            borderRadius: '6px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px'
                         }}>
                             ✏️ Edit Mode
                         </div>
-                        <button 
-                            className="mentor-save-btn" 
-                            style={{
-                                background: '#16a34a',
-                                color: 'white',
-                                padding: '8px 20px',
-                                borderRadius: '8px',
-                                border: 'none',
-                                fontWeight: '700',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px'
-                            }}
-                            onClick={handleSaveProfile}
-                        >
-                            {saving ? '⏳ Saving...' : '💾 Save Changes'}
-                        </button>
+                        
+                        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                            <button 
+                                onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}
+                                style={{
+                                    background: 'white',
+                                    color: '#475569',
+                                    padding: '8px 18px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e2e8f0',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                                    transition: '0.2s'
+                                }}
+                            >
+                                👁️ View Preview
+                            </button>
+                            
+                            <button 
+                                className="mentor-save-btn" 
+                                style={{
+                                    background: '#16a34a',
+                                    color: 'white',
+                                    padding: '8px 22px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontWeight: '700',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.2)',
+                                    transition: '0.2s'
+                                }}
+                                onClick={handleSaveProfile}
+                            >
+                                {saving ? '⏳ Saving...' : '💾 Save Changes'}
+                            </button>
+                        </div>
                     </div>
                 )}
                 {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', maxWidth: '1200px', margin: '0 auto 1.5rem auto'}}>{message}</div>}
