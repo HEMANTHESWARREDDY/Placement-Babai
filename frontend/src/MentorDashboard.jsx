@@ -310,11 +310,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 </div>
             </header>
 
-            <div className="mentor-welcome-banner" style={{marginTop: '2rem'}}>
-                <span className="welcome-text">Welcome back,</span>
-                <span className="mentor-name-heavy">{profile.name} 👋</span>
-            </div>
-
             {isEditingProfile && message && <div style={{background: '#dcfce3', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>{message}</div>}
 
             {/* Hidden File Inputs for quick image setting */}
