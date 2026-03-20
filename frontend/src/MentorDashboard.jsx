@@ -1123,7 +1123,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     
                                     <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
                                         <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
-                                            {['All', ...new Set((profile.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
+                                            {['All'].map(tab => (
                                                 <button 
                                                     key={tab}
                                                     onClick={() => setActiveServiceTab(tab)}
@@ -1662,7 +1662,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
                                                 <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
-                                                    {['All', ...new Set((profile.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
+                                                    {['All'].map(tab => (
                                                         <button 
                                                             key={tab}
                                                             onClick={() => setActiveServiceTab(tab)}
@@ -1675,7 +1675,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                                 textAlign: 'center', 
                                                                 padding: '0.4rem 0.8rem', 
                                                                 borderRadius: '8px', 
-                                                                fontSize: '0.85rem', 
+                                                                fontSize: '0.8rem', 
                                                                 fontWeight: activeServiceTab === tab ? 'bold' : '500', 
                                                                 color: activeServiceTab === tab ? '#1e293b' : '#64748b', 
                                                                 boxShadow: activeServiceTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
