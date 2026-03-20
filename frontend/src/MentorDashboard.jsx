@@ -1246,7 +1246,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     {/* Dynamic Services Mapping */}
-                                    <div style={{ maxHeight: '380px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                    <div style={{ maxHeight: '270px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
                                         {(profile.services || [])
                                             .filter(s => {
                                                 const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
@@ -1793,7 +1793,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 </div>
                                             </div>
                                               {/* Dynamic Services Mapping */}
-                                              <div style={{ maxHeight: '380px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                              <div style={{ maxHeight: '270px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
                                                 {(profile.services || [])
                                                     .filter(s => {
                                                         const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
