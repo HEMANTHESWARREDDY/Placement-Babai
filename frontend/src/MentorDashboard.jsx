@@ -16,6 +16,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
+    const [showAnalytics, setShowAnalytics] = useState(false);
+    const [dailyViews, setDailyViews] = useState({});
+    const [viewFilter, setViewFilter] = useState('7days'); // 'today', '7days', '30days', 'all'
+    
     
     // Custom UI States
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -41,6 +45,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     }, [profile?.id]);
 
     useEffect(() => {
+        if (profile?.id && showAnalytics) {
+            fetch(`${API_BASE_URL}/api/mentors/${profile.id}/analytics/views`)
+                .then(res => res.json())
+                .then(data => setDailyViews(data))
+                .catch(err => console.error("Error fetching views:", err));
+        }
+    }, [profile?.id, showAnalytics]);
+    
+
+    useEffect(() => {
         if (profile && initialProfile) {
             // Compare relevant fields for changes
             const profileStr = JSON.stringify({ ...profile, services: JSON.stringify(profile.services) });
@@ -59,6 +73,26 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         } catch (e) {
             console.error("Error fetching bookings:", e);
         }
+    };
+
+    const getFilteredViews = () => {
+        const sortedDates = Object.keys(dailyViews).sort((a,b) => new Date(b) - new Date(a));
+        const now = new Date();
+        
+        return sortedDates.filter(date => {
+            const d = new Date(date);
+            const diff = (now - d.getTime()) / (1000 * 60 * 60 * 24);
+            
+            if (viewFilter === 'today') return d.toDateString() === now.toDateString();
+            if (viewFilter === '7days') return diff <= 7;
+            if (viewFilter === '30days') return diff <= 30;
+            return true;
+        });
+    };
+
+    const getTotalViews = () => {
+        const filteredDates = getFilteredViews();
+        return filteredDates.reduce((acc, date) => acc + dailyViews[date], 0);
     };
 
     const updateBookingStatus = async (id, status) => {
@@ -305,11 +339,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <ul className="nav-links">
                             <li>
                                 <a href="#" 
-                                   className={(!showBookings && !isEditingProfile) ? 'active-nav' : ''} 
+                                   className={(!showBookings && !isEditingProfile && !showAnalytics) ? 'active-nav' : ''} 
                                    onClick={(e) => { 
                                        e.preventDefault(); 
                                        setShowBookings(false); 
                                        setIsEditingProfile(false); 
+                                       setShowAnalytics(false);
                                    }}>
                                     Profile
                                 </a>
@@ -319,8 +354,19 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     e.preventDefault(); 
                                     setShowBookings(true); 
                                     setIsEditingProfile(false); 
+                                    setShowAnalytics(false);
                                 }}>
                                     View Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className={showAnalytics ? 'active-nav' : ''} onClick={(e) => { 
+                                    e.preventDefault(); 
+                                    setShowAnalytics(true); 
+                                    setShowBookings(false); 
+                                    setIsEditingProfile(false); 
+                                }}>
+                                    Analytics
                                 </a>
                             </li>
                             <li>
@@ -334,7 +380,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             </header>
 
             <div style={{padding: '2.5rem 2rem'}}>
-                {(!showBookings && !isEditingProfile) && (
+                {(!showBookings && !isEditingProfile && !showAnalytics) && (
+
                     <div style={{
                         maxWidth: '1200px',
                         margin: '0 auto 2rem auto',
@@ -972,6 +1019,70 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 </div>
             </div>
+            )}
+            {showAnalytics && (
+                <div className="analytics-section">
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
+                        <h2 style={{fontSize: '20px', fontWeight: 800, margin: 0, color: '#0f172a'}}>Dashboard Analytics</h2>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                            <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
+                            <select 
+                                value={viewFilter} 
+                                onChange={(e) => setViewFilter(e.target.value)}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '10px',
+                                    border: '1px solid #e2e8f0',
+                                    background: 'white',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '600',
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <option value="today">Today</option>
+                                <option value="7days">Last 7 Days</option>
+                                <option value="30days">Last 30 Days</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="stats-grid">
+                        <div className="stat-card-custom">
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{viewFilter === 'all' ? (profile.profileViews || 0) : getTotalViews()}</h3>
+                            <p style={{color: '#64748b', fontWeight: '600'}}>Profile Views</p>
+                        </div>
+                        <div className="stat-card-custom">
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{bookings.length}</h3>
+                            <p style={{color: '#64748b', fontWeight: '600'}}>Total Bookings</p>
+                        </div>
+                        <div className="stat-card-custom">
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{bookings.filter(b => b.status === 'COMPLETED').length}</h3>
+                            <p style={{color: '#64748b', fontWeight: '600'}}>Sessions Completed</p>
+                        </div>
+                        <div className="stat-card-custom">
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>₹{(bookings.filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}</h3>
+                            <p style={{color: '#64748b', fontWeight: '600'}}>Total Earnings</p>
+                        </div>
+                    </div>
+
+                    <div style={{marginTop: '3rem', background: 'white', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9'}}>
+                        <h3 style={{marginTop: 0, marginBottom: '1.5rem', fontSize: '1.25rem', fontWeight: '800'}}>Profile Views History</h3>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                            {getFilteredViews().length > 0 ? getFilteredViews().map(date => (
+                                <div key={date} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#f8fafc', borderRadius: '12px'}}>
+                                    <span style={{fontWeight: '700', color: '#475569'}}>{new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                    <span style={{background: '#e0e7ff', color: '#4338ca', padding: '4px 12px', borderRadius: '20px', fontWeight: '800', fontSize: '0.9rem'}}>{dailyViews[date]} Views</span>
+                                </div>
+                            )) : (
+                                <div style={{textAlign: 'center', padding: '3rem', color: '#94a3b8', fontWeight: '600'}}>
+                                    No view data available for this period.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Profile Preview Modal */}
