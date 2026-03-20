@@ -100,7 +100,8 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                         { icon: '📄', label: 'CV Review' },
                         { icon: '👨‍💻', label: 'Interview Preparation' },
                         { icon: '💼', label: 'Career Guidance' },
-                        { icon: '✨', label: 'Personal Branding' }
+                        { icon: '✨', label: 'Personal Branding' },
+                        { icon: '🤝', label: '1:1 Mentorship' }
                     ].map((cat, i) => (
                         <div className="aml-category-card" key={i}>
                             <div className="aml-cat-icon">{cat.icon}</div>
