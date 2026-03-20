@@ -1178,19 +1178,25 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
-                                    {getFilteredBookings(recordSearchDate).length}
+                                    {recordSearchDate ? getFilteredBookings(recordSearchDate).length : bookings.length}
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Bookings</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
-                                    {getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length}
+                                    {recordSearchDate ? 
+                                        getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length : 
+                                        bookings.filter(b => b.status === 'COMPLETED').length
+                                    }
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Completed</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: '#fbbf24', marginBottom: '4px'}}>
-                                    ₹{(getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}
+                                    ₹{(recordSearchDate ? 
+                                        getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length * 499 : 
+                                        bookings.filter(b => b.status === 'COMPLETED').length * 499
+                                    ).toLocaleString()}
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Earnings</div>
                             </div>
