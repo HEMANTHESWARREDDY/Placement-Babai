@@ -278,7 +278,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     isAvailable: data.isAvailable === true,
                     services: (data.services && data.services !== '[]' && data.services !== 'null') 
                         ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) 
-                        : [{ keywords: '', title: '', price: '0', tag: '' }]
+                        : [
+                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: 'One-to-One Mentorship', price: '0', tag: '✨ Popular' },
+                            { keywords: 'Resume Review, ATS Optimization, Profile Evaluation', title: 'Resume Review', price: '0', tag: '⭐ Best Seller' }
+                          ]
                 };
                 setProfile(profileData);
                 setInitialProfile(JSON.parse(JSON.stringify(profileData)));
