@@ -1039,55 +1039,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
                         <h2 style={{fontSize: '20px', fontWeight: 800, margin: 0, color: '#0f172a'}}>Dashboard Analytics</h2>
                         <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-                            {!selectedDate && (
-                                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                    <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
-                                    <select 
-                                        value={viewFilter} 
-                                        onChange={(e) => {
-                                            setViewFilter(e.target.value);
-                                            setSelectedDate('');
-                                        }}
-                                        style={{
-                                            padding: '8px 16px',
-                                            borderRadius: '10px',
-                                            border: '1px solid #e2e8f0',
-                                            background: 'white',
-                                            fontSize: '0.9rem',
-                                            fontWeight: '600',
-                                            outline: 'none',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        <option value="hourly">Hourly</option>
-                                        <option value="6hours">Last 6 Hours</option>
-                                        <option value="12hours">Last 12 Hours</option>
-                                        <option value="today">Today</option>
-                                        <option value="7days">Last 7 Days</option>
-                                        <option value="30days">Last 30 Days</option>
-                                        <option value="all">All Time</option>
-                                    </select>
-                                </div>
-                            )}
-
-                            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>
-                                    {selectedDate ? '📅 Looking at:' : 'Filter by Date:'}
-                                </span>
-                                {selectedDate && (
-                                    <span 
-                                        onClick={() => setSelectedDate('')}
-                                        style={{fontSize: '12px', color: '#3b82f6', cursor: 'pointer', fontWeight: '700', padding: '4px 8px', background: '#eff6ff', borderRadius: '6px'}}
-                                    >
-                                        Clear & Reset
-                                    </span>
-                                )}
-                                <input 
-                                    type="date"
-                                    value={selectedDate}
-                                    onChange={(e) => setSelectedDate(e.target.value)}
+                            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
+                                <select 
+                                    value={viewFilter} 
+                                    onChange={(e) => {
+                                        setViewFilter(e.target.value);
+                                        setSelectedDate('');
+                                    }}
                                     style={{
-                                        padding: '8px 12px',
+                                        padding: '8px 16px',
                                         borderRadius: '10px',
                                         border: '1px solid #e2e8f0',
                                         background: 'white',
@@ -1096,10 +1057,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         outline: 'none',
                                         cursor: 'pointer'
                                     }}
-                                />
+                                >
+                                    <option value="all">All Time (Default)</option>
+                                    <option value="hourly">Hourly</option>
+                                    <option value="6hours">Last 6 Hours</option>
+                                    <option value="12hours">Last 12 Hours</option>
+                                    <option value="today">Today</option>
+                                    <option value="7days">Last 7 Days</option>
+                                    <option value="30days">Last 30 Days</option>
+                                </select>
                             </div>
+                        </div>
                     </div>
-                </div>
 
                     <div className="stats-grid">
                         <div className="stat-card-custom">
@@ -1123,9 +1092,40 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                     <div style={{marginTop: '2rem', background: '#0f172a', padding: '2rem', borderRadius: '24px', color: 'white', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.2)'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem'}}>
-                            <div style={{minWidth: '240px'}}>
-                                <h3 style={{margin: 0, fontSize: '1.25rem', fontWeight: '800', color: '#818cf8'}}>Lifetime Mentor Record</h3>
-                                <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.9rem', lineHeight: '1.5'}}>Your overall professional impact and performance since joining the platform.</p>
+                            <div style={{minWidth: '240px', display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                                <div>
+                                    <h3 style={{margin: 0, fontSize: '1.25rem', fontWeight: '800', color: '#818cf8'}}>Lifetime Mentor Record</h3>
+                                    <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.9rem', lineHeight: '1.5'}}>Your overall professional impact since joining.</p>
+                                </div>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)'}}>
+                                    <span style={{fontSize: '0.8rem', fontWeight: '800', color: '#818cf8', opacity: 0.9}}>📅 SEARCH DATE:</span>
+                                    <input 
+                                        type="date"
+                                        value={selectedDate}
+                                        onChange={(e) => {
+                                            setSelectedDate(e.target.value);
+                                            if (e.target.value) setViewFilter('all');
+                                        }}
+                                        style={{
+                                            padding: '4px 8px',
+                                            borderRadius: '6px',
+                                            border: 'none',
+                                            background: 'rgba(255,255,255,0.1)',
+                                            color: 'white',
+                                            fontSize: '0.85rem',
+                                            outline: 'none',
+                                            cursor: 'pointer'
+                                        }}
+                                    />
+                                    {selectedDate && (
+                                        <button 
+                                            onClick={() => setSelectedDate('')}
+                                            style={{background: '#3b82f6', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: '800', cursor: 'pointer'}}
+                                        >
+                                            RESET
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                             <div style={{display: 'flex', gap: '2rem', flex: 1, justifyContent: 'flex-end', flexWrap: 'wrap', minWidth: '280px'}}>
                                 <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.25rem 2rem', borderRadius: '16px', minWidth: '120px', flex: 1}}>
