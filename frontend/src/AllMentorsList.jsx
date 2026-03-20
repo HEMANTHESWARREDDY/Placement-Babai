@@ -134,7 +134,22 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                         <button className="aml-filter-btn aml-filter-active">
                             Top Mentor
                         </button>
-                        <div className="aml-dropdown-container" ref={sortMenuRef}>
+                        <div className="aml-featured-pill">
+                            Featured
+                        </div>
+                    </div>
+                    <div className="aml-filters-right">
+                        <div className="aml-search-box">
+                            <span className="aml-search-icon">🔍</span>
+                            <input 
+                                type="text" 
+                                placeholder="Search Mentors" 
+                                className="aml-search-input"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <div className="aml-dropdown-container" ref={sortMenuRef} style={{ marginLeft: '0.8rem' }}>
                             <button 
                                 className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
                                 onClick={() => setShowSortMenu(!showSortMenu)}
@@ -172,21 +187,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                     </div>
                                 </>
                             )}
-                        </div>
-                        <div className="aml-featured-pill">
-                            Featured
-                        </div>
-                    </div>
-                    <div className="aml-filters-right">
-                        <div className="aml-search-box">
-                            <span className="aml-search-icon">🔍</span>
-                            <input 
-                                type="text" 
-                                placeholder="Search Mentors" 
-                                className="aml-search-input"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
                         </div>
                     </div>
                 </div>
