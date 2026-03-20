@@ -1038,59 +1038,68 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="analytics-section">
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
                         <h2 style={{fontSize: '20px', fontWeight: 800, margin: 0, color: '#0f172a'}}>Dashboard Analytics</h2>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                            <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
-                            <select 
-                                value={viewFilter} 
-                                onChange={(e) => {
-                                    setViewFilter(e.target.value);
-                                    setSelectedDate('');
-                                }}
-                                style={{
-                                    padding: '8px 16px',
-                                    borderRadius: '10px',
-                                    border: '1px solid #e2e8f0',
-                                    background: 'white',
-                                    fontSize: '0.9rem',
-                                    fontWeight: '600',
-                                    outline: 'none',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <option value="hourly">Hourly</option>
-                                <option value="6hours">Last 6 Hours</option>
-                                <option value="12hours">Last 12 Hours</option>
-                                <option value="today">Today</option>
-                                <option value="7days">Last 7 Days</option>
-                                <option value="30days">Last 30 Days</option>
-                                <option value="all">All Time</option>
-                            </select>
-                            <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600, marginLeft: '10px'}}>By Date:</span>
-                            {selectedDate && (
-                                <span 
-                                    onClick={() => setSelectedDate('')}
-                                    style={{fontSize: '12px', color: '#3b82f6', cursor: 'pointer', marginLeft: '5px', fontWeight: '700'}}
-                                >
-                                    (Clear)
-                                </span>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                            {!selectedDate && (
+                                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                    <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
+                                    <select 
+                                        value={viewFilter} 
+                                        onChange={(e) => {
+                                            setViewFilter(e.target.value);
+                                            setSelectedDate('');
+                                        }}
+                                        style={{
+                                            padding: '8px 16px',
+                                            borderRadius: '10px',
+                                            border: '1px solid #e2e8f0',
+                                            background: 'white',
+                                            fontSize: '0.9rem',
+                                            fontWeight: '600',
+                                            outline: 'none',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        <option value="hourly">Hourly</option>
+                                        <option value="6hours">Last 6 Hours</option>
+                                        <option value="12hours">Last 12 Hours</option>
+                                        <option value="today">Today</option>
+                                        <option value="7days">Last 7 Days</option>
+                                        <option value="30days">Last 30 Days</option>
+                                        <option value="all">All Time</option>
+                                    </select>
+                                </div>
                             )}
-                            <input 
-                                type="date"
-                                value={selectedDate}
-                                onChange={(e) => setSelectedDate(e.target.value)}
-                                style={{
-                                    padding: '8px 16px',
-                                    borderRadius: '10px',
-                                    border: '1px solid #e2e8f0',
-                                    background: 'white',
-                                    fontSize: '0.9rem',
-                                    fontWeight: '600',
-                                    outline: 'none',
-                                    cursor: 'pointer'
-                                }}
-                            />
-                        </div>
+
+                            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>
+                                    {selectedDate ? '📅 Looking at:' : 'Filter by Date:'}
+                                </span>
+                                {selectedDate && (
+                                    <span 
+                                        onClick={() => setSelectedDate('')}
+                                        style={{fontSize: '12px', color: '#3b82f6', cursor: 'pointer', fontWeight: '700', padding: '4px 8px', background: '#eff6ff', borderRadius: '6px'}}
+                                    >
+                                        Clear & Reset
+                                    </span>
+                                )}
+                                <input 
+                                    type="date"
+                                    value={selectedDate}
+                                    onChange={(e) => setSelectedDate(e.target.value)}
+                                    style={{
+                                        padding: '8px 12px',
+                                        borderRadius: '10px',
+                                        border: '1px solid #e2e8f0',
+                                        background: 'white',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '600',
+                                        outline: 'none',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                            </div>
                     </div>
+                </div>
 
                     <div className="stats-grid">
                         <div className="stat-card-custom">
