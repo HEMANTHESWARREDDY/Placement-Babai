@@ -67,27 +67,29 @@
     position: absolute;
     top: 15px;
     right: 20px;
-    width: 36px;
-    height: 36px;
-    background: white;
-    border: 1px solid #e2e8f0;
-    color: #1e293b;
+    width: 40px;
+    height: 40px;
+    background: white !important;
+    border: 2px solid #ef4444 !important; /* Red border */
+    color: #ef4444 !important; /* Red X */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.1rem;
-    z-index: 2100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.5rem !important;
+    font-weight: 900 !important;
+    z-index: 10000 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 0 !important;
+    line-height: 1 !important;
 }
 
 .preview-modal-close:hover {
-    background: #f8fafc;
-    transform: scale(1.1) rotate(90deg);
-    color: #ef4444; /* Turns red on hover for clarity (optional, but good) */
-    border-color: #cbd5e1;
+    background: #ef4444 !important;
+    color: white !important;
+    transform: scale(1.1) rotate(90deg) !important;
 }
 
 /* Review Preview Styles (Copied from MentorDashboard.css for Parity) */

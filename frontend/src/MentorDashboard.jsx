@@ -1542,7 +1542,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             {showPreviewModal && (
                 <div className="preview-modal-overlay" onClick={() => setShowPreviewModal(false)}>
                     <div className="preview-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>✕</button>
+                        <button className="preview-modal-close" onClick={() => setShowPreviewModal(false)}>X</button>
                         <div className="preview-modal-scroll">
                         <div className="mentor-preview" style={{ width: '100%', margin: '0', boxShadow: 'none', borderRadius: '0' }}>
                         <div className="preview-header" style={{ 
