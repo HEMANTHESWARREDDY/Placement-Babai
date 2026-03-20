@@ -279,7 +279,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     services: (data.services && data.services !== '[]' && data.services !== 'null') 
                         ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) 
                         : [
-                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: 'One-to-One Mentorship', price: 'Free', tag: '✨ Popular' },
+                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: '1:1 Mentorship', price: 'Free', tag: '✨ Popular' },
                             { keywords: 'Resume Review, ATS Optimization, Profile Evaluation', title: 'Resume Review', price: 'Free', tag: '⭐ Best Seller' }
                           ]
                 };
@@ -1274,29 +1274,24 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 onClick={() => isEditingProfile && openEditService(service, index)}
                                                 >
                                                     {isEditingProfile && (
-                                                        <div className="service-edit-overlay" style={{
+                                                        <div className="service-edit-icon" style={{
                                                             position: 'absolute',
-                                                            top: 0, left: 0, right: 0, bottom: 0,
-                                                            background: 'rgba(124, 58, 237, 0.05)',
-                                                            borderRadius: '12px',
+                                                            top: '12px',
+                                                            right: '35px',
+                                                            background: 'white',
+                                                            width: '24px',
+                                                            height: '24px',
+                                                            borderRadius: '50%',
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
-                                                            opacity: 0,
-                                                            transition: '0.3s',
-                                                            zIndex: 1
-                                                        }}
-                                                        onMouseOver={(e) => e.currentTarget.style.opacity = 1}
-                                                        onMouseOut={(e) => e.currentTarget.style.opacity = 0}
-                                                        >
-                                                            <span style={{
-                                                                background: 'white',
-                                                                padding: '8px 16px',
-                                                                borderRadius: '20px',
-                                                                fontWeight: '700',
-                                                                color: '#7c3aed',
-                                                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                                            }}>Click to Edit</span>
+                                                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                                            color: '#7c3aed',
+                                                            fontSize: '12px',
+                                                            zIndex: 5,
+                                                            border: '1px solid #e2e8f0'
+                                                        }}>
+                                                            ✏️
                                                         </div>
                                                     )}
                                                     
