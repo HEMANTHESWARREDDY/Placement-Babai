@@ -1672,8 +1672,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             borderRadius: '12px', 
                                             border: '1px solid #e2e8f0'
                                         }}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
-                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'hidden', paddingBottom: '2px' }}>
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
+                                                {/* Tabs/Filter Chips */}
+                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                                                     {['All', ...new Set((profile.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
                                                         <button 
                                                             key={tab}
@@ -1698,97 +1699,101 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     ))}
                                                 </div>
 
-                                                {/* Search with Suggestions */}
-                                                <div style={{ position: 'relative', width: '100%', maxWidth: '250px' }} className="service-search-wrapper">
+                                                {/* Search & Sort Grouped */}
+                                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                                                    {/* Search Bar */}
+                                                    <div style={{ position: 'relative', width: '180px' }} className="service-search-wrapper">
+                                                        <div style={{ position: 'relative' }}>
+                                                            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
+                                                            <input 
+                                                                type="text" 
+                                                                placeholder="Search..." 
+                                                                value={serviceSearch}
+                                                                onChange={(e) => setServiceSearch(e.target.value)}
+                                                                style={{
+                                                                    width: '100%',
+                                                                    boxSizing: 'border-box',
+                                                                    padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+                                                                    borderRadius: '10px',
+                                                                    border: '1px solid #cbd5e1',
+                                                                    background: 'white',
+                                                                    fontSize: '0.85rem',
+                                                                    outline: 'none',
+                                                                    color: '#1e293b'
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        {serviceSearch.trim() && (
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                top: '100%',
+                                                                left: 0,
+                                                                right: 0,
+                                                                background: 'white',
+                                                                borderRadius: '10px',
+                                                                border: '1px solid #e2e8f0',
+                                                                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+                                                                zIndex: 10,
+                                                                marginTop: '4px',
+                                                                maxHeight: '200px',
+                                                                overflowY: 'auto'
+                                                            }}>
+                                                                {(profile.services || [])
+                                                                    .filter(s => 
+                                                                        (s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                                         s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase())) &&
+                                                                        s.title?.toLowerCase() !== serviceSearch.toLowerCase()
+                                                                    )
+                                                                    .slice(0, 3)
+                                                                    .map((s, i) => (
+                                                                        <div 
+                                                                            key={i}
+                                                                            onClick={() => setServiceSearch(s.title)}
+                                                                            style={{
+                                                                                padding: '0.5rem 1rem',
+                                                                                fontSize: '0.8rem',
+                                                                                color: '#475569',
+                                                                                cursor: 'pointer',
+                                                                                borderBottom: i < 2 ? '1px solid #f1f5f9' : 'none'
+                                                                            }}
+                                                                            onMouseOver={(e) => e.target.style.background = '#f8fafc'}
+                                                                            onMouseOut={(e) => e.target.style.background = 'white'}
+                                                                        >
+                                                                            {s.title}
+                                                                        </div>
+                                                                    ))
+                                                                }
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Sort Dropdown */}
                                                     <div style={{ position: 'relative' }}>
-                                                        <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
-                                                        <input 
-                                                            type="text" 
-                                                            placeholder="Search services..." 
-                                                            value={serviceSearch}
-                                                            onChange={(e) => setServiceSearch(e.target.value)}
+                                                        <select 
+                                                            value={serviceSort}
+                                                            onChange={(e) => setServiceSort(e.target.value)}
                                                             style={{
-                                                                width: '100%',
-                                                                boxSizing: 'border-box',
-                                                                padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+                                                                padding: '0.5rem 1.8rem 0.5rem 0.8rem',
                                                                 borderRadius: '10px',
                                                                 border: '1px solid #cbd5e1',
                                                                 background: 'white',
                                                                 fontSize: '0.85rem',
+                                                                color: '#475569',
                                                                 outline: 'none',
-                                                                color: '#1e293b'
+                                                                appearance: 'none',
+                                                                fontWeight: '600',
+                                                                cursor: 'pointer'
                                                             }}
-                                                        />
+                                                        >
+                                                            <option value="A-Z">Sort: A-Z</option>
+                                                            <option value="Z-A">Sort: Z-A</option>
+                                                            <option value="Newest">Sort: Newest</option>
+                                                        </select>
+                                                        <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
                                                     </div>
-                                                    {serviceSearch.trim() && (
-                                                        <div style={{
-                                                            position: 'absolute',
-                                                            top: '100%',
-                                                            left: 0,
-                                                            right: 0,
-                                                            background: 'white',
-                                                            borderRadius: '10px',
-                                                            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-                                                            border: '1px solid #f1f5f9',
-                                                            zIndex: 10,
-                                                            marginTop: '6px',
-                                                            overflow: 'hidden'
-                                                        }}>
-                                                            {(profile.services || [])
-                                                                .filter(s => 
-                                                                    (s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
-                                                                     s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase())) &&
-                                                                    s.title?.toLowerCase() !== serviceSearch.toLowerCase()
-                                                                )
-                                                                .slice(0, 3)
-                                                                .map((s, i) => (
-                                                                    <div 
-                                                                        key={i}
-                                                                        onClick={() => setServiceSearch(s.title)}
-                                                                        style={{
-                                                                            padding: '0.5rem 1rem',
-                                                                            fontSize: '0.8rem',
-                                                                            color: '#475569',
-                                                                            cursor: 'pointer',
-                                                                            borderBottom: i < 2 ? '1px solid #f1f5f9' : 'none'
-                                                                        }}
-                                                                        onMouseOver={(e) => e.target.style.background = '#f8fafc'}
-                                                                        onMouseOut={(e) => e.target.style.background = 'white'}
-                                                                    >
-                                                                        {s.title}
-                                                                    </div>
-                                                                ))
-                                                            }
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Sort Option */}
-                                                <div style={{ position: 'relative' }}>
-                                                    <select 
-                                                        value={serviceSort}
-                                                        onChange={(e) => setServiceSort(e.target.value)}
-                                                        style={{
-                                                            padding: '0.5rem 1.8rem 0.5rem 0.8rem',
-                                                            borderRadius: '10px',
-                                                            border: '1px solid #cbd5e1',
-                                                            background: 'white',
-                                                            fontSize: '0.85rem',
-                                                            color: '#475569',
-                                                            outline: 'none',
-                                                            appearance: 'none',
-                                                            fontWeight: '600',
-                                                            cursor: 'pointer'
-                                                        }}
-                                                    >
-                                                        <option value="A-Z">Sort: A-Z</option>
-                                                        <option value="Z-A">Sort: Z-A</option>
-                                                        <option value="Newest">Sort: Newest</option>
-                                                        <option value="Oldest">Sort: Oldest</option>
-                                                    </select>
-                                                    <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
                                                 </div>
                                             </div>
+
                                               {/* Dynamic Services Mapping */}
                                               <div style={{ maxHeight: '350px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
                                                 {(profile.services || [])

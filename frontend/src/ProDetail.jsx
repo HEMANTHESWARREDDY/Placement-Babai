@@ -203,9 +203,9 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
                                                 {/* Tabs/Filter Chips */}
-                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'hidden', paddingBottom: '2px' }}>
+                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                                                     {['All', ...new Set((pro.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
                                                         <button 
                                                             key={tab}
@@ -230,53 +230,57 @@ function ProDetail({ pro, onClose }) {
                                                     ))}
                                                 </div>
 
-                                                {/* Search Bar */}
-                                                <div style={{ position: 'relative', width: '100%', maxWidth: '250px' }}>
-                                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
-                                                    <input 
-                                                        type="text" 
-                                                        placeholder="Search services..." 
-                                                        value={serviceSearch}
-                                                        onChange={(e) => setServiceSearch(e.target.value)}
-                                                        style={{
-                                                            width: '100%',
-                                                            boxSizing: 'border-box',
-                                                            padding: '0.5rem 0.5rem 0.5rem 2.2rem',
-                                                            borderRadius: '10px',
-                                                            border: '1px solid #cbd5e1',
-                                                            background: 'white',
-                                                            fontSize: '0.85rem',
-                                                            outline: 'none',
-                                                            color: '#1e293b'
-                                                        }}
-                                                    />
-                                                </div>
+                                                {/* Search & Sort Grouped */}
+                                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                                                    {/* Search Bar */}
+                                                    <div style={{ position: 'relative', width: '180px' }}>
+                                                        <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Search..." 
+                                                            value={serviceSearch}
+                                                            onChange={(e) => setServiceSearch(e.target.value)}
+                                                            style={{
+                                                                width: '100%',
+                                                                boxSizing: 'border-box',
+                                                                padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+                                                                borderRadius: '10px',
+                                                                border: '1px solid #cbd5e1',
+                                                                background: 'white',
+                                                                fontSize: '0.85rem',
+                                                                outline: 'none',
+                                                                color: '#1e293b'
+                                                            }}
+                                                        />
+                                                    </div>
 
-                                                {/* Sort Dropdown */}
-                                                <div style={{ position: 'relative' }}>
-                                                    <select 
-                                                        value={serviceSort}
-                                                        onChange={(e) => setServiceSort(e.target.value)}
-                                                        style={{
-                                                            padding: '0.5rem 1.8rem 0.5rem 0.8rem',
-                                                            borderRadius: '10px',
-                                                            border: '1px solid #cbd5e1',
-                                                            background: 'white',
-                                                            fontSize: '0.85rem',
-                                                            color: '#475569',
-                                                            outline: 'none',
-                                                            appearance: 'none',
-                                                            fontWeight: '600',
-                                                            cursor: 'pointer'
-                                                        }}
-                                                    >
-                                                        <option value="A-Z">A-Z</option>
-                                                        <option value="Z-A">Z-A</option>
-                                                        <option value="Newest">Newest</option>
-                                                    </select>
-                                                    <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
+                                                    {/* Sort Dropdown */}
+                                                    <div style={{ position: 'relative' }}>
+                                                        <select 
+                                                            value={serviceSort}
+                                                            onChange={(e) => setServiceSort(e.target.value)}
+                                                            style={{
+                                                                padding: '0.5rem 1.8rem 0.5rem 0.8rem',
+                                                                borderRadius: '10px',
+                                                                border: '1px solid #cbd5e1',
+                                                                background: 'white',
+                                                                fontSize: '0.85rem',
+                                                                color: '#475569',
+                                                                outline: 'none',
+                                                                appearance: 'none',
+                                                                fontWeight: '600',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            <option value="A-Z">A-Z</option>
+                                                            <option value="Z-A">Z-A</option>
+                                                            <option value="Newest">Newest</option>
+                                                        </select>
+                                                        <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
+                                                    </div>
                                                 </div>
                                             </div>
+
 
                                             {/* Dynamic Services Mapping */}
                                             <div style={{ maxHeight: '450px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
