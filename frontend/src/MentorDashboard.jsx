@@ -310,7 +310,19 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
-    const [serviceModal, setServiceModal] = useState({ isOpen: false, isNew: false, service: null, index: -1 });
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, onConfirm: null, message: '', title: '' });
+
+    const showConfirm = (title, message, onConfirm) => {
+        setConfirmModal({
+            isOpen: true,
+            title,
+            message,
+            onConfirm: () => {
+                onConfirm();
+                setConfirmModal({ ...confirmModal, isOpen: false });
+            }
+        });
+    };
 
     const openAddService = () => {
         setServiceModal({
@@ -349,12 +361,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const removeService = (index) => {
-        if (window.confirm('Are you sure you want to remove this service?')) {
-            setProfile(prev => ({
-                ...prev,
-                services: prev.services.filter((_, i) => i !== index)
-            }));
-        }
+        showConfirm(
+            '🗑️ Remove Service?',
+            'Are you sure you want to remove this service from your profile? This action cannot be undone.',
+            () => {
+                setProfile(prev => ({
+                    ...prev,
+                    services: prev.services.filter((_, i) => i !== index)
+                }));
+            }
+        );
     };
 
 
@@ -1679,7 +1695,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         type="text" 
                                         value={serviceModal.service.keywords || ''} 
                                         onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, keywords: e.target.value } })}
-                                        placeholder="e.g. Resume, Interview, Backend, Java"
+                                        placeholder="e.g. Mentorship, Career Path Guidance, Interview Clearance Path"
                                         style={{
                                             width: '100%',
                                             padding: '12px 16px',
@@ -1752,8 +1768,92 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 </div>
             )}
-            </div>
+
+            {/* Professional Custom Confirmation Modal */}
+            {confirmModal.isOpen && (
+                <div className="preview-modal-overlay" style={{ zIndex: 11000, background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)' }}>
+                    <div className="preview-modal-content" style={{ maxWidth: '400px', padding: 0, overflow: 'visible', background: 'transparent' }}>
+                        <div style={{
+                            background: 'white',
+                            borderRadius: '24px',
+                            overflow: 'hidden',
+                            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+                            textAlign: 'center'
+                        }}>
+                            <div style={{
+                                background: '#fef2f2',
+                                padding: '2rem 1.5rem 1.5rem',
+                                color: '#991b1b'
+                            }}>
+                                <div style={{ 
+                                    width: '64px', 
+                                    height: '64px', 
+                                    background: '#fee2e2', 
+                                    borderRadius: '50%', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    margin: '0 auto 1rem',
+                                    fontSize: '1.75rem'
+                                }}>⚠️</div>
+                                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '800' }}>{confirmModal.title}</h3>
+                            </div>
+                            
+                            <div style={{ padding: '1.5rem 1.75rem' }}>
+                                <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', lineHeight: '1.6', fontWeight: '500' }}>
+                                    {confirmModal.message}
+                                </p>
+                            </div>
+
+                            <div style={{ 
+                                padding: '1.25rem 1.5rem', 
+                                display: 'flex', 
+                                gap: '0.75rem', 
+                                background: '#f8fafc',
+                                borderTop: '1px solid #f1f5f9'
+                            }}>
+                                <button 
+                                    onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                                    style={{
+                                        flex: 1,
+                                        padding: '0.85rem',
+                                        borderRadius: '12px',
+                                        border: '1px solid #e2e8f0',
+                                        background: 'white',
+                                        color: '#64748b',
+                                        fontWeight: '700',
+                                        cursor: 'pointer',
+                                        transition: '0.2s'
+                                    }}
+                                    onMouseOver={(e) => e.target.style.background = '#f1f5f9'}
+                                    onMouseOut={(e) => e.target.style.background = 'white'}
+                                >No, Cancel</button>
+                                <button 
+                                    onClick={confirmModal.onConfirm}
+                                    style={{
+                                        flex: 1.5,
+                                        padding: '0.85rem',
+                                        borderRadius: '12px',
+                                        border: 'none',
+                                        background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                                        color: 'white',
+                                        fontWeight: '700',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
+                                        transition: '0.2s'
+                                    }}
+                                    onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                                    onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                                >Yes, Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            </main>
         </div>
+    </div>
     );
 }
 
