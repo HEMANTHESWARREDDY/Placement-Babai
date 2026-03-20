@@ -1246,7 +1246,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     {/* Dynamic Services Mapping */}
-                                    <div style={{ maxHeight: '270px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                    <div style={{ maxHeight: '350px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
                                         {(profile.services || [])
                                             .filter(s => {
                                                 const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
@@ -1267,7 +1267,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     background: 'rgba(255, 255, 255, 0.9)',
                                                     border: '1px solid #e2e8f0',
                                                     boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
-                                                    padding: '1rem',
+                                                    padding: '1.25rem',
                                                     borderRadius: '12px',
                                                     cursor: isEditingProfile ? 'pointer' : 'default'
                                                 }}
@@ -1276,20 +1276,22 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     {isEditingProfile && (
                                                         <div className="service-edit-icon" style={{
                                                             position: 'absolute',
-                                                            top: '12px',
-                                                            right: '35px',
-                                                            background: 'white',
-                                                            width: '24px',
-                                                            height: '24px',
+                                                            top: '10px',
+                                                            right: '48px',
+                                                            background: 'rgba(255, 255, 255, 0.95)',
+                                                            color: '#4f46e5',
+                                                            width: '28px',
+                                                            height: '28px',
                                                             borderRadius: '50%',
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
-                                                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                                                            color: '#7c3aed',
                                                             fontSize: '12px',
+                                                            cursor: 'pointer',
                                                             zIndex: 5,
-                                                            border: '1px solid #e2e8f0'
+                                                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                                            border: '1px solid #e2e8f0',
+                                                            transition: '0.2s'
                                                         }}>
                                                             ✏️
                                                         </div>
@@ -1300,15 +1302,15 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                             onClick={(e) => { e.stopPropagation(); removeService(index); }}
                                                             style={{
                                                                 position: 'absolute',
-                                                                top: '-8px',
-                                                                right: '-8px',
+                                                                top: '10px',
+                                                                right: '10px',
                                                                 background: 'linear-gradient(135deg, #f87171, #ef4444)',
                                                                 color: 'white',
                                                                 border: '2px solid white',
                                                                 borderRadius: '50%',
-                                                                width: '26px',
-                                                                height: '26px',
-                                                                fontSize: '11px',
+                                                                width: '28px',
+                                                                height: '28px',
+                                                                fontSize: '12px',
                                                                 cursor: 'pointer',
                                                                 display: 'flex',
                                                                 alignItems: 'center',
@@ -1788,7 +1790,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 </div>
                                             </div>
                                               {/* Dynamic Services Mapping */}
-                                              <div style={{ maxHeight: '270px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                              <div style={{ maxHeight: '350px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
                                                 {(profile.services || [])
                                                     .filter(s => {
                                                         const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
