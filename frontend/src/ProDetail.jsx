@@ -201,13 +201,14 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
-                                                {['All', '1:1 Call', 'Resume Review'].map(tab => (
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap'}}>
+                                                {['All', ...new Set((pro.services || []).map(s => s.type))].map(tab => (
                                                     <button 
                                                         key={tab}
                                                         onClick={() => setActiveTab(tab)}
                                                         style={{
                                                             flex: 1, 
+                                                            minWidth: '70px',
                                                             background: activeTab === tab ? 'white' : 'transparent', 
                                                             border: 'none', 
                                                             cursor: 'pointer', 
@@ -225,37 +226,33 @@ function ProDetail({ pro, onClose }) {
                                                 ))}
                                             </div>
 
-                                            {/* Filtered Services */}
-                                            {(activeTab === 'All' || activeTab === '1:1 Call') && (
-                                                <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
-                                                    <div className="preview-service-tag">⭐ BEST SELLER</div>
-                                                    <div className="preview-service-title">1:1 Call Mentorship</div>
-                                                    <div className="preview-service-footer">
-                                                        <div className="preview-service-price">₹499</div>
-                                                        <button 
-                                                            className="preview-book-btn"
-                                                            onClick={() => setBookingData({ pro, service: { title: '1:1 Call Mentorship', price: 499 } })}
-                                                        >
-                                                            Book Now
-                                                        </button>
+                                            {/* Dynamic Services Mapping */}
+                                            {(pro.services || [])
+                                                .filter(s => activeTab === 'All' || s.type === activeTab)
+                                                .map((service, index) => (
+                                                    <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
+                                                        {service.tag && (
+                                                            <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
+                                                                {service.tag}
+                                                            </div>
+                                                        )}
+                                                        <div className="preview-service-title">{service.title}</div>
+                                                        <div className="preview-service-footer">
+                                                            <div className="preview-service-price">{service.price}</div>
+                                                            <button 
+                                                                className="preview-book-btn"
+                                                                onClick={() => setBookingData({ pro, service })}
+                                                                style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
+                                                            >
+                                                                Book Now
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-
-                                            {(activeTab === 'All' || activeTab === 'Resume Review') && (
-                                                <div className="preview-service-card">
-                                                    <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
-                                                    <div className="preview-service-title">Resume Review</div>
-                                                    <div className="preview-service-footer">
-                                                        <div className="preview-service-price">₹199</div>
-                                                        <button 
-                                                            className="preview-book-btn" 
-                                                            style={{background: '#0f172a'}}
-                                                            onClick={() => setBookingData({ pro, service: { title: 'Resume Review', price: 199 } })}
-                                                        >
-                                                            Book Now
-                                                        </button>
-                                                    </div>
+                                                ))}
+                                            
+                                            {(pro.services || []).length === 0 && (
+                                                <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
+                                                    No services available at the moment.
                                                 </div>
                                             )}
                                         </div>

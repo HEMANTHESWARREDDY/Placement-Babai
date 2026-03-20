@@ -308,6 +308,34 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
+    const addService = () => {
+        const newService = {
+            type: '1:1 Call', // default type
+            title: 'New Service',
+            price: '₹0',
+            tag: 'NEW'
+        };
+        setProfile(prev => ({
+            ...prev,
+            services: [...(prev.services || []), newService]
+        }));
+    };
+
+    const removeService = (index) => {
+        setProfile(prev => ({
+            ...prev,
+            services: prev.services.filter((_, i) => i !== index)
+        }));
+    };
+
+    const updateServiceField = (index, field, value) => {
+        setProfile(prev => {
+            const newServices = [...(prev.services || [])];
+            newServices[index] = { ...newServices[index], [field]: value };
+            return { ...prev, services: newServices };
+        });
+    };
+
 
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
     const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -1000,16 +1028,41 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </div>
 
                             <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
-                                <h4>📅 Available Services</h4>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
+                                    <h4 style={{color: '#1e1b4b', margin: 0}}>📅 Available Services</h4>
+                                    {isEditingProfile && (
+                                        <button 
+                                            onClick={addService}
+                                            style={{
+                                                background: '#7c3aed',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '28px',
+                                                height: '28px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer',
+                                                fontSize: '1.2rem',
+                                                boxShadow: '0 2px 4px rgba(124, 58, 237, 0.3)'
+                                            }}
+                                            title="Add New Service"
+                                        >
+                                            +
+                                        </button>
+                                    )}
+                                </div>
                                 <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                     
-                                    <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
-                                        {['All', '1:1 Call', 'Resume Review'].map(tab => (
+                                    <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap'}}>
+                                        {['All', ...new Set((profile.services || []).map(s => s.type))].map(tab => (
                                             <button 
                                                 key={tab}
                                                 onClick={() => setActiveServiceTab(tab)}
                                                 style={{
                                                     flex: 1, 
+                                                    minWidth: '70px',
                                                     background: activeServiceTab === tab ? 'white' : 'transparent', 
                                                     border: 'none', 
                                                     cursor: 'pointer', 
@@ -1027,37 +1080,111 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         ))}
                                     </div>
 
-                                    {/* Filtered Services */}
-                                    {(activeServiceTab === 'All' || activeServiceTab === '1:1 Call') && (
-                                        <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
-                                            <div className="preview-service-tag">⭐ BEST SELLER</div>
-                                            <div className="preview-service-title">1:1 Call Mentorship</div>
-                                            <div className="preview-service-footer">
-                                                <div className="preview-service-price">₹499</div>
-                                                <button 
-                                                    className="preview-book-btn"
-                                                    onClick={() => setBookingData({ pro: profile, service: { title: '1:1 Call Mentorship', price: 499 } })}
-                                                >
-                                                    Book Now
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
+                                    {/* Dynamic Services Mapping */}
+                                    {(profile.services || [])
+                                        .filter(s => activeServiceTab === 'All' || s.type === activeServiceTab)
+                                        .map((service, index) => (
+                                            <div className="preview-service-card" key={index} style={{ position: 'relative', marginBottom: '1rem' }}>
+                                                {isEditingProfile && (
+                                                    <button 
+                                                        onClick={() => removeService(index)}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '-8px',
+                                                            right: '-8px',
+                                                            background: '#ef4444',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '50%',
+                                                            width: '20px',
+                                                            height: '20px',
+                                                            fontSize: '12px',
+                                                            cursor: 'pointer',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            zIndex: 5
+                                                        }}
+                                                        title="Remove Service"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                )}
+                                                
+                                                {isEditingProfile ? (
+                                                    <input 
+                                                        type="text" 
+                                                        value={service.tag || ''} 
+                                                        onChange={(e) => updateServiceField(index, 'tag', e.target.value)}
+                                                        className="preview-service-tag-edit"
+                                                        placeholder="Tag (e.g. ⭐ BEST SELLER)"
+                                                        style={{
+                                                            display: 'block',
+                                                            fontSize: '0.65rem',
+                                                            padding: '2px 6px',
+                                                            border: '1px solid #e2e8f0',
+                                                            borderRadius: '4px',
+                                                            marginBottom: '8px',
+                                                            width: 'fit-content'
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    service.tag && <div className="preview-service-tag">{service.tag}</div>
+                                                )}
 
-                                    {(activeServiceTab === 'All' || activeServiceTab === 'Resume Review') && (
-                                        <div className="preview-service-card">
-                                            <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
-                                            <div className="preview-service-title">Resume Review</div>
-                                            <div className="preview-service-footer">
-                                                <div className="preview-service-price">₹199</div>
-                                                <button 
-                                                    className="preview-book-btn" 
-                                                    style={{background: '#0f172a'}}
-                                                    onClick={() => setBookingData({ pro: profile, service: { title: 'Resume Review', price: 199 } })}
-                                                >
-                                                    Book Now
-                                                </button>
+                                                {isEditingProfile ? (
+                                                    <div style={{display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px'}}>
+                                                        <input 
+                                                            type="text" 
+                                                            value={service.title || ''} 
+                                                            onChange={(e) => updateServiceField(index, 'title', e.target.value)}
+                                                            placeholder="Service Title"
+                                                            style={{fontWeight: '700', border: '1px solid #e2e8f0', padding: '4px', borderRadius: '4px'}}
+                                                        />
+                                                        <select 
+                                                            value={service.type || '1:1 Call'} 
+                                                            onChange={(e) => updateServiceField(index, 'type', e.target.value)}
+                                                            style={{fontSize: '0.8rem', padding: '2px', border: '1px solid #e2e8f0', borderRadius: '4px'}}
+                                                        >
+                                                            <option value="1:1 Call">1:1 Call</option>
+                                                            <option value="Resume Review">Resume Review</option>
+                                                            <option value="Mock Interview">Mock Interview</option>
+                                                            <option value="Career Guidance">Career Guidance</option>
+                                                            <option value="Other">Other</option>
+                                                        </select>
+                                                    </div>
+                                                ) : (
+                                                    <div className="preview-service-title">{service.title}</div>
+                                                )}
+
+                                                <div className="preview-service-footer">
+                                                    {isEditingProfile ? (
+                                                        <input 
+                                                            type="text" 
+                                                            value={service.price || ''} 
+                                                            onChange={(e) => updateServiceField(index, 'price', e.target.value)}
+                                                            placeholder="Price (e.g. ₹499)"
+                                                            style={{width: '80px', border: '1px solid #e2e8f0', padding: '4px', borderRadius: '4px'}}
+                                                        />
+                                                    ) : (
+                                                        <div className="preview-service-price">{service.price}</div>
+                                                    )}
+                                                    <button 
+                                                        className="preview-book-btn"
+                                                        disabled={isEditingProfile}
+                                                        onClick={() => setBookingData({ pro: profile, service: service })}
+                                                        style={{ opacity: isEditingProfile ? 0.5 : 1 }}
+                                                    >
+                                                        Book Now
+                                                    </button>
+                                                </div>
                                             </div>
+                                        ))
+                                    }
+                                    
+                                    {(profile.services || []).length === 0 && (
+                                        <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
+                                            No services added yet.
                                         </div>
                                     )}
                                 </div>
@@ -1334,13 +1461,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                         <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem'}}>
-                                                {['All', '1:1 Call', 'Resume Review'].map(tab => (
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap'}}>
+                                                {['All', ...new Set((profile.services || []).map(s => s.type))].map(tab => (
                                                     <button 
                                                         key={tab}
                                                         onClick={() => setActiveServiceTab(tab)}
                                                         style={{
                                                             flex: 1, 
+                                                            minWidth: '70px',
                                                             background: activeServiceTab === tab ? 'white' : 'transparent', 
                                                             border: 'none', 
                                                             cursor: 'pointer', 
@@ -1358,36 +1486,33 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 ))}
                                             </div>
 
-                                            {(activeServiceTab === 'All' || activeServiceTab === '1:1 Call') && (
-                                                <div className="preview-service-card" style={{borderColor: '#bfdbfe'}}>
-                                                    <div className="preview-service-tag">⭐ BEST SELLER</div>
-                                                    <div className="preview-service-title">1:1 Call Mentorship</div>
-                                                    <div className="preview-service-footer">
-                                                        <div className="preview-service-price">₹499</div>
-                                                        <button 
-                                                            className="preview-book-btn"
-                                                            onClick={() => setBookingData({ pro: profile, service: { title: '1:1 Call Mentorship' } })}
-                                                        >
-                                                            Book Now
-                                                        </button>
+                                            {/* Dynamic Services Mapping */}
+                                            {(profile.services || [])
+                                                .filter(s => activeServiceTab === 'All' || s.type === activeServiceTab)
+                                                .map((service, index) => (
+                                                    <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
+                                                        {service.tag && (
+                                                            <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
+                                                                {service.tag}
+                                                            </div>
+                                                        )}
+                                                        <div className="preview-service-title">{service.title}</div>
+                                                        <div className="preview-service-footer">
+                                                            <div className="preview-service-price">{service.price}</div>
+                                                            <button 
+                                                                className="preview-book-btn"
+                                                                onClick={() => setBookingData({ pro: profile, service: service })}
+                                                                style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
+                                                            >
+                                                                Book Now
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                ))}
 
-                                            {(activeServiceTab === 'All' || activeServiceTab === 'Resume Review') && (
-                                                <div className="preview-service-card">
-                                                    <div className="preview-service-tag" style={{background: '#e0e7ff', color: '#4338ca'}}>📝 FEEDBACK</div>
-                                                    <div className="preview-service-title">Resume Review</div>
-                                                    <div className="preview-service-footer">
-                                                        <div className="preview-service-price">₹199</div>
-                                                        <button 
-                                                            className="preview-book-btn" 
-                                                            style={{background: '#0f172a'}}
-                                                            onClick={() => setBookingData({ pro: profile, service: { title: 'Resume Review' } })}
-                                                        >
-                                                            Book Now
-                                                        </button>
-                                                    </div>
+                                            {(profile.services || []).length === 0 && (
+                                                <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
+                                                    No services available at the moment.
                                                 </div>
                                             )}
                                         </div>
