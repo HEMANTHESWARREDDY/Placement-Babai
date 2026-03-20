@@ -92,7 +92,7 @@
 }
 
 .booking-modal-header {
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem; /* Reduced space */
 }
 
 .booking-modal-header h3 {
@@ -106,16 +106,25 @@
     letter-spacing: -0.02em;
 }
 
+.header-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Split Profile Left, Stepper Right */
+    gap: 20px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
 .mentor-mini-profile {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding: 10px 16px;
-    background: rgba(124, 58, 237, 0.05);
-    border: 1px solid rgba(124, 58, 237, 0.1);
+    gap: 10px;
+    padding: 6px 14px;
+    background: rgba(30, 64, 175, 0.05); /* Deeper blue tint */
+    border: 1px solid rgba(30, 64, 175, 0.1);
     border-radius: 50px;
     width: fit-content;
+    margin-top: 0; /* Reset */
 }
 
 .mentor-mini-profile p {
@@ -132,20 +141,12 @@
     object-fit: cover;
 }
 
-.summary-item {
-    font-weight: 600;
-    color: #0f172a; /* Darker */
-    margin-bottom: 4px;
-    font-size: 0.95rem;
-}
-
 .booking-steps-indicator {
     display: flex;
     align-items: center;
-    gap: 0;
-    margin-bottom: 3rem;
-    position: relative;
-    padding: 0 5%;
+    gap: 8px;
+    margin-bottom: 0; /* Inline now */
+    width: 100px; /* Precise width on right */
 }
 
 .step-item {
@@ -181,15 +182,15 @@
 
 .step-line {
     flex: 1;
-    height: 2px;
-    background: #f1f5f9;
-    border-radius: 1px;
+    height: 3px;
+    background: #e2e8f0;
+    border-radius: 2px;
 }
 
 .booking-form-simple {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem; /* Reduced from 1.5rem */
 }
 
 .form-group-simple {
@@ -256,8 +257,8 @@
 }
 
 .time-slots-section-modern {
-    margin-top: 0.5rem; /* Reduced from 1rem */
-    padding-top: 1rem; /* Reduced from 1.5rem */
+    margin-top: 0.25rem; /* Further reduced */
+    padding-top: 0.75rem;
     border-top: 1px solid #f1f5f9;
 }
 

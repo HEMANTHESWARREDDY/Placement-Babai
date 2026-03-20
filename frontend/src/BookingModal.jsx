@@ -223,23 +223,28 @@ const BookingModal = ({ pro, service, onClose }) => {
                 
                 <div className="booking-modal-header">
                     <h3>Book {service.title}</h3>
-                    <div className="mentor-mini-profile">
-                        <p>with</p>
-                        {pro.image ? (
-                            <img src={pro.image} alt={pro.name} className="mentor-header-avatar" />
-                        ) : (
-                            <div className="mentor-header-initials">
-                                {pro.name?.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
+                    <div className="header-meta-row">
+                        <div className="mentor-mini-profile">
+                            <p>with</p>
+                            {pro.image ? (
+                                <img src={pro.image} alt={pro.name} className="mentor-header-avatar" />
+                            ) : (
+                                <div className="mentor-header-initials">
+                                    {pro.name?.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
+                                </div>
+                            )}
+                            <p>{pro.name}</p>
+                        </div>
+                        <div className="booking-steps-indicator">
+                            <div className="step-item">
+                                <div className={`step-dot ${step >= 1 ? 'active' : ''}`}>1</div>
                             </div>
-                        )}
-                        <p>{pro.name}</p>
+                            <div className="step-line"></div>
+                            <div className="step-item">
+                                <div className={`step-dot ${step >= 2 ? 'active' : ''}`}>2</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div className="booking-steps-indicator">
-                    <div className={`step-dot ${step >= 1 ? 'active' : ''}`}>1</div>
-                    <div className="step-line"></div>
-                    <div className={`step-dot ${step >= 2 ? 'active' : ''}`}>2</div>
                 </div>
 
                 {step === 1 ? (
