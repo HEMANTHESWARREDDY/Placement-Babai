@@ -132,17 +132,11 @@
     object-fit: cover;
 }
 
-.mentor-header-initials {
-    width: 28px;
-    height: 28px;
-    background: #7c3aed;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
+.summary-item {
+    font-weight: 600;
+    color: #0f172a; /* Darker */
+    margin-bottom: 4px;
+    font-size: 0.95rem;
 }
 
 .booking-steps-indicator {
@@ -205,9 +199,9 @@
 }
 
 .form-group-simple label {
-    font-weight: 700;
-    color: #475569;
-    font-size: 0.9rem;
+    font-weight: 800;
+    color: #1e293b; /* Darkened as requested */
+    font-size: 0.95rem;
 }
 
 .simple-input, .simple-select {
@@ -288,12 +282,12 @@
 
 .section-small-label {
     display: block;
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #0f172a; /* Darkened as requested */
     text-transform: uppercase;
     margin-bottom: 12px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 .time-slots-grid-modern {
@@ -322,12 +316,12 @@
 }
 
 .time-slot-pill-modern.selected {
-    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%); /* Deeper Blue/Indigo combination */
     border-color: transparent;
     color: white;
     box-shadow: 
-        0 10px 15px -3px rgba(124, 58, 237, 0.3),
-        0 4px 6px -2px rgba(124, 58, 237, 0.1);
+        0 10px 15px -3px rgba(30, 64, 175, 0.3),
+        0 4px 6px -2px rgba(30, 64, 175, 0.1);
 }
 
 .time-slot-pill-modern.disabled {
@@ -347,7 +341,7 @@
 }
 
 .booking-next-btn-simple {
-    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%); /* Deeper Blue/Indigo combination */
     color: white;
     border: none;
     padding: 16px 28px;
@@ -361,13 +355,13 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 10px 20px rgba(30, 64, 175, 0.2);
 }
 
 .booking-next-btn-simple:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(124, 58, 237, 0.4);
-    filter: brightness(1.1);
+    box-shadow: 0 15px 30px rgba(30, 64, 175, 0.4);
+    filter: brightness(1.2);
 }
 
 .booking-next-btn-simple:disabled {
