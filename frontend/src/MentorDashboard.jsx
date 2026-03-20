@@ -1084,7 +1084,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                             <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
-                                    <div style={{color: '#1e1b4b', margin: 0}}></div>
+                                    <h4 style={{color: '#1e1b4b', margin: 0}}>📅 Available Services</h4>
                                     {isEditingProfile && (
                                         <button 
                                             onClick={openAddService}
@@ -1246,7 +1246,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     {/* Dynamic Services Mapping */}
-                                    <div style={{ maxHeight: '430px', overflowY: 'auto', paddingRight: '4px' }}>
+                                    <div style={{ maxHeight: '380px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
                                         {(profile.services || [])
                                             .filter(s => {
                                                 const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
@@ -1668,7 +1668,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
-                                        <div style={{color: '#1e1b4b', marginBottom: '1rem'}}></div>
+                                        <h4 style={{color: '#1e1b4b', marginBottom: '1rem'}}>📅 Available Services</h4>
                                         <div style={{
                                             background: '#f8fafc', 
                                             padding: '1rem', 
@@ -1793,7 +1793,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 </div>
                                             </div>
                                               {/* Dynamic Services Mapping */}
-                                              <div style={{ maxHeight: '430px', overflowY: 'auto', paddingRight: '4px' }}>
+                                              <div style={{ maxHeight: '380px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
                                                 {(profile.services || [])
                                                     .filter(s => {
                                                         const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
