@@ -1084,7 +1084,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                             <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
-                                    <h4 style={{color: '#1e1b4b', margin: 0}}>📅 Available Services</h4>
+                                    <div style={{color: '#1e1b4b', margin: 0}}></div>
                                     {isEditingProfile && (
                                         <button 
                                             onClick={openAddService}
@@ -1129,7 +1129,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     
                                     <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
-                                        <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
+                                        <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'hidden', paddingBottom: '2px' }}>
                                             {['All'].map(tab => (
                                                 <button 
                                                     key={tab}
@@ -1668,7 +1668,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
-                                        <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
+                                        <div style={{color: '#1e1b4b', marginBottom: '1rem'}}></div>
                                         <div style={{
                                             background: '#f8fafc', 
                                             padding: '1rem', 
@@ -1676,7 +1676,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             border: '1px solid #e2e8f0'
                                         }}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
-                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
+                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'hidden', paddingBottom: '2px' }}>
                                                     {['All'].map(tab => (
                                                         <button 
                                                             key={tab}
