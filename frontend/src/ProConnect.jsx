@@ -134,10 +134,8 @@ function ProConnect({ onMentorLoginClick }) {
                     } catch (e) {
                         console.error('Error parsing services', m.id, e);
                     }
-                    const finalServices = (parsedServices && parsedServices.length > 0) ? parsedServices : [
-                        { type: '1:1 Call', title: '1:1 Call Mentorship', price: '₹499', tag: 'Best Seller' },
-                        { type: 'Resume Review', title: 'Resume Review', price: '₹199', tag: 'Resource' }
-                    ];
+                    const rawServices = (parsedServices && parsedServices.length > 0) ? parsedServices : [];
+                    const finalServices = rawServices.filter(s => s.title && s.title.trim() !== '');
                     return {
                         ...m,
                         exp: m.experience ? (m.experience.toLowerCase().includes('year') ? m.experience : `${m.experience} Years of experience`) : '1 Year of experience',

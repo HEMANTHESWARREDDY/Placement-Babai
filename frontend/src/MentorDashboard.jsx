@@ -274,7 +274,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     education: data.education || '',
                     workExperience: data.workExperience || '',
                     isAvailable: data.isAvailable === true,
-                    services: data.services ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) : []
+                    services: (data.services && data.services !== '[]' && data.services !== 'null') 
+                        ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) 
+                        : [{ type: '1:1 Call', title: '', price: '₹0', tag: '' }]
                 };
                 setProfile(profileData);
                 setInitialProfile(JSON.parse(JSON.stringify(profileData)));
@@ -312,7 +314,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         const newService = {
             type: '1:1 Call', // default type
             title: '',
-            price: '',
+            price: '₹0',
             tag: ''
         };
         setProfile(prev => ({
