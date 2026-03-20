@@ -328,7 +328,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="header-content">
                     <div className="logo" style={{cursor: 'default'}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
-                        <span className="header-tagline">Connect. Learn. Grow.</span>
+                        <span className="header-tagline">Connect. Learn. Grow. <span style={{fontSize: '10px', opacity: 0.5}}>(v1.0.1)</span></span>
                     </div>
 
                     <div className="header-badge" style={{cursor: 'default', left: '50%'}}>
@@ -767,7 +767,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             )}
 
             {/* Main Editing Dashboard Mode */}
-            {!showBookings && (
+            {!showBookings && !showAnalytics && (
                 <div className="mentor-layout">
                 <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
                     <div className="preview-header" style={{ 
