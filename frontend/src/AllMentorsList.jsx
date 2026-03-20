@@ -129,9 +129,9 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                 <div className="aml-filters-row" ref={filtersRowRef} onScroll={checkFiltersScroll}>
                     <div className="aml-filters-left">
                         <button className="aml-filter-btn">
-                            <span style={{ fontSize: '1.1rem' }}>▤</span> Filters <span className="aml-filter-badge">1</span>
+                            <span style={{ fontSize: '1.1rem' }}>▤</span> Filters
                         </button>
-                        <button className="aml-filter-btn aml-filter-active">
+                        <button className="aml-filter-btn">
                             Top Mentor
                         </button>
                         <div className="aml-featured-pill">

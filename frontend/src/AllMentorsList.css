@@ -139,10 +139,11 @@
 .aml-filter-btn {
     background: white;
     border: 1px solid #cbd5e1;
-    color: #64748b;
-    padding: 0.5rem 1.25rem;
+    color: #475569;
+    height: 38px;
+    padding: 0 1.25rem;
     border-radius: 50px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -241,9 +242,10 @@
     background: white;
     border: 1px solid #cbd5e1;
     border-radius: 50px;
-    padding: 0.4rem 1.25rem;
+    height: 38px;
+    padding: 0 1.25rem;
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
     transition: all 0.2s;
 }
 
@@ -273,14 +275,17 @@
 }
 
 .aml-featured-pill {
-    background: #f1f5f9;
-    color: #334155;
-    padding: 0.5rem 1.25rem;
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    height: 38px;
+    padding: 0 1.25rem;
     border-radius: 50px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    border: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+    font-weight: 600;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .aml-list {
