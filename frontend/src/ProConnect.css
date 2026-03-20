@@ -5,13 +5,23 @@
 }
 
 .pro-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    background: linear-gradient(to right, #0f172a 0%, #312e81 100%);
     color: white;
     text-align: center;
     padding: 2.5rem 2rem;
     position: relative;
     overflow: hidden;
 }
+
+.pro-hero .search-btn {
+    background: linear-gradient(135deg, #7c3aed, #4c1d95);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+.pro-hero .search-btn:hover {
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.65);
+}
+
 
 .pro-hero::before {
     content: '';
