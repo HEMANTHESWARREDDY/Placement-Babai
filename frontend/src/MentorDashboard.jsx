@@ -310,32 +310,51 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
-    const addService = () => {
-        const newService = {
-            type: '1:1 Call', // default type
-            title: '',
-            price: '₹0',
-            tag: ''
-        };
-        setProfile(prev => ({
-            ...prev,
-            services: [...(prev.services || []), newService]
-        }));
+    const [serviceModal, setServiceModal] = useState({ isOpen: false, isNew: false, service: null, index: -1 });
+
+    const openAddService = () => {
+        setServiceModal({
+            isOpen: true,
+            isNew: true,
+            service: { type: '1:1 Call', title: '', price: '0', tag: '' },
+            index: -1
+        });
+    };
+
+    const openEditService = (service, index) => {
+        setServiceModal({
+            isOpen: true,
+            isNew: false,
+            service: { ...service },
+            index: index
+        });
+    };
+
+    const handleServiceModalSave = () => {
+        if (!serviceModal.service.title) {
+            alert('Please enter a service title');
+            return;
+        }
+        
+        setProfile(prev => {
+            const newServices = [...(prev.services || [])];
+            if (serviceModal.isNew) {
+                newServices.push(serviceModal.service);
+            } else {
+                newServices[serviceModal.index] = serviceModal.service;
+            }
+            return { ...prev, services: newServices };
+        });
+        setServiceModal({ isOpen: false, isNew: false, service: null, index: -1 });
     };
 
     const removeService = (index) => {
-        setProfile(prev => ({
-            ...prev,
-            services: prev.services.filter((_, i) => i !== index)
-        }));
-    };
-
-    const updateServiceField = (index, field, value) => {
-        setProfile(prev => {
-            const newServices = [...(prev.services || [])];
-            newServices[index] = { ...newServices[index], [field]: value };
-            return { ...prev, services: newServices };
-        });
+        if (window.confirm('Are you sure you want to remove this service?')) {
+            setProfile(prev => ({
+                ...prev,
+                services: prev.services.filter((_, i) => i !== index)
+            }));
+        }
     };
 
 
@@ -1034,7 +1053,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <h4 style={{color: '#1e1b4b', margin: 0}}>📅 Available Services</h4>
                                     {isEditingProfile && (
                                         <button 
-                                            onClick={addService}
+                                            onClick={openAddService}
                                             style={{
                                                 background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
                                                 color: 'white',
@@ -1102,18 +1121,48 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 position: 'relative', 
                                                 marginBottom: '1.25rem',
                                                 background: 'rgba(255, 255, 255, 0.9)',
-                                                border: isEditingProfile ? '2px dashed #cbd5e1' : '1px solid #e2e8f0',
+                                                border: '1px solid #e2e8f0',
                                                 boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
                                                 padding: '1.5rem',
-                                                borderRadius: '16px'
-                                            }}>
+                                                borderRadius: '16px',
+                                                cursor: isEditingProfile ? 'pointer' : 'default'
+                                            }}
+                                            onClick={() => isEditingProfile && openEditService(service, index)}
+                                            >
+                                                {isEditingProfile && (
+                                                    <div className="service-edit-overlay" style={{
+                                                        position: 'absolute',
+                                                        top: 0, left: 0, right: 0, bottom: 0,
+                                                        background: 'rgba(124, 58, 237, 0.05)',
+                                                        borderRadius: '16px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        opacity: 0,
+                                                        transition: '0.3s',
+                                                        zIndex: 1
+                                                    }}
+                                                    onMouseOver={(e) => e.currentTarget.style.opacity = 1}
+                                                    onMouseOut={(e) => e.currentTarget.style.opacity = 0}
+                                                    >
+                                                        <span style={{
+                                                            background: 'white',
+                                                            padding: '8px 16px',
+                                                            borderRadius: '20px',
+                                                            fontWeight: '700',
+                                                            color: '#7c3aed',
+                                                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                                        }}>Click to Edit</span>
+                                                    </div>
+                                                )}
+                                                
                                                 {isEditingProfile && (
                                                     <button 
-                                                        onClick={() => removeService(index)}
+                                                        onClick={(e) => { e.stopPropagation(); removeService(index); }}
                                                         style={{
                                                             position: 'absolute',
-                                                            top: '-10px',
-                                                            right: '-10px',
+                                                            top: '-8px',
+                                                            right: '-8px',
                                                             background: 'linear-gradient(135deg, #f87171, #ef4444)',
                                                             color: 'white',
                                                             border: '2px solid white',
@@ -1137,113 +1186,30 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     </button>
                                                 )}
                                                 
-                                                {isEditingProfile ? (
-                                                    <div style={{marginBottom: '12px'}}>
-                                                        <input 
-                                                            type="text" 
-                                                            value={service.tag || ''} 
-                                                            onChange={(e) => updateServiceField(index, 'tag', e.target.value)}
-                                                            className="futuristic-input-mini"
-                                                            placeholder="Tag (e.g. ⭐ Best Seller)"
-                                                            style={{
-                                                                width: '180px',
-                                                                fontSize: '0.75rem',
-                                                                fontWeight: '700',
-                                                                padding: '6px 10px',
-                                                                border: '1px solid #e2e8f0',
-                                                                borderRadius: '8px',
-                                                                background: '#f8fafc',
-                                                                outline: 'none',
-                                                                color: '#475569'
-                                                            }}
-                                                        />
-                                                    </div>
-                                                ) : (
-                                                    service.tag && <div className="preview-service-tag" style={{
-                                                        background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
-                                                        color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
-                                                        borderRadius: '8px',
-                                                        letterSpacing: '0.02em'
-                                                    }}>{service.tag}</div>
-                                                )}
+                                                {service.tag && <div className="preview-service-tag" style={{
+                                                    background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
+                                                    color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
+                                                    borderRadius: '8px',
+                                                    letterSpacing: '0.02em',
+                                                    position: 'relative',
+                                                    zIndex: 2
+                                                }}>{service.tag}</div>}
 
-                                                {isEditingProfile ? (
-                                                    <div style={{display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '15px'}}>
-                                                        <input 
-                                                            type="text" 
-                                                            value={service.title || ''} 
-                                                            onChange={(e) => updateServiceField(index, 'title', e.target.value)}
-                                                            placeholder="Enter Service Title (e.g. 1:1 Call Mentorship)"
-                                                            style={{
-                                                                fontWeight: '700', 
-                                                                fontSize: '1.1rem',
-                                                                border: '1px solid #e2e8f0', 
-                                                                padding: '10px 14px', 
-                                                                borderRadius: '10px',
-                                                                background: 'white',
-                                                                outline: 'none'
-                                                            }}
-                                                        />
-                                                        <select 
-                                                            value={service.type || '1:1 Call'} 
-                                                            onChange={(e) => updateServiceField(index, 'type', e.target.value)}
-                                                            style={{
-                                                                fontSize: '0.9rem', 
-                                                                padding: '8px 12px', 
-                                                                border: '1px solid #e2e8f0', 
-                                                                borderRadius: '10px',
-                                                                background: '#f8fafc',
-                                                                color: '#64748b',
-                                                                fontWeight: '600',
-                                                                cursor: 'pointer'
-                                                            }}
-                                                        >
-                                                            <option value="1:1 Call">📅 1:1 Call</option>
-                                                            <option value="Resume Review">📝 Resume Review</option>
-                                                            <option value="Mock Interview">🎤 Mock Interview</option>
-                                                            <option value="Career Guidance">🚀 Career Guidance</option>
-                                                            <option value="Technical Training">💻 Technical Training</option>
-                                                            <option value="Other">✨ Other</option>
-                                                        </select>
-                                                    </div>
-                                                ) : (
-                                                    <div className="preview-service-title" style={{fontSize: '1.2rem', color: '#1e1b4b'}}>{service.title}</div>
-                                                )}
+                                                <div className="preview-service-title" style={{fontSize: '1.2rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
 
-                                                <div className="preview-service-footer" style={{marginTop: '1.5rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)'}}>
-                                                    {isEditingProfile ? (
-                                                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                                            <span style={{fontWeight: '800', color: '#10b981'}}>₹</span>
-                                                            <input 
-                                                                type="text" 
-                                                                value={service.price || ''} 
-                                                                onChange={(e) => updateServiceField(index, 'price', e.target.value)}
-                                                                placeholder="Price (e.g. 499)"
-                                                                style={{
-                                                                    width: '100px', 
-                                                                    border: '1px solid #e2e8f0', 
-                                                                    padding: '8px 12px', 
-                                                                    borderRadius: '10px',
-                                                                    fontWeight: '800',
-                                                                    fontSize: '1.1rem',
-                                                                    outline: 'none',
-                                                                    color: '#059669'
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="preview-service-price" style={{
-                                                            fontSize: '1.5rem',
-                                                            background: 'linear-gradient(135deg, #0f172a, #334155)',
-                                                            WebkitBackgroundClip: 'text',
-                                                            WebkitTextFillColor: 'transparent',
-                                                            letterSpacing: '-0.02em'
-                                                        }}>{service.price}</div>
-                                                    )}
+                                                <div className="preview-service-footer" style={{marginTop: '1.5rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', position: 'relative', zIndex: 2}}>
+                                                    <div className="preview-service-price" style={{
+                                                        fontSize: '1.5rem',
+                                                        background: 'linear-gradient(135deg, #0f172a, #334155)',
+                                                        WebkitBackgroundClip: 'text',
+                                                        WebkitTextFillColor: 'transparent',
+                                                        letterSpacing: '-0.02em'
+                                                    }}>{service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0'}</div>
+                                                    
                                                     <button 
                                                         className="preview-book-btn"
                                                         disabled={isEditingProfile}
-                                                        onClick={() => setBookingData({ pro: profile, service: service })}
+                                                        onClick={(e) => { e.stopPropagation(); !isEditingProfile && setBookingData({ pro: profile, service: service }); }}
                                                         style={{ 
                                                             opacity: isEditingProfile ? 0.4 : 1,
                                                             background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
@@ -1251,7 +1217,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                             borderRadius: '12px',
                                                             boxShadow: isEditingProfile ? 'none' : '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
                                                             border: 'none',
-                                                            transform: isEditingProfile ? 'none' : 'translateY(0)',
                                                             transition: '0.3s'
                                                         }}
                                                     >
@@ -1619,6 +1584,169 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     service={bookingData.service} 
                     onClose={() => setBookingData(null)} 
                 />
+            )}
+
+            {/* Futuristic Service Management Modal */}
+            {serviceModal.isOpen && (
+                <div className="preview-modal-overlay" style={{ zIndex: 10000, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(12px)' }}>
+                    <div className="preview-modal-content" style={{ maxWidth: '450px', overflow: 'visible', background: 'transparent', boxShadow: 'none' }}>
+                        <div className="preview-service-card" style={{ 
+                            background: 'white', 
+                            border: '1px solid #e2e8f0', 
+                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', 
+                            padding: '2rem', 
+                            borderRadius: '24px',
+                            position: 'relative'
+                        }}>
+                            <button 
+                                onClick={() => setServiceModal({ ...serviceModal, isOpen: false })}
+                                style={{
+                                    position: 'absolute',
+                                    top: '15px',
+                                    right: '15px',
+                                    background: '#f1f5f9',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '32px',
+                                    height: '32px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '1rem',
+                                    color: '#64748b'
+                                }}
+                            >✕</button>
+
+                            <h3 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#1e1b4b', fontSize: '1.5rem' }}>
+                                {serviceModal.isNew ? '🚀 Add New Service' : '📝 Edit Service'}
+                            </h3>
+
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '1.25rem'}}>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Service Tag</label>
+                                    <input 
+                                        type="text" 
+                                        value={serviceModal.service.tag || ''} 
+                                        onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, tag: e.target.value } })}
+                                        placeholder="e.g. ⭐ Best Seller"
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px 16px',
+                                            borderRadius: '12px',
+                                            border: '2px solid #f1f5f9',
+                                            background: '#f8fafc',
+                                            outline: 'none',
+                                            fontSize: '1rem',
+                                            fontWeight: '600'
+                                        }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Service Title *</label>
+                                    <input 
+                                        type="text" 
+                                        value={serviceModal.service.title || ''} 
+                                        onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, title: e.target.value } })}
+                                        placeholder="e.g. 1:1 Career Mentorship"
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px 16px',
+                                            borderRadius: '12px',
+                                            border: '2px solid #f1f5f9',
+                                            background: '#f8fafc',
+                                            outline: 'none',
+                                            fontSize: '1.1rem',
+                                            fontWeight: '700'
+                                        }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Category</label>
+                                    <select 
+                                        value={serviceModal.service.type || '1:1 Call'} 
+                                        onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, type: e.target.value } })}
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px 16px',
+                                            borderRadius: '12px',
+                                            border: '2px solid #f1f5f9',
+                                            background: '#f8fafc',
+                                            outline: 'none',
+                                            fontSize: '1rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        <option value="1:1 Call">📅 1:1 Call</option>
+                                        <option value="Resume Review">📝 Resume Review</option>
+                                        <option value="Mock Interview">🎤 Mock Interview</option>
+                                        <option value="Career Guidance">🚀 Career Guidance</option>
+                                        <option value="Technical Training">💻 Technical Training</option>
+                                        <option value="Other">✨ Other</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Price (in ₹)</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: '800', color: '#10b981' }}>₹</span>
+                                        <input 
+                                            type="text" 
+                                            value={serviceModal.service.price || ''} 
+                                            onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, price: e.target.value } })}
+                                            placeholder="e.g. 499"
+                                            style={{
+                                                width: '100%',
+                                                boxSizing: 'border-box',
+                                                padding: '12px 16px 12px 35px',
+                                                borderRadius: '12px',
+                                                border: '2px solid #f1f5f9',
+                                                background: '#f8fafc',
+                                                outline: 'none',
+                                                fontSize: '1.2rem',
+                                                fontWeight: '800',
+                                                color: '#059669'
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                    <button 
+                                        onClick={() => setServiceModal({ ...serviceModal, isOpen: false })}
+                                        style={{
+                                            flex: 1,
+                                            padding: '1rem',
+                                            borderRadius: '14px',
+                                            border: '2px solid #f1f5f9',
+                                            background: 'white',
+                                            fontWeight: '700',
+                                            color: '#64748b',
+                                            cursor: 'pointer'
+                                        }}
+                                    >Cancel</button>
+                                    <button 
+                                        onClick={handleServiceModalSave}
+                                        style={{
+                                            flex: 2,
+                                            padding: '1rem',
+                                            borderRadius: '14px',
+                                            border: 'none',
+                                            background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                                            fontWeight: '700',
+                                            color: 'white',
+                                            cursor: 'pointer',
+                                            boxShadow: '0 10px 20px -5px rgba(124, 58, 237, 0.4)'
+                                        }}
+                                    >Save Service</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
             </div>
         </div>
