@@ -203,7 +203,31 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
+                                                {/* Left-aligned Tab(s) */}
+                                                <div style={{ display: 'flex', gap: '4px', flex: 1 }}>
+                                                    <button 
+                                                        onClick={() => setActiveTab('All')}
+                                                        style={{
+                                                            flex: '0 0 auto',
+                                                            minWidth: '70px',
+                                                            background: activeTab === 'All' ? 'white' : 'transparent', 
+                                                            border: 'none', 
+                                                            cursor: 'pointer', 
+                                                            textAlign: 'center', 
+                                                            padding: '0.4rem 0.8rem', 
+                                                            borderRadius: '8px', 
+                                                            fontSize: '0.8rem', 
+                                                            fontWeight: activeTab === 'All' ? 'bold' : '500', 
+                                                            color: activeTab === 'All' ? '#1e293b' : '#64748b', 
+                                                            boxShadow: activeTab === 'All' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                        }}
+                                                    >
+                                                        All
+                                                    </button>
+                                                </div>
+
+                                                {/* Right-aligned Group */}
                                                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
                                                     <div style={{ position: 'relative', width: '220px' }}>
                                                         <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
