@@ -1850,8 +1850,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 </div>
             )}
-
-            </main>
+            
         </div>
     </div>
     );
