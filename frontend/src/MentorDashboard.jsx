@@ -1039,29 +1039,30 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
                                                 color: 'white',
                                                 border: '2px solid rgba(255,255,255,0.2)',
-                                                borderRadius: '50%',
-                                                width: '32px',
-                                                height: '32px',
+                                                borderRadius: '30px',
+                                                padding: '0.4rem 1rem',
                                                 display: 'flex',
                                                 alignItems: 'center',
-                                                justifyContent: 'center',
+                                                gap: '8px',
                                                 cursor: 'pointer',
-                                                fontSize: '1.4rem',
+                                                fontSize: '0.9rem',
+                                                fontWeight: '700',
                                                 boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)',
                                                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                transformOrigin: 'center'
+                                                height: '36px'
                                             }}
                                             onMouseOver={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)';
+                                                e.currentTarget.style.transform = 'translateY(-2px)';
                                                 e.currentTarget.style.boxShadow = '0 6px 16px rgba(124, 58, 237, 0.6)';
                                             }}
                                             onMouseOut={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                                                e.currentTarget.style.transform = 'translateY(0)';
                                                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.4)';
                                             }}
                                             title="Add New Service"
                                         >
-                                            +
+                                            <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>+</span>
+                                            <span>Add Service</span>
                                         </button>
                                     )}
                                 </div>
