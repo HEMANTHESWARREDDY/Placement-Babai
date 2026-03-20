@@ -279,8 +279,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     services: (data.services && data.services !== '[]' && data.services !== 'null') 
                         ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) 
                         : [
-                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: 'One-to-One Mentorship', price: '0', tag: '✨ Popular' },
-                            { keywords: 'Resume Review, ATS Optimization, Profile Evaluation', title: 'Resume Review', price: '0', tag: '⭐ Best Seller' }
+                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: 'One-to-One Mentorship', price: 'Free', tag: '✨ Popular' },
+                            { keywords: 'Resume Review, ATS Optimization, Profile Evaluation', title: 'Resume Review', price: 'Free', tag: '⭐ Best Seller' }
                           ]
                 };
                 setProfile(profileData);
@@ -1350,7 +1350,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                         WebkitBackgroundClip: 'text',
                                                         WebkitTextFillColor: 'transparent',
                                                         letterSpacing: '-0.02em'
-                                                    }}>{service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0'}</div>
+                                                    }}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
                                                     
                                                     <button 
                                                         className="preview-book-btn"
@@ -1802,7 +1802,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                         )}
                                                         <div className="preview-service-title">{service.title}</div>
                                                         <div className="preview-service-footer">
-                                                            <div className="preview-service-price">{service.price}</div>
+                                                            <div className="preview-service-price">{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
                                                             <button 
                                                                 className="preview-book-btn"
                                                                 onClick={() => setBookingData({ pro: profile, service: service })}
@@ -1946,16 +1946,36 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             style={{
                                                 width: '100%',
                                                 boxSizing: 'border-box',
-                                                padding: '12px 16px 12px 35px',
+                                                padding: '12px 100px 12px 35px',
                                                 borderRadius: '12px',
                                                 border: '2px solid #f1f5f9',
                                                 background: '#f8fafc',
                                                 outline: 'none',
-                                                fontSize: '1.2rem',
-                                                fontWeight: '800',
-                                                color: '#059669'
+                                                fontSize: '1.1rem',
+                                                fontWeight: '700',
+                                                color: serviceModal.service?.price === 'Free' ? '#10b981' : 'inherit'
                                             }}
                                         />
+                                        <button 
+                                            onClick={() => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, price: serviceModal.service?.price === 'Free' ? '0' : 'Free' } })}
+                                            style={{
+                                                position: 'absolute',
+                                                right: '8px',
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                background: serviceModal.service?.price === 'Free' ? '#10b981' : '#f1f5f9',
+                                                color: serviceModal.service?.price === 'Free' ? 'white' : '#64748b',
+                                                border: 'none',
+                                                padding: '6px 12px',
+                                                borderRadius: '8px',
+                                                fontSize: '0.8rem',
+                                                fontWeight: '700',
+                                                cursor: 'pointer',
+                                                transition: '0.2s'
+                                            }}
+                                        >
+                                            {serviceModal.service?.price === 'Free' ? '✓ Free' : 'Mark Free'}
+                                        </button>
                                     </div>
                                 </div>
 
