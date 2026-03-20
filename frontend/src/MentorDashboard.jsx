@@ -1125,9 +1125,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     padding: '1.25rem', 
                                     borderRadius: '16px', 
                                     border: '1px solid rgba(226, 232, 240, 0.8)', 
-                                    boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
-                                    maxHeight: '520px',
-                                    overflowY: 'auto'
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
                                 }}>
                                     
                                     <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
@@ -1248,154 +1246,156 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     {/* Dynamic Services Mapping */}
-                                    {(profile.services || [])
-                                        .filter(s => {
-                                            const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
-                                            const matchesSearch = !serviceSearch.trim() || 
-                                                (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
-                                                (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
-                                            return matchesTab && matchesSearch;
-                                        })
-                                        .sort((a, b) => {
-                                            if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
-                                            if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
-                                            return 0;
-                                        })
-                                        .map((service, index) => (
-                                            <div className="preview-service-card" key={index} style={{ 
-                                                position: 'relative', 
-                                                marginBottom: '1rem',
-                                                background: 'rgba(255, 255, 255, 0.9)',
-                                                border: '1px solid #e2e8f0',
-                                                boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
-                                                padding: '1rem',
-                                                borderRadius: '12px',
-                                                cursor: isEditingProfile ? 'pointer' : 'default'
-                                            }}
-                                            onClick={() => isEditingProfile && openEditService(service, index)}
-                                            >
-                                                {isEditingProfile && (
-                                                    <div className="service-edit-overlay" style={{
-                                                        position: 'absolute',
-                                                        top: 0, left: 0, right: 0, bottom: 0,
-                                                        background: 'rgba(124, 58, 237, 0.05)',
-                                                        borderRadius: '16px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        opacity: 0,
-                                                        transition: '0.3s',
-                                                        zIndex: 1
-                                                    }}
-                                                    onMouseOver={(e) => e.currentTarget.style.opacity = 1}
-                                                    onMouseOut={(e) => e.currentTarget.style.opacity = 0}
-                                                    >
-                                                        <span style={{
-                                                            background: 'white',
-                                                            padding: '8px 16px',
-                                                            borderRadius: '20px',
-                                                            fontWeight: '700',
-                                                            color: '#7c3aed',
-                                                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                                        }}>Click to Edit</span>
-                                                    </div>
-                                                )}
-                                                
-                                                {isEditingProfile && (
-                                                    <button 
-                                                        onClick={(e) => { e.stopPropagation(); removeService(index); }}
-                                                        style={{
+                                    <div style={{ maxHeight: '430px', overflowY: 'auto', paddingRight: '4px' }}>
+                                        {(profile.services || [])
+                                            .filter(s => {
+                                                const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
+                                                const matchesSearch = !serviceSearch.trim() || 
+                                                    (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                    (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
+                                                return matchesTab && matchesSearch;
+                                            })
+                                            .sort((a, b) => {
+                                                if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
+                                                if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                return 0;
+                                            })
+                                            .map((service, index) => (
+                                                <div className="preview-service-card" key={index} style={{ 
+                                                    position: 'relative', 
+                                                    marginBottom: '1rem',
+                                                    background: 'rgba(255, 255, 255, 0.9)',
+                                                    border: '1px solid #e2e8f0',
+                                                    boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
+                                                    padding: '1rem',
+                                                    borderRadius: '12px',
+                                                    cursor: isEditingProfile ? 'pointer' : 'default'
+                                                }}
+                                                onClick={() => isEditingProfile && openEditService(service, index)}
+                                                >
+                                                    {isEditingProfile && (
+                                                        <div className="service-edit-overlay" style={{
                                                             position: 'absolute',
-                                                            top: '-8px',
-                                                            right: '-8px',
-                                                            background: 'linear-gradient(135deg, #f87171, #ef4444)',
-                                                            color: 'white',
-                                                            border: '2px solid white',
-                                                            borderRadius: '50%',
-                                                            width: '26px',
-                                                            height: '26px',
-                                                            fontSize: '11px',
-                                                            cursor: 'pointer',
+                                                            top: 0, left: 0, right: 0, bottom: 0,
+                                                            background: 'rgba(124, 58, 237, 0.05)',
+                                                            borderRadius: '12px',
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
-                                                            zIndex: 10,
-                                                            boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)',
-                                                            transition: '0.2s'
-                                                        }}
-                                                        onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
-                                                        onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                                                        title="Remove Service"
-                                                    >
-                                                        ✕
-                                                    </button>
-                                                )}
-                                                
-                                                {service.tag && <div className="preview-service-tag" style={{
-                                                    background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
-                                                    color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
-                                                    borderRadius: '8px',
-                                                    letterSpacing: '0.02em',
-                                                    position: 'relative',
-                                                    zIndex: 2
-                                                }}>{service.tag}</div>}
-
-                                                <div className="preview-service-title" style={{fontSize: '1rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
-                                                
-                                                {service.keywords && (
-                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px', position: 'relative', zIndex: 2 }}>
-                                                        {service.keywords.split(',').map((k, i) => (
-                                                            <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
-                                                                #{k.trim()}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
-
-                                                <div className="preview-service-footer" style={{marginTop: '1.5rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', position: 'relative', zIndex: 2}}>
-                                                    <div className="preview-service-price" style={{
-                                                        fontSize: '1.2rem',
-                                                        background: 'linear-gradient(135deg, #0f172a, #334155)',
-                                                        WebkitBackgroundClip: 'text',
-                                                        WebkitTextFillColor: 'transparent',
-                                                        letterSpacing: '-0.02em'
-                                                    }}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
-                                                    
-                                                    <button 
-                                                        className="preview-book-btn"
-                                                        disabled={isEditingProfile}
-                                                        onClick={(e) => { e.stopPropagation(); !isEditingProfile && setBookingData({ pro: profile, service: service }); }}
-                                                        style={{ 
-                                                            opacity: isEditingProfile ? 0.4 : 1,
-                                                            background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                                                            padding: '0.6rem 1.4rem',
-                                                            borderRadius: '10px',
-                                                            boxShadow: isEditingProfile ? 'none' : '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
-                                                            border: 'none',
+                                                            opacity: 0,
                                                             transition: '0.3s',
-                                                            fontSize: '0.85rem'
+                                                            zIndex: 1
                                                         }}
-                                                    >
-                                                        Book Now
-                                                    </button>
+                                                        onMouseOver={(e) => e.currentTarget.style.opacity = 1}
+                                                        onMouseOut={(e) => e.currentTarget.style.opacity = 0}
+                                                        >
+                                                            <span style={{
+                                                                background: 'white',
+                                                                padding: '8px 16px',
+                                                                borderRadius: '20px',
+                                                                fontWeight: '700',
+                                                                color: '#7c3aed',
+                                                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                                            }}>Click to Edit</span>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {isEditingProfile && (
+                                                        <button 
+                                                            onClick={(e) => { e.stopPropagation(); removeService(index); }}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: '-8px',
+                                                                right: '-8px',
+                                                                background: 'linear-gradient(135deg, #f87171, #ef4444)',
+                                                                color: 'white',
+                                                                border: '2px solid white',
+                                                                borderRadius: '50%',
+                                                                width: '26px',
+                                                                height: '26px',
+                                                                fontSize: '11px',
+                                                                cursor: 'pointer',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                zIndex: 10,
+                                                                boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)',
+                                                                transition: '0.2s'
+                                                            }}
+                                                            onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+                                                            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                                            title="Remove Service"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    )}
+                                                    
+                                                    {service.tag && <div className="preview-service-tag" style={{
+                                                        background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
+                                                        color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
+                                                        borderRadius: '8px',
+                                                        letterSpacing: '0.02em',
+                                                        position: 'relative',
+                                                        zIndex: 2
+                                                    }}>{service.tag}</div>}
+
+                                                    <div className="preview-service-title" style={{fontSize: '1rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
+                                                    
+                                                    {service.keywords && (
+                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px', position: 'relative', zIndex: 2 }}>
+                                                            {service.keywords.split(',').map((k, i) => (
+                                                                <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
+                                                                    #{k.trim()}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    <div className="preview-service-footer" style={{marginTop: '1rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', paddingWeight: '5px', position: 'relative', zIndex: 2}}>
+                                                        <div className="preview-service-price" style={{
+                                                            fontSize: '1.2rem',
+                                                            background: 'linear-gradient(135deg, #0f172a, #334155)',
+                                                            WebkitBackgroundClip: 'text',
+                                                            WebkitTextFillColor: 'transparent',
+                                                            letterSpacing: '-0.02em'
+                                                        }}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
+                                                        
+                                                        <button 
+                                                            className="preview-book-btn"
+                                                            disabled={isEditingProfile}
+                                                            onClick={(e) => { e.stopPropagation(); !isEditingProfile && setBookingData({ pro: profile, service: service }); }}
+                                                            style={{ 
+                                                                opacity: isEditingProfile ? 0.4 : 1,
+                                                                background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                                                                padding: '0.6rem 1.4rem',
+                                                                borderRadius: '10px',
+                                                                boxShadow: isEditingProfile ? 'none' : '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
+                                                                border: 'none',
+                                                                transition: '0.3s',
+                                                                fontSize: '0.85rem'
+                                                            }}
+                                                        >
+                                                            Book Now
+                                                        </button>
+                                                    </div>
                                                 </div>
+                                            ))
+                                        }
+                                        
+                                        {(profile.services || []).length === 0 && (
+                                            <div style={{
+                                                textAlign: 'center', 
+                                                padding: '3rem 1rem', 
+                                                color: '#94a3b8', 
+                                                background: 'rgba(255,255,255,0.4)',
+                                                borderRadius: '16px',
+                                                border: '1px dashed #e2e8f0'
+                                            }}>
+                                                <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>✨</div>
+                                                <p style={{fontWeight: '600', fontSize: '0.95rem'}}>Click the "+" button above to add your first service!</p>
                                             </div>
-                                        ))
-                                    }
-                                    
-                                    {(profile.services || []).length === 0 && (
-                                        <div style={{
-                                            textAlign: 'center', 
-                                            padding: '3rem 1rem', 
-                                            color: '#94a3b8', 
-                                            background: 'rgba(255,255,255,0.4)',
-                                            borderRadius: '16px',
-                                            border: '1px dashed #e2e8f0'
-                                        }}>
-                                            <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>✨</div>
-                                            <p style={{fontWeight: '600', fontSize: '0.95rem'}}>Click the "+" button above to add your first service!</p>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1673,9 +1673,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             background: '#f8fafc', 
                                             padding: '1rem', 
                                             borderRadius: '12px', 
-                                            border: '1px solid #e2e8f0',
-                                            maxHeight: '520px',
-                                            overflowY: 'auto'
+                                            border: '1px solid #e2e8f0'
                                         }}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
                                                 <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
@@ -1795,41 +1793,43 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 </div>
                                             </div>
                                               {/* Dynamic Services Mapping */}
-                                            {(profile.services || [])
-                                                .filter(s => {
-                                                    const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
-                                                    const matchesSearch = !serviceSearch.trim() || 
-                                                        s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
-                                                        s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase());
-                                                    return matchesTab && matchesSearch;
-                                                })
-                                                .sort((a, b) => {
-                                                    if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
-                                                    if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
-                                                    // Note: We don't have a formal createdAt for services yet, so we use index as fallback for newest/oldest
-                                                    // In a real app, you'd use a timestamp.
-                                                    return 0; 
-                                                })
-                                                .map((service, index) => (
-                                                    <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
-                                                        {service.tag && (
-                                                            <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
-                                                                {service.tag}
+                                              <div style={{ maxHeight: '430px', overflowY: 'auto', paddingRight: '4px' }}>
+                                                {(profile.services || [])
+                                                    .filter(s => {
+                                                        const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
+                                                        const matchesSearch = !serviceSearch.trim() || 
+                                                            s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                            s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase());
+                                                        return matchesTab && matchesSearch;
+                                                    })
+                                                    .sort((a, b) => {
+                                                        if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
+                                                        if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                        // Note: We don't have a formal createdAt for services yet, so we use index as fallback for newest/oldest
+                                                        // In a real app, you'd use a timestamp.
+                                                        return 0; 
+                                                    })
+                                                    .map((service, index) => (
+                                                        <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
+                                                            {service.tag && (
+                                                                <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
+                                                                    {service.tag}
+                                                                </div>
+                                                            )}
+                                                            <div className="preview-service-title" style={{fontSize: '1rem'}}>{service.title}</div>
+                                                            <div className="preview-service-footer">
+                                                                <div className="preview-service-price" style={{fontSize: '1.1rem'}}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
+                                                                <button 
+                                                                    className="preview-book-btn"
+                                                                    onClick={() => setBookingData({ pro: profile, service: service })}
+                                                                    style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
+                                                                >
+                                                                    Book Now
+                                                                </button>
                                                             </div>
-                                                        )}
-                                                        <div className="preview-service-title" style={{fontSize: '1rem'}}>{service.title}</div>
-                                                        <div className="preview-service-footer">
-                                                            <div className="preview-service-price" style={{fontSize: '1.1rem'}}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
-                                                            <button 
-                                                                className="preview-book-btn"
-                                                                onClick={() => setBookingData({ pro: profile, service: service })}
-                                                                style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
-                                                            >
-                                                                Book Now
-                                                            </button>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    ))}
+                                              </div>
 
                                             {(profile.services || []).length === 0 && (
                                                 <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
