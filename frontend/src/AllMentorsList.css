@@ -140,8 +140,8 @@
     background: white;
     border: 1px solid #cbd5e1;
     color: #64748b;
-    padding: 0.6rem 1.2rem;
-    border-radius: 30px;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -236,8 +236,8 @@
 .aml-featured-pill {
     background: #f1f5f9;
     color: #334155;
-    padding: 0.6rem 1.2rem;
-    border-radius: 12px;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
     font-size: 0.95rem;
     font-weight: 700;
     border: 1px solid #e2e8f0;
@@ -631,7 +631,7 @@
         height: 32px; /* Match filter button height */
         font-size: 0.75rem;
         white-space: nowrap;
-        border-radius: 30px; /* Unify radius with filter buttons */
+        border-radius: 50px; /* Unify radius with filter buttons */
         display: flex;
         align-items: center;
         justify-content: center;
