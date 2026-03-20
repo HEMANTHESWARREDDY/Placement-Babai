@@ -18,7 +18,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [dailyViews, setDailyViews] = useState({});
-    const [viewFilter, setViewFilter] = useState('7days'); // 'today', '7days', '30days', 'all'
+    const [viewFilter, setViewFilter] = useState('7days'); 
+    const [selectedDate, setSelectedDate] = useState('');
     
     
     // Custom UI States
@@ -80,12 +81,21 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         const now = new Date();
         
         return sortedDates.filter(date => {
+            if (selectedDate) {
+                return new Date(date).toDateString() === new Date(selectedDate).toDateString();
+            }
+
             const d = new Date(date);
-            const diff = (now - d.getTime()) / (1000 * 60 * 60 * 24);
+            const diffMs = now - d.getTime();
+            const diffHours = diffMs / (1000 * 60 * 60);
+            const diffDays = diffHours / 24;
             
+            if (viewFilter === 'hourly') return diffHours <= 1;
+            if (viewFilter === '6hours') return diffHours <= 6;
+            if (viewFilter === '12hours') return diffHours <= 12;
             if (viewFilter === 'today') return d.toDateString() === now.toDateString();
-            if (viewFilter === '7days') return diff <= 7;
-            if (viewFilter === '30days') return diff <= 30;
+            if (viewFilter === '7days') return diffDays <= 7;
+            if (viewFilter === '30days') return diffDays <= 30;
             return true;
         });
     };
@@ -1028,7 +1038,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
                             <select 
                                 value={viewFilter} 
-                                onChange={(e) => setViewFilter(e.target.value)}
+                                onChange={(e) => {
+                                    setViewFilter(e.target.value);
+                                    setSelectedDate('');
+                                }}
                                 style={{
                                     padding: '8px 16px',
                                     borderRadius: '10px',
@@ -1040,11 +1053,30 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     cursor: 'pointer'
                                 }}
                             >
+                                <option value="hourly">Hourly</option>
+                                <option value="6hours">Last 6 Hours</option>
+                                <option value="12hours">Last 12 Hours</option>
                                 <option value="today">Today</option>
                                 <option value="7days">Last 7 Days</option>
                                 <option value="30days">Last 30 Days</option>
                                 <option value="all">All Time</option>
                             </select>
+                            <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600, marginLeft: '10px'}}>By Date:</span>
+                            <input 
+                                type="date"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '10px',
+                                    border: '1px solid #e2e8f0',
+                                    background: 'white',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '600',
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                }}
+                            />
                         </div>
                     </div>
 
@@ -1080,6 +1112,29 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     No view data available for this period.
                                 </div>
                             )}
+                        </div>
+                    </div>
+
+                    <div style={{marginTop: '2rem', background: '#0f172a', padding: '2rem', borderRadius: '24px', color: 'white', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.2)'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem'}}>
+                            <div style={{minWidth: '240px'}}>
+                                <h3 style={{margin: 0, fontSize: '1.25rem', fontWeight: '800', color: '#818cf8'}}>Lifetime Mentor Record</h3>
+                                <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.9rem', lineHeight: '1.5'}}>Your overall professional impact and performance since joining the platform.</p>
+                            </div>
+                            <div style={{display: 'flex', gap: '2rem', flex: 1, justifyContent: 'flex-end', flexWrap: 'wrap', minWidth: '280px'}}>
+                                <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.25rem 2rem', borderRadius: '16px', minWidth: '120px'}}>
+                                    <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white'}}>{profile.profileViews || 0}</div>
+                                    <div style={{fontSize: '0.75rem', opacity: 0.6, fontWeight: '700', textTransform: 'uppercase', marginTop: '4px'}}>Total Views</div>
+                                </div>
+                                <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.25rem 2rem', borderRadius: '16px', minWidth: '120px'}}>
+                                    <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white'}}>{bookings.length}</div>
+                                    <div style={{fontSize: '0.75rem', opacity: 0.6, fontWeight: '700', textTransform: 'uppercase', marginTop: '4px'}}>Bookings</div>
+                                </div>
+                                <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.25rem 2rem', borderRadius: '16px', minWidth: '120px'}}>
+                                    <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white'}}>{bookings.filter(b => b.status === 'COMPLETED').length}</div>
+                                    <div style={{fontSize: '0.75rem', opacity: 0.6, fontWeight: '700', textTransform: 'uppercase', marginTop: '4px'}}>Completed</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
