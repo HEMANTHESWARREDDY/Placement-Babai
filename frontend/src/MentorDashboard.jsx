@@ -104,9 +104,39 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         });
     };
 
+    const getFilteredBookings = () => {
+        if (!selectedDate) {
+            if (viewFilter === 'all') return bookings;
+            const now = new Date();
+            return bookings.filter(b => {
+                const bDatePart = b.bookingDate ? b.bookingDate.split('T')[0] : '';
+                const d = new Date(bDatePart || b.createdAt);
+                
+                const diffMs = now - d.getTime();
+                const diffHours = diffMs / (1000 * 60 * 60);
+                const diffDays = diffHours / 24;
+                
+                if (viewFilter === 'hourly') return diffHours <= 1;
+                if (viewFilter === '6hours') return diffHours <= 6;
+                if (viewFilter === '12hours') return diffHours <= 12;
+                if (viewFilter === 'today') return d.toDateString() === now.toDateString();
+                if (viewFilter === '7days') return diffDays <= 7;
+                if (viewFilter === '30days') return diffDays <= 30;
+                return true;
+            });
+        }
+        const target = new Date(selectedDate).toDateString();
+        return bookings.filter(b => {
+            const bDatePart = b.bookingDate ? b.bookingDate.split('T')[0] : '';
+            if (!bDatePart) return false;
+            const d = new Date(bDatePart);
+            return d.toDateString() === target;
+        });
+    };
+
     const getTotalViews = () => {
         const filteredDates = getFilteredViews();
-        return filteredDates.reduce((acc, date) => acc + dailyViews[date], 0);
+        return filteredDates.reduce((acc, date) => acc + (dailyViews[date] || 0), 0);
     };
 
     const updateBookingStatus = async (id, status) => {
@@ -1076,26 +1106,29 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             <p style={{color: '#64748b', fontWeight: '600'}}>Profile Views</p>
                         </div>
                         <div className="stat-card-custom">
-                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{bookings.length}</h3>
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{getFilteredBookings().length}</h3>
                             <p style={{color: '#64748b', fontWeight: '600'}}>Total Bookings</p>
                         </div>
                         <div className="stat-card-custom">
-                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{bookings.filter(b => b.status === 'COMPLETED').length}</h3>
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>{getFilteredBookings().filter(b => b.status === 'COMPLETED').length}</h3>
                             <p style={{color: '#64748b', fontWeight: '600'}}>Sessions Completed</p>
                         </div>
                         <div className="stat-card-custom">
-                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>₹{(bookings.filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}</h3>
+                            <h3 style={{fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem'}}>₹{(getFilteredBookings().filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}</h3>
                             <p style={{color: '#64748b', fontWeight: '600'}}>Total Earnings</p>
                         </div>
                     </div>
 
 
-                    <div style={{marginTop: '2rem', background: '#0f172a', padding: '2rem', borderRadius: '24px', color: 'white', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.2)'}}>
                     <div style={{marginTop: '2rem', background: '#0f172a', padding: '2.5rem', borderRadius: '24px', color: 'white', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem', marginBottom: '2.5rem'}}>
                             <div style={{minWidth: '240px'}}>
-                                <h3 style={{margin: 0, fontSize: '1.5rem', fontWeight: '800', color: '#818cf8'}}>Lifetime Mentor Record</h3>
-                                <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.95rem', lineHeight: '1.5'}}>Your overall professional impact and platform performance since joining.</p>
+                                <h3 style={{margin: 0, fontSize: '1.5rem', fontWeight: '800', color: '#818cf8'}}>
+                                    {selectedDate ? `Impact on ${new Date(selectedDate).toLocaleDateString('en-GB')}` : "Lifetime Mentor Record"}
+                                </h3>
+                                <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.95rem', lineHeight: '1.5'}}>
+                                    {selectedDate ? `Detailed performance for the selected date.` : "Your overall professional impact since joining."}
+                                </p>
                             </div>
                             
                             <div style={{display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.05)', padding: '12px 20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'}}>
@@ -1135,23 +1168,30 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                         <div style={{display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'space-between'}}>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>{profile.profileViews || 0}</div>
+                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
+                                    {getTotalViews()}
+                                </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Views</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>{bookings.length}</div>
+                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
+                                    {getFilteredBookings().length}
+                                </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Bookings</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>{bookings.filter(b => b.status === 'COMPLETED').length}</div>
+                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
+                                    {getFilteredBookings().filter(b => b.status === 'COMPLETED').length}
+                                </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Completed</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: '#fbbf24', marginBottom: '4px'}}>₹{(bookings.filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}</div>
+                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: '#fbbf24', marginBottom: '4px'}}>
+                                    ₹{(getFilteredBookings().filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}
+                                </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Earnings</div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             )}
