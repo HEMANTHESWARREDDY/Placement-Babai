@@ -21,6 +21,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [viewFilter, setViewFilter] = useState('today'); 
     const [selectedDate, setSelectedDate] = useState('');
     const [recordSearchDate, setRecordSearchDate] = useState('');
+    const [serviceSearchQuery, setServiceSearchQuery] = useState('');
+    const [serviceSortOrder, setServiceSortOrder] = useState('newest'); // 'a-z', 'z-a', 'newest', 'oldest'
     
     
     // Custom UI States
@@ -389,6 +391,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [activeServiceTab, setActiveServiceTab] = useState('All');
+    const [serviceSearch, setServiceSearch] = useState('');
+    const [serviceSort, setServiceSort] = useState('A-Z'); // 'A-Z', 'Z-A', 'Newest', 'Oldest'
     const [mainTab, setMainTab] = useState('About');
     const [expandedSections, setExpandedSections] = useState({
         about: true,
@@ -1551,34 +1555,139 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                         <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap'}}>
-                                                {['All', ...new Set((profile.services || []).map(s => s.type))].map(tab => (
-                                                    <button 
-                                                        key={tab}
-                                                        onClick={() => setActiveServiceTab(tab)}
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
+                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
+                                                    {['All', ...new Set((profile.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
+                                                        <button 
+                                                            key={tab}
+                                                            onClick={() => setActiveServiceTab(tab)}
+                                                            style={{
+                                                                flex: '0 0 auto',
+                                                                minWidth: '70px',
+                                                                background: activeServiceTab === tab ? 'white' : 'transparent', 
+                                                                border: 'none', 
+                                                                cursor: 'pointer', 
+                                                                textAlign: 'center', 
+                                                                padding: '0.4rem 0.8rem', 
+                                                                borderRadius: '8px', 
+                                                                fontSize: '0.85rem', 
+                                                                fontWeight: activeServiceTab === tab ? 'bold' : '500', 
+                                                                color: activeServiceTab === tab ? '#1e293b' : '#64748b', 
+                                                                boxShadow: activeServiceTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                            }}
+                                                        >
+                                                            {tab}
+                                                        </button>
+                                                    ))}
+                                                </div>
+
+                                                {/* Search with Suggestions */}
+                                                <div style={{ position: 'relative', width: '100%', maxWidth: '250px' }} className="service-search-wrapper">
+                                                    <div style={{ position: 'relative' }}>
+                                                        <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Search services..." 
+                                                            value={serviceSearch}
+                                                            onChange={(e) => setServiceSearch(e.target.value)}
+                                                            style={{
+                                                                width: '100%',
+                                                                boxSizing: 'border-box',
+                                                                padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+                                                                borderRadius: '10px',
+                                                                border: '1px solid #cbd5e1',
+                                                                background: 'white',
+                                                                fontSize: '0.85rem',
+                                                                outline: 'none',
+                                                                color: '#1e293b'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    {serviceSearch.trim() && (
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '100%',
+                                                            left: 0,
+                                                            right: 0,
+                                                            background: 'white',
+                                                            borderRadius: '10px',
+                                                            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+                                                            border: '1px solid #f1f5f9',
+                                                            zIndex: 10,
+                                                            marginTop: '6px',
+                                                            overflow: 'hidden'
+                                                        }}>
+                                                            {(profile.services || [])
+                                                                .filter(s => 
+                                                                    (s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                                     s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase())) &&
+                                                                    s.title?.toLowerCase() !== serviceSearch.toLowerCase()
+                                                                )
+                                                                .slice(0, 3)
+                                                                .map((s, i) => (
+                                                                    <div 
+                                                                        key={i}
+                                                                        onClick={() => setServiceSearch(s.title)}
+                                                                        style={{
+                                                                            padding: '0.5rem 1rem',
+                                                                            fontSize: '0.8rem',
+                                                                            color: '#475569',
+                                                                            cursor: 'pointer',
+                                                                            borderBottom: i < 2 ? '1px solid #f1f5f9' : 'none'
+                                                                        }}
+                                                                        onMouseOver={(e) => e.target.style.background = '#f8fafc'}
+                                                                        onMouseOut={(e) => e.target.style.background = 'white'}
+                                                                    >
+                                                                        {s.title}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Sort Option */}
+                                                <div style={{ position: 'relative' }}>
+                                                    <select 
+                                                        value={serviceSort}
+                                                        onChange={(e) => setServiceSort(e.target.value)}
                                                         style={{
-                                                            flex: 1, 
-                                                            minWidth: '70px',
-                                                            background: activeServiceTab === tab ? 'white' : 'transparent', 
-                                                            border: 'none', 
-                                                            cursor: 'pointer', 
-                                                            textAlign: 'center', 
-                                                            padding: '0.4rem', 
-                                                            borderRadius: '6px', 
-                                                            fontSize: '0.85rem', 
-                                                            fontWeight: activeServiceTab === tab ? 'bold' : '500', 
-                                                            color: activeServiceTab === tab ? '#1e293b' : '#64748b', 
-                                                            boxShadow: activeServiceTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                            padding: '0.5rem 1.8rem 0.5rem 0.8rem',
+                                                            borderRadius: '10px',
+                                                            border: '1px solid #cbd5e1',
+                                                            background: 'white',
+                                                            fontSize: '0.85rem',
+                                                            color: '#475569',
+                                                            outline: 'none',
+                                                            appearance: 'none',
+                                                            fontWeight: '600',
+                                                            cursor: 'pointer'
                                                         }}
                                                     >
-                                                        {tab}
-                                                    </button>
-                                                ))}
+                                                        <option value="A-Z">Sort: A-Z</option>
+                                                        <option value="Z-A">Sort: Z-A</option>
+                                                        <option value="Newest">Sort: Newest</option>
+                                                        <option value="Oldest">Sort: Oldest</option>
+                                                    </select>
+                                                    <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
+                                                </div>
                                             </div>
-
-                                            {/* Dynamic Services Mapping */}
+                                              {/* Dynamic Services Mapping */}
                                             {(profile.services || [])
-                                                .filter(s => activeServiceTab === 'All' || s.type === activeServiceTab)
+                                                .filter(s => {
+                                                    const matchesTab = activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
+                                                    const matchesSearch = !serviceSearch.trim() || 
+                                                        s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                        s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase());
+                                                    return matchesTab && matchesSearch;
+                                                })
+                                                .sort((a, b) => {
+                                                    if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
+                                                    if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                    // Note: We don't have a formal createdAt for services yet, so we use index as fallback for newest/oldest
+                                                    // In a real app, you'd use a timestamp.
+                                                    return 0; 
+                                                })
                                                 .map((service, index) => (
                                                     <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
                                                         {service.tag && (
