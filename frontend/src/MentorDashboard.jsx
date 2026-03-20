@@ -276,7 +276,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     isAvailable: data.isAvailable === true,
                     services: (data.services && data.services !== '[]' && data.services !== 'null') 
                         ? (typeof data.services === 'string' ? JSON.parse(data.services) : data.services) 
-                        : [{ type: '1:1 Call', title: '', price: '₹0', tag: '' }]
+                        : [{ keywords: '', title: '', price: '0', tag: '' }]
                 };
                 setProfile(profileData);
                 setInitialProfile(JSON.parse(JSON.stringify(profileData)));
@@ -316,7 +316,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         setServiceModal({
             isOpen: true,
             isNew: true,
-            service: { type: '1:1 Call', title: '', price: '0', tag: '' },
+            service: { keywords: '', title: '', price: '0', tag: '' },
             index: -1
         });
     };
@@ -1088,12 +1088,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <div style={{background: 'rgba(248, 250, 252, 0.5)', backdropFilter: 'blur(8px)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)'}}>
                                     
                                     <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '10px', padding: '0.3rem', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '4px'}}>
-                                        {['All', ...new Set((profile.services || []).map(s => s.type))].map(tab => (
+                                        {['All', ...new Set((profile.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
                                             <button 
                                                 key={tab}
                                                 onClick={() => setActiveServiceTab(tab)}
                                                 style={{
-                                                    flex: '1 1 auto', 
+                                                    flex: '0 1 auto', 
                                                     minWidth: '80px',
                                                     background: activeServiceTab === tab ? 'white' : 'transparent', 
                                                     border: 'none', 
@@ -1115,7 +1115,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                                     {/* Dynamic Services Mapping */}
                                     {(profile.services || [])
-                                        .filter(s => activeServiceTab === 'All' || s.type === activeServiceTab)
+                                        .filter(s => activeServiceTab === 'All' || (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase()))
                                         .map((service, index) => (
                                             <div className="preview-service-card" key={index} style={{ 
                                                 position: 'relative', 
@@ -1196,6 +1196,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 }}>{service.tag}</div>}
 
                                                 <div className="preview-service-title" style={{fontSize: '1.2rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
+                                                
+                                                {service.keywords && (
+                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px', position: 'relative', zIndex: 2 }}>
+                                                        {service.keywords.split(',').map((k, i) => (
+                                                            <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
+                                                                #{k.trim()}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
 
                                                 <div className="preview-service-footer" style={{marginTop: '1.5rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', position: 'relative', zIndex: 2}}>
                                                     <div className="preview-service-price" style={{
@@ -1664,10 +1674,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 </div>
 
                                 <div>
-                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Category</label>
-                                    <select 
-                                        value={serviceModal.service.type || '1:1 Call'} 
-                                        onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, type: e.target.value } })}
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Keywords / Topics (comma separated)</label>
+                                    <input 
+                                        type="text" 
+                                        value={serviceModal.service.keywords || ''} 
+                                        onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, keywords: e.target.value } })}
+                                        placeholder="e.g. Resume, Interview, Backend, Java"
                                         style={{
                                             width: '100%',
                                             padding: '12px 16px',
@@ -1676,17 +1688,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             background: '#f8fafc',
                                             outline: 'none',
                                             fontSize: '1rem',
-                                            fontWeight: '600',
-                                            cursor: 'pointer'
+                                            fontWeight: '600'
                                         }}
-                                    >
-                                        <option value="1:1 Call">📅 1:1 Call</option>
-                                        <option value="Resume Review">📝 Resume Review</option>
-                                        <option value="Mock Interview">🎤 Mock Interview</option>
-                                        <option value="Career Guidance">🚀 Career Guidance</option>
-                                        <option value="Technical Training">💻 Technical Training</option>
-                                        <option value="Other">✨ Other</option>
-                                    </select>
+                                    />
                                 </div>
 
                                 <div>

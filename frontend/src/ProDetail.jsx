@@ -201,19 +201,19 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap'}}>
-                                                {['All', ...new Set((pro.services || []).map(s => s.type))].map(tab => (
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap', gap: '4px'}}>
+                                                {['All', ...new Set((pro.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
                                                     <button 
                                                         key={tab}
                                                         onClick={() => setActiveTab(tab)}
                                                         style={{
-                                                            flex: 1, 
+                                                            flex: '0 1 auto', 
                                                             minWidth: '70px',
                                                             background: activeTab === tab ? 'white' : 'transparent', 
                                                             border: 'none', 
                                                             cursor: 'pointer', 
                                                             textAlign: 'center', 
-                                                            padding: '0.4rem', 
+                                                            padding: '0.4rem 0.8rem', 
                                                             borderRadius: '6px', 
                                                             fontSize: '0.85rem', 
                                                             fontWeight: activeTab === tab ? 'bold' : '500', 
@@ -228,7 +228,7 @@ function ProDetail({ pro, onClose }) {
 
                                             {/* Dynamic Services Mapping */}
                                             {(pro.services || [])
-                                                .filter(s => activeTab === 'All' || s.type === activeTab)
+                                                .filter(s => activeTab === 'All' || (s.keywords || '').toLowerCase().includes(activeTab.toLowerCase()))
                                                 .map((service, index) => (
                                                     <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
                                                         {service.tag && (
@@ -237,6 +237,15 @@ function ProDetail({ pro, onClose }) {
                                                             </div>
                                                         )}
                                                         <div className="preview-service-title">{service.title}</div>
+                                                        {service.keywords && (
+                                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
+                                                                {service.keywords.split(',').map((k, i) => (
+                                                                    <span key={i} style={{ fontSize: '0.65rem', color: '#64748b', background: '#f1f5f9', padding: '1px 6px', borderRadius: '4px' }}>
+                                                                        #{k.trim()}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                         <div className="preview-service-footer">
                                                             <div className="preview-service-price">{service.price}</div>
                                                             <button 

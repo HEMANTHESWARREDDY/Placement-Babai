@@ -27,7 +27,8 @@ function ProConnect({ onMentorLoginClick }) {
                 (pro.name && pro.name.toLowerCase().includes(kw)) ||
                 (pro.role && pro.role.toLowerCase().includes(kw)) ||
                 (pro.company && pro.company.toLowerCase().includes(kw)) ||
-                (pro.expertise && pro.expertise.toLowerCase().includes(kw));
+                (pro.expertise && pro.expertise.toLowerCase().includes(kw)) ||
+                (pro.serviceKeywords && pro.serviceKeywords.toLowerCase().includes(kw));
         }
 
         let matchExp = true;
@@ -136,6 +137,7 @@ function ProConnect({ onMentorLoginClick }) {
                     }
                     const rawServices = (parsedServices && parsedServices.length > 0) ? parsedServices : [];
                     const finalServices = rawServices.filter(s => s.title && s.title.trim() !== '');
+                    const serviceKeywords = finalServices.map(s => s.keywords || '').join(', ');
                     return {
                         ...m,
                         exp: m.experience ? (m.experience.toLowerCase().includes('year') ? m.experience : `${m.experience} Years of experience`) : '1 Year of experience',
@@ -144,7 +146,8 @@ function ProConnect({ onMentorLoginClick }) {
                         image: m.image || null,
                         headerBg: m.headerBg || 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
                         avatarBg: m.avatarBg || '#1e293b',
-                        services: finalServices
+                        services: finalServices,
+                        serviceKeywords: serviceKeywords
                     };
                 });
                 setMentors(processed);
