@@ -76,6 +76,13 @@
     border-color: #bae6fd;
 }
 
+.aml-category-card.active {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
 .aml-cat-icon {
     font-size: 1.8rem;
     filter: drop-shadow(0 4px 6px rgba(14, 165, 233, 0.2));

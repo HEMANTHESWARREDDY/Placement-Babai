@@ -5,6 +5,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
     const [sortBy, setSortBy] = useState('newest');
     const [showSortMenu, setShowSortMenu] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const sortMenuRef = useRef(null);
 
     useEffect(() => {
@@ -18,13 +19,28 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
     }, [sortMenuRef]);
 
     const filteredAndSortedMentors = useMemo(() => {
-        let result = mentors.filter(p => 
-            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (p.company && p.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (p.topics && p.topics.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (p.skills && p.skills.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
+        let result = mentors.filter(p => {
+            const term = searchTerm.toLowerCase();
+            const matchesSearch = p.name.toLowerCase().includes(term) ||
+                p.role.toLowerCase().includes(term) ||
+                (p.company && p.company.toLowerCase().includes(term)) ||
+                (p.topics && p.topics.toLowerCase().includes(term)) ||
+                (p.skills && p.skills.toLowerCase().includes(term));
+            
+            let matchesCategory = true;
+            if (selectedCategory) {
+                const cat = selectedCategory.toLowerCase();
+                // Special check for '1:1 Mentorship' which matches many services
+                const is1to1 = cat.includes('1:1');
+                
+                matchesCategory = (p.topics && p.topics.toLowerCase().includes(cat)) ||
+                                 (p.skills && p.skills.toLowerCase().includes(cat)) ||
+                                 (p.role && p.role.toLowerCase().includes(cat)) ||
+                                 (p.services && p.services.some(s => s.title.toLowerCase().includes(cat))) ||
+                                 (is1to1 && p.services && p.services.some(s => s.title.toLowerCase().includes('mentor')));
+            }
+            return matchesSearch && matchesCategory;
+        });
 
         if (sortBy === 'name-asc') {
             result.sort((a, b) => a.name.localeCompare(b.name));
@@ -36,7 +52,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             result.sort((a, b) => (a.id || 0) - (b.id || 0));
         }
         return result;
-    }, [mentors, sortBy, searchTerm]);
+    }, [mentors, sortBy, searchTerm, selectedCategory]);
     const filtersRowRef = useRef(null);
     const [canScrollLeftFilters, setCanScrollLeftFilters] = useState(false);
     const [canScrollRightFilters, setCanScrollRightFilters] = useState(false);
@@ -110,7 +126,11 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                         { icon: '✨', label: 'Personal Branding' },
                         { icon: '🤝', label: '1:1 Mentorship' }
                     ].map((cat, i) => (
-                        <div className="aml-category-card" key={i}>
+                        <div 
+                            className={`aml-category-card ${selectedCategory === cat.label ? 'active' : ''}`} 
+                            key={i}
+                            onClick={() => setSelectedCategory(selectedCategory === cat.label ? null : cat.label)}
+                        >
                             <div className="aml-cat-icon">{cat.icon}</div>
                             <div className="aml-cat-label">{cat.label}</div>
                         </div>
