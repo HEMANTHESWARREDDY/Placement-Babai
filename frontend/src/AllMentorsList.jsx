@@ -120,7 +120,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                 )}
                 <div className="aml-categories-row" ref={categoriesRowRef} onScroll={checkCategoriesScroll}>
                     {[
-                        { icon: '📄', label: 'CV Review' },
+                        { icon: '📄', label: 'Resume Review' },
                         { icon: '👨‍💻', label: 'Interview Preparation' },
                         { icon: '💼', label: 'Career Guidance' },
                         { icon: '✨', label: 'Personal Branding' },
