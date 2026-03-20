@@ -479,11 +479,22 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     <div className="mentor-dialog-overlay" onClick={confirmDialog.onClose}>
                         <div className="mentor-dialog" onClick={e => e.stopPropagation()}>
                             <div className="mentor-dialog-content">
-                                <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
-                                    <h3>{confirmDialog.title}</h3>
-                                    <button onClick={confirmDialog.onClose} style={{background:'transparent', border:'none', fontSize:'1.5rem', cursor:'pointer', color:'#94a3b8'}}>&times;</button>
+                                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: '1.5rem'}}>
+                                    <h3 style={{margin: 0, fontSize: '1.5rem'}}>{confirmDialog.title}</h3>
+                                    <button onClick={confirmDialog.onClose} style={{background:'transparent', border:'none', fontSize:'1.5rem', cursor:'pointer', color:'#94a3b8', padding: '5px'}}>&times;</button>
                                 </div>
-                                <p>{confirmDialog.message}</p>
+                                <div style={{display:'flex', gap: '1rem', alignItems: 'flex-start'}}>
+                                    <div style={{
+                                        background: confirmDialog.type === 'danger' ? '#fee2e2' : '#dcfce3',
+                                        color: confirmDialog.type === 'danger' ? '#ef4444' : '#10b981',
+                                        padding: '12px',
+                                        borderRadius: '12px',
+                                        fontSize: '1.25rem'
+                                    }}>
+                                        {confirmDialog.type === 'danger' ? '⚠️' : '✨'}
+                                    </div>
+                                    <p style={{margin: 0, fontSize: '1.05rem', color: '#475569', fontWeight: '500'}}>{confirmDialog.message}</p>
+                                </div>
                             </div>
                             <div className="mentor-dialog-actions">
                                 <button className="dialog-cancel" onClick={confirmDialog.onCancel}>{confirmDialog.cancelText || 'Cancel'}</button>
