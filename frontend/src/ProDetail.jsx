@@ -330,7 +330,7 @@ function ProDetail({ pro, onClose }) {
                                                                 <button 
                                                                     className="preview-book-btn"
                                                                     onClick={() => setBookingData({ pro, service })}
-                                                                    style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
+                                                                    style={{}}
                                                                 >
                                                                     Book Now
                                                                 </button>
