@@ -4,6 +4,7 @@ import './AllMentorsList.css';
 function AllMentorsList({ mentors, onBack, onSelectPro }) {
     const [sortBy, setSortBy] = useState('newest');
     const [showSortMenu, setShowSortMenu] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const sortMenuRef = useRef(null);
 
     useEffect(() => {
@@ -16,20 +17,26 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [sortMenuRef]);
 
-    const sortedMentors = useMemo(() => {
-        let result = [...mentors];
+    const filteredAndSortedMentors = useMemo(() => {
+        let result = mentors.filter(p => 
+            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (p.company && p.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (p.topics && p.topics.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (p.skills && p.skills.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+
         if (sortBy === 'name-asc') {
             result.sort((a, b) => a.name.localeCompare(b.name));
         } else if (sortBy === 'name-desc') {
             result.sort((a, b) => b.name.localeCompare(a.name));
         } else if (sortBy === 'newest') {
-            // Prefer id if available, otherwise createdAt
             result.sort((a, b) => (b.id || 0) - (a.id || 0));
         } else if (sortBy === 'oldest') {
             result.sort((a, b) => (a.id || 0) - (b.id || 0));
         }
         return result;
-    }, [mentors, sortBy]);
+    }, [mentors, sortBy, searchTerm]);
     const filtersRowRef = useRef(null);
     const [canScrollLeftFilters, setCanScrollLeftFilters] = useState(false);
     const [canScrollRightFilters, setCanScrollRightFilters] = useState(false);
@@ -47,7 +54,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
         setTimeout(checkFiltersScroll, 100);
         window.addEventListener('resize', checkFiltersScroll);
         return () => window.removeEventListener('resize', checkFiltersScroll);
-    }, [sortedMentors]); // Also re-check if mentors list changes
+    }, [filteredAndSortedMentors]); // Also re-check if mentors list changes
 
     const scrollFilters = (direction) => {
         if (filtersRowRef.current) {
@@ -166,10 +173,20 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 </>
                             )}
                         </div>
+                        <div className="aml-featured-pill">
+                            Featured
+                        </div>
                     </div>
                     <div className="aml-filters-right">
-                        <div className="aml-featured-pill" style={{ marginLeft: '0.6rem' }}>
-                            Featured
+                        <div className="aml-search-box">
+                            <span className="aml-search-icon">🔍</span>
+                            <input 
+                                type="text" 
+                                placeholder="Search Mentors" 
+                                className="aml-search-input"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                         </div>
                     </div>
                 </div>
@@ -179,7 +196,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             </div>
 
             <div className="aml-list">
-                {sortedMentors.map((pro, idx) => (
+                {filteredAndSortedMentors.map((pro, idx) => (
                     <div className="aml-card" key={pro.id || idx} style={{ cursor: 'pointer' }} onClick={(e) => {
                         if (!e.target.closest('.aml-services-row') && !e.target.closest('.tm-social-icon')) {
                             onSelectPro(pro);
