@@ -1119,7 +1119,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         </button>
                                     )}
                                 </div>
-                                <div style={{background: 'rgba(248, 250, 252, 0.5)', backdropFilter: 'blur(8px)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)'}}>
+                                <div style={{
+                                    background: 'rgba(248, 250, 252, 0.5)', 
+                                    backdropFilter: 'blur(8px)', 
+                                    padding: '1.25rem', 
+                                    borderRadius: '16px', 
+                                    border: '1px solid rgba(226, 232, 240, 0.8)', 
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+                                    maxHeight: '520px',
+                                    overflowY: 'auto'
+                                }}>
                                     
                                     <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
                                         <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
@@ -1255,12 +1264,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         .map((service, index) => (
                                             <div className="preview-service-card" key={index} style={{ 
                                                 position: 'relative', 
-                                                marginBottom: '1.25rem',
+                                                marginBottom: '1rem',
                                                 background: 'rgba(255, 255, 255, 0.9)',
                                                 border: '1px solid #e2e8f0',
                                                 boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
-                                                padding: '1.5rem',
-                                                borderRadius: '16px',
+                                                padding: '1rem',
+                                                borderRadius: '12px',
                                                 cursor: isEditingProfile ? 'pointer' : 'default'
                                             }}
                                             onClick={() => isEditingProfile && openEditService(service, index)}
@@ -1331,7 +1340,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                     zIndex: 2
                                                 }}>{service.tag}</div>}
 
-                                                <div className="preview-service-title" style={{fontSize: '1.2rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
+                                                <div className="preview-service-title" style={{fontSize: '1rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
                                                 
                                                 {service.keywords && (
                                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px', position: 'relative', zIndex: 2 }}>
@@ -1345,7 +1354,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                                                 <div className="preview-service-footer" style={{marginTop: '1.5rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', position: 'relative', zIndex: 2}}>
                                                     <div className="preview-service-price" style={{
-                                                        fontSize: '1.5rem',
+                                                        fontSize: '1.2rem',
                                                         background: 'linear-gradient(135deg, #0f172a, #334155)',
                                                         WebkitBackgroundClip: 'text',
                                                         WebkitTextFillColor: 'transparent',
@@ -1359,11 +1368,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                         style={{ 
                                                             opacity: isEditingProfile ? 0.4 : 1,
                                                             background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                                                            padding: '0.75rem 1.8rem',
-                                                            borderRadius: '12px',
+                                                            padding: '0.6rem 1.4rem',
+                                                            borderRadius: '10px',
                                                             boxShadow: isEditingProfile ? 'none' : '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
                                                             border: 'none',
-                                                            transition: '0.3s'
+                                                            transition: '0.3s',
+                                                            fontSize: '0.85rem'
                                                         }}
                                                     >
                                                         Book Now
@@ -1659,7 +1669,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                                     <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
                                         <h4 style={{color: '#1e1b4b'}}>📅 Available Services</h4>
-                                        <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
+                                        <div style={{
+                                            background: '#f8fafc', 
+                                            padding: '1rem', 
+                                            borderRadius: '12px', 
+                                            border: '1px solid #e2e8f0',
+                                            maxHeight: '520px',
+                                            overflowY: 'auto'
+                                        }}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
                                                 <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px' }}>
                                                     {['All'].map(tab => (
@@ -1800,9 +1817,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                                 {service.tag}
                                                             </div>
                                                         )}
-                                                        <div className="preview-service-title">{service.title}</div>
+                                                        <div className="preview-service-title" style={{fontSize: '1rem'}}>{service.title}</div>
                                                         <div className="preview-service-footer">
-                                                            <div className="preview-service-price">{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
+                                                            <div className="preview-service-price" style={{fontSize: '1.1rem'}}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
                                                             <button 
                                                                 className="preview-book-btn"
                                                                 onClick={() => setBookingData({ pro: profile, service: service })}
