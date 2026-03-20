@@ -18,7 +18,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [dailyViews, setDailyViews] = useState({});
-    const [viewFilter, setViewFilter] = useState('7days'); 
+    const [viewFilter, setViewFilter] = useState('today'); 
     const [selectedDate, setSelectedDate] = useState('');
     const [recordSearchDate, setRecordSearchDate] = useState('');
     
@@ -1150,7 +1150,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         fontSize: '0.9rem',
                                         fontWeight: '600',
                                         outline: 'none',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        colorScheme: 'dark'
                                     }}
                                 />
                                 {recordSearchDate && (
