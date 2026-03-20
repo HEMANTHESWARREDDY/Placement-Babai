@@ -46,18 +46,7 @@ function ProDetail({ pro, onClose }) {
                             style={{ 
                                 background: pro.headerBg?.includes('gradient') ? pro.headerBg : 
                                            (pro.headerBg?.startsWith('http') || pro.headerBg?.startsWith('data:image')) ? `url(${pro.headerBg}) center/cover no-repeat` : 
-                                           pro.headerBg || '#fbcfe8',
-                                cursor: 'pointer'
-                            }}
-                            onClick={() => {
-                                const bg = pro.headerBg;
-                                if (bg && (bg.startsWith('http') || bg.startsWith('data:image'))) {
-                                    setLightbox({ type: 'image', src: bg });
-                                } else if (bg && bg.includes('gradient')) {
-                                    setLightbox({ type: 'gradient', src: bg });
-                                } else {
-                                    setLightbox({ type: 'color', src: bg || '#fbcfe8' });
-                                }
+                                           pro.headerBg || '#fbcfe8'
                             }}
                         >
                         </div>
@@ -66,15 +55,7 @@ function ProDetail({ pro, onClose }) {
                                 <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
                                     <div className="preview-avatar" 
                                         style={{
-                                            background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor,
-                                            cursor: 'pointer'
-                                        }}
-                                        onClick={() => {
-                                            if (pro.image) {
-                                                setLightbox({ type: 'image', src: pro.image });
-                                            } else {
-                                                setLightbox({ type: 'initials', src: avatarBgColor, initials: initials });
-                                            }
+                                            background: pro.image ? `url(${pro.image}) center/cover` : avatarBgColor
                                         }}
                                     >
                                         {!pro.image && initials}
