@@ -311,9 +311,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const addService = () => {
         const newService = {
             type: '1:1 Call', // default type
-            title: 'New Service',
-            price: '₹0',
-            tag: 'NEW'
+            title: '',
+            price: '',
+            tag: ''
         };
         setProfile(prev => ({
             ...prev,
@@ -1034,18 +1034,28 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         <button 
                                             onClick={addService}
                                             style={{
-                                                background: '#7c3aed',
+                                                background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
                                                 color: 'white',
-                                                border: 'none',
+                                                border: '2px solid rgba(255,255,255,0.2)',
                                                 borderRadius: '50%',
-                                                width: '28px',
-                                                height: '28px',
+                                                width: '32px',
+                                                height: '32px',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 cursor: 'pointer',
-                                                fontSize: '1.2rem',
-                                                boxShadow: '0 2px 4px rgba(124, 58, 237, 0.3)'
+                                                fontSize: '1.4rem',
+                                                boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)',
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                transformOrigin: 'center'
+                                            }}
+                                            onMouseOver={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)';
+                                                e.currentTarget.style.boxShadow = '0 6px 16px rgba(124, 58, 237, 0.6)';
+                                            }}
+                                            onMouseOut={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.4)';
                                             }}
                                             title="Add New Service"
                                         >
@@ -1053,26 +1063,27 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         </button>
                                     )}
                                 </div>
-                                <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
+                                <div style={{background: 'rgba(248, 250, 252, 0.5)', backdropFilter: 'blur(8px)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(226, 232, 240, 0.8)', boxShadow: '0 4px 15px rgba(0,0,0,0.03)'}}>
                                     
-                                    <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap'}}>
+                                    <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '10px', padding: '0.3rem', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '4px'}}>
                                         {['All', ...new Set((profile.services || []).map(s => s.type))].map(tab => (
                                             <button 
                                                 key={tab}
                                                 onClick={() => setActiveServiceTab(tab)}
                                                 style={{
-                                                    flex: 1, 
-                                                    minWidth: '70px',
+                                                    flex: '1 1 auto', 
+                                                    minWidth: '80px',
                                                     background: activeServiceTab === tab ? 'white' : 'transparent', 
                                                     border: 'none', 
                                                     cursor: 'pointer', 
                                                     textAlign: 'center', 
-                                                    padding: '0.4rem', 
-                                                    borderRadius: '6px', 
-                                                    fontSize: '0.85rem', 
-                                                    fontWeight: activeServiceTab === tab ? 'bold' : '500', 
-                                                    color: activeServiceTab === tab ? '#1e293b' : '#64748b', 
-                                                    boxShadow: activeServiceTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                    padding: '0.5rem 0.8rem', 
+                                                    borderRadius: '8px', 
+                                                    fontSize: '0.8rem', 
+                                                    fontWeight: activeServiceTab === tab ? '700' : '600', 
+                                                    color: activeServiceTab === tab ? '#4f46e5' : '#64748b', 
+                                                    boxShadow: activeServiceTab === tab ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                                                    transition: '0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                                 }}
                                             >
                                                 {tab}
@@ -1084,27 +1095,39 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     {(profile.services || [])
                                         .filter(s => activeServiceTab === 'All' || s.type === activeServiceTab)
                                         .map((service, index) => (
-                                            <div className="preview-service-card" key={index} style={{ position: 'relative', marginBottom: '1rem' }}>
+                                            <div className="preview-service-card" key={index} style={{ 
+                                                position: 'relative', 
+                                                marginBottom: '1.25rem',
+                                                background: 'rgba(255, 255, 255, 0.9)',
+                                                border: isEditingProfile ? '2px dashed #cbd5e1' : '1px solid #e2e8f0',
+                                                boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
+                                                padding: '1.5rem',
+                                                borderRadius: '16px'
+                                            }}>
                                                 {isEditingProfile && (
                                                     <button 
                                                         onClick={() => removeService(index)}
                                                         style={{
                                                             position: 'absolute',
-                                                            top: '-8px',
-                                                            right: '-8px',
-                                                            background: '#ef4444',
+                                                            top: '-10px',
+                                                            right: '-10px',
+                                                            background: 'linear-gradient(135deg, #f87171, #ef4444)',
                                                             color: 'white',
-                                                            border: 'none',
+                                                            border: '2px solid white',
                                                             borderRadius: '50%',
-                                                            width: '20px',
-                                                            height: '20px',
-                                                            fontSize: '12px',
+                                                            width: '26px',
+                                                            height: '26px',
+                                                            fontSize: '11px',
                                                             cursor: 'pointer',
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
-                                                            zIndex: 5
+                                                            zIndex: 10,
+                                                            boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)',
+                                                            transition: '0.2s'
                                                         }}
+                                                        onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+                                                        onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                                                         title="Remove Service"
                                                     >
                                                         ✕
@@ -1112,68 +1135,122 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 )}
                                                 
                                                 {isEditingProfile ? (
-                                                    <input 
-                                                        type="text" 
-                                                        value={service.tag || ''} 
-                                                        onChange={(e) => updateServiceField(index, 'tag', e.target.value)}
-                                                        className="preview-service-tag-edit"
-                                                        placeholder="Tag (e.g. ⭐ BEST SELLER)"
-                                                        style={{
-                                                            display: 'block',
-                                                            fontSize: '0.65rem',
-                                                            padding: '2px 6px',
-                                                            border: '1px solid #e2e8f0',
-                                                            borderRadius: '4px',
-                                                            marginBottom: '8px',
-                                                            width: 'fit-content'
-                                                        }}
-                                                    />
+                                                    <div style={{marginBottom: '12px'}}>
+                                                        <input 
+                                                            type="text" 
+                                                            value={service.tag || ''} 
+                                                            onChange={(e) => updateServiceField(index, 'tag', e.target.value)}
+                                                            className="futuristic-input-mini"
+                                                            placeholder="Tag (e.g. ⭐ Best Seller)"
+                                                            style={{
+                                                                width: '180px',
+                                                                fontSize: '0.75rem',
+                                                                fontWeight: '700',
+                                                                padding: '6px 10px',
+                                                                border: '1px solid #e2e8f0',
+                                                                borderRadius: '8px',
+                                                                background: '#f8fafc',
+                                                                outline: 'none',
+                                                                color: '#475569'
+                                                            }}
+                                                        />
+                                                    </div>
                                                 ) : (
-                                                    service.tag && <div className="preview-service-tag">{service.tag}</div>
+                                                    service.tag && <div className="preview-service-tag" style={{
+                                                        background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
+                                                        color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
+                                                        borderRadius: '8px',
+                                                        letterSpacing: '0.02em'
+                                                    }}>{service.tag}</div>
                                                 )}
 
                                                 {isEditingProfile ? (
-                                                    <div style={{display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px'}}>
+                                                    <div style={{display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '15px'}}>
                                                         <input 
                                                             type="text" 
                                                             value={service.title || ''} 
                                                             onChange={(e) => updateServiceField(index, 'title', e.target.value)}
-                                                            placeholder="Service Title"
-                                                            style={{fontWeight: '700', border: '1px solid #e2e8f0', padding: '4px', borderRadius: '4px'}}
+                                                            placeholder="Enter Service Title (e.g. 1:1 Call Mentorship)"
+                                                            style={{
+                                                                fontWeight: '700', 
+                                                                fontSize: '1.1rem',
+                                                                border: '1px solid #e2e8f0', 
+                                                                padding: '10px 14px', 
+                                                                borderRadius: '10px',
+                                                                background: 'white',
+                                                                outline: 'none'
+                                                            }}
                                                         />
                                                         <select 
                                                             value={service.type || '1:1 Call'} 
                                                             onChange={(e) => updateServiceField(index, 'type', e.target.value)}
-                                                            style={{fontSize: '0.8rem', padding: '2px', border: '1px solid #e2e8f0', borderRadius: '4px'}}
+                                                            style={{
+                                                                fontSize: '0.9rem', 
+                                                                padding: '8px 12px', 
+                                                                border: '1px solid #e2e8f0', 
+                                                                borderRadius: '10px',
+                                                                background: '#f8fafc',
+                                                                color: '#64748b',
+                                                                fontWeight: '600',
+                                                                cursor: 'pointer'
+                                                            }}
                                                         >
-                                                            <option value="1:1 Call">1:1 Call</option>
-                                                            <option value="Resume Review">Resume Review</option>
-                                                            <option value="Mock Interview">Mock Interview</option>
-                                                            <option value="Career Guidance">Career Guidance</option>
-                                                            <option value="Other">Other</option>
+                                                            <option value="1:1 Call">📅 1:1 Call</option>
+                                                            <option value="Resume Review">📝 Resume Review</option>
+                                                            <option value="Mock Interview">🎤 Mock Interview</option>
+                                                            <option value="Career Guidance">🚀 Career Guidance</option>
+                                                            <option value="Technical Training">💻 Technical Training</option>
+                                                            <option value="Other">✨ Other</option>
                                                         </select>
                                                     </div>
                                                 ) : (
-                                                    <div className="preview-service-title">{service.title}</div>
+                                                    <div className="preview-service-title" style={{fontSize: '1.2rem', color: '#1e1b4b'}}>{service.title}</div>
                                                 )}
 
-                                                <div className="preview-service-footer">
+                                                <div className="preview-service-footer" style={{marginTop: '1.5rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)'}}>
                                                     {isEditingProfile ? (
-                                                        <input 
-                                                            type="text" 
-                                                            value={service.price || ''} 
-                                                            onChange={(e) => updateServiceField(index, 'price', e.target.value)}
-                                                            placeholder="Price (e.g. ₹499)"
-                                                            style={{width: '80px', border: '1px solid #e2e8f0', padding: '4px', borderRadius: '4px'}}
-                                                        />
+                                                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                                            <span style={{fontWeight: '800', color: '#10b981'}}>₹</span>
+                                                            <input 
+                                                                type="text" 
+                                                                value={service.price || ''} 
+                                                                onChange={(e) => updateServiceField(index, 'price', e.target.value)}
+                                                                placeholder="Price (e.g. 499)"
+                                                                style={{
+                                                                    width: '100px', 
+                                                                    border: '1px solid #e2e8f0', 
+                                                                    padding: '8px 12px', 
+                                                                    borderRadius: '10px',
+                                                                    fontWeight: '800',
+                                                                    fontSize: '1.1rem',
+                                                                    outline: 'none',
+                                                                    color: '#059669'
+                                                                }}
+                                                            />
+                                                        </div>
                                                     ) : (
-                                                        <div className="preview-service-price">{service.price}</div>
+                                                        <div className="preview-service-price" style={{
+                                                            fontSize: '1.5rem',
+                                                            background: 'linear-gradient(135deg, #0f172a, #334155)',
+                                                            WebkitBackgroundClip: 'text',
+                                                            WebkitTextFillColor: 'transparent',
+                                                            letterSpacing: '-0.02em'
+                                                        }}>{service.price}</div>
                                                     )}
                                                     <button 
                                                         className="preview-book-btn"
                                                         disabled={isEditingProfile}
                                                         onClick={() => setBookingData({ pro: profile, service: service })}
-                                                        style={{ opacity: isEditingProfile ? 0.5 : 1 }}
+                                                        style={{ 
+                                                            opacity: isEditingProfile ? 0.4 : 1,
+                                                            background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                                                            padding: '0.75rem 1.8rem',
+                                                            borderRadius: '12px',
+                                                            boxShadow: isEditingProfile ? 'none' : '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
+                                                            border: 'none',
+                                                            transform: isEditingProfile ? 'none' : 'translateY(0)',
+                                                            transition: '0.3s'
+                                                        }}
                                                     >
                                                         Book Now
                                                     </button>
@@ -1183,8 +1260,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     }
                                     
                                     {(profile.services || []).length === 0 && (
-                                        <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
-                                            No services added yet.
+                                        <div style={{
+                                            textAlign: 'center', 
+                                            padding: '3rem 1rem', 
+                                            color: '#94a3b8', 
+                                            background: 'rgba(255,255,255,0.4)',
+                                            borderRadius: '16px',
+                                            border: '1px dashed #e2e8f0'
+                                        }}>
+                                            <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>✨</div>
+                                            <p style={{fontWeight: '600', fontSize: '0.95rem'}}>Click the "+" button above to add your first service!</p>
                                         </div>
                                     )}
                                 </div>
