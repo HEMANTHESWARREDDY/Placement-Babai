@@ -142,8 +142,13 @@ function ProConnect({ onMentorLoginClick }) {
                         console.error('Error parsing services', m.id, e);
                     }
                     
-                    // Filter out invalid items
-                    finalServices = Array.isArray(finalServices) ? finalServices.filter(s => s && typeof s === 'object' && s.title) : [];
+                    // Fallback to defaults if empty
+                    if (!finalServices || finalServices.length === 0) {
+                        finalServices = [
+                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: '1:1 Mentorship', price: 'Free', tag: '✨ Popular' },
+                            { keywords: 'Resume Review, ATS Optimization, Profile Evaluation', title: 'Resume Review', price: 'Free', tag: '⭐ Best Seller' }
+                        ];
+                    }
                     
                     const serviceKeywords = finalServices.map(s => s.keywords || '').join(', ');
                     return {

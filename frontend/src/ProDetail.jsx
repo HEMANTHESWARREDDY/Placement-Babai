@@ -203,41 +203,13 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
-                                                {/* Tabs/Filter Chips */}
-                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'auto', paddingBottom: '2px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                                                    {['All', ...new Set((pro.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
-                                                        <button 
-                                                            key={tab}
-                                                            onClick={() => setActiveTab(tab)}
-                                                            style={{
-                                                                flex: '0 0 auto',
-                                                                minWidth: '70px',
-                                                                background: activeTab === tab ? 'white' : 'transparent', 
-                                                                border: 'none', 
-                                                                cursor: 'pointer', 
-                                                                textAlign: 'center', 
-                                                                padding: '0.4rem 0.8rem', 
-                                                                borderRadius: '8px', 
-                                                                fontSize: '0.8rem', 
-                                                                fontWeight: activeTab === tab ? 'bold' : '500', 
-                                                                color: activeTab === tab ? '#1e293b' : '#64748b', 
-                                                                boxShadow: activeTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
-                                                            }}
-                                                        >
-                                                            {tab}
-                                                        </button>
-                                                    ))}
-                                                </div>
-
-                                                {/* Search & Sort Grouped */}
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center', justifyContent: 'flex-end'}}>
                                                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-                                                    {/* Search Bar */}
-                                                    <div style={{ position: 'relative', width: '180px' }}>
+                                                    <div style={{ position: 'relative', width: '220px' }}>
                                                         <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
                                                         <input 
                                                             type="text" 
-                                                            placeholder="Search..." 
+                                                            placeholder="Search services..." 
                                                             value={serviceSearch}
                                                             onChange={(e) => setServiceSearch(e.target.value)}
                                                             style={{
@@ -254,7 +226,6 @@ function ProDetail({ pro, onClose }) {
                                                         />
                                                     </div>
 
-                                                    {/* Sort Dropdown */}
                                                     <div style={{ position: 'relative' }}>
                                                         <select 
                                                             value={serviceSort}
@@ -281,30 +252,46 @@ function ProDetail({ pro, onClose }) {
                                                 </div>
                                             </div>
 
-
                                             {/* Dynamic Services Mapping */}
                                             <div style={{ maxHeight: '450px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
-                                                {(pro.services || [])
-                                                    .filter(s => {
-                                                        const matchesTab = activeTab === 'All' || (s.keywords || '').toLowerCase().includes(activeTab.toLowerCase());
+                                                {(() => {
+                                                    let servicesToRender = [...(pro.services || [])];
+                                                    
+                                                    // Emergency Fallback inside component
+                                                    if (servicesToRender.length === 0) {
+                                                        servicesToRender = [
+                                                            { keywords: '1:1 Mentorship, Career Guidance, Mock Interview', title: '1:1 Mentorship', price: 'Free', tag: '✨ Popular' },
+                                                            { keywords: 'Resume Review, ATS Optimization, Profile Evaluation', title: 'Resume Review', price: 'Free', tag: '⭐ Best Seller' }
+                                                        ];
+                                                    }
+
+                                                    const filtered = servicesToRender.filter(s => {
                                                         const matchesSearch = !serviceSearch.trim() || 
-                                                            s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
-                                                            s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase());
-                                                        return matchesTab && matchesSearch;
-                                                    })
-                                                    .sort((a, b) => {
+                                                            (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                            (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
+                                                        return matchesSearch;
+                                                    }).sort((a, b) => {
                                                         if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
                                                         if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
-                                                        return 0; // Default or newest (index-based)
-                                                    })
-                                                    .map((service, index) => (
+                                                        return 0;
+                                                    });
+
+                                                    if (filtered.length === 0) {
+                                                        return (
+                                                            <div style={{textAlign: 'center', padding: '2rem', color: '#64748b', fontStyle: 'italic'}}>
+                                                                No matching services found.
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    return filtered.map((service, index) => (
                                                         <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
                                                             {service.tag && (
                                                                 <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
                                                                     {service.tag}
                                                                 </div>
                                                             )}
-                                                            <div className="preview-service-title">{service.title}</div>
+                                                            <div className="preview-service-title">{service.title || 'Untitled Service'}</div>
                                                             {service.keywords && (
                                                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
                                                                     {service.keywords.split(',').map((k, i) => (
@@ -325,14 +312,10 @@ function ProDetail({ pro, onClose }) {
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                    ))}
+                                                    ));
+                                                })()}
                                             </div>
-                                            
-                                            {(pro.services || []).length === 0 && (
-                                                <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
-                                                    No services available at the moment.
-                                                </div>
-                                            )}
+
                                         </div>
                                     </div>
                                 </div>
