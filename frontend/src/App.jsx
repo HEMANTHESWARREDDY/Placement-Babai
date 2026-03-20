@@ -924,7 +924,7 @@ function App() {
                 </div>
 
                 <button className="search-btn" onClick={handleSearch}>
-                  Search
+                  Search Jobs
                 </button>
               </div>
 
