@@ -129,14 +129,22 @@ function ProConnect({ onMentorLoginClick }) {
             if (res.ok) {
                 const data = await res.json();
                 const processed = data.map(m => {
-                    let parsedServices = [];
+                    let finalServices = [];
                     try {
-                        if (m.services) parsedServices = JSON.parse(m.services);
+                        if (m.services) {
+                            if (typeof m.services === 'string') {
+                                finalServices = JSON.parse(m.services);
+                            } else if (Array.isArray(m.services)) {
+                                finalServices = m.services;
+                            }
+                        }
                     } catch (e) {
                         console.error('Error parsing services', m.id, e);
                     }
-                    const rawServices = (parsedServices && parsedServices.length > 0) ? parsedServices : [];
-                    const finalServices = rawServices.filter(s => s.title && s.title.trim() !== '');
+                    
+                    // Filter out invalid items
+                    finalServices = Array.isArray(finalServices) ? finalServices.filter(s => s && typeof s === 'object' && s.title) : [];
+                    
                     const serviceKeywords = finalServices.map(s => s.keywords || '').join(', ');
                     return {
                         ...m,

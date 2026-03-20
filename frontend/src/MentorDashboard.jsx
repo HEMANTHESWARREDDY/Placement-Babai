@@ -1674,7 +1674,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         }}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
                                                 <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'hidden', paddingBottom: '2px' }}>
-                                                    {['All'].map(tab => (
+                                                    {['All', ...new Set((profile.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
                                                         <button 
                                                             key={tab}
                                                             onClick={() => setActiveServiceTab(tab)}

@@ -4,9 +4,11 @@ import BookingModal from './BookingModal';
 
 
 function ProDetail({ pro, onClose }) {
-    const [activeTab, setActiveTab] = useState('All');
     const [mainTab, setMainTab] = useState('Services');
     const [lightbox, setLightbox] = useState(null);
+    const [serviceSearch, setServiceSearch] = useState('');
+    const [serviceSort, setServiceSort] = useState('A-Z');
+    const [activeTab, setActiveTab] = useState('All');
 
     const [expandedSections, setExpandedSections] = useState({
         about: true,
@@ -201,63 +203,126 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '0.25rem', marginBottom: '1rem', flexWrap: 'wrap', gap: '4px'}}>
-                                                {['All', ...new Set((pro.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
-                                                    <button 
-                                                        key={tab}
-                                                        onClick={() => setActiveTab(tab)}
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '8px', alignItems: 'center'}}>
+                                                {/* Tabs/Filter Chips */}
+                                                <div style={{ display: 'flex', gap: '4px', flex: 1, overflowX: 'hidden', paddingBottom: '2px' }}>
+                                                    {['All', ...new Set((pro.services || []).flatMap(s => (s.keywords || '').split(',').map(k => k.trim()).filter(k => k)))].map(tab => (
+                                                        <button 
+                                                            key={tab}
+                                                            onClick={() => setActiveTab(tab)}
+                                                            style={{
+                                                                flex: '0 0 auto',
+                                                                minWidth: '70px',
+                                                                background: activeTab === tab ? 'white' : 'transparent', 
+                                                                border: 'none', 
+                                                                cursor: 'pointer', 
+                                                                textAlign: 'center', 
+                                                                padding: '0.4rem 0.8rem', 
+                                                                borderRadius: '8px', 
+                                                                fontSize: '0.8rem', 
+                                                                fontWeight: activeTab === tab ? 'bold' : '500', 
+                                                                color: activeTab === tab ? '#1e293b' : '#64748b', 
+                                                                boxShadow: activeTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                            }}
+                                                        >
+                                                            {tab}
+                                                        </button>
+                                                    ))}
+                                                </div>
+
+                                                {/* Search Bar */}
+                                                <div style={{ position: 'relative', width: '100%', maxWidth: '250px' }}>
+                                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Search services..." 
+                                                        value={serviceSearch}
+                                                        onChange={(e) => setServiceSearch(e.target.value)}
                                                         style={{
-                                                            flex: '0 1 auto', 
-                                                            minWidth: '70px',
-                                                            background: activeTab === tab ? 'white' : 'transparent', 
-                                                            border: 'none', 
-                                                            cursor: 'pointer', 
-                                                            textAlign: 'center', 
-                                                            padding: '0.4rem 0.8rem', 
-                                                            borderRadius: '6px', 
-                                                            fontSize: '0.85rem', 
-                                                            fontWeight: activeTab === tab ? 'bold' : '500', 
-                                                            color: activeTab === tab ? '#1e293b' : '#64748b', 
-                                                            boxShadow: activeTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                                                            width: '100%',
+                                                            boxSizing: 'border-box',
+                                                            padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+                                                            borderRadius: '10px',
+                                                            border: '1px solid #cbd5e1',
+                                                            background: 'white',
+                                                            fontSize: '0.85rem',
+                                                            outline: 'none',
+                                                            color: '#1e293b'
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                {/* Sort Dropdown */}
+                                                <div style={{ position: 'relative' }}>
+                                                    <select 
+                                                        value={serviceSort}
+                                                        onChange={(e) => setServiceSort(e.target.value)}
+                                                        style={{
+                                                            padding: '0.5rem 1.8rem 0.5rem 0.8rem',
+                                                            borderRadius: '10px',
+                                                            border: '1px solid #cbd5e1',
+                                                            background: 'white',
+                                                            fontSize: '0.85rem',
+                                                            color: '#475569',
+                                                            outline: 'none',
+                                                            appearance: 'none',
+                                                            fontWeight: '600',
+                                                            cursor: 'pointer'
                                                         }}
                                                     >
-                                                        {tab}
-                                                    </button>
-                                                ))}
+                                                        <option value="A-Z">A-Z</option>
+                                                        <option value="Z-A">Z-A</option>
+                                                        <option value="Newest">Newest</option>
+                                                    </select>
+                                                    <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
+                                                </div>
                                             </div>
 
                                             {/* Dynamic Services Mapping */}
-                                            {(pro.services || [])
-                                                .filter(s => activeTab === 'All' || (s.keywords || '').toLowerCase().includes(activeTab.toLowerCase()))
-                                                .map((service, index) => (
-                                                    <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
-                                                        {service.tag && (
-                                                            <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
-                                                                {service.tag}
+                                            <div style={{ maxHeight: '450px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                                {(pro.services || [])
+                                                    .filter(s => {
+                                                        const matchesTab = activeTab === 'All' || (s.keywords || '').toLowerCase().includes(activeTab.toLowerCase());
+                                                        const matchesSearch = !serviceSearch.trim() || 
+                                                            s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                            s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase());
+                                                        return matchesTab && matchesSearch;
+                                                    })
+                                                    .sort((a, b) => {
+                                                        if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
+                                                        if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                        return 0; // Default or newest (index-based)
+                                                    })
+                                                    .map((service, index) => (
+                                                        <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
+                                                            {service.tag && (
+                                                                <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
+                                                                    {service.tag}
+                                                                </div>
+                                                            )}
+                                                            <div className="preview-service-title">{service.title}</div>
+                                                            {service.keywords && (
+                                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
+                                                                    {service.keywords.split(',').map((k, i) => (
+                                                                        <span key={i} style={{ fontSize: '0.65rem', color: '#64748b', background: '#f1f5f9', padding: '1px 6px', borderRadius: '4px' }}>
+                                                                            #{k.trim()}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                            <div className="preview-service-footer">
+                                                                <div className="preview-service-price">{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
+                                                                <button 
+                                                                    className="preview-book-btn"
+                                                                    onClick={() => setBookingData({ pro, service })}
+                                                                    style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
+                                                                >
+                                                                    Book Now
+                                                                </button>
                                                             </div>
-                                                        )}
-                                                        <div className="preview-service-title">{service.title}</div>
-                                                        {service.keywords && (
-                                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
-                                                                {service.keywords.split(',').map((k, i) => (
-                                                                    <span key={i} style={{ fontSize: '0.65rem', color: '#64748b', background: '#f1f5f9', padding: '1px 6px', borderRadius: '4px' }}>
-                                                                        #{k.trim()}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                        <div className="preview-service-footer">
-                                                            <div className="preview-service-price">{service.price}</div>
-                                                            <button 
-                                                                className="preview-book-btn"
-                                                                onClick={() => setBookingData({ pro, service })}
-                                                                style={service.tag?.toLowerCase().includes('feedback') || index % 2 !== 0 ? {background: '#0f172a'} : {}}
-                                                            >
-                                                                Book Now
-                                                            </button>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    ))}
+                                            </div>
                                             
                                             {(pro.services || []).length === 0 && (
                                                 <div style={{textAlign: 'center', padding: '1rem', color: '#64748b', fontStyle: 'italic'}}>
