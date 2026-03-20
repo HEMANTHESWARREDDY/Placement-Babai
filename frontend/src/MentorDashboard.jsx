@@ -1246,7 +1246,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
 
                                     {/* Dynamic Services Mapping */}
-                                    <div style={{ maxHeight: '350px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
+                                    <div style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
                                         {(profile.services || [])
                                             .filter(s => {
                                                 const matchesSearch = !serviceSearch.trim() || 
@@ -1791,7 +1791,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             </div>
 
                                               {/* Dynamic Services Mapping */}
-                                              <div style={{ maxHeight: '350px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
+                                              <div style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
                                                 {(profile.services || [])
                                                     .filter(s => {
                                                         const matchesSearch = !serviceSearch.trim() || 

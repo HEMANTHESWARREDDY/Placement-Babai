@@ -277,7 +277,7 @@ function ProDetail({ pro, onClose }) {
                                             </div>
 
                                             {/* Dynamic Services Mapping */}
-                                            <div style={{ maxHeight: '450px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                            <div style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
                                                 {(() => {
                                                     let servicesToRender = [...(pro.services || [])];
                                                     
