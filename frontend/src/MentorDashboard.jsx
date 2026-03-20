@@ -311,6 +311,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const [confirmModal, setConfirmModal] = useState({ isOpen: false, onConfirm: null, message: '', title: '' });
+    const [serviceModal, setServiceModal] = useState({ 
+        isOpen: false, 
+        isNew: false, 
+        service: { title: '', price: '', keywords: '', tag: '' }, 
+        index: -1 
+    });
 
     const showConfirm = (title, message, onConfirm) => {
         setConfirmModal({
@@ -357,7 +363,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             }
             return { ...prev, services: newServices };
         });
-        setServiceModal({ isOpen: false, isNew: false, service: null, index: -1 });
+        setServiceModal({ 
+            isOpen: false, 
+            isNew: false, 
+            service: { title: '', price: '', keywords: '', tag: '' }, 
+            index: -1 
+        });
     };
 
     const removeService = (index) => {
@@ -1653,7 +1664,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Service Tag</label>
                                     <input 
                                         type="text" 
-                                        value={serviceModal.service.tag || ''} 
+                                        value={serviceModal.service?.tag || ''} 
                                         onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, tag: e.target.value } })}
                                         placeholder="e.g. ⭐ Best Seller"
                                         style={{
@@ -1673,7 +1684,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Service Title *</label>
                                     <input 
                                         type="text" 
-                                        value={serviceModal.service.title || ''} 
+                                        value={serviceModal.service?.title || ''} 
                                         onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, title: e.target.value } })}
                                         placeholder="e.g. 1:1 Career Mentorship"
                                         style={{
@@ -1693,7 +1704,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#64748b', marginBottom: '8px' }}>Keywords / Topics (comma separated)</label>
                                     <input 
                                         type="text" 
-                                        value={serviceModal.service.keywords || ''} 
+                                        value={serviceModal.service?.keywords || ''} 
                                         onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, keywords: e.target.value } })}
                                         placeholder="e.g. Mentorship, Career Path Guidance, Interview Clearance Path"
                                         style={{
@@ -1715,7 +1726,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: '800', color: '#10b981' }}>₹</span>
                                         <input 
                                             type="text" 
-                                            value={serviceModal.service.price || ''} 
+                                            value={serviceModal.service?.price || ''} 
                                             onChange={(e) => setServiceModal({ ...serviceModal, service: { ...serviceModal.service, price: e.target.value } })}
                                             placeholder="e.g. 499"
                                             style={{
