@@ -20,6 +20,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [dailyViews, setDailyViews] = useState({});
     const [viewFilter, setViewFilter] = useState('7days'); 
     const [selectedDate, setSelectedDate] = useState('');
+    const [recordSearchDate, setRecordSearchDate] = useState('');
     
     
     // Custom UI States
@@ -76,13 +77,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         }
     };
 
-    const getFilteredViews = () => {
+    const getFilteredViews = (overrideDate) => {
+        const activeDate = overrideDate || selectedDate;
         const sortedDates = Object.keys(dailyViews).sort((a,b) => new Date(b) - new Date(a));
         const now = new Date();
         
         return sortedDates.filter(date => {
-            if (selectedDate) {
-                const target = new Date(selectedDate);
+            if (activeDate) {
+                const target = new Date(activeDate);
                 const current = new Date(date);
                 return target.getFullYear() === current.getFullYear() && 
                        target.getMonth() === current.getMonth() && 
@@ -104,8 +106,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
         });
     };
 
-    const getFilteredBookings = () => {
-        if (!selectedDate) {
+    const getFilteredBookings = (overrideDate) => {
+        const activeDate = overrideDate || selectedDate;
+        if (!activeDate) {
             if (viewFilter === 'all') return bookings;
             const now = new Date();
             return bookings.filter(b => {
@@ -125,7 +128,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 return true;
             });
         }
-        const target = new Date(selectedDate).toDateString();
+        const target = new Date(activeDate).toDateString();
         return bookings.filter(b => {
             const bDatePart = b.bookingDate ? b.bookingDate.split('T')[0] : '';
             if (!bDatePart) return false;
@@ -1124,10 +1127,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem', marginBottom: '2.5rem'}}>
                             <div style={{minWidth: '240px'}}>
                                 <h3 style={{margin: 0, fontSize: '1.5rem', fontWeight: '800', color: '#818cf8'}}>
-                                    {selectedDate ? `Impact on ${new Date(selectedDate).toLocaleDateString('en-GB')}` : "Lifetime Mentor Record"}
+                                    {recordSearchDate ? `Impact on ${new Date(recordSearchDate).toLocaleDateString('en-GB')}` : "Lifetime Mentor Record"}
                                 </h3>
                                 <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.95rem', lineHeight: '1.5'}}>
-                                    {selectedDate ? `Detailed performance for the selected date.` : "Your overall professional impact since joining."}
+                                    {recordSearchDate ? `Detailed performance for the selected date.` : "Your overall professional impact since joining."}
                                 </p>
                             </div>
                             
@@ -1135,12 +1138,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 <span style={{fontSize: '0.8rem', fontWeight: '800', color: '#818cf8', letterSpacing: '0.05em'}}>🔍 SEARCH DATE:</span>
                                 <input 
                                     type="date"
-                                    value={selectedDate}
+                                    value={recordSearchDate}
                                     max={new Date().toISOString().split('T')[0]}
-                                    onChange={(e) => {
-                                        setSelectedDate(e.target.value);
-                                        if (e.target.value) setViewFilter('all');
-                                    }}
+                                    onChange={(e) => setRecordSearchDate(e.target.value)}
                                     style={{
                                         padding: '6px 12px',
                                         borderRadius: '8px',
@@ -1153,9 +1153,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         cursor: 'pointer'
                                     }}
                                 />
-                                {selectedDate && (
+                                {recordSearchDate && (
                                     <button 
-                                        onClick={() => setSelectedDate('')}
+                                        onClick={() => setRecordSearchDate('')}
                                         style={{background: '#4f46e5', color: 'white', border: 'none', padding: '6px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', transition: '0.2s'}}
                                         onMouseOver={(e) => e.target.style.background = '#4338ca'}
                                         onMouseOut={(e) => e.target.style.background = '#4f46e5'}
@@ -1169,25 +1169,28 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <div style={{display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'space-between'}}>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
-                                    {getTotalViews()}
+                                    {recordSearchDate ? 
+                                        getFilteredViews(recordSearchDate).reduce((acc, date) => acc + (dailyViews[date] || 0), 0) : 
+                                        (profile.profileViews || 0)
+                                    }
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Views</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
-                                    {getFilteredBookings().length}
+                                    {getFilteredBookings(recordSearchDate).length}
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Bookings</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
-                                    {getFilteredBookings().filter(b => b.status === 'COMPLETED').length}
+                                    {getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length}
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Completed</div>
                             </div>
                             <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
                                 <div style={{fontSize: '1.75rem', fontWeight: '800', color: '#fbbf24', marginBottom: '4px'}}>
-                                    ₹{(getFilteredBookings().filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}
+                                    ₹{(getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length * 499).toLocaleString()}
                                 </div>
                                 <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Earnings</div>
                             </div>
