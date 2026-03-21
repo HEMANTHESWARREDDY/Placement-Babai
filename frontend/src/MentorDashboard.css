@@ -217,10 +217,15 @@
 }
 @media (max-width: 768px) {
     .mentor-main-content {
-        padding: 0 !important;
+        padding: 1.5rem 1rem; /* Standard mobile padding */
     }
+    
+    .mentor-main-content.editing-mode {
+        padding: 0 !important; /* Zero padding ONLY for editing mode */
+    }
+
     .mentor-dashboard-container {
-        padding: 0px !important; /* Zero padding to allow full width */
+        padding: 0px; /* Base container can have zero padding if its children have it */
     }
 
     .mentor-edit-actions-bar {
