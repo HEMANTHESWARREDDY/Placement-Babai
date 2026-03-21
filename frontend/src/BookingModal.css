@@ -424,3 +424,105 @@
     font-size: 2rem;
     margin: 0 auto 1.5rem;
 }
+/* Mobile Optimization for BookingModal */
+@media (max-width: 768px) {
+    .booking-modal-overlay {
+        padding: 0;
+        align-items: flex-end; /* Bottom sheet style on mobile */
+    }
+
+    .booking-modal-content {
+        padding: 1.5rem 1.25rem;
+        border-radius: 20px 20px 0 0;
+        max-height: 95vh;
+        margin: 0;
+        width: 100% !important;
+        animation: slideUpMobile 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUpMobile {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .booking-modal-header h3 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+    }
+
+    .header-meta-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .mentor-mini-profile {
+        width: 100%;
+        background: rgba(30, 64, 175, 0.03);
+        padding: 8px 12px;
+        border-radius: 12px;
+    }
+
+    .booking-steps-indicator {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 5px;
+        padding-left: 5px;
+    }
+
+    .step-dot {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .step-line {
+        max-width: 40px;
+    }
+
+    .form-row-side {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group-simple {
+        width: 100%;
+        flex: none !important;
+    }
+
+    .period-toggle-modern {
+        padding: 3px;
+    }
+
+    .period-toggle-modern button {
+        padding: 8px 4px;
+        font-size: 0.78rem;
+    }
+
+    .time-slots-grid-modern {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on mobile */
+        gap: 8px;
+    }
+
+    .time-slot-pill-modern {
+        padding: 10px 4px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+
+    .booking-next-btn-simple {
+        padding: 14px 20px;
+        font-size: 1rem;
+        border-radius: 14px;
+    }
+
+    .success-view {
+        padding: 2.5rem 1rem;
+    }
+
+    .summary-item {
+        font-size: 0.9rem;
+    }
+}
