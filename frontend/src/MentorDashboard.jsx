@@ -555,15 +555,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 )}
                 {isEditingProfile && (
-                    <div style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto 1.5rem auto',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '0 10px'
-                    }}>
-                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div className="mentor-edit-actions-bar">
+                        <div className="mentor-edit-actions-left">
                             <button 
                                 onClick={(e) => { 
                                     e.preventDefault(); 
@@ -583,79 +576,34 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     }
                                     setIsEditingProfile(false);
                                 }}
-                                style={{
-                                    background: 'white',
-                                    color: '#64748b',
-                                    padding: '6px 14px',
-                                    borderRadius: '6px',
-                                    border: '1px solid #e2e8f0',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    fontSize: '0.85rem'
-                                }}
+                                className="mentor-action-btn back-btn"
                             >
                                 ← Back
                             </button>
-                            <div style={{
-                                fontSize: '0.75rem', 
-                                fontWeight: '800', 
-                                textTransform: 'uppercase', 
-                                color: '#ef4444', 
-                                background: '#fee2e2', 
-                                padding: '6px 12px', 
-                                borderRadius: '6px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
-                            }}>
-                                ✏️ Edit Mode
+                            <div className="edit-mode-badge">
+                                ✏️ EDIT MODE
                             </div>
                         </div>
                         
-                        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                        <div className="mentor-edit-actions-right">
                             <button 
                                 onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}
-                                style={{
-                                    background: 'white',
-                                    color: '#475569',
-                                    padding: '8px 18px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #e2e8f0',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                                    transition: '0.2s'
-                                }}
+                                className="mentor-action-btn preview-btn"
                             >
                                 👁️ View Preview
                             </button>
                             
                             <button 
-                                className="mentor-save-btn" 
-                                style={{
-                                    background: hasChanges ? '#16a34a' : '#94a3b8',
-                                    color: 'white',
-                                    padding: '8px 22px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontWeight: '700',
-                                    cursor: hasChanges ? 'pointer' : 'default',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    boxShadow: hasChanges ? '0 4px 12px rgba(22, 163, 74, 0.2)' : 'none',
-                                    transition: '0.3s',
-                                    opacity: saving ? 0.7 : 1
-                                }}
-                                onClick={() => {
-                                    if (hasChanges) handleSaveProfile();
-                                }}
-                                disabled={!hasChanges || saving}
+                                className={`mentor-action-btn save-btn ${hasChanges ? 'has-changes' : ''}`}
+                                disabled={saving}
+                                onClick={(e) => { e.preventDefault(); handleSaveProfile(); }}
                             >
-                                {saving ? '⏳ Saving...' : '💾 Save Changes'}
+                                {saving ? '⏳ Saving...' : (
+                                    <>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                        Save Changes
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
