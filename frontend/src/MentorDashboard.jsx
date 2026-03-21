@@ -1365,83 +1365,69 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
 
 
-                    <div style={{marginTop: '2rem', background: '#0f172a', padding: '2.5rem', borderRadius: '24px', color: 'white', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem', marginBottom: '2.5rem'}}>
-                            <div style={{minWidth: '240px'}}>
-                                <h3 style={{margin: 0, fontSize: '1.5rem', fontWeight: '800', color: '#818cf8'}}>
+                    <div className="lifetime-record-card">
+                        <div className="record-header">
+                            <div className="record-info">
+                                <h3 className="record-title">
                                     {recordSearchDate ? `Impact on ${new Date(recordSearchDate).toLocaleDateString('en-GB')}` : "Lifetime Mentor Record"}
                                 </h3>
-                                <p style={{margin: '8px 0 0 0', opacity: 0.7, fontSize: '0.95rem', lineHeight: '1.5'}}>
+                                <p className="record-subtitle">
                                     {recordSearchDate ? `Detailed performance for the selected date.` : "Your overall professional impact since joining."}
                                 </p>
                             </div>
                             
-                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.05)', padding: '12px 20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'}}>
-                                <span style={{fontSize: '0.8rem', fontWeight: '800', color: '#818cf8', letterSpacing: '0.05em'}}>🔍 SEARCH DATE:</span>
-                                <input 
-                                    type="date"
-                                    value={recordSearchDate}
-                                    max={new Date().toISOString().split('T')[0]}
-                                    onChange={(e) => setRecordSearchDate(e.target.value)}
-                                    style={{
-                                        padding: '6px 12px',
-                                        borderRadius: '8px',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        background: 'rgba(0,0,0,0.3)',
-                                        color: 'white',
-                                        fontSize: '0.9rem',
-                                        fontWeight: '600',
-                                        outline: 'none',
-                                        cursor: 'pointer',
-                                        colorScheme: 'dark'
-                                    }}
-                                />
-                                {recordSearchDate && (
-                                    <button 
-                                        onClick={() => setRecordSearchDate('')}
-                                        style={{background: '#4f46e5', color: 'white', border: 'none', padding: '6px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: '800', cursor: 'pointer', transition: '0.2s'}}
-                                        onMouseOver={(e) => e.target.style.background = '#4338ca'}
-                                        onMouseOut={(e) => e.target.style.background = '#4f46e5'}
-                                    >
-                                        RESET VIEW
-                                    </button>
-                                )}
+                            <div className="record-search-box">
+                                <label className="search-label">🔍 SEARCH DATE:</label>
+                                <div className="input-with-reset">
+                                    <input 
+                                        type="date"
+                                        className="record-date-input"
+                                        value={recordSearchDate}
+                                        max={new Date().toISOString().split('T')[0]}
+                                        onChange={(e) => setRecordSearchDate(e.target.value)}
+                                    />
+                                    {recordSearchDate && (
+                                        <button className="reset-view-btn" onClick={() => setRecordSearchDate('')}>
+                                            RESET
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
-                        <div style={{display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-                            <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
+                        <div className="record-stats-grid">
+                            <div className="record-stat-item">
+                                <div className="stat-value">
                                     {recordSearchDate ? 
                                         getFilteredViews(recordSearchDate).reduce((acc, date) => acc + (dailyViews[date] || 0), 0) : 
                                         (profile.profileViews || 0)
                                     }
                                 </div>
-                                <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Views</div>
+                                <div className="stat-label">Total Views</div>
                             </div>
-                            <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
+                            <div className="record-stat-item">
+                                <div className="stat-value">
                                     {recordSearchDate ? getFilteredBookings(recordSearchDate).length : bookings.length}
                                 </div>
-                                <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Total Bookings</div>
+                                <div className="stat-label">Total Bookings</div>
                             </div>
-                            <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: 'white', marginBottom: '4px'}}>
+                            <div className="record-stat-item">
+                                <div className="stat-value">
                                     {recordSearchDate ? 
                                         getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length : 
                                         bookings.filter(b => b.status === 'COMPLETED').length
                                     }
                                 </div>
-                                <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Completed</div>
+                                <div className="stat-label">Completed</div>
                             </div>
-                            <div style={{textAlign: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', flex: 1, minWidth: '140px', border: '1px solid rgba(255,255,255,0.05)'}}>
-                                <div style={{fontSize: '1.75rem', fontWeight: '800', color: '#fbbf24', marginBottom: '4px'}}>
+                            <div className="record-stat-item highlighted">
+                                <div className="stat-value">
                                     ₹{(recordSearchDate ? 
                                         getFilteredBookings(recordSearchDate).filter(b => b.status === 'COMPLETED').length * 499 : 
                                         bookings.filter(b => b.status === 'COMPLETED').length * 499
                                     ).toLocaleString()}
                                 </div>
-                                <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Earnings</div>
+                                <div className="stat-label">Earnings</div>
                             </div>
                         </div>
                     </div>
