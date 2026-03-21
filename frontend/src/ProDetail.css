@@ -520,7 +520,7 @@
     }
 
     .preview-header {
-        height: 160px;
+        height: 125px; /* Reduced from 160px */
     }
 
     .preview-body {
@@ -535,7 +535,7 @@
     }
 
     .preview-avatar-wrapper {
-        margin-top: -60px;
+        margin-top: -50px; /* Adjusted for smaller avatar */
         margin-bottom: 0.5rem;
     }
 
@@ -548,10 +548,10 @@
     }
 
     .preview-avatar {
-        width: 110px;
-        height: 110px;
+        width: 95px; /* Reduced from 110px */
+        height: 95px;
         border-width: 4px;
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .preview-header-meta {
@@ -607,8 +607,8 @@
     }
 
     .preview-title-row h3 {
-        font-size: 1.5rem !important;
-        margin-bottom: 0.25rem;
+        font-size: 1.35rem !important; /* Reduced from 1.5rem */
+        margin-bottom: 0.2rem;
     }
 
 
