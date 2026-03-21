@@ -59,11 +59,7 @@
 }
 
 .highlight-violet, .pro-hero .highlight-text {
-    background: linear-gradient(135deg, #a78bfa, #7c3aed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
+    color: #a78bfa;
 }
 
 .pro-subtitle {
