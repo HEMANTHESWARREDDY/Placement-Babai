@@ -1402,6 +1402,13 @@
     gap: 2rem;
 }
 
+.analytics-title-main {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    color: #0f172a;
+}
+
 .analytics-filter-wrap {
     display: flex;
     align-items: center;
@@ -1702,12 +1709,14 @@
         padding: 0 5px !important;
     }
 
-    .analytics-titles .a-title, .analytics-titles .a-subtitle {
-        font-size: 1.75rem !important;
-        line-height: 1.1 !important;
+    .analytics-title-main {
+        font-size: 1.5rem !important;
+        line-height: 1.2 !important;
         margin: 0 !important;
         font-weight: 880 !important;
         color: #0f172a !important;
+        width: 100% !important;
+        white-space: nowrap !important;
     }
 
     .analytics-filter-wrap {

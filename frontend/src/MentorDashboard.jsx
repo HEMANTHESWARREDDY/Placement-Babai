@@ -1300,8 +1300,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="analytics-section">
                     <div className="analytics-header-new">
                         <div className="analytics-titles">
-                            <h2 className="a-title">Dashboard</h2>
-                            <h2 className="a-subtitle">Analytics</h2>
+                            <h2 className="analytics-title-main">Dashboard Analytics</h2>
                         </div>
                         <div className="analytics-filter-wrap">
                             <span className="filter-label">Time Period:</span>
