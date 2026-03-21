@@ -328,7 +328,19 @@ function ProConnect({ onMentorLoginClick }) {
                                             )}
                                         </div>
                                         <h3 className="tm-name" style={{ margin: '0 0 0.2rem 0' }}>{pro.name}</h3>
-                                        <p className="tm-role">{pro.role} @ {pro.company || 'Industry'} | {pro.skills}</p>
+                                        <p className="tm-role">
+                                            {pro.role} @ {pro.company || 'Industry'} | {(() => {
+                                                let expValue = pro.experience || pro.exp || '1';
+                                                // If it's already a full descriptive string, just fix the 1 years case
+                                                if (expValue.toString().toLowerCase().includes('experience') || expValue.toString().toLowerCase().includes('exp')) {
+                                                    return expValue.toString().replace(/1 Years/g, '1 Year');
+                                                }
+                                                // Otherwise, treat as a number (e.g. "2" or "2 Year") and format it
+                                                const num = parseInt(expValue);
+                                                if (isNaN(num)) return expValue;
+                                                return `${num} ${num === 1 ? 'Year' : 'Years'} of exp`;
+                                            })()} | {pro.topics ? pro.topics.substring(0, 100) : (pro.skills || 'No expertise added yet')}
+                                        </p>
                                         <button className="tm-btn" onClick={() => setSelectedPro(pro)}>View Profile</button>
                                     </div>
                                 </div>
