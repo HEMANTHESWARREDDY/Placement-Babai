@@ -1494,10 +1494,20 @@
     .guest-meta {
         display: flex !important;
         flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 12px !important;
-        font-size: 0.8rem !important;
+        flex-wrap: nowrap !important; /* Force single line */
+        gap: 8px !important;
+        font-size: 0.72rem !important;
         align-items: center !important;
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .guest-meta span {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: inline-block !important;
+        max-width: 50% !important; /* Limit each to about half */
     }
 
     .booking-details-grid {
