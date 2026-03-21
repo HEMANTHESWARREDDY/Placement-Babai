@@ -192,40 +192,65 @@
 .mentor-action-btn.save-btn.has-changes {
     background: #16a34a;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+    background: #4f46e5;
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
 }
 
-.mentor-action-btn.save-btn:active:not(:disabled) {
-    transform: scale(0.97);
+.mentor-action-btn.save-btn.has-changes:hover {
+    background: #4338ca;
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.23);
+}
+
+.edit-mode-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #fff1f2;
+    color: #be123c;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid #fecdd3;
 }
 
 @media (max-width: 768px) {
     .mentor-edit-actions-bar {
-        flex-direction: column;
-        align-items: stretch;
-        margin-bottom: 1rem;
-        gap: 10px;
-    }
-    
-    .mentor-edit-actions-left, .mentor-edit-actions-right {
-        justify-content: space-between;
-        width: 100%;
+        padding: 0 1rem;
+        margin: 1rem auto;
         gap: 8px;
     }
-    
+
     .mentor-action-btn {
-        flex: 1;
+        padding: 10px;
+        min-width: 44px;
         justify-content: center;
-        padding: 10px 12px;
-        font-size: 0.8rem;
+    }
+
+    .mentor-action-btn .m-text {
+        display: none; /* Hide text on mobile for small buttons */
+    }
+
+    .mentor-action-btn.save-btn {
+        padding: 10px 20px; /* Keep text for save button or just show Save if tight */
+    }
+
+    .mentor-action-btn.save-btn .m-text {
+        display: inline; /* Show "Save" text even on mobile */
+    }
+
+    .edit-mode-badge .m-text {
+        display: none; /* Hide text on badge for mobile */
     }
     
     .edit-mode-badge {
-        flex: 0 0 auto;
-    }
-    
-    .mentor-action-btn.save-btn {
-        flex: 1.5; /* Give save button more prominence */
+        padding: 8px;
+        border-radius: 50%;
+        width: 34px;
+        height: 34px;
+        justify-content: center;
     }
 }
 
