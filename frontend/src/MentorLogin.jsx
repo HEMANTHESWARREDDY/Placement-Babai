@@ -46,7 +46,7 @@ function MentorLogin({ onLoginSuccess, onBack }) {
             <div className="admin-login-box">
                 <button className="back-home-btn" onClick={onBack}>← Back to Home</button>
                 <h2>Mentor Portal Login</h2>
-                <p className="admin-subtitle">Enter your credentials to access your dashboard</p>
+
 
                 <form onSubmit={handleSubmit}>
                     {error && <div className="error-message">{error}</div>}
