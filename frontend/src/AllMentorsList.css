@@ -657,7 +657,7 @@
         justify-content: flex-start;
         align-items: center; /* Align items vertically */
         gap: 0.6rem;
-        padding: 0.5rem 0.2rem;
+        padding: 0.3rem 0.2rem;
         margin-bottom: 0;
         scrollbar-width: none; /* Firefox */
         display: flex; /* Ensure it's flex */
@@ -853,9 +853,9 @@
     }
 
     .aml-role-desc {
-        font-size: 0.95rem; /* Restore slightly larger text */
-        line-height: 1.5;   /* Better readability */
-        margin-bottom: 0.4rem; /* Tighter gap as requested */
+        font-size: 0.92rem;
+        line-height: 1.4;
+        margin-bottom: 0.1rem; /* Extremely tight gap */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
@@ -869,7 +869,7 @@
 
     .aml-mobile-view-btn {
         display: block;
-        margin: 0 1.25rem 1.25rem;
+        margin: 0.2rem 1.25rem 1.25rem; /* Smallest top margin */
         background: white;
         border: 1px solid #cbd5e1;
         color: #475569;
