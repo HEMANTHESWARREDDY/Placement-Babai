@@ -23,6 +23,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [recordSearchDate, setRecordSearchDate] = useState('');
     const [serviceSearchQuery, setServiceSearchQuery] = useState('');
     const [serviceSortOrder, setServiceSortOrder] = useState('newest'); // 'a-z', 'z-a', 'newest', 'oldest'
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
     
     // Custom UI States
@@ -458,14 +459,20 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="header-content">
                     <div className="logo" style={{cursor: 'default'}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
-                        <span className="header-tagline">Connect. Learn. Grow. <span style={{fontSize: '10px', opacity: 0.5}}>(v1.0.1)</span></span>
                     </div>
 
-                    <div className="header-badge" style={{cursor: 'default', left: '50%'}}>
+                    <div className="header-badge" style={{cursor: 'default'}}>
                         🔥 {todayPending} New Requests Today
                     </div>
 
-                    <nav>
+                    <button 
+                        className="mobile-menu-btn" 
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        {isMobileMenuOpen ? '✕' : '☰'}
+                    </button>
+
+                    <nav className={isMobileMenuOpen ? "nav-open" : ""}>
                         <ul className="nav-links">
                             <li>
                                 <a href="#" 
@@ -475,6 +482,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                        setShowBookings(false); 
                                        setIsEditingProfile(false); 
                                        setShowAnalytics(false);
+                                       setIsMobileMenuOpen(false);
                                    }}>
                                     Profile
                                 </a>
@@ -485,8 +493,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     setShowBookings(true); 
                                     setIsEditingProfile(false); 
                                     setShowAnalytics(false);
+                                    setIsMobileMenuOpen(false);
                                 }}>
-                                    View Requests ({bookings.filter(b => b.status === 'PENDING').length})
+                                    Requests ({bookings.filter(b => b.status === 'PENDING').length})
                                 </a>
                             </li>
                             <li>
@@ -495,12 +504,13 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     setShowAnalytics(true); 
                                     setShowBookings(false); 
                                     setIsEditingProfile(false); 
+                                    setIsMobileMenuOpen(false);
                                 }}>
                                     Analytics
                                 </a>
                             </li>
-                            <li>
-                                <button className="admin-nav-btn" onClick={onLogout} style={{marginLeft: '1rem', background: '#ef4444'}}>
+                            <li className="logout-li" style={{ marginTop: 'auto', padding: '0 1rem' }}>
+                                <button className="admin-nav-btn" onClick={onLogout} style={{ width: '100%', background: '#ef4444', justifyContent: 'center' }}>
                                     Logout
                                 </button>
                             </li>
