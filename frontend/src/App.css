@@ -133,12 +133,12 @@
 }
 
 .nav-links a.active-nav {
-  color: #e11d48;
+  color: var(--primary-purple);
 }
 
 .nav-links a.active-nav::after {
   width: 100%;
-  background: #e11d48;
+  background: var(--primary-purple);
 }
 
 /* Nav Dropdown Styles */
@@ -1237,6 +1237,19 @@
     border-left-color: #0073b1;
     background: #f0f9ff;
     padding-left: 1.75rem;
+  }
+
+  .nav-links a.active-nav {
+    background: #f0fbff !important;
+    color: #0073b1 !important;
+    border-left: 4px solid #0073b1 !important;
+    padding-left: 1.75rem !important;
+    font-weight: 700 !important;
+    box-shadow: inset 4px 0 0 -2px #0073b1 !important;
+  }
+  
+  .nav-links a.active-nav::after {
+    display: none !important; /* Remove underline on mobile */
   }
 
   .admin-nav-btn {
