@@ -2132,18 +2132,22 @@
     }
 }
 
+/* Header Actions Wrapper */
+.header-actions-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 /* Requests Notification Icon & Badge */
 .requests-notification-icon {
-    position: absolute;
-    left: 45%;
-    transform: translateX(-50%);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.2s ease;
     z-index: 10;
 }
 
 .requests-notification-icon:hover {
-    transform: translateX(-50%) scale(1.1);
+    transform: scale(1.1);
 }
 
 .icon-wrapper {
