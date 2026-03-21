@@ -1087,29 +1087,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     
                                     <div style={{display: 'flex', background: 'rgba(226, 232, 240, 0.6)', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
-                                        {/* Left-aligned Tab */}
-                                        <div style={{ display: 'flex', gap: '4px', flex: 1 }}>
-                                            <button 
-                                                onClick={() => setActiveServiceTab('All')}
-                                                style={{
-                                                    flex: '0 0 auto', 
-                                                    minWidth: '80px',
-                                                    background: activeServiceTab === 'All' ? 'white' : 'transparent', 
-                                                    border: 'none', 
-                                                    cursor: 'pointer', 
-                                                    textAlign: 'center', 
-                                                    padding: '0.5rem 0.8rem', 
-                                                    borderRadius: '8px', 
-                                                    fontSize: '0.8rem', 
-                                                    fontWeight: activeServiceTab === 'All' ? '700' : '600', 
-                                                    color: activeServiceTab === 'All' ? '#4f46e5' : '#64748b', 
-                                                    boxShadow: activeServiceTab === 'All' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-                                                    transition: '0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                                                }}
-                                            >
-                                                All
-                                            </button>
-                                        </div>
 
                                         {/* Right-aligned Grouped */}
                                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
