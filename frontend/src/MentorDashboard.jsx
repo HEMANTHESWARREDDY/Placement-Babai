@@ -458,48 +458,46 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     return (
         <div className={`mentor-dashboard-container`} style={{padding: 0}}>
             <header className="header">
-                <div className="header-content">
+                <div className="header-content header-flex-container">
                     <div className="logo" style={{cursor: 'default'}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-badge" style={{cursor: 'pointer'}} onClick={(e) => { 
+                    <div className="header-badge-inline" onClick={(e) => { 
                         e.preventDefault(); 
                         setShowBookings(true); 
                         setIsEditingProfile(false); 
                         setShowAnalytics(false);
                     }}>
-                        🔥 {todayPending} New Requests Today
+                        🔥 {todayPending} New
                     </div>
 
-                    <div className="header-actions-wrapper">
-                        <div 
-                            className="requests-notification-icon"
-                            onClick={(e) => { 
-                                e.preventDefault(); 
-                                setShowBookings(true); 
-                                setIsEditingProfile(false); 
-                                setShowAnalytics(false);
-                                setIsMobileMenuOpen(false);
-                            }}
-                        >
-                            <div className="icon-wrapper">
-                                <span className="request-bell">🔔</span>
-                                {bookings.filter(b => b.status === 'PENDING').length > 0 && (
-                                    <span className="notification-badge">
-                                        {bookings.filter(b => b.status === 'PENDING').length}
-                                    </span>
-                                )}
-                            </div>
+                    <div 
+                        className="requests-notification-icon"
+                        onClick={(e) => { 
+                            e.preventDefault(); 
+                            setShowBookings(true); 
+                            setIsEditingProfile(false); 
+                            setShowAnalytics(false);
+                            setIsMobileMenuOpen(false);
+                        }}
+                    >
+                        <div className="icon-wrapper">
+                            <span className="request-bell">🔔</span>
+                            {bookings.filter(b => b.status === 'PENDING').length > 0 && (
+                                <span className="notification-badge">
+                                    {bookings.filter(b => b.status === 'PENDING').length}
+                                </span>
+                            )}
                         </div>
-
-                        <button 
-                            className="mobile-menu-btn" 
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        >
-                            {isMobileMenuOpen ? '✕' : '☰'}
-                        </button>
                     </div>
+
+                    <button 
+                        className="mobile-menu-btn" 
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        {isMobileMenuOpen ? '✕' : '☰'}
+                    </button>
 
                     <nav className={isMobileMenuOpen ? "nav-open" : ""}>
                         <ul className="nav-links">
