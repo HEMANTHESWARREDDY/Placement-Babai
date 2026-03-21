@@ -172,80 +172,82 @@ function AdminMentors() {
                         </thead>
                         <tbody>
                             {mentors.map(mentor => (
-                                <tr key={mentor.id}>
-                                    <td>
-                                        <strong>{mentor.name}</strong>
-                                    </td>
-                                    <td>
-                                        <div style={{ fontWeight: '600' }}>{mentor.role}</div>
-                                        <div style={{ color: '#64748b', fontSize: '0.85rem' }}>@ {mentor.company}</div>
-                                    </td>
-                                    <td>{mentor.experience} Years</td>
-                                    <td>
-                                        <div style={{ fontSize: '0.85rem', marginBottom: '4px' }}>{mentor.email}</div>
-                                        {mentor.phone && <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{mentor.phone}</div>}
-                                        <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="mentor-link">
-                                            LinkedIn ↗
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <div className="mentor-bio-text">{mentor.bio}</div>
-                                        <div className="mentor-skills-tags">
-                                            {mentor.skills.split(',').slice(0, 3).map((s, i) => (
-                                                <span key={i} className="mentor-skill-tag">{s.trim()}</span>
-                                            ))}
-                                            {mentor.skills.split(',').length > 3 && <span className="mentor-skill-tag">+{mentor.skills.split(',').length - 3}</span>}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {new Date(mentor.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="mentor-actions">
-                                        {activeSubTab === 'PENDING' && (
-                                            <>
-                                                <button
-                                                    className="btn-approve"
-                                                    onClick={() => handleUpdateStatus(mentor.id, 'APPROVED')}
-                                                    disabled={isUpdating}
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button
-                                                    className="btn-reject"
-                                                    onClick={() => handleUpdateStatus(mentor.id, 'REJECTED')}
-                                                    disabled={isUpdating}
-                                                >
-                                                    Reject
-                                                </button>
-                                            </>
-                                        )}
-                                        {activeSubTab === 'APPROVED' && (
-                                            <button
-                                                className="btn-reject"
-                                                onClick={() => handleUpdateStatus(mentor.id, 'REJECTED')}
-                                                disabled={isUpdating}
-                                            >
-                                                Revoke
-                                            </button>
-                                        )}
-                                        {activeSubTab === 'REJECTED' && (
-                                            <button
-                                                className="btn-approve"
-                                                onClick={() => handleUpdateStatus(mentor.id, 'APPROVED')}
-                                                disabled={isUpdating}
-                                            >
-                                                Re-Approve
-                                            </button>
-                                        )}
-                                        <button
-                                            className="btn-delete-hard"
-                                            onClick={() => handleDelete(mentor.id)}
-                                            disabled={isUpdating}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
+
+                                 <tr key={mentor.id}>
+                                     <td data-label="Name">
+                                         <strong>{mentor.name}</strong>
+                                     </td>
+                                     <td data-label="Role & Company">
+                                         <div style={{ fontWeight: '600' }}>{mentor.role}</div>
+                                         <div style={{ color: '#64748b', fontSize: '0.85rem' }}>@ {mentor.company}</div>
+                                     </td>
+                                     <td data-label="Experience">{mentor.experience} Years</td>
+                                     <td data-label="Contact / Links">
+                                         <div style={{ fontSize: '0.85rem', marginBottom: '4px' }}>{mentor.email}</div>
+                                         {mentor.phone && <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{mentor.phone}</div>}
+                                         <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="mentor-link">
+                                             LinkedIn ↗
+                                         </a>
+                                     </td>
+                                     <td data-label="Bio & Skills">
+                                         <div className="mentor-bio-text" title={mentor.bio}>{mentor.bio}</div>
+                                         <div className="mentor-skills-tags">
+                                             {mentor.skills.split(',').slice(0, 3).map((s, i) => (
+                                                 <span key={i} className="mentor-skill-tag">{s.trim()}</span>
+                                             ))}
+                                             {mentor.skills.split(',').length > 3 && <span className="mentor-skill-tag">+{mentor.skills.split(',').length - 3}</span>}
+                                         </div>
+                                     </td>
+                                     <td data-label="Submitted On">
+                                         {new Date(mentor.createdAt).toLocaleDateString()}
+                                     </td>
+                                     <td data-label="Actions" className="mentor-actions">
+                                         {activeSubTab === 'PENDING' && (
+                                             <>
+                                                 <button
+                                                     className="btn-approve"
+                                                     onClick={() => handleUpdateStatus(mentor.id, 'APPROVED')}
+                                                     disabled={isUpdating}
+                                                 >
+                                                     Approve
+                                                 </button>
+                                                 <button
+                                                     className="btn-reject"
+                                                     onClick={() => handleUpdateStatus(mentor.id, 'REJECTED')}
+                                                     disabled={isUpdating}
+                                                 >
+                                                     Reject
+                                                 </button>
+                                             </>
+                                         )}
+                                         {activeSubTab === 'APPROVED' && (
+                                             <button
+                                                 className="btn-reject"
+                                                 onClick={() => handleUpdateStatus(mentor.id, 'REJECTED')}
+                                                 disabled={isUpdating}
+                                             >
+                                                 Revoke
+                                             </button>
+                                         )}
+                                         {activeSubTab === 'REJECTED' && (
+                                             <button
+                                                 className="btn-approve"
+                                                 onClick={() => handleUpdateStatus(mentor.id, 'APPROVED')}
+                                                 disabled={isUpdating}
+                                             >
+                                                 Re-Approve
+                                             </button>
+                                         )}
+                                         <button
+                                             className="btn-delete-hard"
+                                             onClick={() => handleDelete(mentor.id)}
+                                             disabled={isUpdating}
+                                         >
+                                             Delete
+                                         </button>
+                                     </td>
+                                 </tr>
+
                             ))}
                         </tbody>
                     </table>

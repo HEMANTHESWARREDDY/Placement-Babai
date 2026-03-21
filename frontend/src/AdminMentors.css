@@ -189,13 +189,130 @@
 }
 
 /* Loading & Empty States */
-.loading,
-.no-mentors {
-    text-align: center;
-    padding: 4rem;
-    color: #64748b;
-    font-size: 1.1rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .admin-mentors-container {
+        padding: 1rem;
+    }
+
+    .admin-mentors-header h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .mentor-subtabs {
+        overflow-x: auto;
+        padding-bottom: 0.8rem;
+        gap: 0.5rem;
+        display: flex;
+        -webkit-overflow-scrolling: touch;
+        border-bottom: none;
+    }
+
+    .mentor-subtabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mentor-subtab {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        background: #f1f5f9;
+        border-radius: 50px;
+        flex-shrink: 0;
+        border: 1px solid #e2e8f0;
+    }
+
+    .mentor-subtab.active {
+        background: #0ea5e9;
+        color: white;
+        border-color: #0ea5e9;
+    }
+
+    .mentor-subtab.active::after {
+        display: none;
+    }
+
+    /* Transform Table to Cards */
+    .mentors-table-container {
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .mentors-table {
+        display: block;
+        width: 100%;
+    }
+
+    .mentors-table thead {
+        display: none; /* Hide header on mobile */
+    }
+
+    .mentors-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .mentors-table tr {
+        display: block;
+        background: white;
+        border-radius: 16px;
+        padding: 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 0.5rem;
+    }
+
+    .mentors-table td {
+        display: block;
+        padding: 0.6rem 0;
+        border-bottom: none;
+        width: 100%;
+    }
+
+    /* Use data-label for headers */
+    .mentors-table td::before {
+        content: attr(data-label);
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #94a3b8;
+        display: block;
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.05em;
+    }
+
+    .mentor-bio-text {
+        max-width: 100%;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.85rem;
+    }
+
+    .mentor-actions {
+        flex-direction: row;
+        gap: 0.6rem;
+        margin-top: 0.5rem;
+        padding-top: 1rem;
+        border-top: 1px dashed #e2e8f0;
+        flex-wrap: wrap;
+    }
+
+    .mentor-actions button {
+        flex: 1;
+        padding: 0.6rem;
+        font-size: 0.8rem;
+        min-width: 100px;
+    }
+
+    .btn-delete-hard {
+        background-color: #fee2e2;
+        border-color: #fecaca;
+    }
+}
