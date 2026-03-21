@@ -230,27 +230,35 @@
     }
 
     .mentor-action-btn .m-text {
-        display: none; /* Hide text on mobile for small buttons */
+        display: inline; /* Show text on mobile as requested */
+        font-size: 0.8rem;
     }
 
     .mentor-action-btn.save-btn {
-        padding: 10px 20px; /* Keep text for save button or just show Save if tight */
+        padding: 10px 15px;
     }
 
     .mentor-action-btn.save-btn .m-text {
-        display: inline; /* Show "Save" text even on mobile */
+        display: inline;
     }
 
     .edit-mode-badge .m-text {
-        display: none; /* Hide text on badge for mobile */
+        display: inline; /* Show text on badge */
     }
     
     .edit-mode-badge {
-        padding: 8px;
-        border-radius: 50%;
-        width: 34px;
-        height: 34px;
+        padding: 6px 10px;
+        border-radius: 20px;
+        width: auto;
+        height: auto;
         justify-content: center;
+        background: #fff1f2 !important;
+        color: #be123c !important;
+        border: 1px solid #fecdd3 !important;
+    }
+
+    .mentor-action-btn .m-icon {
+        font-size: 1.2rem;
     }
 }
 

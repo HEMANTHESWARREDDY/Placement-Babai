@@ -579,10 +579,10 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 className="mentor-action-btn back-btn"
                                 title="Go Back"
                             >
-                                <span className="m-icon">⬅️</span> <span className="m-text">Back</span>
+                                <span className="m-text">← Back</span>
                             </button>
-                            <div className="edit-mode-badge">
-                                <span className="m-icon">✏️</span> <span className="m-text">EDITING</span>
+                            <div className="edit-mode-badge" style={{ background: '#fff1f2', border: '1px solid #fecdd3', color: '#be123c' }}>
+                                <span className="m-icon">✏️</span> <span className="m-text">EDIT MODE</span>
                             </div>
                         </div>
                         
@@ -600,7 +600,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 disabled={saving}
                                 onClick={(e) => { e.preventDefault(); handleSaveProfile(); }}
                             >
-                                <span className="m-icon">{saving ? '⏳' : '💾'}</span>
+                                <span className="m-icon" style={{ fontSize: '1.2rem' }}>{saving ? '⏳' : '💾'}</span>
                                 <span className="m-text">{saving ? 'Saving...' : 'Save'}</span>
                             </button>
                         </div>
