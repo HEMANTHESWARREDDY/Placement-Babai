@@ -830,7 +830,7 @@
     .aml-role-desc {
         font-size: 0.9rem;
         line-height: 1.4;
-        margin-bottom: 1.2rem;
+        margin-bottom: 0.5rem;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
