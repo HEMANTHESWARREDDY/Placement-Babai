@@ -211,24 +211,21 @@
     border-radius: 20px;
     font-weight: 800;
     font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border: 1px solid #fecdd3;
 }
-
 @media (max-width: 768px) {
     .mentor-edit-actions-bar {
-        padding: 0 1rem;
-        margin: 1rem auto;
-        gap: 12px;
+        padding: 0 0.5rem; /* Reduced padding for more width */
+        margin: 0.5rem auto 1rem auto; /* Reduced top margin */
+        gap: 8px;
         width: 100%;
         box-sizing: border-box;
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
 
     .mentor-edit-actions-left, .mentor-edit-actions-right {
-        gap: 8px;
+        gap: 6px;
     }
 
     .mentor-action-btn {
