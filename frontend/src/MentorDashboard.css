@@ -1331,31 +1331,6 @@
     .booking-card-actions { flex-direction: column; }
     .booking-details-grid { grid-template-columns: 1fr; }
 
-    /* Header Refinements */
-    .header {
-        padding: 0.4rem 0.75rem !important;
-        height: auto !important;
-    }
-
-    .header-content {
-        gap: 6px !important;
-        flex-wrap: nowrap !important;
-    }
-
-    .logo-img {
-        height: 32px !important;
-    }
-
-    .header-badge {
-        font-size: 0.6rem !important;
-        padding: 2px 8px !important;
-        white-space: nowrap !important;
-        border-radius: 50px !important;
-        margin: 0 !important;
-        flex: 0 0 auto !important;
-        transform: scale(0.9) !important;
-    }
-
     /* Requests Header & Tabs Refinements */
     .bookings-section {
         padding: 0 0.5rem !important;
