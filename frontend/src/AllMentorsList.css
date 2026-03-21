@@ -748,7 +748,7 @@
         overflow-y: auto;
         gap: 1.2rem;
         padding: 0.5rem 0.5rem;
-        margin-top: 0.5rem;
+        margin-top: 0; /* Minimized space from filters */
         display: flex;
         flex-direction: column;
     }
@@ -855,7 +855,7 @@
     .aml-role-desc {
         font-size: 0.95rem; /* Restore slightly larger text */
         line-height: 1.5;   /* Better readability */
-        margin-bottom: 0.8rem; /* Restore a better gap */
+        margin-bottom: 0.4rem; /* Tighter gap as requested */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
