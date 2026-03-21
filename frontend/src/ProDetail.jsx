@@ -216,7 +216,7 @@ function ProDetail({ pro, onClose }) {
                                                             value={serviceSort}
                                                             onChange={(e) => setServiceSort(e.target.value)}
                                                             style={{
-                                                                padding: '0.5rem 1.8rem 0.5rem 0.8rem',
+                                                                padding: '0.5rem 1.4rem 0.5rem 0.8rem',
                                                                 borderRadius: '10px',
                                                                 border: '1px solid #cbd5e1',
                                                                 background: 'white',
