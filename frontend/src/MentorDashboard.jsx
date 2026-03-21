@@ -458,7 +458,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     return (
         <div className={`mentor-dashboard-container`} style={{padding: 0}}>
             <header className="header">
-                <div className="header-content" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', padding: '0 1rem', justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
+                <div className="header-content" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', padding: '0 1rem', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
                     <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1rem', order: 1}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
@@ -501,7 +501,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         {isMobileMenuOpen ? '✕' : '☰'}
                     </button>
 
-                    <nav className={isMobileMenuOpen ? "nav-open" : ""}>
+                    <nav className={isMobileMenuOpen ? "nav-open" : ""} style={{width: '100%', order: 5}}>
                         <ul className="nav-links">
                             <li>
                                 <a href="#" 
