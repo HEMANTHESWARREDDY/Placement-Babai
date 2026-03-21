@@ -807,39 +807,32 @@ function App() {
                   About
                 </a>
               </li>
-              <li className="nav-dropdown-item">
-                <button 
-                  className={`nav-menu-btn ${isMenuOpen ? 'active' : ''}`}
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+              <li>
+                <a 
+                  href="#all-jobs"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowAllJobsModal(true);
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                  Menu
-                </button>
-                {isMenuOpen && (
-                  <div className="nav-dropdown-content">
-                    <button 
-                      onClick={() => {
-                        setShowAllJobsModal(true);
-                        setIsMenuOpen(false);
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
-                      Browse All Jobs
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setCurrentView('mentor-login');
-                        setIsMenuOpen(false);
-                        setIsMobileMenuOpen(false);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                      Mentor Login
-                    </button>
-                  </div>
-                )}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
+                  Browse All Jobs
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#mentor-login"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentView('mentor-login');
+                    setIsMobileMenuOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                  Mentor Login
+                </a>
               </li>
             </ul>
           </nav>
