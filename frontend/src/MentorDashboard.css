@@ -1556,6 +1556,67 @@
         font-size: 0.85rem !important;
         border-radius: 12px !important;
     }
+
+    /* Analytics Mobile Refinements */
+    .analytics-header-new {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1.5rem !important;
+        margin-bottom: 2rem !important;
+        padding: 0 5px !important;
+    }
+
+    .analytics-titles .a-title, .analytics-titles .a-subtitle {
+        font-size: 1.75rem !important;
+        line-height: 1.1 !important;
+        margin: 0 !important;
+        font-weight: 880 !important;
+        color: #0f172a !important;
+    }
+
+    .analytics-filter-wrap {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+    }
+
+    .filter-label {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        color: #64748b !important;
+    }
+
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* 2x2 grid */
+        gap: 12px !important;
+        padding: 0 5px !important;
+    }
+
+    .stat-card-custom {
+        padding: 1.25rem 1rem !important;
+        border-radius: 20px !important;
+        background: white !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+        border: 1px solid #f1f5f9 !important;
+        text-align: center !important;
+    }
+
+    .stat-card-custom h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 4px !important;
+        color: #1e293b !important;
+        font-weight: 900 !important;
+    }
+
+    .stat-card-custom p {
+        font-size: 0.7rem !important;
+        margin: 0 !important;
+        color: #64748b !important;
+        line-height: 1.2 !important;
+    }
 }
 
 /* Professional Dialog & Overlay Styles */

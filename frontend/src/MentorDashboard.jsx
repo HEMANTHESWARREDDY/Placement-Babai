@@ -25,6 +25,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [serviceSortOrder, setServiceSortOrder] = useState('newest'); // 'a-z', 'z-a', 'newest', 'oldest'
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
+    const [isAnalyticsFilterOpen, setIsAnalyticsFilterOpen] = useState(false);
     
     
     // Custom UI States
@@ -1297,36 +1298,49 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             )}
             {showAnalytics && (
                 <div className="analytics-section">
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
-                        <h2 style={{fontSize: '20px', fontWeight: 800, margin: 0, color: '#0f172a'}}>Dashboard Analytics</h2>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                <span style={{fontSize: '14px', color: '#64748b', fontWeight: 600}}>Time Period:</span>
-                                <select 
-                                    value={viewFilter} 
-                                    onChange={(e) => {
-                                        setViewFilter(e.target.value);
-                                        setSelectedDate('');
-                                    }}
-                                    style={{
-                                        padding: '8px 16px',
-                                        borderRadius: '10px',
-                                        border: '1px solid #e2e8f0',
-                                        background: 'white',
-                                        fontSize: '0.9rem',
-                                        fontWeight: '600',
-                                        outline: 'none',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <option value="all">All Time (Default)</option>
-                                    <option value="hourly">Hourly</option>
-                                    <option value="6hours">Last 6 Hours</option>
-                                    <option value="12hours">Last 12 Hours</option>
-                                    <option value="today">Today</option>
-                                    <option value="7days">Last 7 Days</option>
-                                    <option value="30days">Last 30 Days</option>
-                                </select>
+                    <div className="analytics-header-new">
+                        <div className="analytics-titles">
+                            <h2 className="a-title">Dashboard</h2>
+                            <h2 className="a-subtitle">Analytics</h2>
+                        </div>
+                        <div className="analytics-filter-wrap">
+                            <span className="filter-label">Time Period:</span>
+                            <div className="custom-sort-dropdown" style={{ minWidth: '180px' }}>
+                                <button className="sort-trigger" onClick={() => setIsAnalyticsFilterOpen(!isAnalyticsFilterOpen)}>
+                                    {viewFilter === 'all' ? 'All Time (Default)' : 
+                                     viewFilter === 'today' ? 'Today' : 
+                                     viewFilter === '7days' ? 'Last 7 Days' : 
+                                     viewFilter === '30days' ? 'Last 30 Days' : 
+                                     viewFilter === '6hours' ? 'Last 6 Hours' :
+                                     viewFilter === '12hours' ? 'Last 12 Hours' :
+                                     viewFilter === 'hourly' ? 'Hourly' : 'Specific Date'}
+                                    <span className={`trigger-arrow ${isAnalyticsFilterOpen ? 'open' : ''}`}>▼</span>
+                                </button>
+                                {isAnalyticsFilterOpen && (
+                                    <div className="sort-options-menu">
+                                        {[
+                                            {v: 'all', l: 'All Time (Default)'},
+                                            {v: 'today', l: 'Today'},
+                                            {v: '7days', l: 'Last 7 Days'},
+                                            {v: '30days', l: 'Last 30 Days'},
+                                            {v: '6hours', l: 'Last 6 Hours'},
+                                            {v: '12hours', l: 'Last 12 Hours'},
+                                            {v: 'hourly', l: 'Hourly'}
+                                        ].map(opt => (
+                                            <div 
+                                                key={opt.v}
+                                                className={`sort-option ${viewFilter === opt.v ? 'active' : ''}`} 
+                                                onClick={() => { 
+                                                    setViewFilter(opt.v); 
+                                                    setSelectedDate('');
+                                                    setIsAnalyticsFilterOpen(false); 
+                                                }}
+                                            >
+                                                {opt.l}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
