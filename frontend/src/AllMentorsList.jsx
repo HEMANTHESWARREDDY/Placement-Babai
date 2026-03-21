@@ -290,7 +290,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 </div>
 
                                 <div className="aml-role-desc">
-                                    {pro.role} @ {pro.company} | {pro.topics ? pro.topics.substring(0, 150) : 'No expertise added yet'}
+                                    {pro.role} @ {pro.company} | {pro.exp || '1 Year'} Experience | {pro.topics ? pro.topics.substring(0, 150) : 'No expertise added yet'}
                                 </div>
 
                                 <div className="aml-stats-row">
