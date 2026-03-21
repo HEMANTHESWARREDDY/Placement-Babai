@@ -220,6 +220,14 @@
     .mentor-edit-actions-bar {
         padding: 0 1rem;
         margin: 1rem auto;
+        gap: 12px;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .mentor-edit-actions-left, .mentor-edit-actions-right {
         gap: 8px;
     }
 
