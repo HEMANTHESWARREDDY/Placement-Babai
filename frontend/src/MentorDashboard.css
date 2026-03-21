@@ -1378,18 +1378,29 @@
 
 @media (max-width: 768px) {
     .services-manage-header {
-        flex-direction: column;
-        align-items: stretch;
-        background: transparent;
-        padding: 0;
-        gap: 10px;
+        flex-direction: row; /* Force single line */
+        align-items: center;
+        background: rgba(226, 232, 240, 0.6);
+        padding: 0.4rem;
+        gap: 6px;
     }
     
-    .services-search-container, .services-sort-container {
-        width: 100%;
+    .services-search-container {
+        flex: 2; /* Give search more room */
     }
     
+    .services-sort-container {
+        flex: 1; /* Keep sort compact */
+    }
+
     .services-sort-container select {
+        padding: 0.5rem 1.4rem 0.5rem 0.6rem;
+        font-size: 0.75rem;
         width: 100%;
+    }
+    
+    .service-search-field-wrap input {
+        padding: 0.5rem 0.5rem 0.5rem 1.8rem;
+        font-size: 0.8rem;
     }
 }
