@@ -623,10 +623,10 @@
         scroll-snap-type: x mandatory;
         scroll-padding-left: 1.5rem;
         gap: 1.2rem;
-        padding-bottom: 2.5rem;
+        padding-bottom: 0.8rem; /* Reduced from 2.5rem */
         scrollbar-width: none;
         -ms-overflow-style: none;
-        padding-left: 0; /* Rely on spacer and wrapper alignment */
+        padding-left: 0; 
         padding-right: 1.5rem;
     }
 
@@ -645,6 +645,14 @@
         flex: 0 0 280px;
         scroll-snap-align: start;
         margin-bottom: 0;
+    }
+
+    .tm-content {
+        padding: 0 1.25rem 0.5rem; /* Reduced bottom padding */
+    }
+
+    .tm-role {
+        margin-bottom: 0.5rem; /* Tighter gap to button */
     }
 
     /* Side Icon to move (Floating Arrow) */
