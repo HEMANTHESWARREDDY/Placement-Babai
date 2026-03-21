@@ -339,7 +339,7 @@ function ProConnect({ onMentorLoginClick }) {
                                                 const num = parseInt(expValue);
                                                 if (isNaN(num)) return expValue;
                                                 return `${num} ${num === 1 ? 'Year' : 'Years'} of exp`;
-                                            })()} | {pro.topics ? pro.topics.substring(0, 100) : (pro.skills || 'No expertise added yet')}
+                                            })()} | {pro.topics ? pro.topics.substring(0, 100) : 'No expertise added yet'}
                                         </p>
                                         <button className="tm-btn" onClick={() => setSelectedPro(pro)}>View Profile</button>
                                     </div>
