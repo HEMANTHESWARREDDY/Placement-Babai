@@ -159,19 +159,8 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                         />
                     </div>
 
-                    <div className="aml-filters-left">
-                        <button className="aml-filter-btn">
-                            <span style={{ fontSize: '1.1rem' }}>▤</span> Filters
-                        </button>
-                        <button className="aml-filter-btn">
-                            Top Mentor
-                        </button>
-                        <div className="aml-featured-pill">
-                            Featured
-                        </div>
-                    </div>
-
-                    <div className="aml-dropdown-container" ref={sortMenuRef} style={{ marginLeft: '0.8rem' }}>
+                    {/* Sort Second - as requested */}
+                    <div className="aml-dropdown-container aml-mobile-sort-second" ref={sortMenuRef}>
                         <button 
                             className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
                             onClick={() => setShowSortMenu(!showSortMenu)}
@@ -209,6 +198,18 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 </div>
                             </>
                         )}
+                    </div>
+
+                    <div className="aml-filters-left">
+                        <button className="aml-filter-btn">
+                            <span style={{ fontSize: '1.1rem' }}>▤</span> Filters
+                        </button>
+                        <button className="aml-filter-btn">
+                            Top Mentor
+                        </button>
+                        <div className="aml-featured-pill">
+                            Featured
+                        </div>
                     </div>
                 </div>
                 {canScrollRightFilters && (
