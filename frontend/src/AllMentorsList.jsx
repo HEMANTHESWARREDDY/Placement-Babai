@@ -147,6 +147,18 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                     <button className="aml-filters-scroll-btn left" onClick={() => scrollFilters('left')}>❮</button>
                 )}
                 <div className="aml-filters-row" ref={filtersRowRef} onScroll={checkFiltersScroll}>
+                    {/* Search First */}
+                    <div className="aml-search-box aml-search-box-mobile-first">
+                        <span className="aml-search-icon">🔍</span>
+                        <input 
+                            type="text" 
+                            placeholder="Search Mentors" 
+                            className="aml-search-input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
                     <div className="aml-filters-left">
                         <button className="aml-filter-btn">
                             <span style={{ fontSize: '1.1rem' }}>▤</span> Filters
@@ -158,56 +170,45 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                             Featured
                         </div>
                     </div>
-                    <div className="aml-filters-right">
-                        <div className="aml-search-box">
-                            <span className="aml-search-icon">🔍</span>
-                            <input 
-                                type="text" 
-                                placeholder="Search Mentors" 
-                                className="aml-search-input"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                        <div className="aml-dropdown-container" ref={sortMenuRef} style={{ marginLeft: '0.8rem' }}>
-                            <button 
-                                className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
-                                onClick={() => setShowSortMenu(!showSortMenu)}
-                            >
-                                <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
-                            </button>
-                            {showSortMenu && (
-                                <>
-                                    <div className="aml-dropdown-backdrop" onClick={() => setShowSortMenu(false)}></div>
-                                    <div className="aml-dropdown-menu">
-                                        <div 
-                                            className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
-                                            onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
-                                        >
-                                            Newest First
-                                        </div>
-                                        <div 
-                                            className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
-                                            onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
-                                        >
-                                            Oldest First
-                                        </div>
-                                        <div 
-                                            className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
-                                            onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
-                                        >
-                                            Alphabetical (A-Z)
-                                        </div>
-                                        <div 
-                                            className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
-                                            onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
-                                        >
-                                            Alphabetical (Z-A)
-                                        </div>
+
+                    <div className="aml-dropdown-container" ref={sortMenuRef} style={{ marginLeft: '0.8rem' }}>
+                        <button 
+                            className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
+                            onClick={() => setShowSortMenu(!showSortMenu)}
+                        >
+                            <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
+                        </button>
+                        {showSortMenu && (
+                            <>
+                                <div className="aml-dropdown-backdrop" onClick={() => setShowSortMenu(false)}></div>
+                                <div className="aml-dropdown-menu">
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                    >
+                                        Newest First
                                     </div>
-                                </>
-                            )}
-                        </div>
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
+                                    >
+                                        Oldest First
+                                    </div>
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
+                                    >
+                                        Alphabetical (A-Z)
+                                    </div>
+                                    <div 
+                                        className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
+                                    >
+                                        Alphabetical (Z-A)
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
                 {canScrollRightFilters && (

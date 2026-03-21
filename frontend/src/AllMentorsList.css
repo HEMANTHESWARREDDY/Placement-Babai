@@ -655,10 +655,23 @@
         flex-wrap: nowrap !important;
         overflow-x: auto;
         justify-content: flex-start;
+        align-items: center; /* Align items vertically */
         gap: 0.6rem;
         padding: 0.5rem 0.2rem;
         margin-bottom: 0;
         scrollbar-width: none; /* Firefox */
+        display: flex; /* Ensure it's flex */
+    }
+
+    .aml-search-box-mobile-first {
+        flex: 0 0 160px !important;
+        min-width: 140px;
+        background: #f1f5f9 !important; /* Slightly different bg to stand out? */
+        border-color: #cbd5e1 !important;
+    }
+    
+    .aml-search-input {
+        font-size: 0.85rem !important; /* Smaller text for mobile */
     }
 
     .aml-filters-row::-webkit-scrollbar {
@@ -666,7 +679,9 @@
     }
 
     .aml-filters-left {
+        display: flex; /* Ensure its children are also in a row */
         gap: 0.6rem;
+        flex: 0 0 auto;
     }
 
     .aml-filter-btn {
