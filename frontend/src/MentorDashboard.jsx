@@ -469,7 +469,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         setIsEditingProfile(false); 
                         setShowAnalytics(false);
                     }}>
-                        🔥 {todayPending} New Requests
+                        🔥 {todayPending} Requests Today
                     </div>
 
                     <div 
