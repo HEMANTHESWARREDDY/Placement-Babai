@@ -154,4 +154,10 @@
     .admin-login-box h2 {
         font-size: 1.5rem;
     }
+
+    /* Specific background for Mentor Login on Mobile */
+    .mentor-portal-bg {
+        background: black url('/images/mentor-login-bg.png') no-repeat center center;
+        background-size: cover;
+    }
 }

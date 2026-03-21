@@ -42,7 +42,7 @@ function MentorLogin({ onLoginSuccess, onBack }) {
     };
 
     return (
-        <div className="admin-login-container">
+        <div className="admin-login-container mentor-portal-bg">
             <div className="admin-login-box">
                 <button className="back-home-btn" onClick={onBack}>← Back to Home</button>
                 <h2>Mentor Portal Login</h2>
