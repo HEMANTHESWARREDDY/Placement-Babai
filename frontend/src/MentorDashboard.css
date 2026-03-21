@@ -1476,6 +1476,66 @@
         font-size: 0.82rem !important;
         border-radius: 16px !important;
     }
+
+    /* Booking Card Mobile Refinements */
+    .booking-card {
+        padding: 1.25rem !important;
+        border-radius: 18px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .booking-card-top {
+        margin-bottom: 1rem !important;
+    }
+
+    .guest-info h4 {
+        font-size: 1.15rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .guest-meta {
+        gap: 0.4rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    .booking-details-grid {
+        padding: 0.85rem !important;
+        gap: 0.85rem !important;
+        grid-template-columns: 1fr !important;
+        border-radius: 14px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .b-detail label {
+        font-size: 0.65rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .b-detail p {
+        font-size: 0.85rem !important;
+    }
+
+    .booking-request-msg label {
+        font-size: 0.75rem !important;
+        margin-bottom: 4px !important;
+    }
+
+    .booking-request-msg p {
+        font-size: 0.85rem !important;
+        padding: 0.75rem !important;
+        border-radius: 10px !important;
+    }
+
+    .booking-card-actions {
+        padding-top: 1rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .booking-card-actions button {
+        padding: 0.75rem !important;
+        font-size: 0.85rem !important;
+        border-radius: 12px !important;
+    }
 }
 
 /* Professional Dialog & Overlay Styles */
