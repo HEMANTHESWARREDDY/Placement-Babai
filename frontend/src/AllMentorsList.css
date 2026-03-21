@@ -785,7 +785,7 @@
     .aml-card-top {
         flex-direction: column;
         gap: 0;
-        padding: 0 1.5rem 1.5rem; /* More horizontal breathing room */
+        padding: 0 1.5rem 0.2rem; /* Reduced bottom padding to minimize gap */
         flex: 1; /* Allow content to fill space */
     }
 
