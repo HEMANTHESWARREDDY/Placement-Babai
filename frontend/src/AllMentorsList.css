@@ -744,7 +744,7 @@
     }
 
     .aml-list {
-        height: 75vh;
+        height: 65vh; /* Reduced height to avoid nav overlap */
         overflow-y: auto;
         gap: 1.2rem;
         padding: 0.5rem 0.5rem;
