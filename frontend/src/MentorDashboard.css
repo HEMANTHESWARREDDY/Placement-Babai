@@ -1266,3 +1266,130 @@
         font-weight: 800 !important;
     }
 }
+
+.services-manage-header {
+    display: flex;
+    background: rgba(226, 232, 240, 0.6);
+    border-radius: 12px;
+    padding: 0.4rem;
+    margin-bottom: 1.5rem;
+    gap: 8px;
+    align-items: center;
+}
+
+.services-search-container {
+    position: relative;
+    flex: 1;
+}
+
+.service-search-field-wrap {
+    position: relative;
+}
+
+.service-search-field-wrap .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.service-search-field-wrap input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 0.5rem 0.5rem 2.2rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    font-size: 0.85rem;
+    outline: none;
+    color: #1e293b;
+    transition: all 0.2s ease;
+}
+
+.service-search-field-wrap input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-suggestions-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    z-index: 10;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.suggestion-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    color: #475569;
+    cursor: pointer;
+    background: white;
+    transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background: #f8fafc;
+}
+
+.suggestion-item:not(:last-child) {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.services-sort-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.services-sort-container select {
+    padding: 0.5rem 1.8rem 0.5rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    font-size: 0.85rem;
+    color: #475569;
+    outline: none;
+    appearance: none;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 80px;
+}
+
+.services-sort-container .sort-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+    .services-manage-header {
+        flex-direction: column;
+        align-items: stretch;
+        background: transparent;
+        padding: 0;
+        gap: 10px;
+    }
+    
+    .services-search-container, .services-sort-container {
+        width: 100%;
+    }
+    
+    .services-sort-container select {
+        width: 100%;
+    }
+}
