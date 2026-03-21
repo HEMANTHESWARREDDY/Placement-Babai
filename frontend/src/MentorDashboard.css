@@ -242,7 +242,7 @@
     }
 
     .mentor-edit-actions-left, .mentor-edit-actions-right {
-        gap: 6px;
+        gap: 12px;
     }
 
     .mentor-action-btn {
