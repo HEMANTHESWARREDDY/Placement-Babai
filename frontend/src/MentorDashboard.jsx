@@ -463,16 +463,16 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-badge" style={{cursor: 'pointer'}} onClick={(e) => { 
-                        e.preventDefault(); 
-                        setShowBookings(true); 
-                        setIsEditingProfile(false); 
-                        setShowAnalytics(false);
-                    }}>
-                        🔥 {todayPending} New Requests Today
-                    </div>
-
                     <div className="header-actions-wrapper">
+                        <div className="header-badge-inline" onClick={(e) => { 
+                            e.preventDefault(); 
+                            setShowBookings(true); 
+                            setIsEditingProfile(false); 
+                            setShowAnalytics(false);
+                        }}>
+                            🔥 {todayPending} New Requests Today
+                        </div>
+
                         <div 
                             className="requests-notification-icon"
                             onClick={(e) => { 

@@ -2139,6 +2139,36 @@
     gap: 12px;
 }
 
+.header-badge-inline {
+    background: linear-gradient(135deg, rgba(255, 120, 60, 0.15), rgba(255, 80, 80, 0.15));
+    color: #ea580c;
+    padding: 0.4rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 1.5px solid rgba(234, 88, 12, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+    animation: badge-pulse 2s infinite;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+
+.header-badge-inline:hover {
+    transform: scale(1.03);
+    background: linear-gradient(135deg, rgba(255, 120, 60, 0.20), rgba(255, 80, 80, 0.20));
+}
+
+@media (max-width: 768px) {
+    .header-badge-inline {
+        font-size: 0.75rem !important;
+        padding: 0.3rem 0.8rem !important;
+    }
+}
+
 /* Requests Notification Icon & Badge */
 .requests-notification-icon {
     cursor: pointer;
