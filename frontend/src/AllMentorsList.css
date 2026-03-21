@@ -774,10 +774,7 @@
         border: 1px solid #e2e8f0;
         border-radius: 16px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        flex-shrink: 0;
-        height: 400px !important; /* Strictly fixed height */
-        display: flex;
-        flex-direction: column;
+        flex-shrink: 0; /* Don't squash cards */
     }
 
     .aml-card-banner {
@@ -858,13 +855,12 @@
     .aml-role-desc {
         font-size: 0.92rem;
         line-height: 1.4;
-        margin-bottom: 0.1rem;
+        margin-bottom: 0.1rem; /* Extremely tight gap */
         display: -webkit-box;
-        -webkit-line-clamp: 3; /* Increased for fixed height room */
-        line-clamp: 3;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        color: #64748b;
     }
 
     .aml-stats-row {
@@ -873,7 +869,7 @@
 
     .aml-mobile-view-btn {
         display: block;
-        margin: auto 1.25rem 1.25rem; /* Margin-auto top pushes to bottom */
+        margin: 0.2rem 1.25rem 1.25rem; /* Smallest top margin */
         background: white;
         border: 1px solid #cbd5e1;
         color: #475569;
