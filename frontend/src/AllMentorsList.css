@@ -744,14 +744,13 @@
     }
 
     .aml-list {
-        height: 82vh; /* Large viewport for immersive feel */
+        height: 75vh;
         overflow-y: auto;
-        scroll-snap-type: y mandatory; /* Reel style snap */
-        gap: 0; /* No gap between snap items for cleaner look */
-        padding: 0;
+        gap: 1.2rem;
+        padding: 0.5rem 0.5rem;
         margin-top: 0.5rem;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Hide scrollbar for cleaner feel */
+        display: flex;
+        flex-direction: column;
     }
 
     .aml-list::-webkit-scrollbar {
@@ -771,13 +770,11 @@
         padding: 0;
         overflow: hidden;
         gap: 0;
-        scroll-snap-align: start; /* Snap each card to top */
-        min-height: 80vh; /* Make cards large like reels */
-        border: none;
-        border-radius: 0; /* Full bleed feel */
-        border-bottom: 8px solid #f1f5f9; /* Visual separator */
-        display: flex;
-        flex-direction: column;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        flex-shrink: 0; /* Don't squash cards */
     }
 
     .aml-card-banner {
