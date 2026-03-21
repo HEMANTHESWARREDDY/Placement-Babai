@@ -463,8 +463,24 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-badge" style={{cursor: 'default'}}>
-                        🔥 {todayPending} New Requests Today
+                    <div 
+                        className="requests-notification-icon"
+                        onClick={(e) => { 
+                            e.preventDefault(); 
+                            setShowBookings(true); 
+                            setIsEditingProfile(false); 
+                            setShowAnalytics(false);
+                            setIsMobileMenuOpen(false);
+                        }}
+                    >
+                        <div className="icon-wrapper">
+                            <span className="request-bell">🔔</span>
+                            {bookings.filter(b => b.status === 'PENDING').length > 0 && (
+                                <span className="notification-badge">
+                                    {bookings.filter(b => b.status === 'PENDING').length}
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     <button 
