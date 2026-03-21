@@ -484,7 +484,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             }}
                         >
                             <div className="icon-wrapper">
-                                <span className="request-suit">💼</span>
+                                <span className="request-bell">🔔</span>
                                 {bookings.filter(b => b.status === 'PENDING').length > 0 && (
                                     <span className="notification-badge">
                                         {bookings.filter(b => b.status === 'PENDING').length}
