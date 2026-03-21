@@ -458,48 +458,48 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     return (
         <div className={`mentor-dashboard-container`} style={{padding: 0}}>
             <header className="header">
-                <div className="header-content">
-                    <div className="logo" style={{cursor: 'default'}}>
+                <div className="header-content" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', padding: '0 1rem', justifyContent: 'flex-start' }}>
+                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1.5rem'}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-actions-wrapper">
-                        <div className="header-badge-inline" onClick={(e) => { 
+                    <div className="header-badge-inline" style={{flexShrink: 0, marginRight: 'auto'}} onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowBookings(true); 
+                        setIsEditingProfile(false); 
+                        setShowAnalytics(false);
+                    }}>
+                        🔥 {todayPending} New Requests
+                    </div>
+
+                    <div 
+                        className="requests-notification-icon"
+                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none'}}
+                        onClick={(e) => { 
                             e.preventDefault(); 
                             setShowBookings(true); 
                             setIsEditingProfile(false); 
                             setShowAnalytics(false);
-                        }}>
-                            🔥 {todayPending} New Requests Today
+                            setIsMobileMenuOpen(false);
+                        }}
+                    >
+                        <div className="icon-wrapper">
+                            <span className="request-bell">🔔</span>
+                            {bookings.filter(b => b.status === 'PENDING').length > 0 && (
+                                <span className="notification-badge">
+                                    {bookings.filter(b => b.status === 'PENDING').length}
+                                </span>
+                            )}
                         </div>
-
-                        <div 
-                            className="requests-notification-icon"
-                            onClick={(e) => { 
-                                e.preventDefault(); 
-                                setShowBookings(true); 
-                                setIsEditingProfile(false); 
-                                setShowAnalytics(false);
-                                setIsMobileMenuOpen(false);
-                            }}
-                        >
-                            <div className="icon-wrapper">
-                                <span className="request-bell">🔔</span>
-                                {bookings.filter(b => b.status === 'PENDING').length > 0 && (
-                                    <span className="notification-badge">
-                                        {bookings.filter(b => b.status === 'PENDING').length}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-
-                        <button 
-                            className="mobile-menu-btn" 
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        >
-                            {isMobileMenuOpen ? '✕' : '☰'}
-                        </button>
                     </div>
+
+                    <button 
+                        className="mobile-menu-btn" 
+                        style={{flexShrink: 0, marginLeft: 0}}
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        {isMobileMenuOpen ? '✕' : '☰'}
+                    </button>
 
                     <nav className={isMobileMenuOpen ? "nav-open" : ""}>
                         <ul className="nav-links">
