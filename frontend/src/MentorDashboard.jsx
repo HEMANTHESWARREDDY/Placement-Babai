@@ -24,6 +24,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [serviceSearchQuery, setServiceSearchQuery] = useState('');
     const [serviceSortOrder, setServiceSortOrder] = useState('newest'); // 'a-z', 'z-a', 'newest', 'oldest'
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSortOpen, setIsSortOpen] = useState(false);
     
     
     // Custom UI States
@@ -706,11 +707,19 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </div>
                         <div className="bookings-sort">
                             <span>Sort by:</span>
-                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                                <option value="Newest">Newest First</option>
-                                <option value="Oldest">Oldest First</option>
-                                <option value="A-Z">Guest Name (A-Z)</option>
-                            </select>
+                            <div className="custom-sort-dropdown">
+                                <button className="sort-trigger" onClick={() => setIsSortOpen(!isSortOpen)}>
+                                    {sortBy === 'Newest' ? 'Newest First' : sortBy === 'Oldest' ? 'Oldest First' : 'Guest Name (A-Z)'}
+                                    <span className={`trigger-arrow ${isSortOpen ? 'open' : ''}`}>▼</span>
+                                </button>
+                                {isSortOpen && (
+                                    <div className="sort-options-menu">
+                                        <div className={`sort-option ${sortBy === 'Newest' ? 'active' : ''}`} onClick={() => { setSortBy('Newest'); setIsSortOpen(false); }}>Newest First</div>
+                                        <div className={`sort-option ${sortBy === 'Oldest' ? 'active' : ''}`} onClick={() => { setSortBy('Oldest'); setIsSortOpen(false); }}>Oldest First</div>
+                                        <div className={`sort-option ${sortBy === 'A-Z' ? 'active' : ''}`} onClick={() => { setSortBy('A-Z'); setIsSortOpen(false); }}>Guest Name (A-Z)</div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
