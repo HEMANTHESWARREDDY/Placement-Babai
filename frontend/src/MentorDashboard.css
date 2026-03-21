@@ -212,7 +212,13 @@
     font-weight: 800;
     font-size: 0.75rem;
 }
+.mentor-main-content {
+    padding: 2.5rem 2rem;
+}
 @media (max-width: 768px) {
+    .mentor-main-content {
+        padding: 0 !important;
+    }
     .mentor-dashboard-container {
         padding: 0px !important; /* Zero padding to allow full width */
     }

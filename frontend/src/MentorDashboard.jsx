@@ -519,7 +519,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 </div>
             </header>
 
-            <div style={{padding: '2.5rem 2rem'}}>
+            <div className="mentor-main-content">
                 {(!showBookings && !isEditingProfile && !showAnalytics) && (
 
                     <div style={{
