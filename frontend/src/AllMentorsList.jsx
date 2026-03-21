@@ -290,7 +290,16 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 </div>
 
                                 <div className="aml-role-desc">
-                                    {pro.role} @ {pro.company} | {pro.exp || '1 Year'} Experience | {pro.topics ? pro.topics.substring(0, 150) : 'No expertise added yet'}
+                                    {pro.role} @ {pro.company} | {(() => {
+                                        let expText = pro.exp || '1 Year of experience';
+                                        // Standardize "1 Years" to "1 Year"
+                                        expText = expText.replace(/1 Years/g, '1 Year');
+                                        // If "experience" or "Exp" is already in the string, just return it
+                                        if (expText.toLowerCase().includes('experience') || expText.toLowerCase().includes('exp')) {
+                                            return expText;
+                                        }
+                                        return `${expText} Year of experience`;
+                                    })()} | {pro.topics ? pro.topics.substring(0, 150) : 'No expertise added yet'}
                                 </div>
 
                                 <div className="aml-stats-row">
