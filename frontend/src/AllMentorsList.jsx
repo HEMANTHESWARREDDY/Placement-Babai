@@ -245,25 +245,25 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
 
                             {/* Info Right */}
                             <div className="aml-info-col">
-                                <div className="tm-socials-mobile">
-                                    <div className="tm-rating">
+                                <div className="aml-socials-mobile">
+                                    <div className="aml-rating-bubble">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#eab308' }}>
                                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                         </svg>
                                         {pro.rating}
                                     </div>
-                                    <div className="tm-social-icons-row">
+                                    <div className="aml-social-icons-row">
                                         {pro.email && (
-                                            <a href={`mailto:${pro.email}`} className="tm-social-icon" title="Email" onClick={(e) => e.stopPropagation()}>
+                                            <a href={`mailto:${pro.email}`} className="aml-social-icon" title="Email" onClick={(e) => e.stopPropagation()}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                             </a>
                                         )}
                                         {pro.linkedin && (
-                                            <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="tm-social-icon" title="LinkedIn" onClick={(e) => e.stopPropagation()}>
+                                            <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="aml-social-icon" title="LinkedIn" onClick={(e) => e.stopPropagation()}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                                             </a>
                                         )}
-                                        <div className="tm-social-icon" onClick={(e) => {
+                                        <div className="aml-social-icon" onClick={(e) => {
                                             e.stopPropagation();
                                             if (navigator.share) {
                                                 navigator.share({ title: pro.name, text: pro.role, url: window.location.href }).catch(() => {});

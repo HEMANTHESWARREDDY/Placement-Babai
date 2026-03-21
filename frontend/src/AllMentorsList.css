@@ -807,7 +807,7 @@
         width: 100%;
     }
 
-    .tm-socials-mobile {
+    .aml-socials-mobile {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -816,7 +816,7 @@
         margin-left: 85px; /* Offset from avatar */
     }
 
-    .tm-rating {
+    .aml-rating-bubble {
         display: flex;
         align-items: center;
         gap: 0.3rem;
@@ -830,12 +830,12 @@
         margin: 0 !important;
     }
 
-    .tm-social-icons-row {
+    .aml-social-icons-row {
         display: flex;
         gap: 0.8rem;
     }
 
-    .tm-social-icon {
+    .aml-social-icon {
         color: #64748b;
         display: flex;
         align-items: center;
