@@ -458,12 +458,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     return (
         <div className={`mentor-dashboard-container`} style={{padding: 0}}>
             <header className="header">
-                <div className="header-content" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', padding: '0 1rem', justifyContent: 'flex-start' }}>
-                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1.5rem'}}>
+                <div className="header-content" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', padding: '0 1rem', justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
+                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1rem', order: 1}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-badge-inline" style={{flexShrink: 0, marginRight: 'auto'}} onClick={(e) => { 
+                    <div className="header-badge-inline" style={{flexShrink: 1, marginRight: 'auto', order: 2}} onClick={(e) => { 
                         e.preventDefault(); 
                         setShowBookings(true); 
                         setIsEditingProfile(false); 
@@ -474,7 +474,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                     <div 
                         className="requests-notification-icon"
-                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none'}}
+                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none', order: 3}}
                         onClick={(e) => { 
                             e.preventDefault(); 
                             setShowBookings(true); 
@@ -495,7 +495,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                     <button 
                         className="mobile-menu-btn" 
-                        style={{flexShrink: 0, marginLeft: 0}}
+                        style={{flexShrink: 0, marginLeft: 0, order: 4}}
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                         {isMobileMenuOpen ? '✕' : '☰'}
