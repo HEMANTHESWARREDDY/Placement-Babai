@@ -238,7 +238,7 @@ function ProDetail({ pro, onClose }) {
                                             </div>
 
                                             {/* Dynamic Services Mapping */}
-                                            <div style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
+                                            <div className="pd-services-scroll" style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', paddingRight: '4px' }}>
                                                 {(() => {
                                                     let servicesToRender = [...(pro.services || [])];
                                                     
