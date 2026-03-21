@@ -291,14 +291,15 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
 
                                 <div className="aml-role-desc">
                                     {pro.role} @ {pro.company} | {(() => {
-                                        let expText = pro.exp || '1 Year of experience';
-                                        // Standardize "1 Years" to "1 Year"
-                                        expText = expText.replace(/1 Years/g, '1 Year');
-                                        // If "experience" or "Exp" is already in the string, just return it
-                                        if (expText.toLowerCase().includes('experience') || expText.toLowerCase().includes('exp')) {
-                                            return expText;
+                                        let expValue = pro.exp || '1';
+                                        // If it's already a full descriptive string, just fix the 1 years case
+                                        if (expValue.toString().toLowerCase().includes('experience') || expValue.toString().toLowerCase().includes('exp')) {
+                                            return expValue.toString().replace(/1 Years/g, '1 Year');
                                         }
-                                        return `${expText} Year of experience`;
+                                        // Otherwise, treat as a number (e.g. "2" or "2 Year") and format it
+                                        const num = parseInt(expValue);
+                                        if (isNaN(num)) return expValue;
+                                        return `${num} ${num === 1 ? 'Year' : 'Years'} of experience`;
                                     })()} | {pro.topics ? pro.topics.substring(0, 150) : 'No expertise added yet'}
                                 </div>
 
