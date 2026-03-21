@@ -58,12 +58,12 @@
     letter-spacing: -0.02em;
 }
 
-.highlight-violet {
-    color: #a78bfa;
-}
-
-.pro-hero .highlight-text {
-    color: #a78bfa;
+.highlight-violet, .pro-hero .highlight-text {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
 }
 
 .pro-subtitle {
