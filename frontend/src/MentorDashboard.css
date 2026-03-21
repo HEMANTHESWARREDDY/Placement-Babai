@@ -229,13 +229,13 @@
     }
 
     .mentor-edit-actions-bar {
-        padding: 0 4px !important;
+        padding: 0 10px !important;
         margin: 0 !important; /* Force zero margin to bring it to top */
         gap: 8px;
         width: 100% !important;
         box-sizing: border-box;
         display: flex !important;
-        justify-content: space-between !important;
+        justify-content: flex-start !important; /* Shift all to left/center-left */
         align-items: center;
         background: #f1f5f9; /* Match background */
         height: 60px; /* Optional: set a height to keep it consistent */

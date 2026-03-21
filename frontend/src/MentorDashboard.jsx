@@ -580,14 +580,14 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 title="Go Back"
                                 style={{ padding: '10px' }}
                             >
-                                <span className="m-icon" style={{ fontSize: '1.2rem' }}>⬅️</span>
+                                <span className="m-icon" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>←</span>
                             </button>
                             <div className="edit-mode-badge" style={{ background: '#fff1f2', border: '1px solid #fecdd3', color: '#be123c' }}>
-                                <span className="m-icon">✏️</span> <span className="m-text">EDIT MODE</span>
+                                <span className="m-icon">✏️</span> <span className="m-text" style={{ fontSize: '0.7rem' }}>EDIT MODE</span>
                             </div>
                         </div>
                         
-                        <div className="mentor-edit-actions-right">
+                        <div className="mentor-edit-actions-right" style={{ marginLeft: '10px' }}>
                             <button 
                                 onClick={(e) => { e.preventDefault(); setShowPreviewModal(true); }}
                                 className="mentor-action-btn preview-btn"
