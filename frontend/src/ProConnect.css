@@ -623,7 +623,7 @@
         scroll-snap-type: x mandatory;
         scroll-padding-left: 1.5rem;
         gap: 1.2rem;
-        padding-bottom: 0.8rem; /* Reduced from 2.5rem */
+        padding-bottom: 0.2rem; /* Reduced further to 0.2rem */
         scrollbar-width: none;
         -ms-overflow-style: none;
         padding-left: 0; 
