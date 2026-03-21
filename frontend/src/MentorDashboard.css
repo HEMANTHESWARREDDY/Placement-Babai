@@ -214,18 +214,20 @@
 }
 @media (max-width: 768px) {
     .mentor-dashboard-container {
-        padding: 0.75rem !important;
+        padding: 0px !important; /* Zero padding to allow full width */
     }
 
     .mentor-edit-actions-bar {
-        padding: 0 4px; /* Extreme minimum padding for maximum width */
-        margin: 0 auto 0.8rem auto; /* Zero top margin to bring it closer to header */
+        padding: 0 4px !important;
+        margin: 0 !important; /* Force zero margin to bring it to top */
         gap: 8px;
-        width: 100%;
+        width: 100% !important;
         box-sizing: border-box;
-        display: flex;
-        justify-content: space-between;
+        display: flex !important;
+        justify-content: space-between !important;
         align-items: center;
+        background: #f1f5f9; /* Match background */
+        height: 60px; /* Optional: set a height to keep it consistent */
     }
 
     .mentor-edit-actions-left, .mentor-edit-actions-right {
