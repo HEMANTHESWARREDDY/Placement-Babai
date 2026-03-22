@@ -2257,11 +2257,11 @@
     .mentor-dashboard-header .header-content {
         flex-wrap: nowrap !important;
         justify-content: flex-start !important;
-        gap: 40px !important;
+        gap: 30px !important;
     }
     .mentor-dashboard-header .logo { order: 1 !important; flex-shrink: 0 !important; }
-    .mentor-dashboard-header .header-badge-inline { order: 2 !important; flex-shrink: 0 !important; margin-left: auto !important; }
-    .mentor-dashboard-header nav { order: 3 !important; width: auto !important; flex-shrink: 0 !important; }
+    .mentor-dashboard-header .header-badge-inline { order: 2 !important; flex-shrink: 0 !important; margin-left: 20px !important; }
+    .mentor-dashboard-header nav { order: 3 !important; width: auto !important; flex-shrink: 0 !important; margin-left: auto !important; }
     .mentor-dashboard-header .requests-notification-icon { display: none !important; }
     .mentor-dashboard-header .mobile-menu-btn { display: none !important; }
 }
