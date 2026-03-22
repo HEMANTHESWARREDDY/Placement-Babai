@@ -637,6 +637,10 @@
         margin-bottom: 1.25rem;
     }
 
+    .service-filter-tabs {
+        display: none !important;
+    }
+
     .main-tab-btn {
         font-size: 0.9rem;
         font-weight: 500;

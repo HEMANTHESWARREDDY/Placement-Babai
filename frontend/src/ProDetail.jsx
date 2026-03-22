@@ -186,7 +186,7 @@ function ProDetail({ pro, onClose }) {
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
                                                 {/* Left-aligned Tab(s) */}
-                                                <div style={{ display: 'flex', gap: '4px' }}>
+                                                <div className="service-filter-tabs" style={{ display: 'flex', gap: '4px' }}>
                                                     {['All', 'Free', 'Paid'].map(tab => (
                                                         <button
                                                             key={tab}
