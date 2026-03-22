@@ -186,6 +186,28 @@ function ProDetail({ pro, onClose }) {
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
                                                 {/* Left-aligned Tab(s) */}
+                                                <div style={{ display: 'flex', gap: '4px' }}>
+                                                    {['All', 'Free', 'Paid'].map(tab => (
+                                                        <button
+                                                            key={tab}
+                                                            onClick={() => setActiveTab(tab)}
+                                                            style={{
+                                                                padding: '0.4rem 1.1rem',
+                                                                borderRadius: '8px',
+                                                                border: 'none',
+                                                                fontSize: '0.82rem',
+                                                                fontWeight: '600',
+                                                                cursor: 'pointer',
+                                                                transition: 'all 0.2s',
+                                                                background: activeTab === tab ? 'white' : 'transparent',
+                                                                color: activeTab === tab ? '#1e293b' : '#64748b',
+                                                                boxShadow: activeTab === tab ? '0 2px 4px rgba(0,0,0,0.05)' : 'none'
+                                                            }}
+                                                        >
+                                                            {tab}
+                                                        </button>
+                                                    ))}
+                                                </div>
                                                 <div style={{ flex: 1 }}></div>
 
                                                 {/* Right-aligned Group */}
@@ -254,10 +276,14 @@ function ProDetail({ pro, onClose }) {
                                                         const matchesSearch = !serviceSearch.trim() || 
                                                             (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
                                                             (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
-                                                        return matchesSearch;
+                                                        
+                                                        const isFree = (s.price === 'Free' || s.price === 0 || s.price === '0' || !s.price);
+                                                        const matchesTab = activeTab === 'All' || (activeTab === 'Free' && isFree) || (activeTab === 'Paid' && !isFree);
+                                                        
+                                                        return matchesSearch && matchesTab;
                                                     }).sort((a, b) => {
                                                         if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
-                                                        if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                        if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || b.title || '');
                                                         return 0;
                                                     });
 
