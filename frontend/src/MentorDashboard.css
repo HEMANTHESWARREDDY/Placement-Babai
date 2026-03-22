@@ -2289,3 +2289,13 @@
         margin-top: 10px !important;
     }
 }
+
+.welcome-name-pc {
+    display: none;
+}
+
+@media (min-width: 1025px) {
+    .welcome-name-pc {
+        display: inline;
+    }
+}

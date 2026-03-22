@@ -569,7 +569,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         padding: '0 10px'
                     }}>
                         <div style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1e293b' }}>
-                            Welcome back! 👋
+                            Welcome back! 👋 <span className="welcome-name-pc">{profile?.name}</span>
                         </div>
                         <button 
                             onClick={(e) => { e.preventDefault(); setIsEditingProfile(true); }}
