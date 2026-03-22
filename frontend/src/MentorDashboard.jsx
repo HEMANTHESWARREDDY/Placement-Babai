@@ -1133,6 +1133,30 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
                                 }}>
                                     
+                                    <div className="service-tabs-pc-only" style={{ display: 'flex', gap: '8px', marginBottom: '1.25rem', overflowX: 'auto', paddingBottom: '5px' }}>
+                                        {['All', '1:1 Mentorship', 'Events', 'Resume'].map(tab => (
+                                            <button
+                                                key={tab}
+                                                onClick={() => setActiveServiceTab(tab)}
+                                                style={{
+                                                    padding: '0.5rem 1rem',
+                                                    borderRadius: '8px',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: '600',
+                                                    border: '1px solid',
+                                                    borderColor: activeServiceTab === tab ? '#4f46e5' : '#e2e8f0',
+                                                    background: activeServiceTab === tab ? '#eef2ff' : 'white',
+                                                    color: activeServiceTab === tab ? '#4f46e5' : '#64748b',
+                                                    cursor: 'pointer',
+                                                    transition: '0.2s',
+                                                    whiteSpace: 'nowrap'
+                                                }}
+                                            >
+                                                {tab}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    
                                     <div className="services-manage-header">
                                         <div className="services-search-container">
                                             <div className="service-search-field-wrap">
@@ -1187,7 +1211,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                                 const matchesSearch = !serviceSearch.trim() || 
                                                     (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
                                                     (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
-                                                return matchesSearch;
+                                                
+                                                const matchesTab = activeServiceTab === 'All' || 
+                                                    (s.title || '').toLowerCase().includes(activeServiceTab.toLowerCase()) || 
+                                                    (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
+                                                
+                                                return matchesSearch && matchesTab;
                                             })
                                             .sort((a, b) => {
                                                 if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');

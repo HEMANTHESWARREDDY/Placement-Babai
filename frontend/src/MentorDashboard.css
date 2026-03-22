@@ -298,6 +298,7 @@
         gap: 0.5rem;
     }
     .nav-logout-btn { grid-column: span 2; }
+    .service-tabs-pc-only { display: none !important; }
 }
 
 .mentor-logout-btn {
