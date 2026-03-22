@@ -263,6 +263,23 @@
   box-shadow: 0 4px 12px rgba(0, 115, 177, 0.35);
 }
 
+.pc-nav-item {
+  display: block;
+}
+
+.mobile-nav-item {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .pc-nav-item {
+    display: none !important;
+  }
+  .mobile-nav-item {
+    display: block !important;
+  }
+}
+
 /* Hero Section */
 .hero {
   background: linear-gradient(135deg, #0f172a 0%, #0073b1 60%, #0ea5e9 100%);
