@@ -170,7 +170,6 @@ public class MentorController {
         mentor.setPassword(null);
         return ResponseEntity.ok(mentor);
     }
-    
     // Protected API to update logged-in mentor profile
     @PutMapping("/me")
     public ResponseEntity<?> updateMyProfile(@RequestBody Mentor updatedInfo) {
@@ -213,5 +212,78 @@ public class MentorController {
         saved.setPassword(null);
         
         return ResponseEntity.ok(saved);
+    }
+
+    @Autowired
+    private com.findmyjob.repository.PasswordResetTokenRepository resetTokenRepository;
+
+    @Autowired
+    private com.findmyjob.service.EmailService emailService;
+
+    // Forgot Password - Send Code
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(email);
+        
+        if (mentorOpt.isEmpty()) {
+            // Decoy success to prevent email enumeration
+            return ResponseEntity.ok(Map.of("message", "If this email is registered, a reset code has been sent."));
+        }
+
+        // Cleanup old tokens
+        resetTokenRepository.deleteByEmail(email);
+
+        // Generate 6-digit code
+        String code = String.format("%06d", (int) (Math.random() * 1000000));
+        
+        com.findmyjob.model.PasswordResetToken token = new com.findmyjob.model.PasswordResetToken();
+        token.setEmail(email);
+        token.setCode(code);
+        token.setExpiryDate(java.time.LocalDateTime.now().plusMinutes(10));
+        resetTokenRepository.save(token);
+
+        emailService.sendResetCode(email, code);
+        return ResponseEntity.ok(Map.of("message", "Reset code sent to your email."));
+    }
+
+    // Verify Code
+    @PostMapping("/verify-code")
+    public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String code = payload.get("code");
+
+        Optional<com.findmyjob.model.PasswordResetToken> tokenOpt = resetTokenRepository.findByEmailAndCode(email, code);
+        if (tokenOpt.isEmpty() || tokenOpt.get().isExpired()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid or expired code"));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Code verified."));
+    }
+
+    // Reset Password
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String code = payload.get("code");
+        String newPassword = payload.get("password");
+
+        // Confirm code still valid before reset
+        Optional<com.findmyjob.model.PasswordResetToken> tokenOpt = resetTokenRepository.findByEmailAndCode(email, code);
+        if (tokenOpt.isEmpty() || tokenOpt.get().isExpired()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Code session expired. Please start over."));
+        }
+
+        Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(email);
+        if (mentorOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        Mentor mentor = mentorOpt.get();
+        mentor.setPassword(passwordEncoder.encode(newPassword));
+        mentorRepository.save(mentor);
+
+        // Final cleanup
+        resetTokenRepository.deleteByEmail(email);
+
+        return ResponseEntity.ok(Map.of("message", "Password reset successfully. Please log in with your new password."));
     }
 }
