@@ -1134,7 +1134,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                 }}>
                                     
                                     <div className="service-tabs-pc-only" style={{ display: 'flex', gap: '8px', marginBottom: '1.25rem', overflowX: 'auto', paddingBottom: '5px' }}>
-                                        {['All', '1:1 Mentorship', 'Events', 'Resume'].map(tab => (
+                                        {['All'].map(tab => (
                                             <button
                                                 key={tab}
                                                 onClick={() => setActiveServiceTab(tab)}
