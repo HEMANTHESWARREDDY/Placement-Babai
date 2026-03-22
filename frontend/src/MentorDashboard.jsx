@@ -457,22 +457,22 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
     return (
         <div className={`mentor-dashboard-container`} style={{padding: 0}}>
-            <header className="header">
-                <div className="header-content" style={{ 
-                    display: 'flex', 
-                    flexDirection: 'row', 
-                    alignItems: 'center', 
-                    width: '100%', 
-                    padding: '0 1rem', 
-                    justifyContent: 'space-between', 
-                    flexWrap: isMobileMenuOpen ? 'wrap' : 'nowrap',
-                    gap: '15px'
-                }}>
-                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1.5rem', order: 1}}>
+            <header className="header mentor-dashboard-header">
+                <div className="header-content">
+                    <div className="logo" style={{cursor: 'default'}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <nav className={isMobileMenuOpen ? "nav-open" : ""} style={{width: isMobileMenuOpen ? '100%' : 'auto', order: isMobileMenuOpen ? 5 : 2, margin: isMobileMenuOpen ? '0' : '0 auto 0 0'}}>
+                    <div className="header-badge-inline" onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowBookings(true); 
+                        setIsEditingProfile(false); 
+                        setShowAnalytics(false);
+                    }}>
+                        🔥 {todayPending} Requests Today
+                    </div>
+
+                    <nav className={isMobileMenuOpen ? "nav-open" : ""}>
                         <ul className="nav-links">
                             <li>
                                 <a href="#" 
@@ -509,7 +509,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     Analytics
                                 </a>
                             </li>
-                            <li className="logout-li" style={{ marginTop: 'auto', padding: '0 1rem' }}>
+                            <li className="logout-li">
                                 <button className="admin-nav-btn" onClick={onLogout} style={{ width: '100%', background: '#ef4444', justifyContent: 'center' }}>
                                     Logout
                                 </button>
@@ -517,18 +517,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </ul>
                     </nav>
 
-                    <div className="header-badge-inline" style={{flexShrink: 0, order: isMobileMenuOpen ? 2 : 3}} onClick={(e) => { 
-                        e.preventDefault(); 
-                        setShowBookings(true); 
-                        setIsEditingProfile(false); 
-                        setShowAnalytics(false);
-                    }}>
-                        🔥 {todayPending} Requests Today
-                    </div>
-
                     <div 
                         className="requests-notification-icon"
-                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none', order: isMobileMenuOpen ? 3 : 4, display: isMobileMenuOpen ? 'block' : 'none'}}
                         onClick={(e) => { 
                             e.preventDefault(); 
                             setShowBookings(true); 
@@ -549,7 +539,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                     <button 
                         className="mobile-menu-btn" 
-                        style={{flexShrink: 0, marginLeft: 0, order: 6}}
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                         {isMobileMenuOpen ? '✕' : '☰'}
