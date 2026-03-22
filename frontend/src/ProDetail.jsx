@@ -190,6 +190,7 @@ function ProDetail({ pro, onClose }) {
                                                     {['All', 'Free', 'Paid'].map(tab => (
                                                         <button
                                                             key={tab}
+                                                            className={tab !== 'All' ? 'tab-hide-on-pc' : ''}
                                                             onClick={() => setActiveTab(tab)}
                                                             style={{
                                                                 padding: '0.4rem 1.1rem',

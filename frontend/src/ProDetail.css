@@ -297,6 +297,10 @@
 }
 
 /* Main Tabs Styling - Hidden on PC */
+.tab-hide-on-pc {
+    display: none !important;
+}
+
 .main-tabs-container {
     display: none;
     gap: 1rem;
@@ -638,7 +642,11 @@
     }
 
     .service-filter-tabs {
-        display: none !important;
+        display: flex !important;
+        margin-bottom: 1rem;
+    }
+    .tab-hide-on-pc {
+        display: block !important;
     }
 
     .main-tab-btn {
