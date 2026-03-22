@@ -24,14 +24,17 @@ public class EmailService {
         }
 
         try {
+            System.out.println("Attempting to send reset code to " + to + " via " + fromEmail + "...");
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
+            message.setFrom(fromEmail != null && !fromEmail.isEmpty() ? fromEmail : "placementbabai@gmail.com");
             message.setTo(to);
             message.setSubject("Password Reset Code - PlacementBabai");
             message.setText("Your password reset code is: " + code + "\n\nThis code will expire in 10 minutes.");
             mailSender.send(message);
+            System.out.println("Email SENT SUCCESS for " + to);
         } catch (Exception e) {
             System.err.println("Email failed to send for " + to + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
