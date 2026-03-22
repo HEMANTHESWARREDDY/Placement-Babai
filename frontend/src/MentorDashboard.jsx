@@ -468,20 +468,11 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     flexWrap: isMobileMenuOpen ? 'wrap' : 'nowrap',
                     gap: '15px'
                 }}>
-                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '0.5rem', order: 1}}>
+                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1.5rem', order: 1}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-badge-inline" style={{flexShrink: 0, order: 2}} onClick={(e) => { 
-                        e.preventDefault(); 
-                        setShowBookings(true); 
-                        setIsEditingProfile(false); 
-                        setShowAnalytics(false);
-                    }}>
-                        🔥 {todayPending} Requests Today
-                    </div>
-
-                    <nav className={isMobileMenuOpen ? "nav-open" : ""} style={{width: isMobileMenuOpen ? '100%' : 'auto', order: isMobileMenuOpen ? 5 : 3, margin: isMobileMenuOpen ? '0' : '0 auto'}}>
+                    <nav className={isMobileMenuOpen ? "nav-open" : ""} style={{width: isMobileMenuOpen ? '100%' : 'auto', order: isMobileMenuOpen ? 5 : 2, margin: isMobileMenuOpen ? '0' : '0 auto 0 0'}}>
                         <ul className="nav-links">
                             <li>
                                 <a href="#" 
@@ -526,9 +517,18 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </ul>
                     </nav>
 
+                    <div className="header-badge-inline" style={{flexShrink: 0, order: isMobileMenuOpen ? 2 : 3}} onClick={(e) => { 
+                        e.preventDefault(); 
+                        setShowBookings(true); 
+                        setIsEditingProfile(false); 
+                        setShowAnalytics(false);
+                    }}>
+                        🔥 {todayPending} Requests Today
+                    </div>
+
                     <div 
                         className="requests-notification-icon"
-                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none', order: isMobileMenuOpen ? 3 : 4}}
+                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none', order: isMobileMenuOpen ? 3 : 4, display: isMobileMenuOpen ? 'block' : 'none'}}
                         onClick={(e) => { 
                             e.preventDefault(); 
                             setShowBookings(true); 
