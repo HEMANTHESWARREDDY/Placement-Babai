@@ -14,7 +14,6 @@ public class EmailService {
     @org.springframework.beans.factory.annotation.Value("${spring.mail.username:}")
     private String fromEmail;
 
-    @org.springframework.scheduling.annotation.Async
     public void sendResetCode(String to, String code) {
         System.out.println("DEBUG: Code for " + to + " is " + code);
         
@@ -25,12 +24,14 @@ public class EmailService {
 
         try {
             System.out.println("Attempting to send reset code to " + to + " via " + fromEmail + "...");
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail != null && !fromEmail.isEmpty() ? fromEmail : "placementbabai@gmail.com");
-            message.setTo(to);
-            message.setSubject("Password Reset Code - PlacementBabai");
-            message.setText("Your password reset code is: " + code + "\n\nThis code will expire in 10 minutes.");
-            mailSender.send(message);
+            
+            org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mailSender.createMimeMessage(), "utf-8");
+            helper.setFrom(fromEmail, "PlacementBabai");
+            helper.setTo(to);
+            helper.setSubject("Password Reset Code - PlacementBabai");
+            helper.setText("Your password reset code is: <b>" + code + "</b><br><br>This code will expire in 10 minutes.", true);
+            
+            mailSender.send(helper.getMimeMessage());
             System.out.println("Email SENT SUCCESS for " + to);
         } catch (Exception e) {
             System.err.println("Email failed to send for " + to + ": " + e.getMessage());
