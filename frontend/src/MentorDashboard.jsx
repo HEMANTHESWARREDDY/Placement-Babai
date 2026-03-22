@@ -1133,31 +1133,30 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
                                 }}>
                                     
-                                    <div className="service-tabs-pc-only" style={{ display: 'flex', gap: '8px', marginBottom: '1.25rem', overflowX: 'auto', paddingBottom: '5px' }}>
-                                        {['All'].map(tab => (
-                                            <button
-                                                key={tab}
-                                                onClick={() => setActiveServiceTab(tab)}
-                                                style={{
-                                                    padding: '0.5rem 1rem',
-                                                    borderRadius: '8px',
-                                                    fontSize: '0.85rem',
-                                                    fontWeight: '600',
-                                                    border: '1px solid',
-                                                    borderColor: activeServiceTab === tab ? '#4f46e5' : '#e2e8f0',
-                                                    background: activeServiceTab === tab ? '#eef2ff' : 'white',
-                                                    color: activeServiceTab === tab ? '#4f46e5' : '#64748b',
-                                                    cursor: 'pointer',
-                                                    transition: '0.2s',
-                                                    whiteSpace: 'nowrap'
-                                                }}
-                                            >
-                                                {tab}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    
                                     <div className="services-manage-header">
+                                        <div className="service-tabs-pc-only" style={{ display: 'flex', gap: '8px' }}>
+                                            {['All'].map(tab => (
+                                                <button
+                                                    key={tab}
+                                                    onClick={() => setActiveServiceTab(tab)}
+                                                    style={{
+                                                        padding: '0.4rem 1rem',
+                                                        borderRadius: '8px',
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: '600',
+                                                        border: '1px solid',
+                                                        borderColor: activeServiceTab === tab ? '#4f46e5' : '#e2e8f0',
+                                                        background: activeServiceTab === tab ? '#eef2ff' : 'white',
+                                                        color: activeServiceTab === tab ? '#4f46e5' : '#64748b',
+                                                        cursor: 'pointer',
+                                                        transition: '0.2s',
+                                                        whiteSpace: 'nowrap'
+                                                    }}
+                                                >
+                                                    {tab}
+                                                </button>
+                                            ))}
+                                        </div>
                                         <div className="services-search-container">
                                             <div className="service-search-field-wrap">
                                                 <span className="search-icon">🔍</span>
