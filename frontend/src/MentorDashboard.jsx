@@ -461,6 +461,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 <div className="header-content">
                     <div className="logo" style={{cursor: 'default'}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
+                        <span className="header-tagline">Your Career Buddy!</span>
                     </div>
 
                     <div className="header-badge-inline" onClick={(e) => { 
