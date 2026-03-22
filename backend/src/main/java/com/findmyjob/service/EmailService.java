@@ -12,8 +12,10 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendResetCode(String to, String code) {
+        System.out.println("DEBUG: Code for " + to + " is " + code);
+        
         if (mailSender == null) {
-            System.out.println("No JavaMailSender found. Code for " + to + ": " + code);
+            System.out.println("Email ignored - No JavaMailSender configured.");
             return;
         }
 
@@ -25,9 +27,7 @@ public class EmailService {
             message.setText("Your password reset code is: " + code + "\n\nThis code will expire in 10 minutes.");
             mailSender.send(message);
         } catch (Exception e) {
-            System.err.println("Failed to send email to " + to + ": " + e.getMessage());
-            // Log code even if it fails so it can be manually shared if needed
-            System.out.println("Code for " + to + ": " + code);
+            System.err.println("Email failed to send: " + e.getMessage());
         }
     }
 }
