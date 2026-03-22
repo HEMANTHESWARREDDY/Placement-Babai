@@ -12,6 +12,8 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [initialProfile, setInitialProfile] = useState(null);
     const [hasChanges, setHasChanges] = useState(false);
     const [bookings, setBookings] = useState([]);
+    // Restore stable dashboard logic - removing broken persistence
+
     const [showBookings, setShowBookings] = useState(false);
     const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
