@@ -14,6 +14,7 @@ public class EmailService {
     @org.springframework.beans.factory.annotation.Value("${spring.mail.username:}")
     private String fromEmail;
 
+    @org.springframework.scheduling.annotation.Async
     public void sendResetCode(String to, String code) {
         System.out.println("DEBUG: Code for " + to + " is " + code);
         
