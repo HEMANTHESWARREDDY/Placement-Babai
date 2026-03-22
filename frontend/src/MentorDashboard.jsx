@@ -458,12 +458,21 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     return (
         <div className={`mentor-dashboard-container`} style={{padding: 0}}>
             <header className="header">
-                <div className="header-content" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', padding: '0 1rem', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
-                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '1rem', order: 1}}>
+                <div className="header-content" style={{ 
+                    display: 'flex', 
+                    flexDirection: 'row', 
+                    alignItems: 'center', 
+                    width: '100%', 
+                    padding: '0 1rem', 
+                    justifyContent: 'space-between', 
+                    flexWrap: isMobileMenuOpen ? 'wrap' : 'nowrap',
+                    gap: '15px'
+                }}>
+                    <div className="logo" style={{cursor: 'default', flexShrink: 0, marginRight: '0.5rem', order: 1}}>
                         <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
                     </div>
 
-                    <div className="header-badge-inline" style={{flexShrink: 1, marginRight: 'auto', order: 2}} onClick={(e) => { 
+                    <div className="header-badge-inline" style={{flexShrink: 0, order: 2}} onClick={(e) => { 
                         e.preventDefault(); 
                         setShowBookings(true); 
                         setIsEditingProfile(false); 
@@ -472,36 +481,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         🔥 {todayPending} Requests Today
                     </div>
 
-                    <div 
-                        className="requests-notification-icon"
-                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none', order: 3}}
-                        onClick={(e) => { 
-                            e.preventDefault(); 
-                            setShowBookings(true); 
-                            setIsEditingProfile(false); 
-                            setShowAnalytics(false);
-                            setIsMobileMenuOpen(false);
-                        }}
-                    >
-                        <div className="icon-wrapper">
-                            <span className="request-bell">🔔</span>
-                            {bookings.filter(b => b.status === 'PENDING').length > 0 && (
-                                <span className="notification-badge">
-                                    {bookings.filter(b => b.status === 'PENDING').length}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-
-                    <button 
-                        className="mobile-menu-btn" 
-                        style={{flexShrink: 0, marginLeft: 0, order: 4}}
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    >
-                        {isMobileMenuOpen ? '✕' : '☰'}
-                    </button>
-
-                    <nav className={isMobileMenuOpen ? "nav-open" : ""} style={{width: '100%', order: 5}}>
+                    <nav className={isMobileMenuOpen ? "nav-open" : ""} style={{width: isMobileMenuOpen ? '100%' : 'auto', order: isMobileMenuOpen ? 5 : 3, margin: isMobileMenuOpen ? '0' : '0 auto'}}>
                         <ul className="nav-links">
                             <li>
                                 <a href="#" 
@@ -545,6 +525,35 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </li>
                         </ul>
                     </nav>
+
+                    <div 
+                        className="requests-notification-icon"
+                        style={{flexShrink: 0, marginRight: '12px', position: 'static', transform: 'none', order: isMobileMenuOpen ? 3 : 4}}
+                        onClick={(e) => { 
+                            e.preventDefault(); 
+                            setShowBookings(true); 
+                            setIsEditingProfile(false); 
+                            setShowAnalytics(false);
+                            setIsMobileMenuOpen(false);
+                        }}
+                    >
+                        <div className="icon-wrapper">
+                            <span className="request-bell">🔔</span>
+                            {bookings.filter(b => b.status === 'PENDING').length > 0 && (
+                                <span className="notification-badge">
+                                    {bookings.filter(b => b.status === 'PENDING').length}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    <button 
+                        className="mobile-menu-btn" 
+                        style={{flexShrink: 0, marginLeft: 0, order: 6}}
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        {isMobileMenuOpen ? '✕' : '☰'}
+                    </button>
                 </div>
             </header>
 
