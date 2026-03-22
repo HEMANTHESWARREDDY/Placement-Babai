@@ -222,11 +222,17 @@ public class MentorController {
 
     // Forgot Password - Send Code
     @PostMapping("/forgot-password")
+    @jakarta.transaction.Transactional
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
+        if (email != null) email = email.toLowerCase().trim();
+        
+        System.out.println("Password reset request for: " + email);
+        
         Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(email);
         
         if (mentorOpt.isEmpty()) {
+            System.out.println("Email not found in database: " + email);
             // Decoy success to prevent email enumeration
             return ResponseEntity.ok(Map.of("message", "If this email is registered, a reset code has been sent."));
         }

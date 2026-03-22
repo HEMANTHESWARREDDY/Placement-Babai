@@ -1,5 +1,7 @@
+com\findmyjob\service\EmailService.class
 com\findmyjob\repository\JobApplyRepository.class
 com\findmyjob\controller\AuthController.class
+com\findmyjob\model\Booking.class
 com\findmyjob\config\DataInitializer.class
 com\findmyjob\model\Mentor.class
 com\findmyjob\service\AtsService.class
@@ -8,10 +10,13 @@ com\findmyjob\config\WebConfig.class
 com\findmyjob\FindMyJobApplication.class
 com\findmyjob\model\Admin.class
 com\findmyjob\config\JwtAuthFilter.class
+com\findmyjob\repository\PasswordResetTokenRepository.class
 com\findmyjob\model\Job.class
+com\findmyjob\model\PasswordResetToken.class
 com\findmyjob\controller\MentorController.class
 com\findmyjob\repository\MentorRepository.class
 com\findmyjob\model\WebsiteView.class
+com\findmyjob\repository\BookingRepository.class
 com\findmyjob\controller\AnalyticsController.class
 com\findmyjob\repository\AdminRepository.class
 com\findmyjob\util\JwtUtil.class
@@ -29,4 +34,5 @@ com\findmyjob\model\JobView.class
 com\findmyjob\model\SearchQueryLog.class
 com\findmyjob\repository\JobRepository.class
 com\findmyjob\repository\JobViewRepository.class
+com\findmyjob\controller\BookingController.class
 com\findmyjob\controller\AtsController.class
