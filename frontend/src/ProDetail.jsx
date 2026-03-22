@@ -187,10 +187,9 @@ function ProDetail({ pro, onClose }) {
                                             <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
                                                 {/* Left-aligned Tab(s) */}
                                                 <div className="service-filter-tabs" style={{ display: 'flex', gap: '4px' }}>
-                                                    {['All', 'Free', 'Paid'].map(tab => (
+                                                    {['All'].map(tab => (
                                                         <button
                                                             key={tab}
-                                                            className={tab !== 'All' ? 'tab-hide-on-pc' : ''}
                                                             onClick={() => setActiveTab(tab)}
                                                             style={{
                                                                 padding: '0.4rem 1.1rem',
