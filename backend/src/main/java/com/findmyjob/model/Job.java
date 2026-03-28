@@ -20,60 +20,60 @@ public class Job {
     private Long id;
 
     @NotBlank(message = "Job title is required")
-    @Column(nullable = false, length = 500)
+    @Column(name = "job_title", nullable = false, columnDefinition = "TEXT")
     private String title;
 
     @NotBlank(message = "Company name is required")
-    @Column(nullable = false, length = 500)
+    @Column(name = "job_company", nullable = false, columnDefinition = "TEXT")
     private String company;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "logo_url", columnDefinition = "TEXT")
     private String companyLogo;
 
     @NotBlank(message = "Location is required")
-    @Column(nullable = false, length = 500)
+    @Column(name = "job_location", nullable = false, columnDefinition = "TEXT")
     private String location;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "job_description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 500)
+    @Column(name = "job_experience", columnDefinition = "TEXT")
     private String experienceLevel;
 
-    @Column(length = 500)
+    @Column(name = "job_type_detail", columnDefinition = "TEXT")
     private String jobType;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "job_category", columnDefinition = "TEXT")
     private String category;
 
     @Column(name = "posted_date")
     private LocalDateTime postedDate;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "job_skills", columnDefinition = "TEXT")
     private String skills;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "job_salary", columnDefinition = "TEXT")
     private String salary;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "apply_url", columnDefinition = "TEXT")
     private String applyLink;
 
-    @Column(length = 500)
+    @Column(name = "job_role", columnDefinition = "TEXT")
     private String role;
 
-    @Column(length = 500)
+    @Column(name = "company_type_detail", columnDefinition = "TEXT")
     private String companyType;
 
-    @Column(length = 500)
+    @Column(name = "passout_years", columnDefinition = "TEXT")
     private String passoutYear;
 
-    @Column(length = 500)
+    @Column(name = "job_expiry", columnDefinition = "TEXT")
     private String expiryDate;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "job_responsibilities", columnDefinition = "TEXT")
     private String responsibilities;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "job_requirements", columnDefinition = "TEXT")
     private String requirements;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
