@@ -363,11 +363,18 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                 resetForm();
                 showToast(editingJob ? 'Job updated successfully!' : 'Job created successfully!', 'success');
             } else {
-                showToast('Failed to save job', 'error');
+                let errorMsg = 'Failed to save job';
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.message || (errorData.errors ? Object.values(errorData.errors).join(', ') : 'Failed to save job');
+                } catch (e) {
+                    errorMsg = `Error ${response.status}: ${response.statusText}`;
+                }
+                showToast(errorMsg, 'error');
             }
         } catch (error) {
             console.error('Error saving job:', error);
-            showToast('Failed to save job', 'error');
+            showToast(`Error: ${error.message}`, 'error');
         }
     };
 
