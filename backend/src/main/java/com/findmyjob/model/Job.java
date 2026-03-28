@@ -27,54 +27,54 @@ public class Job {
     @Column(nullable = false, length = 500)
     private String company;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String companyLogo;
 
     @NotBlank(message = "Location is required")
     @Column(nullable = false, length = 500)
     private String location;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(length = 500)
-    private String experienceLevel; // e.g., "2.5 - 6.5 LPA", "0.5 - 1 LPA"
+    private String experienceLevel;
 
     @Column(length = 500)
-    private String jobType; // e.g., "Full-time", "Part-time", "Contract"
+    private String jobType;
 
-    @Column(length = 1000)
-    private String category; // e.g., "Java Full Stack Developer", "Python Interns"
+    @Column(columnDefinition = "TEXT")
+    private String category;
 
     @Column(name = "posted_date")
     private LocalDateTime postedDate;
 
-    @Column(length = 2000)
-    private String skills; // Comma-separated skills
+    @Column(columnDefinition = "TEXT")
+    private String skills;
 
-    @Column(length = 1000)
-    private String salary; // e.g., "4 - 8 LPA"
+    @Column(columnDefinition = "TEXT")
+    private String salary;
 
-    @Column(length = 2000)
-    private String applyLink; // External job application URL
-
-    @Column(length = 500)
-    private String role; // e.g., "Developer", "Analyst", "ML", "QA", "DevOps"
+    @Column(columnDefinition = "TEXT")
+    private String applyLink;
 
     @Column(length = 500)
-    private String companyType; // e.g., "Startup", "MNC"
+    private String role;
 
     @Column(length = 500)
-    private String passoutYear; // e.g., "2024, 2025"
+    private String companyType;
 
     @Column(length = 500)
-    private String expiryDate; // e.g., 2026-03-31 or "Don't know"
+    private String passoutYear;
 
-    @Column(length = 10000)
-    private String responsibilities; // Job responsibilities
+    @Column(length = 500)
+    private String expiryDate;
 
-    @Column(length = 10000)
-    private String requirements; // Job requirements / qualifications
+    @Column(columnDefinition = "TEXT")
+    private String responsibilities;
+
+    @Column(columnDefinition = "TEXT")
+    private String requirements;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
     private Boolean isDeleted = false;
