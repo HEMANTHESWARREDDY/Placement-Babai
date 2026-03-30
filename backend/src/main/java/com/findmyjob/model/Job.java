@@ -20,60 +20,59 @@ public class Job {
     private Long id;
 
     @NotBlank(message = "Job title is required")
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
 
     @NotBlank(message = "Company name is required")
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String company;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String companyLogo;
 
-    @NotBlank(message = "Location is required")
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String location;
 
-    @Column(length = 20000)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String experienceLevel;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String jobType;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String category;
 
     @Column(name = "posted_date")
     private LocalDateTime postedDate;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String skills;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String salary;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String applyLink;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String role;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String companyType;
 
-    @Column(name = "passout_year", length = 500)
+    @Column(name = "passout_year", columnDefinition = "TEXT")
     private String passoutYear;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String expiryDate;
 
-    @Column(length = 20000)
+    @Column(columnDefinition = "TEXT")
     private String responsibilities;
 
-    @Column(length = 20000)
+    @Column(columnDefinition = "TEXT")
     private String requirements;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
