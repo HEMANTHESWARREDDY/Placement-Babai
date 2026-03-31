@@ -485,24 +485,28 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999999;
 }
 .ats-modal {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 1.5rem 1.5rem 2.5rem;
-  border-radius: 20px;
+  border-radius: 30px;
   width: 95%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
   text-align: center;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   animation: ats-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
