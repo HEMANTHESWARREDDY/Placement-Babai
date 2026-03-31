@@ -277,7 +277,12 @@ function JobDetail({ job, onClose }) {
                                 <div className="ats-file-display">
                                     <button 
                                         className="ats-remove-file" 
-                                        onClick={(e) => { e.stopPropagation(); setAtsFile(null); setAtsResult(null); }}
+                                        onClick={(e) => { 
+                                            e.stopPropagation(); 
+                                            setAtsFile(null); 
+                                            setAtsResult(null); 
+                                            if (fileInputRef.current) fileInputRef.current.value = '';
+                                        }}
                                         title="Remove file"
                                     >×</button>
                                     <div className="ats-file-icon-wrapper">
@@ -364,7 +369,11 @@ function JobDetail({ job, onClose }) {
                                 <button
                                     className="jd-ats-btn"
                                     style={{ marginTop: '2rem', width: '100%', background: '#f8fafc' }}
-                                    onClick={() => { setAtsResult(null); setAtsFile(null); }}
+                                    onClick={() => { 
+                                        setAtsResult(null); 
+                                        setAtsFile(null); 
+                                        if (fileInputRef.current) fileInputRef.current.value = '';
+                                    }}
                                 >
                                     Check Another Resume
                                 </button>
