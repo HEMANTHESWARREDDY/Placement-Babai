@@ -38,11 +38,33 @@ function JobDetail({ job, onClose }) {
     const [isCheckingAts, setIsCheckingAts] = useState(false);
     const [atsResult, setAtsResult] = useState(null);
     const [atsError, setAtsError] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 
     const handleAtsFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setAtsFile(e.target.files[0]);
+            setAtsResult(null);
+            setAtsError(null);
+        }
+    };
+
+    const handleDrag = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === "dragover" || e.type === "dragenter") {
+            setIsDragging(true);
+        } else if (e.type === "dragleave" || e.type === "drop") {
+            setIsDragging(false);
+        }
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            setAtsFile(e.dataTransfer.files[0]);
             setAtsResult(null);
             setAtsError(null);
         }
@@ -93,7 +115,6 @@ function JobDetail({ job, onClose }) {
     };
 
     const handleApply = () => {
-        // Track the apply
         fetch(`${API_BASE_URL}/api/analytics/apply/job/${job.id}`, { method: 'POST' })
             .catch(err => console.error('Failed to track apply:', err));
 
@@ -112,11 +133,9 @@ function JobDetail({ job, onClose }) {
     return (
         <>
             <div className="jd-overlay" onClick={(e) => {
-                // Only close if clicking the overlay and ATS modal is not open
                 if (e.target === e.currentTarget && !showAts) onClose();
             }}>
                 <div className="jd-modal">
-                    {/* Top Action Buttons */}
                     <div className="jd-top-actions">
                         <button
                             className="jd-share-icon-btn"
@@ -134,7 +153,6 @@ function JobDetail({ job, onClose }) {
                         <button className="jd-close" onClick={onClose} aria-label="Close">✕</button>
                     </div>
 
-                    {/* Header */}
                     <div className="jd-header">
                         <div className="jd-company-logo">
                             {getCompanyInitials(job.company)}
@@ -163,55 +181,19 @@ function JobDetail({ job, onClose }) {
                                     <span style={{ color: '#b45309', fontWeight: 'bold' }}>Posted Today</span>
                                 </span>
                             )}
-                            {job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString() && (
-                                <span className="jd-badge" style={{
-                                    background: 'rgba(230, 74, 25, 0.1)',
-                                    border: '1px solid rgba(230, 74, 25, 0.3)',
-                                    color: '#e64a19',
-                                    padding: '0.2rem 0.6rem',
-                                    borderRadius: '20px',
-                                    fontWeight: '800',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '0.2rem'
-                                }}>
-                                    <span style={{ fontSize: '0.85rem', animation: 'bounce 2s infinite' }}>⏳</span>
-                                    <span style={{ color: '#e64a19', fontWeight: '800' }}>Last Day to Apply</span>
-                                </span>
-                            )}
                             {job.salary && (
                                 <span className="jd-badge jd-badge-green">
                                     💰 {job.salary}
-                                </span>
-                            )}
-                            {job.experienceLevel && (
-                                <span className="jd-badge jd-badge-teal">
-                                    📅 {job.experienceLevel}
-                                </span>
-                            )}
-                            {job.passoutYear && (
-                                <span className="jd-badge jd-badge-green">
-                                    🎓 {job.passoutYear}
                                 </span>
                             )}
                             <span className="jd-badge jd-badge-blue">📍 {job.location}</span>
                             {job.jobType && (
                                 <span className="jd-badge jd-badge-purple">💼 {job.jobType}</span>
                             )}
-                            {job.category && (
-                                <span className="jd-badge jd-badge-orange">🏷️ {job.category}</span>
-                            )}
                         </div>
-                        {job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString() ? (
-                            <p className="jd-posted" style={{ color: '#ff4b2b', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #ff4b2b', padding: '0.2rem 0.6rem', borderRadius: '1rem', background: 'rgba(255, 75, 43, 0.05)', marginTop: '0.5rem' }}>
-                                <span style={{ fontSize: '1.2rem', animation: 'pulse 2s infinite' }}>🔥</span> Posted Today !
-                            </p>
-                        ) : (
-                            <p className="jd-posted">🗓️ Posted on {formatDate(job.postedDate)}</p>
-                        )}
+                        <p className="jd-posted">🗓️ Posted on {formatDate(job.postedDate)}</p>
                     </div>
 
-                    {/* Apply + Share Bar */}
                     <div className="jd-apply-bar">
                         <button className="jd-apply-btn" onClick={handleApply}>
                             Apply Now →
@@ -224,7 +206,6 @@ function JobDetail({ job, onClose }) {
 
                     <div className="jd-divider" />
 
-                    {/* About the Job */}
                     {job.description && (
                         <section className="jd-section">
                             <h2 className="jd-section-title">📋 About the Role</h2>
@@ -232,7 +213,6 @@ function JobDetail({ job, onClose }) {
                         </section>
                     )}
 
-                    {/* Skills */}
                     {skills.length > 0 && (
                         <section className="jd-section">
                             <h2 className="jd-section-title">🛠️ Required Skills</h2>
@@ -244,7 +224,6 @@ function JobDetail({ job, onClose }) {
                         </section>
                     )}
 
-                    {/* Responsibilities */}
                     {responsibilities.length > 0 && (
                         <section className="jd-section">
                             <h2 className="jd-section-title">🎯 Key Responsibilities</h2>
@@ -256,19 +235,6 @@ function JobDetail({ job, onClose }) {
                         </section>
                     )}
 
-                    {/* Requirements */}
-                    {requirements.length > 0 && (
-                        <section className="jd-section">
-                            <h2 className="jd-section-title">✅ Requirements & Qualifications</h2>
-                            <ul className="jd-list">
-                                {requirements.map((item, i) => (
-                                    <li key={i}>{item}</li>
-                                ))}
-                            </ul>
-                        </section>
-                    )}
-
-                    {/* Bottom Apply */}
                     <div className="jd-footer">
                         <button className="jd-apply-btn jd-apply-btn-lg" onClick={handleApply}>
                             🚀 Apply for this Job
@@ -285,7 +251,6 @@ function JobDetail({ job, onClose }) {
                 </div>
             </div>
 
-            {/* ATS Modal */}
             {showAts && (
                 <div className="ats-overlay" onClick={() => setShowAts(false)}>
                     <div className="ats-modal" onClick={e => e.stopPropagation()}>
@@ -293,7 +258,14 @@ function JobDetail({ job, onClose }) {
                         <h2>ATS Match Checker</h2>
                         <p className="ats-desc">Upload your resume to see how well it matches this job's keywords, requirements, and role.</p>
 
-                        <div className="ats-upload-area" onClick={() => fileInputRef.current?.click()}>
+                        <div 
+                            className={`ats-upload-area ${isDragging ? 'dragging' : ''}`} 
+                            onClick={() => fileInputRef.current?.click()}
+                            onDragOver={handleDrag}
+                            onDragEnter={handleDrag}
+                            onDragLeave={handleDrag}
+                            onDrop={handleDrop}
+                        >
                             <input
                                 type="file"
                                 ref={fileInputRef}
@@ -302,15 +274,18 @@ function JobDetail({ job, onClose }) {
                                 onChange={handleAtsFileChange}
                             />
                             {atsFile ? (
-                                <div className="ats-file-selected">
-                                    <span style={{ fontSize: '2rem' }}>📄</span>
+                                <div className="ats-file-display">
+                                    <div className="ats-file-icon-wrapper">
+                                        {atsFile.name.endsWith('.pdf') ? '📄' : '📝'}
+                                    </div>
                                     <p>{atsFile.name}</p>
                                     <span className="ats-change-file">Click to change file</span>
                                 </div>
                             ) : (
                                 <div className="ats-upload-prompt">
-                                    <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '10px' }}>☁️</span>
-                                    <p>Click to browse files (PDF, DOCX, PPTX)</p>
+                                    <span style={{ fontSize: '3rem', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>☁️</span>
+                                    <p>Drop your resume here or click to browse</p>
+                                    <span style={{ fontSize: '0.75rem', marginTop: '4px', opacity: 0.7 }}>PDF, DOCX, PPTX</span>
                                 </div>
                             )}
                         </div>
@@ -389,7 +364,7 @@ function JobDetail({ job, onClose }) {
                                 disabled={!atsFile || isCheckingAts}
                                 onClick={handleCheckAts}
                             >
-                                {isCheckingAts ? 'Analyzing with AI...' : 'Analyze Match'}
+                                {isCheckingAts ? 'Analyzing...' : 'Analyze Match'}
                             </button>
                         )}
                     </div>
