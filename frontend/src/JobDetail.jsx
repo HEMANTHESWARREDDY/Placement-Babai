@@ -96,21 +96,56 @@ function JobDetail({ job, onClose }) {
         }
     };
 
-    const handleShareTop = () => {
+    const handleShareTop = async () => {
         const url = new URL(window.location.href);
         url.searchParams.set('job', job.id);
-        navigator.clipboard.writeText(url.toString()).then(() => {
-            setCopiedTop(true);
-            setTimeout(() => setCopiedTop(false), 2000);
-        });
+        const shareUrl = url.toString();
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: job.title,
+                    text: `Check out this job: ${job.title} at ${job.company}`,
+                    url: shareUrl
+                });
+            } catch (err) {
+                // If user cancels or share fails, copy to clipboard as fallback
+                if (err.name !== 'AbortError') copyToClipboard(shareUrl, 'top');
+            }
+        } else {
+            copyToClipboard(shareUrl, 'top');
+        }
     };
 
-    const handleShareBottom = () => {
+    const handleShareBottom = async () => {
         const url = new URL(window.location.href);
         url.searchParams.set('job', job.id);
-        navigator.clipboard.writeText(url.toString()).then(() => {
-            setCopiedBottom(true);
-            setTimeout(() => setCopiedBottom(false), 2000);
+        const shareUrl = url.toString();
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: job.title,
+                    text: `Check out this job: ${job.title} at ${job.company}`,
+                    url: shareUrl
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') copyToClipboard(shareUrl, 'bottom');
+            }
+        } else {
+            copyToClipboard(shareUrl, 'bottom');
+        }
+    };
+
+    const copyToClipboard = (text, position) => {
+        navigator.clipboard.writeText(text).then(() => {
+            if (position === 'top') {
+                setCopiedTop(true);
+                setTimeout(() => setCopiedTop(false), 2000);
+            } else {
+                setCopiedBottom(true);
+                setTimeout(() => setCopiedBottom(false), 2000);
+            }
         });
     };
 
