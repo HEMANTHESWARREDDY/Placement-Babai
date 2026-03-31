@@ -362,7 +362,10 @@ function JobDetail({ job, onClose }) {
                                             <h4>💡 Improvement Tips</h4>
                                             <ul className="ats-tips-list">
                                                 {atsResult.tips.map((tip, i) => (
-                                                    <li key={i}>{tip}</li>
+                                                    <li key={i}>
+                                                        <span style={{ fontSize: '1rem', flexShrink: 0 }}>💡</span>
+                                                        <span>{tip}</span>
+                                                    </li>
                                                 ))}
                                             </ul>
                                         </div>

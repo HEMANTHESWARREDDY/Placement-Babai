@@ -1,4 +1,4 @@
-﻿/* ===== Job Detail Modal ===== */
+/* ===== Job Detail Modal ===== */
 .jd-overlay {
   position: fixed;
   inset: 0;
@@ -638,15 +638,9 @@
   font-size: 0.85rem;
   color: #475569;
   line-height: 1.4;
-  padding-left: 1.5rem;
-  position: relative;
-}
-
-.ats-tips-list li::before {
-  content: 'Ã°Å¸â€™Â¡';
-  position: absolute;
-  left: 0;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
 }
 
 .ats-check-btn {
