@@ -325,16 +325,16 @@
   color: #4b5563;
   font-size: 0.85rem;
   line-height: 1.5;
-  padding-left: 1.2rem;
-  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
 }
 
 .jd-list li::before {
-  content: 'Ã¢â€“Â¸';
-  position: absolute;
-  left: 0;
+  content: '\25B8';
   color: #0073b1;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 /* Skills */
