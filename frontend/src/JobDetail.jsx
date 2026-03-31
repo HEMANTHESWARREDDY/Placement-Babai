@@ -319,10 +319,69 @@ function JobDetail({ job, onClose }) {
 
                         {atsResult ? (
                             <div className="ats-result-box">
-                                <div className={`ats-score-circle ${atsResult.score >= 70 ? 'high' : atsResult.score >= 40 ? 'med' : 'low'}`}>
-                                    {atsResult.score}%
+                                <div className="ats-progress-container">
+                                    <svg className="ats-progress-svg" viewBox="0 0 100 100">
+                                        <circle className="ats-progress-bg" cx="50" cy="50" r="45" />
+                                        <circle
+                                            className="ats-progress-bar"
+                                            cx="50" cy="50" r="45"
+                                            stroke={atsResult.score >= 70 ? '#10b981' : atsResult.score >= 40 ? '#f59e0b' : '#ef4444'}
+                                            strokeDasharray="283"
+                                            strokeDashoffset={283 - (283 * atsResult.score) / 100}
+                                        />
+                                    </svg>
+                                    <div className="ats-progress-text">
+                                        <span className="ats-score-value">{atsResult.score}%</span>
+                                        <span className="ats-score-label">MATCH</span>
+                                    </div>
                                 </div>
-                                <h3 style={{ marginTop: '15px' }}>{atsResult.message}</h3>
+
+                                <h3>{atsResult.message}</h3>
+
+                                <div className="ats-analysis-details">
+                                    <div className="ats-detail-section">
+                                        <h4>✅ Matched Skills</h4>
+                                        <div className="ats-skill-pills">
+                                            {atsResult.matched_skills?.map((s, i) => (
+                                                <span key={i} className="ats-pill matched">{s}</span>
+                                            ))}
+                                            {(!atsResult.matched_skills || atsResult.matched_skills.length === 0) && (
+                                                <span className="ats-empty-msg">No key skills matched yet.</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="ats-detail-section">
+                                        <h4>❌ Missing Skills</h4>
+                                        <div className="ats-skill-pills">
+                                            {atsResult.missing_skills?.map((s, i) => (
+                                                <span key={i} className="ats-pill missing">{s}</span>
+                                            ))}
+                                            {(!atsResult.missing_skills || atsResult.missing_skills.length === 0) && (
+                                                <span className="ats-empty-msg">Great! No major skills missing.</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {atsResult.tips && atsResult.tips.length > 0 && (
+                                        <div className="ats-detail-section">
+                                            <h4>💡 Improvement Tips</h4>
+                                            <ul className="ats-tips-list">
+                                                {atsResult.tips.map((tip, i) => (
+                                                    <li key={i}>{tip}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <button
+                                    className="jd-ats-btn"
+                                    style={{ marginTop: '2rem', width: '100%', background: '#f8fafc' }}
+                                    onClick={() => { setAtsResult(null); setAtsFile(null); }}
+                                >
+                                    Check Another Resume
+                                </button>
                             </div>
                         ) : (
                             <button
@@ -330,7 +389,7 @@ function JobDetail({ job, onClose }) {
                                 disabled={!atsFile || isCheckingAts}
                                 onClick={handleCheckAts}
                             >
-                                {isCheckingAts ? 'Analyzing...' : 'Analyze Match'}
+                                {isCheckingAts ? 'Analyzing with AI...' : 'Analyze Match'}
                             </button>
                         )}
                     </div>
