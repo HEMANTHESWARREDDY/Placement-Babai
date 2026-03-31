@@ -275,15 +275,26 @@ function JobDetail({ job, onClose }) {
                             />
                             {atsFile ? (
                                 <div className="ats-file-display">
+                                    <button 
+                                        className="ats-remove-file" 
+                                        onClick={(e) => { e.stopPropagation(); setAtsFile(null); setAtsResult(null); }}
+                                        title="Remove file"
+                                    >×</button>
                                     <div className="ats-file-icon-wrapper">
-                                        {atsFile.name.endsWith('.pdf') ? '📄' : '📝'}
+                                        {atsFile.name.endsWith('.pdf') ? (
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                        ) : (
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0073b1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                        )}
                                     </div>
                                     <p>{atsFile.name}</p>
                                     <span className="ats-change-file">Click to change file</span>
                                 </div>
                             ) : (
                                 <div className="ats-upload-prompt">
-                                    <span style={{ fontSize: '3rem', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>☁️</span>
+                                    <div className="ats-resume-symbol">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0073b1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="12" cy="14" r="2"></circle><line x1="12" y1="16" x2="12" y2="18"></line><line x1="10" y1="18" x2="14" y2="18"></line></svg>
+                                    </div>
                                     <p>Drop your resume here or click to browse</p>
                                     <span style={{ fontSize: '0.75rem', marginTop: '4px', opacity: 0.7 }}>PDF, DOCX, PPTX</span>
                                 </div>
