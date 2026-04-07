@@ -327,8 +327,8 @@
     width: 100%;
 }
 
-.tm-socials-mobile {
-    display: none;
+.aml-socials-mobile {
+    display: none !important;
 }
 
 .aml-mobile-view-btn {
