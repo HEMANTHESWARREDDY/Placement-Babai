@@ -23,20 +23,44 @@ function InterviewPrep() {
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [groupedQuestions, setGroupedQuestions] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [communityData, setCommunityData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        fetchCommunityData();
+    }, []);
+
+    const fetchCommunityData = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/questions/community`);
+            if (res.ok) {
+                const data = await res.json();
+                setCommunityData(data);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const handleGenerate = (e) => {
         e.preventDefault();
-        fetchQuestions(company);
+        fetchQuestions(company, role);
     };
 
-    const fetchQuestions = async (compName) => {
+    const fetchQuestions = async (compName, targetRole) => {
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE_URL}/api/questions/${compName.toLowerCase()}`);
+            // Include role if available to log search
+            const url = targetRole 
+                ? `${API_BASE_URL}/api/questions/${compName.toLowerCase()}?role=${encodeURIComponent(targetRole)}`
+                : `${API_BASE_URL}/api/questions/${compName.toLowerCase()}`;
+                
+            const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
                 setGroupedQuestions(data);
                 setSelectedCompany(compName);
+                fetchCommunityData(); // Refresh list to show new search
             } else {
                 alert("No questions found for this company yet.");
             }
@@ -46,6 +70,11 @@ function InterviewPrep() {
             setLoading(false);
         }
     };
+
+    const filteredCommunity = communityData.filter(item => 
+        item.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.role.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div className="ip-container">
@@ -195,7 +224,12 @@ function InterviewPrep() {
 
                 <div className="ip-explore-search-bar">
                     <span className="ip-esb-icon">🔍</span>
-                    <input type="text" placeholder="accenture" />
+                    <input 
+                        type="text" 
+                        placeholder="Search by company or role..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     <div className="ip-esb-views">
                         <button className="active">▦</button>
                         <button>≡</button>
@@ -206,7 +240,7 @@ function InterviewPrep() {
                     <button className="active">Newest</button>
                     <button>Most Qs</button>
                     <button>A-Z</button>
-                    <button className="ip-clear-btn">✕ Clear</button>
+                    <button className="ip-clear-btn" onClick={() => setSearchTerm('')}>✕ Clear</button>
                 </div>
 
                 <div className="ip-table-container">
@@ -221,24 +255,34 @@ function InterviewPrep() {
                             </tr>
                         </thead>
                         <tbody>
-                            {RECENT_COMMUNITY.map((item, i) => (
-                                <tr key={i}>
-                                    <td className="ip-td-company">
-                                        <div className="ip-td-icon" style={{ backgroundColor: '#14b8a6' }}>{item.company[0]}</div>
-                                        {item.company}
+                            {filteredCommunity.length > 0 ? (
+                                filteredCommunity.map((item, i) => (
+                                    <tr key={i} onClick={() => fetchQuestions(item.company, item.role)} style={{ cursor: 'pointer' }}>
+                                        <td className="ip-td-company">
+                                            <div className="ip-td-icon" style={{ backgroundColor: '#14b8a6' }}>{item.company[0]}</div>
+                                            {item.company}
+                                        </td>
+                                        <td>{item.role}</td>
+                                        <td className="ip-td-qs">{item.questionCount}</td>
+                                        <td>
+                                            <div className="ip-td-categories">
+                                                <span className="cat-behavioral">Behavioral</span>
+                                                <span className="cat-exp">Experience</span>
+                                                <span className="cat-intro">Introduction</span>
+                                            </div>
+                                        </td>
+                                        <td className="ip-td-date">
+                                            {item.searchDate ? new Date(item.searchDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Apr 8'}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+                                        No community searches found matching your criteria.
                                     </td>
-                                    <td>{item.role}</td>
-                                    <td className="ip-td-qs">{item.questions}</td>
-                                    <td>
-                                        <div className="ip-td-categories">
-                                            <span className="cat-behavioral">Behavioral</span>
-                                            <span className="cat-exp">Experience</span>
-                                            <span className="cat-intro">Introduction</span>
-                                        </div>
-                                    </td>
-                                    <td className="ip-td-date">{item.date}</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

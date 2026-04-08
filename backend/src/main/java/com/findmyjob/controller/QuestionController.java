@@ -1,10 +1,13 @@
 package com.findmyjob.controller;
 
 import com.findmyjob.model.Question;
+import com.findmyjob.model.SearchHistory;
 import com.findmyjob.repository.QuestionRepository;
+import com.findmyjob.repository.SearchHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,13 +20,30 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private SearchHistoryRepository searchHistoryRepository;
+
     @GetMapping("/{company}")
-    public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company) {
+    public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company, @RequestParam(required = false) String role) {
         List<Question> questions = questionRepository.findByCompanyIgnoreCase(company);
         
+        // Log the search if questions were found
+        if (!questions.isEmpty() && role != null) {
+            SearchHistory history = new SearchHistory();
+            history.setCompany(company);
+            history.setRole(role);
+            history.setQuestionCount(questions.size());
+            searchHistoryRepository.save(history);
+        }
+
         // Group by category: HR, Technical, Coding
         return questions.stream()
                 .collect(Collectors.groupingBy(Question::getCategory));
+    }
+
+    @GetMapping("/community")
+    public List<SearchHistory> getCommunitySearches() {
+        return searchHistoryRepository.findTop50ByOrderBySearchDateDesc();
     }
 
     // Helper to seed some data easily via API if needed (or just use for testing)
@@ -39,7 +59,10 @@ public class QuestionController {
             {"accenture", "Coding", "Write a program to reverse a string."},
             {"tcs", "HR", "Where do you see yourself in 5 years?"},
             {"tcs", "Technical", "What is a primary key in SQL?"},
-            {"infosys", "Coding", "Find the largest number in an array."}
+            {"infosys", "Coding", "Find the largest number in an array."},
+            {"google", "Technical", "How does Google Search work?"},
+            {"google", "Coding", "Implement a LRU Cache."},
+            {"deloitte", "HR", "How do you handle conflict in a team?"}
         };
 
         for (String[] d : data) {
@@ -50,6 +73,21 @@ public class QuestionController {
             questionRepository.save(q);
         }
 
-        return "Seeded " + data.length + " questions";
+        // Also seed some search history
+        String[][] historyData = {
+            {"Accenture", "Infrastructure Engineer", "103"},
+            {"Google", "Frontend Developer", "52"},
+            {"TCS", "System Engineer", "45"}
+        };
+        for (String[] h : historyData) {
+            SearchHistory sh = new SearchHistory();
+            sh.setCompany(h[0]);
+            sh.setRole(h[1]);
+            sh.setQuestionCount(Integer.parseInt(h[2]));
+            sh.setSearchDate(LocalDateTime.now().minusDays(1));
+            searchHistoryRepository.save(sh);
+        }
+
+        return "Seeded questions and history";
     }
 }
