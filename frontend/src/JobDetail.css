@@ -493,6 +493,7 @@
   align-items: center;
   z-index: 999999;
 }
+
 .ats-modal {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
@@ -511,8 +512,15 @@
 }
 
 @keyframes ats-pop-in {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .ats-close {
@@ -686,7 +694,8 @@
   gap: 1rem;
 }
 
-.ats-upload-area:hover, .ats-upload-area.dragging {
+.ats-upload-area:hover,
+.ats-upload-area.dragging {
   border-color: #0073b1;
   background: rgba(0, 115, 177, 0.05);
   transform: translateY(-2px);
@@ -736,8 +745,15 @@
 }
 
 @keyframes ats-fade-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .ats-file-icon-wrapper {
@@ -791,8 +807,19 @@
   font-weight: 600;
 }
 
-.ats-desc { color: #64748b; margin: 1rem 0 2rem; font-size: 0.95rem; }
-.ats-error { color: #ef4444; background: #fef2f2; padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; }
+.ats-desc {
+  color: #64748b;
+  margin: 1rem 0 2rem;
+  font-size: 0.95rem;
+}
+
+.ats-error {
+  color: #ef4444;
+  background: #fef2f2;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
 
 
 .ats-resume-symbol {
@@ -872,8 +899,15 @@
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
+  0% {
+    transform: translateY(0px);
+  }
 
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}

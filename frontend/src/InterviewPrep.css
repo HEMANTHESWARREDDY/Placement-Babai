@@ -1,0 +1,575 @@
+.ip-container {
+    background-color: #0b0b0d;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Hero Section */
+.ip-breadcrumb {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.ip-hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    color: #ffffff;
+}
+
+.ip-hero-subtitle {
+    font-size: 1rem;
+    color: #94a3b8;
+    margin-bottom: 2.5rem;
+}
+
+/* Trending Section */
+.ip-trending-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.ip-trending-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ip-view-all-link {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.ip-trending-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.ip-trending-card {
+    background: #151518;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: transform 0.2s, background 0.2s;
+    cursor: pointer;
+}
+
+.ip-trending-card:hover {
+    transform: translateY(-3px);
+    background: #1c1c21;
+    border-color: #3b82f6;
+}
+
+.ip-trending-card-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.ip-trending-card-info h4 {
+    font-size: 0.95rem;
+    margin: 0;
+    color: #f1f5f9;
+}
+
+.ip-trending-card-info span {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* Premium Banner */
+.ip-premium-banner {
+    background: linear-gradient(90deg, #09090b 0%, #151518 100%);
+    border: 1px solid #1e3a8a;
+    border-radius: 14px;
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.ip-pb-left {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.ip-pb-icon {
+    width: 44px;
+    height: 44px;
+    background: #2563eb;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.ip-pb-tag {
+    background: #064e3b;
+    color: #10b981;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.ip-pb-text h4 {
+    margin: 0.2rem 0;
+    font-size: 1.1rem;
+}
+
+.ip-pro-badge {
+    background: #3b82f6;
+    color: white;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    margin-left: 0.4rem;
+}
+
+.ip-pb-text p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.ip-pb-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ip-pb-progress {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #27272a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.ip-pb-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+/* Action Row */
+.ip-action-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+
+.ip-form-container {
+    flex: 2;
+    background: #151518;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.ip-form-container h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.ip-form-container p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.ip-input-flex {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.ip-input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.ip-input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ip-input-group input {
+    background: #09090b;
+    border: 1px solid #27272a;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.ip-input-group input:focus {
+    border-color: #3b82f6;
+}
+
+.ip-form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ip-free-credits {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.ip-generate-btn {
+    background: #1e3a8a;
+    color: #ffffff;
+    border: 1px solid #2563eb;
+    padding: 0.8rem 1.6rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* Activity Section */
+.ip-activity-container {
+    flex: 1;
+    background: #151518;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.ip-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #27272a;
+    padding-bottom: 0.5rem;
+}
+
+.ip-tab {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-weight: 600;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    position: relative;
+}
+
+.ip-tab.active {
+    color: #3b82f6;
+}
+
+.ip-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -0.6rem;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #3b82f6;
+}
+
+.ip-activity-list {
+    flex: 1;
+}
+
+.ip-activity-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #27272a;
+}
+
+.ip-ai-left {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.ip-ai-avatar {
+    width: 34px;
+    height: 34px;
+    background: #0ea5e9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.ip-ai-info h5 {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.ip-ai-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.ip-ai-info span {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.ip-ai-qs {
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.ip-view-all-activity {
+    margin-top: 1rem;
+    background: none;
+    border: none;
+    color: #3b82f6;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Explore Section */
+.ip-explore-section {
+    margin-top: 4rem;
+}
+
+.ip-explore-header h2 {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.2rem;
+}
+
+.ip-explore-header p {
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.ip-generate-yours-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.ip-explore-filters {
+    background: #151518;
+    padding: 0.4rem;
+    border-radius: 12px;
+    display: inline-flex;
+    margin-bottom: 1.5rem;
+}
+
+.ip-ef-tabs button {
+    background: none;
+    border: none;
+    color: #64748b;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.ip-ef-tabs button.active {
+    background: #27272a;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.ip-explore-search-bar {
+    display: flex;
+    align-items: center;
+    background: #09090b;
+    border: 1px solid #27272a;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ip-explore-search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: white;
+    outline: none;
+}
+
+.ip-explore-tags {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+}
+
+.ip-explore-tags button {
+    background: #151518;
+    border: 1px solid #27272a;
+    color: #94a3b8;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.ip-explore-tags button.active {
+    background: #2563eb;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.ip-table-container {
+    background: #151518;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.ip-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ip-table th {
+    text-align: left;
+    padding: 1.2rem;
+    background: #09090b;
+    font-size: 0.75rem;
+    color: #64748b;
+    letter-spacing: 0.05rem;
+}
+
+.ip-table td {
+    padding: 1.2rem;
+    border-bottom: 1px solid #27272a;
+}
+
+.ip-td-company {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 700;
+}
+
+.ip-td-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.ip-td-qs {
+    font-weight: 800;
+}
+
+.ip-td-categories {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ip-td-categories span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+}
+
+.cat-behavioral { background: rgba(194, 65, 12, 0.1); color: #f97316; }
+.cat-exp { background: rgba(79, 70, 229, 0.1); color: #818cf8; }
+.cat-intro { background: rgba(37, 99, 235, 0.1); color: #3b82f6; }
+
+.ip-td-date {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .ip-container {
+        padding: 1rem;
+    }
+    
+    .ip-action-row {
+        flex-direction: column;
+    }
+    
+    .ip-input-flex {
+        flex-direction: column;
+    }
+
+    .ip-premium-banner {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .ip-pb-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .ip-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

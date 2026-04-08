@@ -8,6 +8,7 @@ import AllJobsModal from './AllJobsModal';
 import ProConnect from './ProConnect';
 import MentorLogin from './MentorLogin';
 import MentorDashboard from './MentorDashboard';
+import InterviewPrep from './InterviewPrep';
 import { API_BASE_URL } from './config';
 import './App.css';
 
@@ -741,12 +742,18 @@ function App() {
         <div className="header-content">
           <div className="logo" onClick={() => { setSearchKeyword(''); setSearchLocation(''); setShowAll(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); fetchJobs(); }}>
             <img src="/logos/logo.png" alt="PlacementBabai" className="logo-img" />
-            <span className="header-tagline">{activeMainTab === 'pro-connect' ? 'Connect. Learn. Grow.' : 'Explore. Apply. Get Hired.'}</span>
+            <span className="header-tagline">
+              {activeMainTab === 'pro-connect' ? 'Connect. Learn. Grow.' : 
+               activeMainTab === 'interview-prep' ? 'Prep. Practice. Succeed.' : 
+               'Explore. Apply. Get Hired.'}
+            </span>
           </div>
 
           <div className="header-badge" onClick={() => {
             if (activeMainTab === 'pro-connect') {
               document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+            } else if (activeMainTab === 'interview-prep') {
+              document.querySelector('.ip-explore-section')?.scrollIntoView({ behavior: 'smooth' });
             } else {
               setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
               setShowAll(true);
@@ -759,7 +766,9 @@ function App() {
               document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
             }
           }}>
-            🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : `${newJobsToday} New Jobs Today`}
+            🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
+                activeMainTab === 'interview-prep' ? '133+ Companies Added' :
+                `${newJobsToday} New Jobs Today`}
           </div>
 
           <button 
@@ -796,6 +805,18 @@ function App() {
                 }} className={activeMainTab === 'pro-connect' ? 'active-nav' : ''}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   Pro Connect
+                </a>
+              </li>
+              <li>
+                <a href="#interview-prep" onClick={(e) => {
+                  e.preventDefault();
+                  setActiveMainTab('interview-prep');
+                  sessionStorage.setItem('activeMainTab', 'interview-prep');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} className={activeMainTab === 'interview-prep' ? 'active-nav' : ''}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                  Interview Prep
                 </a>
               </li>
               <li>
@@ -1301,8 +1322,10 @@ function App() {
 
           </section >
         </>
-      ) : (
+      ) : activeMainTab === 'pro-connect' ? (
         <ProConnect onMentorLoginClick={() => setCurrentView('mentor-login')} />
+      ) : (
+        <InterviewPrep />
       )}
 
       {/* Featured Companies Marquee */}
