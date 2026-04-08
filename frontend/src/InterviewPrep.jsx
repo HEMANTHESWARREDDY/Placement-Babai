@@ -20,10 +20,31 @@ function InterviewPrep() {
     const [company, setCompany] = useState('');
     const [role, setRole] = useState('');
     const [activeTab, setActiveTab] = useState('community');
+    const [selectedCompany, setSelectedCompany] = useState(null);
+    const [groupedQuestions, setGroupedQuestions] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleGenerate = (e) => {
         e.preventDefault();
-        alert(`Generating questions for ${role} at ${company}... (Feature coming soon!)`);
+        fetchQuestions(company);
+    };
+
+    const fetchQuestions = async (compName) => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/questions/${compName.toLowerCase()}`);
+            if (res.ok) {
+                const data = await res.json();
+                setGroupedQuestions(data);
+                setSelectedCompany(compName);
+            } else {
+                alert("No questions found for this company yet.");
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -45,7 +66,7 @@ function InterviewPrep() {
                 </div>
                 <div className="ip-trending-grid">
                     {TRENDING_COMPANIES.map((c, i) => (
-                        <div key={i} className="ip-trending-card">
+                        <div key={i} className="ip-trending-card" onClick={() => fetchQuestions(c.name)}>
                             <div className="ip-trending-card-icon" style={{ backgroundColor: c.color }}>{c.icon}</div>
                             <div className="ip-trending-card-info">
                                 <h4>{c.name}</h4>
@@ -222,6 +243,38 @@ function InterviewPrep() {
                     </table>
                 </div>
             </div>
+
+            {/* Questions View Overlay (If selected) */}
+            {selectedCompany && (
+                <div className="ip-questions-overlay">
+                    <div className="ip-questions-modal">
+                        <div className="ip-qm-header">
+                            <button className="ip-back-btn" onClick={() => setSelectedCompany(null)}>← Back</button>
+                            <h2>{selectedCompany} Interview Questions</h2>
+                        </div>
+                        
+                        <div className="ip-qm-content">
+                            {Object.keys(groupedQuestions).length === 0 ? (
+                                <p className="ip-no-qs">No questions found for this company.</p>
+                            ) : (
+                                Object.entries(groupedQuestions).map(([category, qs]) => (
+                                    <div key={category} className="ip-category-section">
+                                        <h3>{category} Questions</h3>
+                                        <div className="ip-qs-list">
+                                            {qs.map((q, idx) => (
+                                                <div key={idx} className="ip-qs-item">
+                                                    <span className="ip-qs-num">{idx + 1}.</span>
+                                                    <p>{q.content}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
