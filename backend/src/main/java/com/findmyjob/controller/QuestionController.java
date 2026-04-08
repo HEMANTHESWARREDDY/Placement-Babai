@@ -4,6 +4,7 @@ import com.findmyjob.model.Question;
 import com.findmyjob.model.SearchHistory;
 import com.findmyjob.repository.QuestionRepository;
 import com.findmyjob.repository.SearchHistoryRepository;
+import com.findmyjob.service.GeminiInterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +24,24 @@ public class QuestionController {
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
 
+    @Autowired
+    private GeminiInterviewService geminiInterviewService;
+
     @GetMapping("/{company}")
     public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company, @RequestParam(required = false) String role) {
         List<Question> questions = questionRepository.findByCompanyIgnoreCase(company);
         
-        // Log the search if questions were found
-        if (!questions.isEmpty() && role != null) {
+        // If NO questions exist in DB, generate them in REAL-TIME via AI
+        if (questions.isEmpty()) {
+            List<Question> generated = geminiInterviewService.generateQuestions(company, role);
+            if (!generated.isEmpty()) {
+                questionRepository.saveAll(generated);
+                questions = generated;
+            }
+        }
+
+        // Log the search regardless (real-time community updates)
+        if (role != null) {
             SearchHistory history = new SearchHistory();
             history.setCompany(company);
             history.setRole(role);

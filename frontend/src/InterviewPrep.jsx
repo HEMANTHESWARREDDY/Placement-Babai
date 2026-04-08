@@ -298,7 +298,13 @@ function InterviewPrep() {
                         </div>
                         
                         <div className="ip-qm-content">
-                            {Object.keys(groupedQuestions).length === 0 ? (
+                            {loading ? (
+                                <div className="ip-generating-loader">
+                                    <div className="ip-spinner"></div>
+                                    <p>AI is generating custom interview questions for you...</p>
+                                    <span>This usually takes about 10-15 seconds.</span>
+                                </div>
+                            ) : Object.keys(groupedQuestions || {}).length === 0 ? (
                                 <p className="ip-no-qs">No questions found for this company.</p>
                             ) : (
                                 Object.entries(groupedQuestions).map(([category, qs]) => (
