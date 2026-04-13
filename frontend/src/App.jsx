@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import JobDetail from './JobDetail';
 import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
@@ -1437,6 +1438,7 @@ function App() {
         </div>
       </footer >
 
+      <Analytics />
     </div >
   );
 }
