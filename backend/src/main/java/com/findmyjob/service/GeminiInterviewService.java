@@ -28,13 +28,20 @@ public class GeminiInterviewService {
 
         try {
             String prompt = String.format(
-                "You are an expert HR and Technical interviewer. Generate a list of 10 realistic, high-quality interview questions and their detailed answers for the company '%s' and target role '%s'.\n\n" +
-                "The questions should be a mix of 'HR', 'Technical', and 'Coding' categories.\n" +
-                "For 'Coding', provide logic-based or common company-specific coding questions.\n" +
-                "For 'HR' and 'Technical', provide comprehensive, professional answers.\n\n" +
+                "User selected the company: %s. Role: %s.\n\n" +
+                "Generate a list of interview questions and answers specific to this company. Focus on common roles like Software Developer, Analyst, and Consultant.\n\n" +
+                "Include:\n" +
+                "- 10 Technical questions (coding, core subjects, problem-solving)\n" +
+                "- 5 HR/Behavioral questions\n" +
+                "- 5 Company-specific questions (about company, values, projects)\n\n" +
+                "Also consider:\n" +
+                "- Recent hiring patterns\n" +
+                "- Typical campus placement questions\n" +
+                "- Frequently asked coding topics (arrays, strings, DBMS, OOPS)\n\n" +
+                "Make the answers clear, concise, and suitable for quick revision before interviews. Keep difficulty at beginner to intermediate level.\n\n" +
                 "Return ONLY a JSON array of objects with this structure:\n" +
-                "[{\"category\": \"HR\", \"content\": \"Question text\", \"answer\": \"Detailed answer text\"}]\n\n" +
-                "Provide exactly 10 items. Respond ONLY with valid JSON.",
+                "[{\"category\": \"Technical\", \"content\": \"Question text\", \"answer\": \"Detailed answer text\"}, {\"category\": \"HR\", \"content\": \"...\", \"answer\": \"...\"}, {\"category\": \"Company-specific\", \"content\": \"...\", \"answer\": \"...\"}]\n\n" +
+                "Return exactly 20 items. Respond ONLY with valid JSON.",
                 company, role != null ? role : "Professional"
             );
 
