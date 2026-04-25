@@ -749,27 +749,26 @@ function App() {
             </span>
           </div>
 
-          <div className="header-badge" onClick={() => {
-            if (activeMainTab === 'pro-connect') {
-              document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
-            } else if (activeMainTab === 'interview-prep') {
-              document.querySelector('.ip-explore-section')?.scrollIntoView({ behavior: 'smooth' });
-            } else {
-              setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
-              setShowAll(true);
-              setIsMobileMenuOpen(false);
-              if (filterBarRef.current) {
-                setTimeout(() => {
-                  filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
-                }, 100);
+          {activeMainTab !== 'interview-prep' && (
+            <div className="header-badge" onClick={() => {
+              if (activeMainTab === 'pro-connect') {
+                document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
+                setShowAll(true);
+                setIsMobileMenuOpen(false);
+                if (filterBarRef.current) {
+                  setTimeout(() => {
+                    filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
+                  }, 100);
+                }
+                document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
               }
-              document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}>
-            🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
-                activeMainTab === 'interview-prep' ? 'Top Companies Added' :
-                `${newJobsToday} New Jobs Today`}
-          </div>
+            }}>
+              🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
+                  `${newJobsToday} New Jobs Today`}
+            </div>
+          )}
 
           <button 
             className="mobile-pro-connect-btn" 
