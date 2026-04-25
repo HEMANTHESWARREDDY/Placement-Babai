@@ -767,7 +767,7 @@ function App() {
             }
           }}>
             🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
-                activeMainTab === 'interview-prep' ? '133+ Companies Added' :
+                activeMainTab === 'interview-prep' ? 'Top Companies Added' :
                 `${newJobsToday} New Jobs Today`}
           </div>
 

@@ -11,8 +11,8 @@ const TRENDING_COMPANIES = [
 
 const RECENT_COMMUNITY = [
     { company: 'Accenture', role: 'Infrastructure Engineer', questions: 103, date: 'Apr 8' },
-    { company: 'Google', role: 'Frontend Developer', questions: 50, date: 'Apr 7' },
-    { company: 'Amazon', role: 'SDE-1', questions: 120, date: 'Apr 7' },
+    { company: 'Deloitte', role: 'Audit Associate', questions: 85, date: 'Apr 7' },
+    { company: 'Capgemini', role: 'Software Engineer', questions: 92, date: 'Apr 7' },
     { company: 'TCS', role: 'System Engineer', questions: 45, date: 'Apr 6' },
 ];
 
@@ -71,10 +71,13 @@ function InterviewPrep() {
         }
     };
 
-    const filteredCommunity = communityData.filter(item => 
-        item.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.role.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCommunity = communityData.filter(item => {
+        const isOneOfTopFive = TRENDING_COMPANIES.some(c => c.name.toLowerCase() === item.company.toLowerCase());
+        if (!isOneOfTopFive) return false;
+        
+        return item.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               item.role.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="ip-container">
@@ -91,7 +94,7 @@ function InterviewPrep() {
                 {/* Trending Section */}
                 <div className="ip-trending-header">
                     <h3><span className="ip-trending-icon">📈</span> Trending Companies</h3>
-                    <button className="ip-view-all-link">View All 133+ →</button>
+                    <button className="ip-view-all-link">Top Companies →</button>
                 </div>
                 <div className="ip-trending-grid">
                     {TRENDING_COMPANIES.map((c, i) => (
@@ -126,7 +129,7 @@ function InterviewPrep() {
                     {/* Form Section */}
                     <div className="ip-form-container">
                         <h3>Interview Details</h3>
-                        <p>Choose from top 100 companies and 50 roles. More companies coming soon!</p>
+                        <p>Choose from top companies and popular roles. More companies coming soon!</p>
                         
                         <form className="ip-form" onSubmit={handleGenerate}>
                             <div className="ip-input-flex">
@@ -210,7 +213,7 @@ function InterviewPrep() {
             <div className="ip-explore-section">
                 <div className="ip-explore-header">
                     <h2><span className="ip-explore-icon">👥</span> Explore Interview Prep</h2>
-                    <p>Browse 53 company+role combos — click to view questions</p>
+                    <p>Browse top company+role combos — click to view questions</p>
                     <button className="ip-generate-yours-btn">← Generate Yours</button>
                 </div>
 
