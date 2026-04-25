@@ -28,11 +28,13 @@ public class GeminiInterviewService {
 
         try {
             String prompt = String.format(
-                "You are an expert HR and Technical interviewer. Generate a list of 15 realistic interview questions for the company '%s' and target role '%s'.\n\n" +
-                "Group them exactly into these three categories: 'HR', 'Technical', and 'Coding'.\n" +
+                "You are an expert HR and Technical interviewer. Generate a list of 10 realistic, high-quality interview questions and their detailed answers for the company '%s' and target role '%s'.\n\n" +
+                "The questions should be a mix of 'HR', 'Technical', and 'Coding' categories.\n" +
+                "For 'Coding', provide logic-based or common company-specific coding questions.\n" +
+                "For 'HR' and 'Technical', provide comprehensive, professional answers.\n\n" +
                 "Return ONLY a JSON array of objects with this structure:\n" +
-                "[{\"category\": \"HR\", \"content\": \"...\"}, {\"category\": \"Technical\", \"content\": \"...\"}]\n\n" +
-                "Provide a good mix of 5 HR questions, 7 Technical questions, and 3 Coding logic questions. Respond ONLY with valid JSON.",
+                "[{\"category\": \"HR\", \"content\": \"Question text\", \"answer\": \"Detailed answer text\"}]\n\n" +
+                "Provide exactly 10 items. Respond ONLY with valid JSON.",
                 company, role != null ? role : "Professional"
             );
 
@@ -47,6 +49,7 @@ public class GeminiInterviewService {
                     q.setCompany(company.toLowerCase());
                     q.setCategory(node.path("category").asText("General"));
                     q.setContent(node.path("content").asText(""));
+                    q.setAnswer(node.path("answer").asText(""));
                     if (!q.getContent().isEmpty()) {
                         questions.add(q);
                     }

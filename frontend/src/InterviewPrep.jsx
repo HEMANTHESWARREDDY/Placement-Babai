@@ -16,6 +16,30 @@ const RECENT_COMMUNITY = [
     { company: 'TCS', role: 'System Engineer', questions: 45, date: 'Apr 6' },
 ];
 
+function QuestionItem({ question, index }) {
+    const [showAnswer, setShowAnswer] = useState(false);
+
+    return (
+        <div className={`ip-qs-item ${showAnswer ? 'expanded' : ''}`} onClick={() => setShowAnswer(!showAnswer)}>
+            <span className="ip-qs-num">{index + 1}.</span>
+            <div className="ip-qs-body">
+                <p className="ip-qs-text">{question.content}</p>
+                {showAnswer && question.answer && (
+                    <div className="ip-qs-answer">
+                        <div className="ip-answer-header">
+                            <span className="ip-ai-badge">AI ANSWER</span>
+                        </div>
+                        <p>{question.answer}</p>
+                    </div>
+                )}
+                <button className="ip-toggle-answer">
+                    {showAnswer ? 'Hide Answer' : 'Show Answer'}
+                </button>
+            </div>
+        </div>
+    );
+}
+
 function InterviewPrep() {
     const [company, setCompany] = useState('');
     const [role, setRole] = useState('');
@@ -315,10 +339,7 @@ function InterviewPrep() {
                                         <h3>{category} Questions</h3>
                                         <div className="ip-qs-list">
                                             {qs.map((q, idx) => (
-                                                <div key={idx} className="ip-qs-item">
-                                                    <span className="ip-qs-num">{idx + 1}.</span>
-                                                    <p>{q.content}</p>
-                                                </div>
+                                                <QuestionItem key={idx} question={q} index={idx} />
                                             ))}
                                         </div>
                                     </div>

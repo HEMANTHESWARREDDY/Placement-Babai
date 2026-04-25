@@ -24,4 +24,7 @@ public class Question {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content; // The actual question text
+
+    @Column(columnDefinition = "TEXT")
+    private String answer; // The suggested answer text
 }
