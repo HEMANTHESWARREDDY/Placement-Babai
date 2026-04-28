@@ -1191,6 +1191,11 @@
         min-height: auto;
     }
 
+    .ip-hero {
+        padding: 2rem 1rem 1.2rem;
+        margin: -1rem -1rem 0.5rem -1rem;
+    }
+
     .ip-hero-title {
         gap: 0.5rem;
         margin-bottom: 1.2rem;
