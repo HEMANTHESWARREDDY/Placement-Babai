@@ -269,8 +269,11 @@ function InterviewPrep() {
 
                     <button className="search-btn" onClick={() => {
                         if (searchTerm) {
+                            setSelectedCompany(searchTerm);
                             fetchQuestions(searchTerm);
-                            document.querySelector('.ip-details-section')?.scrollIntoView({ behavior: 'smooth' });
+                            setTimeout(() => {
+                                document.querySelector('.ip-inline-questions')?.scrollIntoView({ behavior: 'smooth' });
+                            }, 100);
                         }
                     }}>
                         Search Questions
