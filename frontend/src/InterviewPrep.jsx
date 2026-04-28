@@ -225,12 +225,12 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '1 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '1.4rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '1 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
                             className="search-input"
-                            placeholder="Target Role"
+                            placeholder="Target Role (e.g. SDE)"
                             value={targetRole}
                             onChange={(e) => setTargetRole(e.target.value)}
                         />
