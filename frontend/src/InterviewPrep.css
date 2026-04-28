@@ -1210,6 +1210,48 @@
         display: none !important;
     }
 
+    .ip-hero-stats {
+        margin-top: 1rem !important; 
+        padding-top: 0 !important;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        align-items: flex-start;
+        gap: 0;
+        padding-bottom: 0 !important;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
+    }
+
+    .ip-hero-stat {
+        padding: 0 0.05rem;
+        text-align: center;
+        min-width: 0;
+    }
+
+    .ip-stat-number {
+        font-size: 13px !important; 
+        color: #f97316 !important;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .ip-stat-label {
+        font-size: 8px !important;
+        white-space: normal;
+        word-break: normal;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        margin-top: 2px;
+        color: rgba(255, 255, 255, 0.7) !important;
+        text-transform: uppercase;
+    }
+
+    .ip-hero-stat-divider {
+        display: none;
+    }
+
     .ip-trending-grid {
         grid-template-columns: repeat(2, 1fr);
     }
