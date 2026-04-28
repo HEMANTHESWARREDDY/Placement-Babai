@@ -1185,7 +1185,29 @@
     }
 
     .ip-hero-title {
-        font-size: 1.8rem;
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .ip-title-top {
+        font-size: 2.2rem;
+    }
+
+    .ip-title-bottom {
+        font-size: 1.45rem;
+        padding: 0 0.5rem;
+        margin-top: 0.5rem;
+        color: white;
+        font-weight: 800;
+    }
+
+    .mobile-break {
+        display: block;
+        margin-top: 0.2rem;
+    }
+
+    .ip-subtitle, .ip-desc {
+        display: none !important;
     }
 
     .ip-trending-grid {
