@@ -196,13 +196,14 @@ function InterviewPrep() {
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
-                    <div className="search-input-group" style={{ flex: '0.82 1 0', minWidth: '0' }}>
+                    <div className="search-input-group" style={{ flex: '4.5 1 0', minWidth: '0', overflow: 'hidden' }}>
                         <span className="search-icon">🏢</span>
                         <input
                             type="text"
                             className="search-input"
                             placeholder="Search by Company (e.g. Accenture)"
                             value={searchTerm}
+                            style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             onFocus={() => searchTerm && setShowSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
@@ -225,18 +226,19 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '1.18 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '3.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem', overflow: 'hidden' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
                             className="search-input"
                             placeholder="Target Role (e.g. SDE)"
                             value={targetRole}
+                            style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
                             onChange={(e) => setTargetRole(e.target.value)}
                         />
                     </div>
 
-                    <div className="search-input-group ip-type-group" style={{ flex: '0.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '1.2rem', paddingRight: '1rem', cursor: 'pointer' }} 
+                    <div className="search-input-group ip-type-group" style={{ flex: '2 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '1.2rem', paddingRight: '1rem', cursor: 'pointer' }} 
                         onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                     >
                         <div className="ip-custom-select-trigger">
