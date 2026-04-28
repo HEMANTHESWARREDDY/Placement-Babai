@@ -236,7 +236,7 @@ function InterviewPrep() {
                         />
                     </div>
 
-                    <div className="search-input-group ip-type-group" style={{ flex: '1 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '1.2rem', cursor: 'pointer' }} 
+                    <div className="search-input-group ip-type-group" style={{ flex: '1 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '1.2rem', cursor: 'pointer' }} 
                         onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                     >
                         <div className="ip-custom-select-trigger">
