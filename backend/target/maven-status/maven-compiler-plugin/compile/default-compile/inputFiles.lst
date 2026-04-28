@@ -20,6 +20,7 @@ C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\f
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\FindMyJobApplication.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\controller\JobController.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\config\SecurityConfig.java
+C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\service\ChatGPTInterviewService.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\model\Admin.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\service\JobService.java
 C:\Users\heman\.gemini\antigravity\scratch\findmyjob\backend\src\main\java\com\findmyjob\repository\AdminRepository.java

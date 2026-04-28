@@ -100,7 +100,8 @@
 }
 
 .preview-modal-close:hover {
-    background: rgba(0, 0, 0, 0.4) !important;
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
     transform: scale(1.1);
 }
 

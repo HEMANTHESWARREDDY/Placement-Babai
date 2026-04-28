@@ -11,6 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Question {
+    // Custom constructor for backward compatibility
+    public Question(Long id, String company, String category, String content, String answer) {
+        this.id = id;
+        this.company = company;
+        this.category = category;
+        this.content = content;
+        this.answer = answer;
+        this.role = "General";
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +30,8 @@ public class Question {
 
     @Column(nullable = false)
     private String category; // e.g., HR, Technical, Coding
+
+    private String role; // e.g., Software Engineer, Data Analyst
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content; // The actual question text

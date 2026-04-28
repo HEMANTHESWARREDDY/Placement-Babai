@@ -60,7 +60,7 @@ public class AtsService {
     }
 
     private Map<String, Object> callGemini(Job job, String resumeText) throws Exception {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
                 + geminiApiKey.trim();
 
         String prompt = "You are an expert ATS (Applicant Tracking System). Analyze the following resume against the job details.\n"

@@ -72,6 +72,8 @@
 
 .aj-close:hover {
     color: #ef4444;
+    background: #fee2e2;
+    border-radius: 50%;
 }
 
 .aj-content {

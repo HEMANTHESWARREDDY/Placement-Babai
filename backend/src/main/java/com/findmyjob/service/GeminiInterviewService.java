@@ -21,52 +21,85 @@ public class GeminiInterviewService {
 
     private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
 
-    public List<Question> generateQuestions(String company, String role) {
-        if (geminiApiKey == null || geminiApiKey.trim().isEmpty()) {
-            return Collections.emptyList();
+    public List<Question> generateQuestions(String company, String role, String category) {
+        if (geminiApiKey == null || geminiApiKey.trim().isEmpty() || geminiApiKey.equals("${GEMINI_API_KEY:}")) {
+            throw new RuntimeException("Gemini API Key is missing or not configured correctly in application.properties!");
         }
 
-        try {
-            String prompt = String.format(
-                "User selected the company: %s. Role: %s.\n\n" +
-                "Generate a list of interview questions and answers specific to this company. Focus on common roles like Software Developer, Analyst, and Consultant.\n\n" +
-                "Include:\n" +
-                "- 10 Technical questions (coding, core subjects, problem-solving)\n" +
-                "- 5 HR/Behavioral questions\n" +
-                "- 5 Company-specific questions (about company, values, projects)\n\n" +
-                "Also consider:\n" +
-                "- Recent hiring patterns\n" +
-                "- Typical campus placement questions\n" +
-                "- Frequently asked coding topics (arrays, strings, DBMS, OOPS)\n\n" +
-                "Make the answers clear, concise, and suitable for quick revision before interviews. Keep difficulty at beginner to intermediate level.\n\n" +
-                "Return ONLY a JSON array of objects with this structure:\n" +
-                "[{\"category\": \"Technical\", \"content\": \"Question text\", \"answer\": \"Detailed answer text\"}, {\"category\": \"HR\", \"content\": \"...\", \"answer\": \"...\"}, {\"category\": \"Company-specific\", \"content\": \"...\", \"answer\": \"...\"}]\n\n" +
-                "Return exactly 20 items. Respond ONLY with valid JSON.",
-                company, role != null ? role : "Professional"
-            );
+        String actualRole = (role == null || role.trim().isEmpty()) ? "Fresher" : role;
+        
+        // Build a simpler prompt for better reliability
+        String prompt = String.format(
+            "Generate 15 interview questions and answers for %s (Role: %s). \n" +
+            "If category is 'Technical', only generate technical. If 'Managerial', only managerial. If 'HR', only HR. If 'All', mix them.\n" +
+            "Return ONLY a JSON array of objects with keys: category, content, answer. \n" +
+            "Categories MUST be exactly 'Technical', 'Managerial', or 'HR'.\n" +
+            "Difficulty: beginner to intermediate. Response must be ONLY valid JSON.",
+            company, actualRole
+        );
 
+        try {
+            System.out.println("[Gemini Prompt] " + prompt);
             String response = callGemini(prompt);
+            System.out.println("[Gemini Response] " + response);
+            
+            // Log to file for AI assistant to read
+            try (java.io.FileWriter writer = new java.io.FileWriter("gemini_log.json")) {
+                writer.write(response);
+            } catch (Exception e) {}
+
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response);
-            
             List<Question> questions = new ArrayList<>();
-            if (root.isArray()) {
-                for (JsonNode node : root) {
-                    Question q = new Question();
-                    q.setCompany(company.toLowerCase());
-                    q.setCategory(node.path("category").asText("General"));
-                    q.setContent(node.path("content").asText(""));
-                    q.setAnswer(node.path("answer").asText(""));
-                    if (!q.getContent().isEmpty()) {
-                        questions.add(q);
+            
+            JsonNode arrayNode = root.isArray() ? root : root.path("questions");
+            if (!arrayNode.isArray()) {
+                // Try finding any array in the object
+                Iterator<Map.Entry<String, JsonNode>> fields = root.fields();
+                while (fields.hasNext()) {
+                    JsonNode node = fields.next().getValue();
+                    if (node.isArray()) {
+                        arrayNode = node;
+                        break;
                     }
                 }
             }
-            return questions;
 
+            if (arrayNode.isArray()) {
+                for (JsonNode node : arrayNode) {
+                    Question q = new Question();
+                    q.setCompany(company.toLowerCase());
+                    q.setRole(actualRole);
+                    String rawCategory = node.path("category").asText("General");
+                    String normalizedCategory = "General";
+                    if (rawCategory.toLowerCase().contains("technical")) normalizedCategory = "Technical";
+                    else if (rawCategory.toLowerCase().contains("managerial") || rawCategory.toLowerCase().contains("leadership")) normalizedCategory = "Managerial";
+                    else if (rawCategory.toLowerCase().contains("hr") || rawCategory.toLowerCase().contains("behavioral")) normalizedCategory = "HR";
+                    
+                    q.setCategory(normalizedCategory);
+                    q.setContent(node.path("content").asText(""));
+                    q.setAnswer(node.path("answer").asText(""));
+                    if (!q.getContent().isEmpty()) questions.add(q);
+                }
+            } else {
+                System.err.println("[Gemini Interview] No array found in response");
+            }
+
+            // TEST QUESTIONS
+            for(int i=1; i<=5; i++) {
+                Question q = new Question();
+                q.setCompany(company.toLowerCase());
+                q.setRole(actualRole);
+                q.setCategory(i % 2 == 0 ? "Technical" : "HR");
+                q.setContent("PROMPT TEST Q" + i + ": " + company + " Interview?");
+                q.setAnswer("This is test answer " + i);
+                questions.add(q);
+            }
+
+            return questions;
         } catch (Exception e) {
             System.err.println("[Gemini Interview] Error: " + e.getMessage());
-            return Collections.emptyList();
+            throw new RuntimeException("AI generation error: " + e.getMessage(), e);
         }
     }
 
@@ -95,10 +128,17 @@ public class GeminiInterviewService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            throw new RuntimeException("Gemini error: " + response.statusCode());
+            throw new RuntimeException("Gemini error: " + response.statusCode() + " - " + response.body());
         }
 
         JsonNode root = mapper.readTree(response.body());
-        return root.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText().trim();
+        String text = root.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText().trim();
+        
+        // Strip markdown backticks if present
+        if (text.startsWith("```")) {
+            text = text.replaceAll("^```(?:json)?\\n?|\\n?```$", "");
+        }
+        
+        return text.trim();
     }
 }
