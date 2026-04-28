@@ -419,6 +419,12 @@
     margin-bottom: 4rem;
 }
 
+@media (max-width: 768px) {
+    .ip-action-row {
+        margin-bottom: 1.5rem;
+    }
+}
+
 .ip-form-container {
     flex: 2;
     background: #151518;
@@ -1182,6 +1188,7 @@
 @media (max-width: 768px) {
     .ip-container {
         padding: 1rem;
+        min-height: auto;
     }
 
     .ip-hero-title {
