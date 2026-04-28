@@ -196,7 +196,7 @@ function InterviewPrep() {
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
-                    <div className="search-input-group" style={{ flex: '0.85 1 0', minWidth: '0' }}>
+                    <div className="search-input-group" style={{ flex: '0.7 1 0', minWidth: '0' }}>
                         <span className="search-icon">🏢</span>
                         <input
                             type="text"
@@ -225,7 +225,7 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '1.2 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '1.3 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
