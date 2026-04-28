@@ -267,16 +267,14 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="ip-hero-actions">
-                        <button className="search-btn" onClick={() => {
-                            if (searchTerm) {
-                                fetchQuestions(searchTerm);
-                                document.querySelector('.ip-details-section')?.scrollIntoView({ behavior: 'smooth' });
-                            }
-                        }}>
-                            Search Questions
-                        </button>
-                    </div>
+                    <button className="search-btn" onClick={() => {
+                        if (searchTerm) {
+                            fetchQuestions(searchTerm);
+                            document.querySelector('.ip-details-section')?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }}>
+                        Search Questions
+                    </button>
                 </div>
 
                 <div className="popular-searches">
