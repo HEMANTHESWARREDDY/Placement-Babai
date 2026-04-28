@@ -72,7 +72,7 @@ function InterviewPrep() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ company: compName, role: targetRole || 'General' })
             });
-            fetchTrendingStats(); 
+            fetchTrendingStats();
         } catch (err) {
             console.error(err);
         }
@@ -85,7 +85,7 @@ function InterviewPrep() {
     useEffect(() => {
         if (selectedCompany) {
             if (activeFilter !== 'Most Common') {
-                setGroupedQuestions(null); 
+                setGroupedQuestions(null);
                 fetchAiQuestions(activeFilter === 'Recently Asked' ? 'recently' : 'frequently');
             } else {
                 fetchQuestions(selectedCompany);
@@ -136,9 +136,9 @@ function InterviewPrep() {
             let endpoint = 'frequently-asked';
             if (type === 'recently') endpoint = 'recently-asked';
             if (type === 'frequently') endpoint = 'frequently-asked';
-            
+
             const url = `${API_BASE_URL}/api/questions/ai/${endpoint}?company=${selectedCompany}&role=${encodeURIComponent(role)}&category=${activeCategory}`;
-            
+
             const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
@@ -191,17 +191,17 @@ function InterviewPrep() {
                     <div className="ip-title-top">Prep<span className="highlight-text">Zo</span></div>
                     <div className="ip-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Prep <span className="mobile-break">You for Interviews</span></div>
                 </h1>
-                
+
                 <p className="ip-subtitle">Practice with Company-Specific Questions for Top 5 Companies</p>
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
-                    <div className="search-input-group" style={{ flex: '2 1 0', minWidth: '0' }}>
+                    <div className="search-input-group" style={{ flex: '3.15 1 0', minWidth: '0' }}>
                         <span className="search-icon">🏢</span>
                         <input
                             type="text"
                             className="search-input"
-                            placeholder="Search by Company"
+                            placeholder="Search by Company (e.g. Accenture)"
                             value={searchTerm}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             onFocus={() => searchTerm && setShowSuggestions(true)}
@@ -225,7 +225,7 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '6.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '5.35 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
@@ -236,7 +236,7 @@ function InterviewPrep() {
                         />
                     </div>
 
-                    <div className="search-input-group ip-type-group" style={{ flex: '1.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '0.4rem', paddingRight: '0.4rem', cursor: 'pointer' }} 
+                    <div className="search-input-group ip-type-group" style={{ flex: '1.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '0.4rem', paddingRight: '0.4rem', cursor: 'pointer' }}
                         onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                     >
                         <div className="ip-custom-select-trigger">
@@ -247,12 +247,12 @@ function InterviewPrep() {
                                 </svg>
                             </span>
                         </div>
-                        
+
                         {showFilterDropdown && (
                             <div className="ip-custom-dropdown">
                                 {['Most Common', 'Recently Asked', 'Frequently Asked'].map(option => (
-                                    <div 
-                                        key={option} 
+                                    <div
+                                        key={option}
                                         className={`ip-custom-option ${activeFilter === option ? 'active' : ''}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -333,125 +333,125 @@ function InterviewPrep() {
                             </div>
 
                             <div className="ip-inline-content">
-                        {loading ? (
-                            <div className="ip-generating-loader">
-                                <div className="ip-spinner"></div>
-                                <p>Loading questions...</p>
-                            </div>
-                        ) : (() => {
-                            let currentCategoryQs = activeCategory === 'All' 
-                                ? Object.values(groupedQuestions || {}).flat()
-                                : (groupedQuestions || {})[activeCategory] || [];
-                            
-                            if (targetRole && targetRole.trim() !== '') {
-                                currentCategoryQs = currentCategoryQs.filter(q => {
-                                    if (!q.role) return false;
-                                    return q.role.toLowerCase().includes(targetRole.toLowerCase()) && q.role.toLowerCase() !== 'general';
-                                });
-                            }
-                            
-                            if (currentCategoryQs.length === 0 && !loading) return (
-                                <div className="ip-no-qs-container">
-                                    <div className="ip-no-qs-icon">🔍</div>
-                                    <p className="ip-no-qs">
-                                        No {activeFilter.toLowerCase()} {activeCategory !== 'All' ? activeCategory : ''} questions found {targetRole ? ` for the "${targetRole}" role ` : ''} at {selectedCompany}.
-                                    </p>
-                                    <p className="ip-no-qs-sub">Try removing the role filter or switching categories to see more content.</p>
-                                </div>
-                            );
-
-                            if (loading) return null; // Show nothing while loading (loader is handled above)
-                            
-                            const totalPages = Math.ceil(currentCategoryQs.length / questionsPerPage);
-                            const startIndex = (currentPage - 1) * questionsPerPage;
-                            const currentQs = currentCategoryQs.slice(startIndex, startIndex + questionsPerPage);
-
-                            const handlePageChange = (newPage) => {
-                                setCurrentPage(newPage);
-                                const target = document.querySelector('.ip-inline-questions');
-                                if (target) {
-                                    window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
-                                }
-                            };
-
-                            return (
-                                <>
-                                    <div className="ip-qs-list">
-                                        {currentQs.map((q, idx) => (
-                                            <QuestionItem key={startIndex + idx} question={q} index={startIndex + idx} />
-                                        ))}
+                                {loading ? (
+                                    <div className="ip-generating-loader">
+                                        <div className="ip-spinner"></div>
+                                        <p>Loading questions...</p>
                                     </div>
-                                    
-                                    {totalPages > 1 && (
-                                        <div className="ip-pagination">
-                                            <button 
-                                                className="ip-pag-btn prev"
-                                                disabled={currentPage === 1} 
-                                                onClick={() => handlePageChange(currentPage - 1)}
-                                            >
-                                                ← Prev
-                                            </button>
-                                            <div className="ip-page-numbers">
-                                                {(() => {
-                                                    const pages = [];
-                                                    let start = currentPage;
-                                                    let end = Math.min(totalPages, currentPage + 3);
-                                                    
-                                                    // Ensure at least 3 pages are visible when approaching the end
-                                                    if (totalPages - currentPage < 2 && totalPages > 2) {
-                                                        start = Math.max(1, totalPages - 2);
-                                                    }
-                                                    
-                                                    for (let i = start; i <= end; i++) {
-                                                        pages.push(i);
-                                                    }
-                                                    return pages.map(num => (
-                                                        <button 
-                                                            key={num} 
-                                                            className={`ip-page-num ${currentPage === num ? 'active' : ''}`}
-                                                            onClick={() => handlePageChange(num)}
-                                                        >
-                                                            {num}
-                                                        </button>
-                                                    ));
-                                                })()}
-                                            </div>
-                                            <button 
-                                                className="ip-pag-btn next"
-                                                disabled={currentPage === totalPages} 
-                                                onClick={() => handlePageChange(currentPage + 1)}
-                                            >
-                                                Next →
-                                            </button>
-                                        </div>
-                                    )}
-                                </>
-                            );
-                            })()}
-                        </div>
-                    </div>
+                                ) : (() => {
+                                    let currentCategoryQs = activeCategory === 'All'
+                                        ? Object.values(groupedQuestions || {}).flat()
+                                        : (groupedQuestions || {})[activeCategory] || [];
 
-                    <div className="ip-qs-sidebar">
-                        <div className="ip-category-filters-vertical">
-                            {['All', 'Technical', 'Programming', 'Managerial', 'HR'].map(cat => (
-                                <button 
-                                    key={cat} 
-                                    className={`ip-cat-filter-v ${activeCategory === cat ? 'active' : ''}`}
-                                    onClick={() => {
-                                        setActiveCategory(cat);
-                                        setCurrentPage(1);
-                                    }}
-                                >
-                                    {cat}
+                                    if (targetRole && targetRole.trim() !== '') {
+                                        currentCategoryQs = currentCategoryQs.filter(q => {
+                                            if (!q.role) return false;
+                                            return q.role.toLowerCase().includes(targetRole.toLowerCase()) && q.role.toLowerCase() !== 'general';
+                                        });
+                                    }
+
+                                    if (currentCategoryQs.length === 0 && !loading) return (
+                                        <div className="ip-no-qs-container">
+                                            <div className="ip-no-qs-icon">🔍</div>
+                                            <p className="ip-no-qs">
+                                                No {activeFilter.toLowerCase()} {activeCategory !== 'All' ? activeCategory : ''} questions found {targetRole ? ` for the "${targetRole}" role ` : ''} at {selectedCompany}.
+                                            </p>
+                                            <p className="ip-no-qs-sub">Try removing the role filter or switching categories to see more content.</p>
+                                        </div>
+                                    );
+
+                                    if (loading) return null; // Show nothing while loading (loader is handled above)
+
+                                    const totalPages = Math.ceil(currentCategoryQs.length / questionsPerPage);
+                                    const startIndex = (currentPage - 1) * questionsPerPage;
+                                    const currentQs = currentCategoryQs.slice(startIndex, startIndex + questionsPerPage);
+
+                                    const handlePageChange = (newPage) => {
+                                        setCurrentPage(newPage);
+                                        const target = document.querySelector('.ip-inline-questions');
+                                        if (target) {
+                                            window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+                                        }
+                                    };
+
+                                    return (
+                                        <>
+                                            <div className="ip-qs-list">
+                                                {currentQs.map((q, idx) => (
+                                                    <QuestionItem key={startIndex + idx} question={q} index={startIndex + idx} />
+                                                ))}
+                                            </div>
+
+                                            {totalPages > 1 && (
+                                                <div className="ip-pagination">
+                                                    <button
+                                                        className="ip-pag-btn prev"
+                                                        disabled={currentPage === 1}
+                                                        onClick={() => handlePageChange(currentPage - 1)}
+                                                    >
+                                                        ← Prev
+                                                    </button>
+                                                    <div className="ip-page-numbers">
+                                                        {(() => {
+                                                            const pages = [];
+                                                            let start = currentPage;
+                                                            let end = Math.min(totalPages, currentPage + 3);
+
+                                                            // Ensure at least 3 pages are visible when approaching the end
+                                                            if (totalPages - currentPage < 2 && totalPages > 2) {
+                                                                start = Math.max(1, totalPages - 2);
+                                                            }
+
+                                                            for (let i = start; i <= end; i++) {
+                                                                pages.push(i);
+                                                            }
+                                                            return pages.map(num => (
+                                                                <button
+                                                                    key={num}
+                                                                    className={`ip-page-num ${currentPage === num ? 'active' : ''}`}
+                                                                    onClick={() => handlePageChange(num)}
+                                                                >
+                                                                    {num}
+                                                                </button>
+                                                            ));
+                                                        })()}
+                                                    </div>
+                                                    <button
+                                                        className="ip-pag-btn next"
+                                                        disabled={currentPage === totalPages}
+                                                        onClick={() => handlePageChange(currentPage + 1)}
+                                                    >
+                                                        Next →
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
+                                    );
+                                })()}
+                            </div>
+                        </div>
+
+                        <div className="ip-qs-sidebar">
+                            <div className="ip-category-filters-vertical">
+                                {['All', 'Technical', 'Programming', 'Managerial', 'HR'].map(cat => (
+                                    <button
+                                        key={cat}
+                                        className={`ip-cat-filter-v ${activeCategory === cat ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setActiveCategory(cat);
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                                <button className="ip-shuffle-btn" onClick={handleAiShuffle}>
+                                    <span className="ip-shuffle-icon">🔀</span> Shuffle Questions
                                 </button>
-                            ))}
-                            <button className="ip-shuffle-btn" onClick={handleAiShuffle}>
-                                <span className="ip-shuffle-icon">🔀</span> Shuffle Questions
-                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             )}
         </div>
     );
