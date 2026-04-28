@@ -1188,6 +1188,36 @@
         font-size: 1.8rem;
     }
 
+    .ip-hero-search {
+        flex-direction: column !important;
+        border-radius: 20px !important;
+        padding: 1.5rem !important;
+        gap: 1rem !important;
+        background: #18181b !important;
+        border: 1px solid #27272a !important;
+    }
+
+    .ip-hero-search .search-input-group {
+        display: flex !important; /* Override display:none from App.css */
+        width: 100% !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 1px solid #27272a !important;
+        padding: 0.8rem 0 !important;
+        flex: none !important;
+    }
+
+    .ip-hero-search .search-input-group:last-of-type {
+        border-bottom: none !important;
+    }
+
+    .ip-hero-search .search-button {
+        width: 100% !important;
+        margin-top: 0.5rem !important;
+        border-radius: 12px !important;
+        padding: 1rem !important;
+    }
+
     .ip-trending-grid {
         grid-template-columns: repeat(2, 1fr);
     }
