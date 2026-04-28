@@ -196,7 +196,7 @@ function InterviewPrep() {
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
-                    <div className="search-input-group" style={{ flex: '0.76 1 0', minWidth: '0' }}>
+                    <div className="search-input-group" style={{ flex: '0.73 1 0', minWidth: '0' }}>
                         <span className="search-icon">🏢</span>
                         <input
                             type="text"
@@ -225,7 +225,7 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '1.24 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '1.47 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
@@ -236,7 +236,7 @@ function InterviewPrep() {
                         />
                     </div>
 
-                    <div className="search-input-group ip-type-group" style={{ flex: '0.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '0.4rem', paddingRight: '1rem', cursor: 'pointer' }} 
+                    <div className="search-input-group ip-type-group" style={{ flex: '0.3 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', borderRight: 'none', paddingLeft: '0.4rem', paddingRight: '0.4rem', cursor: 'pointer' }} 
                         onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                     >
                         <div className="ip-custom-select-trigger">
