@@ -196,12 +196,12 @@ function InterviewPrep() {
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
-                    <div className="search-input-group" style={{ flex: '3.15 1 0', minWidth: '0' }}>
+                    <div className="search-input-group" style={{ flex: '2 1 0', minWidth: '0' }}>
                         <span className="search-icon">🏢</span>
                         <input
                             type="text"
                             className="search-input"
-                            placeholder="Search by Company (e.g. Accenture)"
+                            placeholder="Search by Company"
                             value={searchTerm}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             onFocus={() => searchTerm && setShowSuggestions(true)}
@@ -225,7 +225,7 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '5.35 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '6.5 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
