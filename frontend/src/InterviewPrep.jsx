@@ -45,7 +45,17 @@ function InterviewPrep() {
     const [activeFilter, setActiveFilter] = useState('Most Common');
     const [trendingStats, setTrendingStats] = useState({});
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-    const questionsPerPage = 8;
+    const [questionsPerPage, setQuestionsPerPage] = useState(
+        window.innerWidth <= 768 ? 6 : 8
+    );
+
+    useEffect(() => {
+        const handleResize = () => {
+            setQuestionsPerPage(window.innerWidth <= 768 ? 6 : 8);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         fetchCommunityData();
@@ -201,7 +211,7 @@ function InterviewPrep() {
                         <input
                             type="text"
                             className="search-input"
-                            placeholder="Search by Company (e.g. Accenture)"
+                            placeholder="Company"
                             value={searchTerm}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             onFocus={() => searchTerm && setShowSuggestions(true)}
@@ -230,7 +240,7 @@ function InterviewPrep() {
                         <input
                             type="text"
                             className="search-input"
-                            placeholder="Target Role (e.g. SDE)"
+                            placeholder="Role"
                             value={targetRole}
                             onChange={(e) => setTargetRole(e.target.value)}
                         />
@@ -276,7 +286,8 @@ function InterviewPrep() {
                             }, 100);
                         }
                     }}>
-                        Search Questions
+                        <span className="search-btn-text">Search Questions</span>
+                        <span className="search-btn-icon">🔍</span>
                     </button>
                 </div>
 
@@ -331,6 +342,26 @@ function InterviewPrep() {
                         <div className="ip-qs-main">
                             <div className="ip-inline-header">
                                 <h3><span className="ip-ih-icon">📋</span> {activeFilter} {selectedCompany} Questions</h3>
+                            </div>
+
+                            <div className="ip-qs-sidebar">
+                                <div className="ip-category-filters-vertical">
+                                    {['All', 'Technical', 'Programming', 'Managerial', 'HR'].map(cat => (
+                                        <button
+                                            key={cat}
+                                            className={`ip-cat-filter-v ${activeCategory === cat ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setActiveCategory(cat);
+                                                setCurrentPage(1);
+                                            }}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
+                                    <button className="ip-shuffle-btn" onClick={handleAiShuffle}>
+                                        <span className="ip-shuffle-icon">🔀</span> Shuffle Questions
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="ip-inline-content">
@@ -390,7 +421,7 @@ function InterviewPrep() {
                                                         disabled={currentPage === 1}
                                                         onClick={() => handlePageChange(currentPage - 1)}
                                                     >
-                                                        ← Prev
+                                                        ← <span className="ip-pag-label">Prev</span>
                                                     </button>
                                                     <div className="ip-page-numbers">
                                                         {(() => {
@@ -422,33 +453,13 @@ function InterviewPrep() {
                                                         disabled={currentPage === totalPages}
                                                         onClick={() => handlePageChange(currentPage + 1)}
                                                     >
-                                                        Next →
+                                                        <span className="ip-pag-label">Next</span> →
                                                     </button>
                                                 </div>
                                             )}
                                         </>
                                     );
                                 })()}
-                            </div>
-                        </div>
-
-                        <div className="ip-qs-sidebar">
-                            <div className="ip-category-filters-vertical">
-                                {['All', 'Technical', 'Programming', 'Managerial', 'HR'].map(cat => (
-                                    <button
-                                        key={cat}
-                                        className={`ip-cat-filter-v ${activeCategory === cat ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setActiveCategory(cat);
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        {cat}
-                                    </button>
-                                ))}
-                                <button className="ip-shuffle-btn" onClick={handleAiShuffle}>
-                                    <span className="ip-shuffle-icon">🔀</span> Shuffle Questions
-                                </button>
                             </div>
                         </div>
                     </div>

@@ -59,8 +59,13 @@ public class QuestionController {
     public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company) {
         List<Question> questions = questionRepository.findByCompanyIgnoreCase(company);
         
-        // Instant response from DB (Fast + Reliable)
-        // If DB is empty, we group an empty map (or we could trigger a basic seed/gen)
+        if (questions == null || questions.isEmpty()) {
+            questions = getManualQuestions(company);
+            if (questions != null && !questions.isEmpty()) {
+                questionRepository.saveAll(questions);
+            }
+        }
+
         return questions.stream()
                 .collect(Collectors.groupingBy(Question::getCategory));
     }

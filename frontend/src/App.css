@@ -246,6 +246,10 @@
   display: none;
 }
 
+.header-actions-mobile {
+  display: none;
+}
+
 .admin-nav-btn {
   background: linear-gradient(135deg, var(--primary-purple), var(--dark-purple));
   color: var(--white);
@@ -1151,6 +1155,15 @@
     object-fit: contain;
   }
 
+  .header-actions-mobile {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+    order: 3;
+    flex-shrink: 0;
+  }
+
   .mobile-pro-connect-btn {
     display: flex;
     align-items: center;
@@ -1159,11 +1172,11 @@
     border: none;
     color: var(--primary-purple);
     cursor: pointer;
-    margin-right: 0.5rem;
+    margin-right: 0;
     order: 3;
     transition: all 0.2s;
     flex: 0 0 auto;
-    padding: 0.2rem;
+    padding: 0.15rem;
   }
 
   .mobile-pro-connect-btn:active {
@@ -1177,7 +1190,7 @@
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--primary-purple);
-    padding: 0.2rem;
+    padding: 0.15rem;
     order: 4;
     flex: 0 0 auto;
   }
@@ -1823,7 +1836,7 @@
 
   .companies-title {
     font-size: 0.85rem;
-    margin-bottom: 0.75rem; /* Tighter gap */
+    margin-bottom: 1.65rem; /* Adjusted to 75% of previous max */
   }
 
   .company-logo-item {

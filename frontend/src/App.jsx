@@ -770,39 +770,56 @@ function App() {
             </div>
           )}
 
-          {activeMainTab !== 'jobs' && (
-            <button 
-              className="mobile-pro-connect-btn" 
-              title="Back to Jobs"
-              onClick={() => {
-                setActiveMainTab('jobs');
-                sessionStorage.setItem('activeMainTab', 'jobs');
-                setIsMobileMenuOpen(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
-            </button>
-          )}
+          <div className="header-actions-mobile">
+            {activeMainTab !== 'jobs' && (
+              <button 
+                className="mobile-pro-connect-btn" 
+                title="Back to Jobs"
+                onClick={() => {
+                  setActiveMainTab('jobs');
+                  sessionStorage.setItem('activeMainTab', 'jobs');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
+              </button>
+            )}
 
-          {activeMainTab !== 'pro-connect' && (
-            <button 
-              className="mobile-pro-connect-btn" 
-              title="Pro Connect"
-              onClick={() => {
-                setActiveMainTab('pro-connect');
-                sessionStorage.setItem('activeMainTab', 'pro-connect');
-                setIsMobileMenuOpen(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </button>
-          )}
+            {activeMainTab !== 'pro-connect' && (
+              <button 
+                className="mobile-pro-connect-btn" 
+                title="Pro Connect"
+                onClick={() => {
+                  setActiveMainTab('pro-connect');
+                  sessionStorage.setItem('activeMainTab', 'pro-connect');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </button>
+            )}
 
-          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
+            {activeMainTab !== 'interview-prep' && (
+              <button 
+                className="mobile-pro-connect-btn" 
+                title="Interview Prep"
+                onClick={() => {
+                  setActiveMainTab('interview-prep');
+                  sessionStorage.setItem('activeMainTab', 'interview-prep');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+              </button>
+            )}
+
+            <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              {isMobileMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
 
           <nav className={isMobileMenuOpen ? "nav-open" : ""}>
             <ul className="nav-links">
