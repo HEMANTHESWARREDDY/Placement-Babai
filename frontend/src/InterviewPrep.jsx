@@ -199,7 +199,7 @@ function InterviewPrep() {
             <div className="ip-hero">
                 <h1 className="ip-hero-title">
                     <div className="ip-title-top">Prep<span className="highlight-text">Zo</span></div>
-                    <div className="ip-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Prep <span className="mobile-break">You for Interviews</span></div>
+                    <div className="ip-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Prepare <span className="mobile-break">You for Interviews</span></div>
                 </h1>
 
                 <p className="ip-subtitle">Practice with Company-Specific Questions for Top 5 Companies</p>
