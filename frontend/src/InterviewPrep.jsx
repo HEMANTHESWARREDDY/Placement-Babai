@@ -381,7 +381,9 @@ function InterviewPrep() {
                                     if (targetRole && targetRole.trim() !== '') {
                                         currentCategoryQs = currentCategoryQs.filter(q => {
                                             if (!q.role) return false;
-                                            return q.role.toLowerCase().includes(targetRole.toLowerCase()) && q.role.toLowerCase() !== 'general';
+                                            const qRole = q.role.toLowerCase();
+                                            const target = targetRole.toLowerCase();
+                                            return qRole.includes(target) || qRole === 'general';
                                         });
                                     }
 

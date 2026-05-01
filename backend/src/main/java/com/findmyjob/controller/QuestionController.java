@@ -59,7 +59,21 @@ public class QuestionController {
     public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company) {
         List<Question> questions = questionRepository.findByCompanyIgnoreCase(company);
         
-        if (questions == null || questions.isEmpty()) {
+        // Force refresh if the data is old (e.g. only contains the generic 'Most Common' category 
+        // but now we have specific Programming/Technical/HR categories for this company)
+        boolean needsRefresh = false;
+        if (questions != null && !questions.isEmpty()) {
+            boolean hasOnlyDefault = questions.stream().anyMatch(q -> q.getCategory().equalsIgnoreCase("Most Common"));
+            boolean isTopCompany = isTopCompany(company);
+            if (hasOnlyDefault && isTopCompany) {
+                needsRefresh = true;
+            }
+        }
+
+        if (questions == null || questions.isEmpty() || needsRefresh) {
+            if (needsRefresh) {
+                questionRepository.deleteAll(questions);
+            }
             questions = getManualQuestions(company);
             if (questions != null && !questions.isEmpty()) {
                 questionRepository.saveAll(questions);
@@ -68,6 +82,14 @@ public class QuestionController {
 
         return questions.stream()
                 .collect(Collectors.groupingBy(Question::getCategory));
+    }
+
+    private boolean isTopCompany(String company) {
+        String[] topCompanies = {"Accenture", "Deloitte", "TCS", "Infosys", "Capgemini", "HCLTech", "IBM", "Cognizant", "Microsoft", "Oracle", "Amazon", "LTIMindtree"};
+        for (String c : topCompanies) {
+            if (c.equalsIgnoreCase(company)) return true;
+        }
+        return false;
     }
 
     @GetMapping("/ai/frequently-asked")
@@ -87,6 +109,10 @@ public class QuestionController {
         if (generated == null || generated.isEmpty()) {
             generated = getFallbackQuestions(company, role);
         } else {
+            // Filter out empty/invalid content before saving
+            generated = generated.stream()
+                .filter(q -> q.getContent() != null && !q.getContent().trim().isEmpty())
+                .collect(Collectors.toList());
             questionRepository.saveAll(generated);
         }
         return generated.stream()
@@ -110,6 +136,10 @@ public class QuestionController {
         if (generated == null || generated.isEmpty()) {
             generated = getFallbackQuestions(company, role);
         } else {
+            // Filter out empty/invalid content before saving
+            generated = generated.stream()
+                .filter(q -> q.getContent() != null && !q.getContent().trim().isEmpty())
+                .collect(Collectors.toList());
             questionRepository.saveAll(generated);
         }
         return generated.stream()
@@ -125,15 +155,15 @@ public class QuestionController {
         f1.setRole(role);
         f1.setCategory("Technical");
         f1.setContent("What are the core values and culture of " + company + "?");
-        f1.setAnswer("Accenture focuses on Client Value Creation, One Global Network, Respect for the Individual, Best People, Integrity, and Stewardship.");
+        f1.setAnswer("The company focuses on innovation, client value creation, and respect for the individual.");
         generated.add(f1);
 
         Question f4 = new Question();
         f4.setCompany(company.toLowerCase());
         f4.setRole(role);
         f4.setCategory("Technical");
-        f4.setContent("How does " + company + " help clients with Digital Transformation?");
-        f4.setAnswer("Accenture leverages Cloud, AI, and Automation to help businesses modernize their operations and improve customer experiences.");
+        f4.setContent("How does " + company + " leverage AI and Digital Transformation?");
+        f4.setAnswer("By integrating advanced analytics and cloud solutions to modernize business operations.");
         generated.add(f4);
         
         // HR
@@ -142,15 +172,15 @@ public class QuestionController {
         f2.setRole(role);
         f2.setCategory("HR");
         f2.setContent("Why are you interested in a career at " + company + "?");
-        f2.setAnswer("I admire the company's innovation, global reach, and commitment to helping clients transform their businesses through technology.");
+        f2.setAnswer("I admire the company's growth, global presence, and commitment to excellence.");
         generated.add(f2);
 
         Question f5 = new Question();
         f5.setCompany(company.toLowerCase());
         f5.setRole(role);
         f5.setCategory("HR");
-        f5.setContent("Tell me about a time you worked in a diverse team at " + company + ".");
-        f5.setAnswer("I enjoy working with people from different backgrounds to bring unique perspectives to problem-solving, which is a core value here.");
+        f5.setContent("Where do you see yourself in 5 years within " + company + "?");
+        f5.setAnswer("I aim to be in a leadership role, contributing significantly to key projects.");
         generated.add(f5);
 
         // Managerial
@@ -158,17 +188,26 @@ public class QuestionController {
         f3.setCompany(company.toLowerCase());
         f3.setRole(role);
         f3.setCategory("Managerial");
-        f3.setContent("Describe a situation where you had to meet a tight deadline at " + company + ".");
-        f3.setAnswer("I would prioritize tasks, maintain open communication with stakeholders, and work collaboratively with the team to ensure quality delivery.");
+        f3.setContent("Describe a situation where you had to meet a tight deadline.");
+        f3.setAnswer("I prioritized tasks, optimized my workflow, and ensured effective team communication.");
         generated.add(f3);
 
+        // Programming
         Question f6 = new Question();
         f6.setCompany(company.toLowerCase());
         f6.setRole(role);
-        f6.setCategory("Managerial");
-        f6.setContent("How do you handle conflict within a project team at " + company + "?");
-        f6.setAnswer("By addressing the issue early, listening to all perspectives, and finding a professional resolution that keeps the project on track.");
+        f6.setCategory("Programming");
+        f6.setContent("Reverse a string without using built-in methods.");
+        f6.setAnswer("Use a loop to iterate from end to start and append characters to a new string.");
         generated.add(f6);
+
+        Question f7 = new Question();
+        f7.setCompany(company.toLowerCase());
+        f7.setRole(role);
+        f7.setCategory("Programming");
+        f7.setContent("Check if a number is prime.");
+        f7.setAnswer("Iterate from 2 up to the square root of the number and check for divisibility.");
+        generated.add(f7);
         
         return generated;
     }
@@ -592,6 +631,33 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Convert decimal to binary.", ""));
 
         } else if (company.equalsIgnoreCase("HCLTech")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "What is the difference between abstract class and interface?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of JVM, JRE, and JDK.", ""));
+            qs.add(new Question(null, company, "Technical", "What are the access modifiers in Java?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain Exception Handling in Java.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between overloading and overriding?", ""));
+            qs.add(new Question(null, company, "Technical", "What is a primary key and foreign key?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the ACID properties in DBMS.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between TCP and UDP?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain different types of CSS selectors.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the use of 'this' and 'super' keyword in Java?", ""));
+
+            // Managerial (5)
+            qs.add(new Question(null, company, "Managerial", "How do you handle pressure and tight deadlines?", ""));
+            qs.add(new Question(null, company, "Managerial", "Describe a time you resolved a conflict in your team.", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you prioritize your daily tasks?", ""));
+            qs.add(new Question(null, company, "Managerial", "What is your approach to learning new technologies?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle negative feedback?", ""));
+
+            // HR (5)
+            qs.add(new Question(null, company, "HR", "Tell me about yourself.", ""));
+            qs.add(new Question(null, company, "HR", "Why do you want to join HCLTech?", ""));
+            qs.add(new Question(null, company, "HR", "What are your strengths and weaknesses?", ""));
+            qs.add(new Question(null, company, "HR", "Where do you see yourself in 5 years?", ""));
+            qs.add(new Question(null, company, "HR", "Why should we hire you?", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Find the second smallest element in an array.", ""));
             qs.add(new Question(null, company, "Programming", "Reverse a string using recursion.", ""));
             qs.add(new Question(null, company, "Programming", "Check if a number is prime.", ""));
@@ -604,6 +670,26 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find the maximum subarray sum.", ""));
 
         } else if (company.equalsIgnoreCase("IBM")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "What is Cloud Computing and its types?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of Virtualization.", ""));
+            qs.add(new Question(null, company, "Technical", "What is Docker and how is it different from a VM?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the working of a REST API.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between SQL and NoSQL?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of Big Data.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between static and dynamic binding?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the Software Development Life Cycle (SDLC).", ""));
+            qs.add(new Question(null, company, "Technical", "What is the role of a firewall in network security?", ""));
+            qs.add(new Question(null, company, "Technical", "What is Git and why is it used?", ""));
+
+            // HR/Managerial (5)
+            qs.add(new Question(null, company, "HR", "Tell me about yourself.", ""));
+            qs.add(new Question(null, company, "HR", "Why IBM?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle failure?", ""));
+            qs.add(new Question(null, company, "Managerial", "Describe a time you took initiative.", ""));
+            qs.add(new Question(null, company, "HR", "What are your salary expectations?", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Find the first non-repeating character in a string.", ""));
             qs.add(new Question(null, company, "Programming", "Reverse a linked list.", ""));
             qs.add(new Question(null, company, "Programming", "Detect a cycle in a linked list.", ""));
@@ -616,6 +702,26 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find common elements in three arrays.", ""));
 
         } else if (company.equalsIgnoreCase("Cognizant")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "What is an object in Java?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of Encapsulation.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a constructor in Java?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the difference between String, StringBuilder, and StringBuffer.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a collection framework in Java?", ""));
+            qs.add(new Question(null, company, "Technical", "What is an index in a database?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the difference between GET and POST methods.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a deadlock in OS?", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between array and linked list?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of multi-threading.", ""));
+
+            // HR (5)
+            qs.add(new Question(null, company, "HR", "Why Cognizant?", ""));
+            qs.add(new Question(null, company, "HR", "Tell me about your project.", ""));
+            qs.add(new Question(null, company, "HR", "Are you ready to work in shifts?", ""));
+            qs.add(new Question(null, company, "HR", "What is your greatest achievement?", ""));
+            qs.add(new Question(null, company, "HR", "Do you have any questions for us?", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Find largest and smallest element in array.", ""));
             qs.add(new Question(null, company, "Programming", "Reverse a number.", ""));
             qs.add(new Question(null, company, "Programming", "Check Armstrong number.", ""));
@@ -628,6 +734,26 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find sum of digits.", ""));
 
         } else if (company.equalsIgnoreCase("Microsoft")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "How does a Hash Map work?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of a balanced Binary Search Tree.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the time complexity of QuickSort?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of Paging in OS.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between a mutex and a semaphore?", ""));
+            qs.add(new Question(null, company, "Technical", "How do you prevent SQL injection?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the CAP theorem in distributed systems.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the role of a Load Balancer?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the working of the HTTPS protocol.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between a process and a thread?", ""));
+
+            // HR (5)
+            qs.add(new Question(null, company, "HR", "Why Microsoft?", ""));
+            qs.add(new Question(null, company, "HR", "Describe a challenging problem you solved.", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle disagreements with your lead?", ""));
+            qs.add(new Question(null, company, "HR", "What is your favorite Microsoft product and why?", ""));
+            qs.add(new Question(null, company, "HR", "Tell me about a time you worked on a group project.", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Two Sum problem.", ""));
             qs.add(new Question(null, company, "Programming", "Reverse a linked list.", ""));
             qs.add(new Question(null, company, "Programming", "Detect cycle in linked list.", ""));
@@ -640,6 +766,26 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find missing number using XOR.", ""));
 
         } else if (company.equalsIgnoreCase("Oracle")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "What is the difference between DELETE and TRUNCATE?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of database indexing.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a View in SQL?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the architecture of an Oracle database.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a stored procedure and a trigger?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the difference between inner and outer join.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the role of a DBA?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of Normalization.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the use of the GROUP BY clause?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of a cursor in SQL.", ""));
+
+            // HR (5)
+            qs.add(new Question(null, company, "HR", "Why Oracle?", ""));
+            qs.add(new Question(null, company, "HR", "Tell me about your technical strengths.", ""));
+            qs.add(new Question(null, company, "HR", "How do you stay updated with technology?", ""));
+            qs.add(new Question(null, company, "HR", "Are you willing to relocate?", ""));
+            qs.add(new Question(null, company, "HR", "Describe your dream job.", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Find duplicate elements in array.", ""));
             qs.add(new Question(null, company, "Programming", "Reverse string without built-in functions.", ""));
             qs.add(new Question(null, company, "Programming", "Implement stack using array.", ""));
@@ -652,6 +798,26 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Check if number is even or odd.", ""));
 
         } else if (company.equalsIgnoreCase("Amazon")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "Explain the Amazon Leadership Principles.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between horizontal and vertical scaling?", ""));
+            qs.add(new Question(null, company, "Technical", "How does a Content Delivery Network (CDN) work?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of Microservices.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a message queue and why is it used?", ""));
+            qs.add(new Question(null, company, "Technical", "How do you design a URL shortening service?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the working of an S3 bucket.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between SQL and NoSQL?", ""));
+            qs.add(new Question(null, company, "Technical", "How do you handle high availability in a system?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of eventual consistency.", ""));
+
+            // HR (5)
+            qs.add(new Question(null, company, "HR", "Why Amazon?", ""));
+            qs.add(new Question(null, company, "HR", "Describe a time you went above and beyond for a customer.", ""));
+            qs.add(new Question(null, company, "Managerial", "Tell me about a time you failed and what you learned.", ""));
+            qs.add(new Question(null, company, "HR", "What is your favorite Amazon principle?", ""));
+            qs.add(new Question(null, company, "HR", "How do you handle ambiguity in a project?", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Two Sum problem.", ""));
             qs.add(new Question(null, company, "Programming", "Longest substring without repeating characters.", ""));
             qs.add(new Question(null, company, "Programming", "Merge intervals.", ""));
@@ -664,6 +830,26 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Sliding window maximum.", ""));
 
         } else if (company.equalsIgnoreCase("LTIMindtree")) {
+            // Technical (10)
+            qs.add(new Question(null, company, "Technical", "What is the difference between C++ and Java?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of a friend function in C++.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a virtual function?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the different layers of the OSI model.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the purpose of a subnet mask?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the difference between local and global variables.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a constructor and destructor?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of file handling.", ""));
+            qs.add(new Question(null, company, "Technical", "What is the use of the 'final' keyword in Java?", ""));
+            qs.add(new Question(null, company, "Technical", "Explain the concept of garbage collection in Java.", ""));
+
+            // HR (5)
+            qs.add(new Question(null, company, "HR", "Why LTIMindtree?", ""));
+            qs.add(new Question(null, company, "HR", "Tell me about your technical project.", ""));
+            qs.add(new Question(null, company, "HR", "Are you okay with relocation?", ""));
+            qs.add(new Question(null, company, "HR", "What are your hobbies?", ""));
+            qs.add(new Question(null, company, "HR", "Do you have any questions?", ""));
+
+            // Programming (10)
             qs.add(new Question(null, company, "Programming", "Find second largest number in array.", ""));
             qs.add(new Question(null, company, "Programming", "Reverse a string.", ""));
             qs.add(new Question(null, company, "Programming", "Check prime number.", ""));
@@ -674,6 +860,7 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find sum of array elements.", ""));
             qs.add(new Question(null, company, "Programming", "Implement linear search.", ""));
             qs.add(new Question(null, company, "Programming", "Sort array using bubble sort.", ""));
+
 
         } else {
             // Default common questions for others
