@@ -31,6 +31,13 @@ public class DataInitializer implements CommandLineRunner {
         } catch (Exception e) {
             System.out.println("⚠️ Could not backfill is_deleted, perhaps table doesn't exist yet: " + e.getMessage());
         }
+        // Backfill null is_available columns to true for existing mentors
+        try {
+            jdbcTemplate.execute("UPDATE mentors SET is_available = true WHERE is_available IS NULL");
+            System.out.println("✅ Backfilled existing mentors where is_available was NULL");
+        } catch (Exception e) {
+            System.out.println("⚠️ Could not backfill is_available for mentors: " + e.getMessage());
+        }
 
         // Create default admin if it doesn't exist
         if (!adminRepository.existsByUsername("Bobby")) {

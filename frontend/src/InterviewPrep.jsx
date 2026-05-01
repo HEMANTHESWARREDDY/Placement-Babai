@@ -8,6 +8,9 @@ const TRENDING_COMPANIES = [
     { name: 'TCS', searches: '257 searches', icon: 'T', color: '#4f46e5' },
     { name: 'Infosys', searches: '193 searches', icon: 'I', color: '#2563eb' },
     { name: 'Capgemini', searches: '157 searches', icon: 'C', color: '#0ea5e9' },
+    { name: 'HCLTech', searches: '142 searches', icon: 'H', color: '#3b82f6' },
+    { name: 'IBM', searches: '128 searches', icon: 'I', color: '#06b6d4' },
+    { name: 'Microsoft', searches: '115 searches', icon: 'M', color: '#f59e0b' },
 ];
 
 const RECENT_COMMUNITY = [
@@ -324,7 +327,7 @@ function InterviewPrep() {
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
                         <span className="ip-stat-number">10+</span>
-                        <span className="ip-stat-label">Hiring Partners</span>
+                        <span className="ip-stat-label">Free Sessions</span>
                     </div>
                 </div>
             </div>

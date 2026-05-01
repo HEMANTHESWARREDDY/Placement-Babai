@@ -195,7 +195,7 @@ public class QuestionController {
     // Helper to seed some data easily via API if needed (or just use for testing)
     @PostMapping("/seed")
     public ResponseEntity<?> seedData() {
-        String[] topCompanies = {"Accenture", "Deloitte", "TCS", "Infosys", "Capgemini"};
+        String[] topCompanies = {"Accenture", "Deloitte", "TCS", "Infosys", "Capgemini", "HCLTech", "IBM", "Cognizant", "Microsoft", "Oracle", "Amazon", "LTIMindtree"};
         int totalSeeded = 0;
 
         for (String company : topCompanies) {
@@ -371,6 +371,18 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find the transpose of a matrix.", ""));
             qs.add(new Question(null, company, "Programming", "Check if a string is a substring of another.", ""));
             qs.add(new Question(null, company, "Programming", "Find the power of a number using recursion.", ""));
+            
+            // Extra set (Capgemini)
+            qs.add(new Question(null, company, "Programming", "Find duplicate elements in an array.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse words in a string.", ""));
+            qs.add(new Question(null, company, "Programming", "Count frequency of characters in a string.", ""));
+            qs.add(new Question(null, company, "Programming", "Find missing number in array (1–n).", ""));
+            qs.add(new Question(null, company, "Programming", "Implement bubble sort.", ""));
+            qs.add(new Question(null, company, "Programming", "Check if two strings are anagrams.", ""));
+            qs.add(new Question(null, company, "Programming", "Find intersection of two arrays.", ""));
+            qs.add(new Question(null, company, "Programming", "Rotate array by k positions.", ""));
+            qs.add(new Question(null, company, "Programming", "Find transpose of matrix.", ""));
+            qs.add(new Question(null, company, "Programming", "Check balanced parentheses.", ""));
 
         } else if (company.equalsIgnoreCase("Accenture")) {
             // Technical (17)
@@ -578,6 +590,90 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find LCM of two numbers.", ""));
             qs.add(new Question(null, company, "Programming", "Check if a year is a leap year.", ""));
             qs.add(new Question(null, company, "Programming", "Convert decimal to binary.", ""));
+
+        } else if (company.equalsIgnoreCase("HCLTech")) {
+            qs.add(new Question(null, company, "Programming", "Find the second smallest element in an array.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse a string using recursion.", ""));
+            qs.add(new Question(null, company, "Programming", "Check if a number is prime.", ""));
+            qs.add(new Question(null, company, "Programming", "Count occurrences of each element in an array.", ""));
+            qs.add(new Question(null, company, "Programming", "Find the sum of elements in an array.", ""));
+            qs.add(new Question(null, company, "Programming", "Remove duplicate elements from an array.", ""));
+            qs.add(new Question(null, company, "Programming", "Check whether a string is a palindrome.", ""));
+            qs.add(new Question(null, company, "Programming", "Find factorial of a number (iterative).", ""));
+            qs.add(new Question(null, company, "Programming", "Swap two numbers using XOR.", ""));
+            qs.add(new Question(null, company, "Programming", "Find the maximum subarray sum.", ""));
+
+        } else if (company.equalsIgnoreCase("IBM")) {
+            qs.add(new Question(null, company, "Programming", "Find the first non-repeating character in a string.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse a linked list.", ""));
+            qs.add(new Question(null, company, "Programming", "Detect a cycle in a linked list.", ""));
+            qs.add(new Question(null, company, "Programming", "Implement stack using queue.", ""));
+            qs.add(new Question(null, company, "Programming", "Find longest substring without repeating characters.", ""));
+            qs.add(new Question(null, company, "Programming", "Merge two sorted linked lists.", ""));
+            qs.add(new Question(null, company, "Programming", "Binary search implementation.", ""));
+            qs.add(new Question(null, company, "Programming", "Find height of a binary tree.", ""));
+            qs.add(new Question(null, company, "Programming", "Implement queue using stack.", ""));
+            qs.add(new Question(null, company, "Programming", "Find common elements in three arrays.", ""));
+
+        } else if (company.equalsIgnoreCase("Cognizant")) {
+            qs.add(new Question(null, company, "Programming", "Find largest and smallest element in array.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse a number.", ""));
+            qs.add(new Question(null, company, "Programming", "Check Armstrong number.", ""));
+            qs.add(new Question(null, company, "Programming", "Count digits in a number.", ""));
+            qs.add(new Question(null, company, "Programming", "Print Fibonacci series.", ""));
+            qs.add(new Question(null, company, "Programming", "Check leap year.", ""));
+            qs.add(new Question(null, company, "Programming", "Find GCD of two numbers.", ""));
+            qs.add(new Question(null, company, "Programming", "Convert decimal to binary.", ""));
+            qs.add(new Question(null, company, "Programming", "Sort array using selection sort.", ""));
+            qs.add(new Question(null, company, "Programming", "Find sum of digits.", ""));
+
+        } else if (company.equalsIgnoreCase("Microsoft")) {
+            qs.add(new Question(null, company, "Programming", "Two Sum problem.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse a linked list.", ""));
+            qs.add(new Question(null, company, "Programming", "Detect cycle in linked list.", ""));
+            qs.add(new Question(null, company, "Programming", "Merge two sorted arrays.", ""));
+            qs.add(new Question(null, company, "Programming", "Find longest substring without repeating characters.", ""));
+            qs.add(new Question(null, company, "Programming", "Valid parentheses problem.", ""));
+            qs.add(new Question(null, company, "Programming", "Find kth largest element in array.", ""));
+            qs.add(new Question(null, company, "Programming", "Binary tree level order traversal.", ""));
+            qs.add(new Question(null, company, "Programming", "Implement LRU cache.", ""));
+            qs.add(new Question(null, company, "Programming", "Find missing number using XOR.", ""));
+
+        } else if (company.equalsIgnoreCase("Oracle")) {
+            qs.add(new Question(null, company, "Programming", "Find duplicate elements in array.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse string without built-in functions.", ""));
+            qs.add(new Question(null, company, "Programming", "Implement stack using array.", ""));
+            qs.add(new Question(null, company, "Programming", "Check if string is palindrome.", ""));
+            qs.add(new Question(null, company, "Programming", "Sort array using quicksort.", ""));
+            qs.add(new Question(null, company, "Programming", "Find common elements between arrays.", ""));
+            qs.add(new Question(null, company, "Programming", "Implement queue using linked list.", ""));
+            qs.add(new Question(null, company, "Programming", "Find max and min in array.", ""));
+            qs.add(new Question(null, company, "Programming", "Count vowels in string.", ""));
+            qs.add(new Question(null, company, "Programming", "Check if number is even or odd.", ""));
+
+        } else if (company.equalsIgnoreCase("Amazon")) {
+            qs.add(new Question(null, company, "Programming", "Two Sum problem.", ""));
+            qs.add(new Question(null, company, "Programming", "Longest substring without repeating characters.", ""));
+            qs.add(new Question(null, company, "Programming", "Merge intervals.", ""));
+            qs.add(new Question(null, company, "Programming", "Kth largest element in array.", ""));
+            qs.add(new Question(null, company, "Programming", "Top K frequent elements.", ""));
+            qs.add(new Question(null, company, "Programming", "Product of array except self.", ""));
+            qs.add(new Question(null, company, "Programming", "Valid parentheses.", ""));
+            qs.add(new Question(null, company, "Programming", "Binary tree inorder traversal.", ""));
+            qs.add(new Question(null, company, "Programming", "Detect cycle in graph.", ""));
+            qs.add(new Question(null, company, "Programming", "Sliding window maximum.", ""));
+
+        } else if (company.equalsIgnoreCase("LTIMindtree")) {
+            qs.add(new Question(null, company, "Programming", "Find second largest number in array.", ""));
+            qs.add(new Question(null, company, "Programming", "Reverse a string.", ""));
+            qs.add(new Question(null, company, "Programming", "Check prime number.", ""));
+            qs.add(new Question(null, company, "Programming", "Count frequency of characters.", ""));
+            qs.add(new Question(null, company, "Programming", "Remove duplicates from array.", ""));
+            qs.add(new Question(null, company, "Programming", "Find factorial using recursion.", ""));
+            qs.add(new Question(null, company, "Programming", "Check palindrome number.", ""));
+            qs.add(new Question(null, company, "Programming", "Find sum of array elements.", ""));
+            qs.add(new Question(null, company, "Programming", "Implement linear search.", ""));
+            qs.add(new Question(null, company, "Programming", "Sort array using bubble sort.", ""));
 
         } else {
             // Default common questions for others
