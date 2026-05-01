@@ -228,7 +228,7 @@ public class QuestionController {
             }
         }
 
-        return ResponseEntity.ok("Seeded " + totalSeeded + " common questions across top 5 companies.");
+        return ResponseEntity.ok("Seeded " + totalSeeded + " common questions across top 12 companies.");
     }
 
     private List<Question> getManualQuestions(String company) {
