@@ -74,12 +74,14 @@ function App() {
   const [appliesCount, setAppliesCount] = useState({});
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
     
-    if (path === '/proConnect' || params.has('proConnect') || params.has('pro')) return 'pro-connect';
-    if (path === '/prepZo' || params.has('prepZo') || params.has('prepzo')) return 'interview-prep';
-    return localStorage.getItem('activeMainTab') || 'jobs';
+    if (path === '/proConnect' || params.has('proConnect')) return 'pro-connect';
+    if (path === '/prepZo' || params.has('prepZo')) return 'interview-prep';
+    
+    // Default to jobs for root path or any other unknown path
+    return 'jobs';
   });
 
   useEffect(() => {
