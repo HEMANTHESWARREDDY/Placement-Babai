@@ -206,7 +206,7 @@ function InterviewPrep() {
                     <div className="ip-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Prepare <span className="mobile-break">You for Interviews</span></div>
                 </h1>
 
-                <p className="ip-subtitle">Practice with Company-Specific Questions for Top 5 Companies</p>
+                <p className="ip-subtitle">Practice with Company-Specific Questions for Top 12 Companies</p>
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
@@ -312,22 +312,22 @@ function InterviewPrep() {
 
                 <div className="ip-hero-stats">
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">500+</span>
+                        <span className="ip-stat-number">1,000+</span>
                         <span className="ip-stat-label">Questions</span>
                     </div>
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">5</span>
+                        <span className="ip-stat-number">12</span>
                         <span className="ip-stat-label">Top Companies</span>
                     </div>
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">2,000+</span>
+                        <span className="ip-stat-number">5,000+</span>
                         <span className="ip-stat-label">Students Prepped</span>
                     </div>
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">10+</span>
+                        <span className="ip-stat-number">50+</span>
                         <span className="ip-stat-label">Free Sessions</span>
                     </div>
                 </div>
@@ -337,7 +337,7 @@ function InterviewPrep() {
             <div className="ip-details-section">
                 <div className="ip-explore-header">
                     <h2><span className="ip-explore-icon">👥</span> Explore Prepzo</h2>
-                    <p>Browse company+role combos from top 5 companies — click to view questions</p>
+                    <p>Browse company+role combos from top 12 companies — click to view questions</p>
                 </div>
             </div>
             {selectedCompany && (
