@@ -31,7 +31,22 @@ public class SchemaUpdateConfig implements CommandLineRunner {
                     System.err.println("Note: Could not alter column " + column + " (it might already be TEXT): " + e.getMessage());
                 }
             }
-            System.out.println("--- ALTERING FREE_SESSIONS TABLE ---");
+            System.out.println("--- ENSURING FREE_SESSIONS TABLE EXISTS ---");
+            try {
+                jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS free_sessions (" +
+                    "id BIGSERIAL PRIMARY KEY, " +
+                    "title TEXT, " +
+                    "description TEXT, " +
+                    "link TEXT, " +
+                    "schedule TEXT, " +
+                    "active BOOLEAN DEFAULT TRUE" +
+                    ")");
+                System.out.println("Successfully ensured free_sessions table exists");
+            } catch (Exception e) {
+                System.err.println("Note: Could not create free_sessions table: " + e.getMessage());
+            }
+
+            System.out.println("--- ALTERING FREE_SESSIONS TABLE COLUMNS ---");
             String[] sessionCols = {"title", "description", "link", "schedule"};
             for (String col : sessionCols) {
                 try {
