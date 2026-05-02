@@ -560,15 +560,17 @@ function InterviewPrep() {
                             <p className="modal-intro">Get expert guidance with our curated free sessions by Placement Babai.</p>
 
                             <div className="sessions-toolbar">
-                                <div className="session-search-wrapper">
-                                    <span className="search-icon">🔍</span>
-                                    <input
-                                        type="text"
-                                        placeholder="Search sessions..."
-                                        value={sessionSearch}
-                                        onChange={(e) => setSessionSearch(e.target.value)}
-                                        className="session-search-input"
-                                    />
+                                <div className="session-filters">
+                                    <div className="session-search-group">
+                                        <span className="session-search-icon">🔍</span>
+                                        <input
+                                            type="text"
+                                            placeholder="Search sessions..."
+                                            value={sessionSearch}
+                                            onChange={(e) => setSessionSearch(e.target.value)}
+                                            className="session-search-input"
+                                        />
+                                    </div>
                                 </div>
                                 <CustomSelect 
                                     options={[
