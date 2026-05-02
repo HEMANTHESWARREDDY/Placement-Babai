@@ -27,8 +27,14 @@ public class FreeSessionController {
     }
 
     @PostMapping
-    public FreeSession createSession(@RequestBody FreeSession session) {
-        return repository.save(session);
+    public ResponseEntity<?> createSession(@RequestBody FreeSession session) {
+        try {
+            FreeSession saved = repository.save(session);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(java.util.Map.of("message", "Database Error: " + e.getMessage()));
+        }
     }
 
     @PutMapping("/{id}")
