@@ -317,7 +317,7 @@ function InterviewPrep() {
                     </div>
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">12</span>
+                        <span className="ip-stat-number">10+</span>
                         <span className="ip-stat-label">Top Companies</span>
                     </div>
                     <div className="ip-hero-stat-divider" />
