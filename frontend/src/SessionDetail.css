@@ -1,0 +1,201 @@
+.session-detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.session-detail-modal {
+    background: #18181b;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    padding: 2.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sd-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: #94a3b8;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.sd-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.sd-header {
+    margin-bottom: 2rem;
+}
+
+.sd-badge {
+    background: rgba(99, 102, 241, 0.1);
+    color: #818cf8;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sd-title {
+    font-size: 2rem;
+    color: white;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.sd-date-tag {
+    color: #f97316;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sd-content {
+    margin-bottom: 2.5rem;
+}
+
+.sd-section {
+    margin-bottom: 2rem;
+}
+
+.sd-section h3 {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.sd-description {
+    color: #e2e8f0;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.sd-schedule-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.sd-info-banner {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 1.25rem;
+    border-radius: 16px;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.sd-info-banner p {
+    margin: 0;
+    color: #c7d2fe;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.sd-footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.sd-cancel-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sd-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.sd-join-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    background: #f97316;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.39);
+    transition: all 0.2s;
+}
+
+.sd-join-btn:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.23);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 640px) {
+    .session-detail-modal {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .sd-title {
+        font-size: 1.5rem;
+    }
+    
+    .sd-footer {
+        flex-direction: column-reverse;
+    }
+    
+    .sd-cancel-btn, .sd-join-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -75,13 +75,41 @@ function App() {
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('pro')) return 'pro-connect';
+    if (params.has('pro')) return 'pro-connect';
+    if (params.has('prepzo')) return 'interview-prep';
     return localStorage.getItem('activeMainTab') || 'jobs';
   });
 
   useEffect(() => {
     localStorage.setItem('activeMainTab', activeMainTab);
+    const url = new URL(window.location.href);
+    
+    // Clear section params first
+    url.searchParams.delete('pro');
+    url.searchParams.delete('prepzo');
+    
+    // Set appropriate param
+    if (activeMainTab === 'pro-connect') url.searchParams.set('pro', '');
+    if (activeMainTab === 'interview-prep') url.searchParams.set('prepzo', '');
+    
+    // Only push if different from current
+    const currentUrl = window.location.search;
+    const newSearch = url.search;
+    if (currentUrl !== newSearch) {
+      window.history.pushState({}, '', url.toString());
+    }
   }, [activeMainTab]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('pro')) setActiveMainTab('pro-connect');
+      else if (params.has('prepzo')) setActiveMainTab('interview-prep');
+      else setActiveMainTab('jobs');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const filterBarRef = useRef(null);
   const jobsGridRef = useRef(null);

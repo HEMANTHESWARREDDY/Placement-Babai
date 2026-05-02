@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './InterviewPrep.css';
 import CustomSelect from './CustomSelect';
+import SessionDetail from './SessionDetail';
 import { API_BASE_URL } from './config';
 
 const TRENDING_COMPANIES = [
@@ -55,6 +56,7 @@ function InterviewPrep() {
     const [sessionSearch, setSessionSearch] = useState('');
     const [sessionSort, setSessionSort] = useState('newest');
     const [expandedSessionId, setExpandedSessionId] = useState(null);
+    const [selectedSession, setSelectedSession] = useState(null);
     const [questionsPerPage, setQuestionsPerPage] = useState(
         window.innerWidth <= 768 ? 6 : 8
     );
@@ -587,7 +589,7 @@ function InterviewPrep() {
                             <div className="sessions-list">
                                 {filteredSessions.length > 0 ? (
                                     filteredSessions.map(session => (
-                                         <div key={session.id} className="session-card">
+                                         <div key={session.id} className="session-card" onClick={() => setSelectedSession(session)}>
                                              <div className="session-info" style={{ paddingRight: '100px' }}>
                                                  <div className="session-header-row" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                                                      <h4 style={{ margin: 0 }}>{session.title}</h4>
@@ -607,14 +609,13 @@ function InterviewPrep() {
                                                      )}
                                                  </div>
                                                  <p 
-                                                     className={`session-desc ${expandedSessionId === session.id ? 'expanded' : ''}`}
-                                                     onClick={() => setExpandedSessionId(expandedSessionId === session.id ? null : session.id)}
-                                                     title={expandedSessionId === session.id ? "Click to collapse" : "Click to see more"}
+                                                     className="session-desc"
+                                                     title="Click for full details"
                                                  >
                                                      {session.description} {session.schedule && `• ${session.schedule}`}
                                                  </p>
                                              </div>
-                                             <a href={session.link} target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
+                                             <a href={session.link} target="_blank" rel="noreferrer" className="session-link-btn" onClick={(e) => e.stopPropagation()}>Join Now</a>
                                          </div>
                                     ))
                                 ) : (
@@ -630,6 +631,13 @@ function InterviewPrep() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {selectedSession && (
+                <SessionDetail 
+                    session={selectedSession} 
+                    onClose={() => setSelectedSession(null)} 
+                />
             )}
         </div>
     );
