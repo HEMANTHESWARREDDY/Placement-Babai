@@ -1748,9 +1748,12 @@
 .modal-intro {
     color: #94a3b8;
     font-size: 0.95rem;
-    line-height: 1.6;
     margin-bottom: 2rem;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 .sessions-list {

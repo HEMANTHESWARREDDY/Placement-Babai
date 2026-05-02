@@ -136,8 +136,16 @@ function InterviewPrep() {
             (s.description || '').toLowerCase().includes(sessionSearch.toLowerCase())
         )
         .sort((a, b) => {
-            if (sessionSort === 'newest') return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            if (sessionSort === 'newest' || sessionSort === 'today') return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
             return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+        })
+        .filter(s => {
+            if (sessionSort !== 'today') return true;
+            const d = new Date(s.createdAt);
+            const today = new Date();
+            return d.getDate() === today.getDate() &&
+                d.getMonth() === today.getMonth() &&
+                d.getFullYear() === today.getFullYear();
         });
 
     const fetchCommunityData = async () => {
@@ -571,6 +579,7 @@ function InterviewPrep() {
                                 >
                                     <option value="newest">Newest First</option>
                                     <option value="oldest">Oldest First</option>
+                                    <option value="today">Created Today</option>
                                 </select>
                             </div>
 
