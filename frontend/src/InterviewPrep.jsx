@@ -371,7 +371,7 @@ function InterviewPrep() {
             <div className="ip-details-section">
                 <div className="ip-explore-header">
                     <h2><span className="ip-explore-icon">👥</span> Explore Prep<span className="highlight-text">Zo</span></h2>
-                    <p>Browse company+role combos from top companies — click to view questions</p>
+                    <p>Browse company+role combos from top companies — search questions</p>
                 </div>
             </div>
             {selectedCompany && (
