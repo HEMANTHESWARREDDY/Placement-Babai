@@ -309,7 +309,7 @@ function InterviewPrep() {
                         )}
                     </div>
 
-                    <div className="search-input-group search-exp-input-group" style={{ flex: '5.35 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0', paddingLeft: '0.6rem' }}>
+                    <div className="search-input-group search-exp-input-group" style={{ flex: '5.35 1 0', minWidth: '0', borderLeft: '1px solid #e2e8f0' }}>
                         <span className="search-icon">💼</span>
                         <input
                             type="text"
