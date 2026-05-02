@@ -187,13 +187,20 @@
     text-overflow: ellipsis;
 }
 
-.schedule-tag {
+.schedule-tag, .date-tag {
     background: #eff6ff;
     color: #1d4ed8;
     padding: 0.25rem 0.6rem;
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 500;
+    white-space: nowrap;
+}
+
+.date-tag {
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
 }
 
 .link-preview {

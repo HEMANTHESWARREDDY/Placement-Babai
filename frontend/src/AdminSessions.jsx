@@ -183,6 +183,7 @@ function AdminSessions() {
                             <tr>
                                 <th>Status</th>
                                 <th>Session Details</th>
+                                <th>Date</th>
                                 <th>Schedule</th>
                                 <th>Meeting Link</th>
                                 <th>Actions</th>
@@ -203,6 +204,7 @@ function AdminSessions() {
                                                 <p>{session.description}</p>
                                             </div>
                                         </td>
+                                        <td><span className="date-tag">{session.sessionDate || 'Not Set'}</span></td>
                                         <td><span className="schedule-tag">{session.schedule || 'Flexible'}</span></td>
                                         <td>
                                             <a href={session.link} target="_blank" rel="noreferrer" className="link-preview">
