@@ -588,9 +588,9 @@ function InterviewPrep() {
                                 {filteredSessions.length > 0 ? (
                                     filteredSessions.map(session => (
                                          <div key={session.id} className="session-card">
-                                             <div className="session-info">
-                                                 <div className="session-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
-                                                     <h4>{session.title}</h4>
+                                             <div className="session-info" style={{ paddingRight: '100px' }}>
+                                                 <div className="session-header-row" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                                                     <h4 style={{ margin: 0 }}>{session.title}</h4>
                                                      {session.sessionDate && (
                                                          <span className="session-date-tag" style={{ 
                                                              fontSize: '0.75rem', 
@@ -600,8 +600,7 @@ function InterviewPrep() {
                                                              borderRadius: '6px',
                                                              fontWeight: '700',
                                                              border: '1px solid rgba(249, 115, 22, 0.2)',
-                                                             whiteSpace: 'nowrap',
-                                                             marginLeft: '1rem'
+                                                             whiteSpace: 'nowrap'
                                                          }}>
                                                              📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
                                                          </span>
