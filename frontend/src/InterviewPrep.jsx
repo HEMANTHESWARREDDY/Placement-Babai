@@ -50,6 +50,7 @@ function InterviewPrep() {
     const [trendingStats, setTrendingStats] = useState({});
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     const [showSessionsModal, setShowSessionsModal] = useState(false);
+    const [sessions, setSessions] = useState([]);
     const [questionsPerPage, setQuestionsPerPage] = useState(
         window.innerWidth <= 768 ? 6 : 8
     );
@@ -109,6 +110,22 @@ function InterviewPrep() {
             setGroupedQuestions(null);
         }
     }, [activeFilter, selectedCompany, targetRole, activeCategory]);
+
+    useEffect(() => {
+        fetchSessions();
+    }, []);
+
+    const fetchSessions = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/sessions/active`);
+            if (res.ok) {
+                const data = await res.json();
+                setSessions(data);
+            }
+        } catch (err) {
+            console.error("Sessions fetch error:", err);
+        }
+    };
 
     const fetchCommunityData = async () => {
         try {
@@ -524,29 +541,21 @@ function InterviewPrep() {
                             <p className="modal-intro">Get expert guidance with our curated free sessions by Placement Babai.</p>
                             
                             <div className="sessions-list">
-                                <div className="session-card">
-                                    <div className="session-info">
-                                        <h4>Daily Mock Interview Call</h4>
-                                        <p>Live technical & HR mock rounds at 7 PM IST</p>
-                                    </div>
-                                    <a href="https://meet.google.com/lookup/placementbabai" target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
-                                </div>
-
-                                <div className="session-card">
-                                    <div className="session-info">
-                                        <h4>Resume Review Workshop</h4>
-                                        <p>Weekly group session for profile optimization</p>
-                                    </div>
-                                    <a href="https://meet.google.com/lookup/placementbabai-resume" target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
-                                </div>
-
-                                <div className="session-card">
-                                    <div className="session-info">
-                                        <h4>Q&A with Industry Mentors</h4>
-                                        <p>Interactive session on career growth & placements</p>
-                                    </div>
-                                    <a href="https://meet.google.com/lookup/placementbabai-qa" target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
-                                </div>
+                                {sessions.length > 0 ? (
+                                    sessions.map(session => (
+                                        <div key={session.id} className="session-card">
+                                            <div className="session-info">
+                                                <h4>{session.title}</h4>
+                                                <p>{session.description} {session.schedule && `• ${session.schedule}`}</p>
+                                            </div>
+                                            <a href={session.link} target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="no-sessions" style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
+                                        No active sessions available at the moment. Check back soon!
+                                    </p>
+                                )}
                             </div>
 
                             <div className="modal-footer">

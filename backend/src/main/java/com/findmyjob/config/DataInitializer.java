@@ -22,8 +22,40 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private com.findmyjob.repository.FreeSessionRepository sessionRepository;
+
     @Override
     public void run(String... args) throws Exception {
+        // Create initial free sessions if none exist
+        if (sessionRepository.count() == 0) {
+            com.findmyjob.model.FreeSession s1 = new com.findmyjob.model.FreeSession();
+            s1.setTitle("Daily Mock Interview Call");
+            s1.setDescription("Live technical & HR mock rounds with real-time feedback.");
+            s1.setSchedule("7 PM IST");
+            s1.setLink("https://meet.google.com/lookup/placementbabai");
+            s1.setActive(true);
+            sessionRepository.save(s1);
+
+            com.findmyjob.model.FreeSession s2 = new com.findmyjob.model.FreeSession();
+            s2.setTitle("Resume Review Workshop");
+            s2.setDescription("Weekly group session for profile optimization and ATS checking.");
+            s2.setSchedule("Every Saturday 11 AM IST");
+            s2.setLink("https://meet.google.com/lookup/placementbabai-resume");
+            s2.setActive(true);
+            sessionRepository.save(s2);
+
+            com.findmyjob.model.FreeSession s3 = new com.findmyjob.model.FreeSession();
+            s3.setTitle("Q&A with Industry Mentors");
+            s3.setDescription("Interactive session on career growth and placement strategies.");
+            s3.setSchedule("Bi-weekly Sundays 4 PM IST");
+            s3.setLink("https://meet.google.com/lookup/placementbabai-qa");
+            s3.setActive(true);
+            sessionRepository.save(s3);
+            
+            System.out.println("✅ Seeded initial free sessions");
+        }
+
         // Backfill null is_deleted columns to false for existing jobs
         try {
             jdbcTemplate.execute("UPDATE jobs SET is_deleted = false WHERE is_deleted IS NULL");

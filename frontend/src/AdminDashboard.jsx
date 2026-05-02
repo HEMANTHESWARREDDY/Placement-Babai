@@ -6,6 +6,7 @@ import AnalyticsDashboard from './AnalyticsDashboard';
 import JobAnalytics from './JobAnalytics';
 import AdminMentors from './AdminMentors';
 import AdminBookings from './AdminBookings';
+import AdminSessions from './AdminSessions';
 
 const parseRangeLow = (str) => {
     if (!str) return null;
@@ -628,7 +629,13 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                             className={`btn-tab ${activeTab === 'sessions' ? 'active' : ''}`}
                             onClick={() => changeTab('sessions')}
                         >
-                            📅 Sessions
+                            📅 Bookings
+                        </button>
+                        <button
+                            className={`btn-tab ${activeTab === 'free-sessions' ? 'active' : ''}`}
+                            onClick={() => changeTab('free-sessions')}
+                        >
+                            🎁 Free Sessions
                         </button>
                         <button className="btn-logout" onClick={onLogout}>Logout</button>
                     </div>
@@ -641,6 +648,8 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                 <AdminMentors />
             ) : activeTab === 'sessions' ? (
                 <AdminBookings />
+            ) : activeTab === 'free-sessions' ? (
+                <AdminSessions />
             ) : activeTab === 'deleted' ? (
                 <div className="jobs-management">
                     <div className="jobs-list-header">
