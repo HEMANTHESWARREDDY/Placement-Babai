@@ -51,6 +51,9 @@ function InterviewPrep() {
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     const [showSessionsModal, setShowSessionsModal] = useState(false);
     const [sessions, setSessions] = useState([]);
+    const [sessionSearch, setSessionSearch] = useState('');
+    const [sessionSort, setSessionSort] = useState('newest');
+    const [expandedSessionId, setExpandedSessionId] = useState(null);
     const [questionsPerPage, setQuestionsPerPage] = useState(
         window.innerWidth <= 768 ? 6 : 8
     );
@@ -126,6 +129,16 @@ function InterviewPrep() {
             console.error("Sessions fetch error:", err);
         }
     };
+
+    const filteredSessions = sessions
+        .filter(s =>
+            (s.title || '').toLowerCase().includes(sessionSearch.toLowerCase()) ||
+            (s.description || '').toLowerCase().includes(sessionSearch.toLowerCase())
+        )
+        .sort((a, b) => {
+            if (sessionSort === 'newest') return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+        });
 
     const fetchCommunityData = async () => {
         try {
@@ -539,21 +552,48 @@ function InterviewPrep() {
                         </div>
                         <div className="ip-modal-body">
                             <p className="modal-intro">Get expert guidance with our curated free sessions by Placement Babai.</p>
-                            
+
+                            <div className="sessions-toolbar">
+                                <div className="session-search-wrapper">
+                                    <span className="search-icon">🔍</span>
+                                    <input
+                                        type="text"
+                                        placeholder="Search sessions..."
+                                        value={sessionSearch}
+                                        onChange={(e) => setSessionSearch(e.target.value)}
+                                        className="session-search-input"
+                                    />
+                                </div>
+                                <select
+                                    value={sessionSort}
+                                    onChange={(e) => setSessionSort(e.target.value)}
+                                    className="session-sort-select"
+                                >
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                </select>
+                            </div>
+
                             <div className="sessions-list">
-                                {sessions.length > 0 ? (
-                                    sessions.map(session => (
+                                {filteredSessions.length > 0 ? (
+                                    filteredSessions.map(session => (
                                         <div key={session.id} className="session-card">
                                             <div className="session-info">
                                                 <h4>{session.title}</h4>
-                                                <p>{session.description} {session.schedule && `• ${session.schedule}`}</p>
+                                                <p 
+                                                    className={`session-desc ${expandedSessionId === session.id ? 'expanded' : ''}`}
+                                                    onClick={() => setExpandedSessionId(expandedSessionId === session.id ? null : session.id)}
+                                                    title={expandedSessionId === session.id ? "Click to collapse" : "Click to see more"}
+                                                >
+                                                    {session.description} {session.schedule && `• ${session.schedule}`}
+                                                </p>
                                             </div>
                                             <a href={session.link} target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
                                         </div>
                                     ))
                                 ) : (
                                     <p className="no-sessions" style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
-                                        No active sessions available at the moment. Check back soon!
+                                        {sessionSearch ? "No sessions found matching your search." : "No active sessions available at the moment. Check back soon!"}
                                     </p>
                                 )}
                             </div>

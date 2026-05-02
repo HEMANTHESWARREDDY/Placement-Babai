@@ -18,4 +18,5 @@ public class FreeSession {
     private String link;
     private String schedule;
     private boolean active = true;
+    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 }
