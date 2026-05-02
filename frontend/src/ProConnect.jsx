@@ -193,7 +193,7 @@ function ProConnect({ onMentorLoginClick }) {
         <div className="pro-connect-container">
             <div className="pro-hero">
                 <h1 className="pro-hero-title">
-                    <div className="pro-title-top">Pro <span className="highlight-text">Connect</span></div>
+                    <div className="pro-title-top">ProConnect</div>
                     <div className="pro-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Connect <span className="mobile-break">You with Experts</span></div>
                 </h1>
                 
