@@ -121,6 +121,42 @@
     flex-shrink: 0;
 }
 
+/* Hero Actions */
+.ip-hero-actions {
+    margin-top: 1.8rem;
+    display: flex;
+    justify-content: center;
+}
+
+.ip-hero-action-btn {
+    background: rgba(249, 115, 22, 0.12);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+}
+
+.ip-hero-action-btn:hover {
+    background: #f97316;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+    border-color: #f97316;
+}
+
+.ip-hero-action-btn .btn-icon {
+    font-size: 1.1rem;
+}
+
 /* Hero Search Overrides */
 .ip-hero-search {
     max-width: 1050px !important;

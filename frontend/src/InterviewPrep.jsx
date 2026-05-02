@@ -344,6 +344,16 @@ function InterviewPrep() {
                     ))}
                 </div>
 
+                <div className="ip-hero-actions">
+                    <button className="ip-hero-action-btn" onClick={() => {
+                        // Logic to navigate to Mentorship or Sessions
+                        const mentorSection = document.querySelector('.ip-activity-container');
+                        if (mentorSection) mentorSection.scrollIntoView({ behavior: 'smooth' });
+                    }}>
+                        <span className="btn-icon">🎁</span> Book Free Sessions
+                    </button>
+                </div>
+
                 <div className="ip-hero-stats">
                     <div className="ip-hero-stat">
                         <span className="ip-stat-number">1,000+</span>
