@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sessions")
-@CrossOrigin(origins = "*")
 public class FreeSessionController {
 
     @Autowired
