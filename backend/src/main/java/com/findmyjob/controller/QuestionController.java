@@ -59,14 +59,24 @@ public class QuestionController {
     public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company) {
         List<Question> questions = questionRepository.findByCompanyIgnoreCase(company);
         
-        // Force refresh if the data is old (e.g. only contains the generic 'Most Common' category 
-        // but now we have specific Programming/Technical/HR categories for this company)
+        // Force refresh if the data is old or incomplete
         boolean needsRefresh = false;
         if (questions != null && !questions.isEmpty()) {
-            boolean hasOnlyDefault = questions.stream().anyMatch(q -> q.getCategory().equalsIgnoreCase("Most Common"));
             boolean isTopCompany = isTopCompany(company);
-            if (hasOnlyDefault && isTopCompany) {
-                needsRefresh = true;
+            if (isTopCompany) {
+                boolean hasOnlyDefault = questions.stream().anyMatch(q -> q.getCategory().equalsIgnoreCase("Most Common"));
+                long count = questions.size();
+                // Check if it contains the new extensive sets (usually 40+ questions)
+                // and has the specific wording from our new manual questions
+                boolean hasLatestSet = questions.stream().anyMatch(q -> 
+                    q.getContent().contains("Object-Oriented Programming with examples") || 
+                    q.getContent().contains("Object-Oriented Programming concepts") ||
+                    q.getContent().contains("why are they important?")
+                );
+
+                if (hasOnlyDefault || count < 35 || !hasLatestSet) {
+                    needsRefresh = true;
+                }
             }
         }
 
