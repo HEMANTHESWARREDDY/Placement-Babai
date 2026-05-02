@@ -49,6 +49,7 @@ function InterviewPrep() {
     const [activeFilter, setActiveFilter] = useState('Most Common');
     const [trendingStats, setTrendingStats] = useState({});
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+    const [showSessionsModal, setShowSessionsModal] = useState(false);
     const [questionsPerPage, setQuestionsPerPage] = useState(
         window.innerWidth <= 768 ? 6 : 8
     );
@@ -345,11 +346,7 @@ function InterviewPrep() {
                 </div>
 
                 <div className="ip-hero-actions">
-                    <button className="ip-hero-action-btn" onClick={() => {
-                        // Logic to navigate to Mentorship or Sessions
-                        const mentorSection = document.querySelector('.ip-activity-container');
-                        if (mentorSection) mentorSection.scrollIntoView({ behavior: 'smooth' });
-                    }}>
+                    <button className="ip-hero-action-btn" onClick={() => setShowSessionsModal(true)}>
                         <span className="btn-icon">🎁</span> Book Free Sessions
                     </button>
                 </div>
@@ -510,6 +507,46 @@ function InterviewPrep() {
                                         </>
                                     );
                                 })()}
+                            </div>
+                        </div>
+            {showSessionsModal && (
+                <div className="ip-modal-overlay" onClick={() => setShowSessionsModal(false)}>
+                    <div className="ip-sessions-modal" onClick={e => e.stopPropagation()}>
+                        <div className="ip-modal-header">
+                            <h3><span className="modal-icon">🎁</span> Free Mentorship Sessions</h3>
+                            <button className="ip-modal-close" onClick={() => setShowSessionsModal(false)}>×</button>
+                        </div>
+                        <div className="ip-modal-body">
+                            <p className="modal-intro">Get expert guidance with our curated free sessions by Placement Babai.</p>
+                            
+                            <div className="sessions-list">
+                                <div className="session-card">
+                                    <div className="session-info">
+                                        <h4>Daily Mock Interview Call</h4>
+                                        <p>Live technical & HR mock rounds at 7 PM IST</p>
+                                    </div>
+                                    <a href="https://meet.google.com/lookup/placementbabai" target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
+                                </div>
+
+                                <div className="session-card">
+                                    <div className="session-info">
+                                        <h4>Resume Review Workshop</h4>
+                                        <p>Weekly group session for profile optimization</p>
+                                    </div>
+                                    <a href="https://meet.google.com/lookup/placementbabai-resume" target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
+                                </div>
+
+                                <div className="session-card">
+                                    <div className="session-info">
+                                        <h4>Q&A with Industry Mentors</h4>
+                                        <p>Interactive session on career growth & placements</p>
+                                    </div>
+                                    <a href="https://meet.google.com/lookup/placementbabai-qa" target="_blank" rel="noreferrer" className="session-link-btn">Join Now</a>
+                                </div>
+                            </div>
+
+                            <div className="modal-footer">
+                                <p>Powered by <span className="highlight-violet">Placement Babai</span></p>
                             </div>
                         </div>
                     </div>

@@ -1675,3 +1675,153 @@
     color: #94a3b8;
     font-size: 0.9rem;
 }
+
+/* Free Sessions Modal */
+.ip-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: ipFadeIn 0.3s ease;
+}
+
+.ip-sessions-modal {
+    background: #151518;
+    width: 90%;
+    max-width: 550px;
+    border-radius: 24px;
+    border: 1px solid #27272a;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: ipScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ip-modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #27272a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1c1c21;
+}
+
+.ip-modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #f1f5f9;
+}
+
+.ip-modal-close {
+    background: #27272a;
+    border: none;
+    color: #94a3b8;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ip-modal-close:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.ip-modal-body {
+    padding: 2rem;
+}
+
+.modal-intro {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.session-card {
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.session-card:hover {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.05);
+    transform: translateX(5px);
+}
+
+.session-info h4 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1rem;
+    color: #f8fafc;
+}
+
+.session-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.session-link-btn {
+    background: #f97316;
+    color: white;
+    text-decoration: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.session-link-btn:hover {
+    background: #ea580c;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.modal-footer {
+    margin-top: 2.5rem;
+    text-align: center;
+    border-top: 1px solid #27272a;
+    padding-top: 1.5rem;
+}
+
+.modal-footer p {
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+@keyframes ipFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes ipScaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
