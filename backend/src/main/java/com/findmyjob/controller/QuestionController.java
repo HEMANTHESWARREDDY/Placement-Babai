@@ -631,40 +631,50 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Convert decimal to binary.", ""));
 
         } else if (company.equalsIgnoreCase("HCLTech")) {
-            // Technical (10)
-            qs.add(new Question(null, company, "Technical", "Explain Object-Oriented Programming concepts with examples.", ""));
+            // Technical (15)
+            qs.add(new Question(null, company, "Technical", "Can you explain the principles of Object-Oriented Programming with examples?", ""));
             qs.add(new Question(null, company, "Technical", "What is the difference between arrays and linked lists?", ""));
-            qs.add(new Question(null, company, "Technical", "How does a Database Management System work?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain normalization and its importance.", ""));
-            qs.add(new Question(null, company, "Technical", "What is the difference between process and thread?", ""));
-            qs.add(new Question(null, company, "Technical", "Describe the phases of SDLC.", ""));
-            qs.add(new Question(null, company, "Technical", "What is cloud computing and its benefits?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain REST API and its usage.", ""));
-            qs.add(new Question(null, company, "Technical", "What is time complexity?", ""));
-            qs.add(new Question(null, company, "Technical", "Differentiate between stack and queue.", ""));
+            qs.add(new Question(null, company, "Technical", "What is a Database Management System, and how does it work?", ""));
+            qs.add(new Question(null, company, "Technical", "Can you explain normalization and its different forms?", ""));
+            qs.add(new Question(null, company, "Technical", "What is SQL, and how is it used in databases?", ""));
+            qs.add(new Question(null, company, "Technical", "What are the functions of an operating system?", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between a process and a thread?", ""));
+            qs.add(new Question(null, company, "Technical", "Can you describe the phases of the Software Development Life Cycle (SDLC)?", ""));
+            qs.add(new Question(null, company, "Technical", "What is Agile methodology, and how does it differ from traditional models?", ""));
+            qs.add(new Question(null, company, "Technical", "What is cloud computing, and what are its advantages?", ""));
+            qs.add(new Question(null, company, "Technical", "What is a REST API, and how does it work?", ""));
+            qs.add(new Question(null, company, "Technical", "Can you explain recursion with an example?", ""));
+            qs.add(new Question(null, company, "Technical", "What is time complexity, and why is it important?", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between a stack and a queue?", ""));
+            qs.add(new Question(null, company, "Technical", "What is version control, and how does Git help developers?", ""));
 
             // Managerial (10)
-            qs.add(new Question(null, company, "Managerial", "How do you manage multiple tasks with deadlines?", ""));
-            qs.add(new Question(null, company, "Managerial", "Describe your role in a team project.", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you handle conflicts in a team?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you prioritize your work?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you learn new technologies quickly?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you handle pressure situations?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you ensure quality in your work?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you communicate effectively in a team?", ""));
-            qs.add(new Question(null, company, "Managerial", "Describe a leadership experience.", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you adapt to change?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you manage multiple tasks with tight deadlines?", ""));
+            qs.add(new Question(null, company, "Managerial", "Can you describe your role in a team project?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle conflicts within a team?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you prioritize your work effectively?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle high-pressure situations?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you ensure clear communication within a team?", ""));
+            qs.add(new Question(null, company, "Managerial", "Can you describe a situation where you demonstrated leadership?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you adapt to new technologies or changes?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you ensure the quality of your work?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you respond to constructive feedback?", ""));
 
-            // HR (10)
-            qs.add(new Question(null, company, "HR", "Tell me about yourself.", ""));
+            // HR (15)
+            qs.add(new Question(null, company, "HR", "Can you briefly introduce yourself?", ""));
             qs.add(new Question(null, company, "HR", "Why do you want to join HCLTech?", ""));
-            qs.add(new Question(null, company, "HR", "Why should we hire you?", ""));
-            qs.add(new Question(null, company, "HR", "What are your strengths?", ""));
-            qs.add(new Question(null, company, "HR", "What is your biggest weakness?", ""));
-            qs.add(new Question(null, company, "HR", "Where do you see yourself in 5 years?", ""));
-            qs.add(new Question(null, company, "HR", "Are you willing to relocate?", ""));
-            qs.add(new Question(null, company, "HR", "What motivates you?", ""));
-            qs.add(new Question(null, company, "HR", "Tell me about a failure.", ""));
+            qs.add(new Question(null, company, "HR", "Why should we hire you for this role?", ""));
+            qs.add(new Question(null, company, "HR", "What are your key strengths?", ""));
+            qs.add(new Question(null, company, "HR", "What is one weakness you are working on?", ""));
+            qs.add(new Question(null, company, "HR", "Where do you see yourself in the next five years?", ""));
+            qs.add(new Question(null, company, "HR", "Are you willing to relocate if required?", ""));
+            qs.add(new Question(null, company, "HR", "What motivates you to perform well?", ""));
+            qs.add(new Question(null, company, "HR", "Can you describe an achievement you are proud of?", ""));
+            qs.add(new Question(null, company, "HR", "Tell me about a failure and what you learned from it.", ""));
+            qs.add(new Question(null, company, "HR", "Why did you choose a career in IT?", ""));
+            qs.add(new Question(null, company, "HR", "What are your hobbies and interests?", ""));
+            qs.add(new Question(null, company, "HR", "How do you handle stress?", ""));
+            qs.add(new Question(null, company, "HR", "Do you prefer working in a team or independently?", ""));
             qs.add(new Question(null, company, "HR", "Do you have any questions for us?", ""));
 
             // Programming (10)
@@ -680,40 +690,50 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find the maximum subarray sum.", ""));
 
         } else if (company.equalsIgnoreCase("IBM")) {
-            // Technical (10)
-            qs.add(new Question(null, company, "Technical", "What are data structures and why are they important?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain linked list operations.", ""));
-            qs.add(new Question(null, company, "Technical", "What is a binary tree?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain recursion with an example.", ""));
+            // Technical (15)
+            qs.add(new Question(null, company, "Technical", "What are data structures, and why are they important?", ""));
+            qs.add(new Question(null, company, "Technical", "Can you explain how a linked list works?", ""));
+            qs.add(new Question(null, company, "Technical", "What is a binary tree, and where is it used?", ""));
+            qs.add(new Question(null, company, "Technical", "Can you explain recursion with an example?", ""));
             qs.add(new Question(null, company, "Technical", "What is dynamic programming?", ""));
-            qs.add(new Question(null, company, "Technical", "What is an API?", ""));
-            qs.add(new Question(null, company, "Technical", "What is JSON?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain cloud computing.", ""));
+            qs.add(new Question(null, company, "Technical", "What is hashing, and how is it used?", ""));
+            qs.add(new Question(null, company, "Technical", "What is an API, and why is it important?", ""));
+            qs.add(new Question(null, company, "Technical", "What is JSON, and where is it used?", ""));
+            qs.add(new Question(null, company, "Technical", "What is cloud computing?", ""));
             qs.add(new Question(null, company, "Technical", "What is virtualization?", ""));
-            qs.add(new Question(null, company, "Technical", "What is hashing?", ""));
+            qs.add(new Question(null, company, "Technical", "What is multithreading?", ""));
+            qs.add(new Question(null, company, "Technical", "What is memory management in programming?", ""));
+            qs.add(new Question(null, company, "Technical", "What is SQL, and how does it work?", ""));
+            qs.add(new Question(null, company, "Technical", "What is normalization in databases?", ""));
+            qs.add(new Question(null, company, "Technical", "How do you analyze the time complexity of an algorithm?", ""));
 
             // Managerial (10)
             qs.add(new Question(null, company, "Managerial", "How do you approach solving complex problems?", ""));
-            qs.add(new Question(null, company, "Managerial", "Describe your teamwork experience.", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you handle deadlines?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you manage conflicts?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you handle feedback?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you prioritize tasks?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you stay organized?", ""));
-            qs.add(new Question(null, company, "Managerial", "Describe a situation where you took initiative.", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you handle pressure?", ""));
+            qs.add(new Question(null, company, "Managerial", "Can you describe your experience working in a team?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you manage deadlines effectively?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle conflicts in a team environment?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you prioritize tasks when working on multiple assignments?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle pressure in challenging situations?", ""));
+            qs.add(new Question(null, company, "Managerial", "Can you describe a situation where you showed initiative?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you stay organized in your work?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you respond to feedback?", ""));
             qs.add(new Question(null, company, "Managerial", "How do you ensure accuracy in your work?", ""));
 
-            // HR (10)
-            qs.add(new Question(null, company, "HR", "Why IBM?", ""));
-            qs.add(new Question(null, company, "HR", "Tell me about yourself.", ""));
+            // HR (15)
+            qs.add(new Question(null, company, "HR", "Why do you want to work at IBM?", ""));
+            qs.add(new Question(null, company, "HR", "Can you introduce yourself?", ""));
             qs.add(new Question(null, company, "HR", "Why should we hire you?", ""));
             qs.add(new Question(null, company, "HR", "What are your strengths and weaknesses?", ""));
             qs.add(new Question(null, company, "HR", "What are your career goals?", ""));
             qs.add(new Question(null, company, "HR", "How do you handle stress?", ""));
             qs.add(new Question(null, company, "HR", "What is your biggest achievement?", ""));
-            qs.add(new Question(null, company, "HR", "Describe a failure and what you learned.", ""));
-            qs.add(new Question(null, company, "HR", "Give an example of teamwork.", ""));
+            qs.add(new Question(null, company, "HR", "Can you describe a failure and what you learned?", ""));
+            qs.add(new Question(null, company, "HR", "Can you give an example of teamwork?", ""));
+            qs.add(new Question(null, company, "HR", "Why did you choose the IT field?", ""));
+            qs.add(new Question(null, company, "HR", "What motivates you?", ""));
+            qs.add(new Question(null, company, "HR", "Are you willing to relocate?", ""));
+            qs.add(new Question(null, company, "HR", "What are your hobbies?", ""));
+            qs.add(new Question(null, company, "HR", "What are your long-term goals?", ""));
             qs.add(new Question(null, company, "HR", "Do you have any questions for us?", ""));
 
             // Programming (10)
@@ -729,40 +749,50 @@ public class QuestionController {
             qs.add(new Question(null, company, "Programming", "Find common elements in three arrays.", ""));
 
         } else if (company.equalsIgnoreCase("Cognizant")) {
-            // Technical (10)
-            qs.add(new Question(null, company, "Technical", "Explain Object-Oriented Programming.", ""));
-            qs.add(new Question(null, company, "Technical", "What is DBMS?", ""));
-            qs.add(new Question(null, company, "Technical", "What is SQL and how is it used?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain normalization.", ""));
-            qs.add(new Question(null, company, "Technical", "What is an Operating System?", ""));
-            qs.add(new Question(null, company, "Technical", "Difference between process and thread.", ""));
-            qs.add(new Question(null, company, "Technical", "What is SDLC?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain Agile methodology.", ""));
+            // Technical (15)
+            qs.add(new Question(null, company, "Technical", "Can you explain Object-Oriented Programming concepts?", ""));
+            qs.add(new Question(null, company, "Technical", "What is a Database Management System (DBMS)?", ""));
+            qs.add(new Question(null, company, "Technical", "What is SQL, and how is it used?", ""));
+            qs.add(new Question(null, company, "Technical", "What is normalization in databases?", ""));
+            qs.add(new Question(null, company, "Technical", "What is an operating system?", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between a process and a thread?", ""));
+            qs.add(new Question(null, company, "Technical", "What are the phases of SDLC?", ""));
+            qs.add(new Question(null, company, "Technical", "What is Agile methodology?", ""));
             qs.add(new Question(null, company, "Technical", "What is cloud computing?", ""));
-            qs.add(new Question(null, company, "Technical", "Explain recursion.", ""));
+            qs.add(new Question(null, company, "Technical", "Can you explain recursion?", ""));
+            qs.add(new Question(null, company, "Technical", "What is an API?", ""));
+            qs.add(new Question(null, company, "Technical", "What is JSON?", ""));
+            qs.add(new Question(null, company, "Technical", "What is time complexity?", ""));
+            qs.add(new Question(null, company, "Technical", "What is the difference between a stack and a queue?", ""));
+            qs.add(new Question(null, company, "Technical", "What is version control (Git)?", ""));
 
             // Managerial (10)
             qs.add(new Question(null, company, "Managerial", "How do you manage deadlines?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you work in a team?", ""));
-            qs.add(new Question(null, company, "Managerial", "How do you handle stress?", ""));
-            qs.add(new Question(null, company, "Managerial", "Describe conflict resolution.", ""));
-            qs.add(new Question(null, company, "Managerial", "What are your time management techniques?", ""));
+            qs.add(new Question(null, company, "Managerial", "Can you describe your teamwork experience?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you handle stressful situations?", ""));
+            qs.add(new Question(null, company, "Managerial", "How do you resolve conflicts in a team?", ""));
+            qs.add(new Question(null, company, "Managerial", "What techniques do you use for time management?", ""));
             qs.add(new Question(null, company, "Managerial", "How do you prioritize tasks?", ""));
-            qs.add(new Question(null, company, "Managerial", "Describe a leadership experience.", ""));
+            qs.add(new Question(null, company, "Managerial", "Can you describe a leadership experience?", ""));
             qs.add(new Question(null, company, "Managerial", "How do you communicate effectively?", ""));
             qs.add(new Question(null, company, "Managerial", "How do you handle feedback?", ""));
             qs.add(new Question(null, company, "Managerial", "How do you adapt to changes?", ""));
 
-            // HR (10)
-            qs.add(new Question(null, company, "HR", "Why Cognizant?", ""));
-            qs.add(new Question(null, company, "HR", "Tell me about yourself.", ""));
+            // HR (15)
+            qs.add(new Question(null, company, "HR", "Why do you want to join Cognizant?", ""));
+            qs.add(new Question(null, company, "HR", "Can you introduce yourself?", ""));
             qs.add(new Question(null, company, "HR", "What are your strengths?", ""));
             qs.add(new Question(null, company, "HR", "What are your weaknesses?", ""));
-            qs.add(new Question(null, company, "HR", "Why did you choose IT?", ""));
+            qs.add(new Question(null, company, "HR", "Why did you choose IT as your career?", ""));
             qs.add(new Question(null, company, "HR", "What are your career goals?", ""));
             qs.add(new Question(null, company, "HR", "Are you willing to relocate?", ""));
             qs.add(new Question(null, company, "HR", "What are your achievements?", ""));
-            qs.add(new Question(null, company, "HR", "Tell me about a failure.", ""));
+            qs.add(new Question(null, company, "HR", "Can you describe a failure?", ""));
+            qs.add(new Question(null, company, "HR", "What motivates you?", ""));
+            qs.add(new Question(null, company, "HR", "What are your hobbies?", ""));
+            qs.add(new Question(null, company, "HR", "How do you handle stress?", ""));
+            qs.add(new Question(null, company, "HR", "Are you a team player?", ""));
+            qs.add(new Question(null, company, "HR", "Why should we hire you?", ""));
             qs.add(new Question(null, company, "HR", "Do you have any questions?", ""));
 
             // Programming (10)

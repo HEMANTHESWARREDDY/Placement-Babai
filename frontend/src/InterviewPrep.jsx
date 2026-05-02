@@ -10,6 +10,7 @@ const TRENDING_COMPANIES = [
     { name: 'Capgemini', searches: '157 searches', icon: 'C', color: '#0ea5e9' },
     { name: 'HCLTech', searches: '142 searches', icon: 'H', color: '#3b82f6' },
     { name: 'IBM', searches: '128 searches', icon: 'I', color: '#06b6d4' },
+    { name: 'Cognizant', searches: '110 searches', icon: 'C', color: '#6366f1' },
     { name: 'Microsoft', searches: '115 searches', icon: 'M', color: '#f59e0b' },
 ];
 
