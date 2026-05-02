@@ -19,4 +19,5 @@ public class FreeSession {
     private String schedule;
     private boolean active = true;
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+    private java.time.LocalDate sessionDate = java.time.LocalDate.now();
 }

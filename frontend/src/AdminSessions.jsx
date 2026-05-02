@@ -7,7 +7,8 @@ const EMPTY_SESSION = {
     description: '',
     link: '',
     schedule: '',
-    active: true
+    active: true,
+    sessionDate: new Date().toISOString().split('T')[0]
 };
 
 function AdminSessions() {
@@ -143,6 +144,10 @@ function AdminSessions() {
                             <div className="form-group">
                                 <label>Schedule / Time</label>
                                 <input name="schedule" value={formData.schedule} onChange={handleInputChange} placeholder="e.g. 7 PM IST" />
+                            </div>
+                             <div className="form-group">
+                                <label>Session Date</label>
+                                <input type="date" name="sessionDate" value={formData.sessionDate} onChange={handleInputChange} required />
                             </div>
                             <div className="form-group full-width">
                                 <label>Description</label>

@@ -141,11 +141,8 @@ function InterviewPrep() {
         })
         .filter(s => {
             if (sessionSort !== 'today') return true;
-            const d = new Date(s.createdAt);
-            const today = new Date();
-            return d.getDate() === today.getDate() &&
-                d.getMonth() === today.getMonth() &&
-                d.getFullYear() === today.getFullYear();
+            const todayStr = new Date().toISOString().split('T')[0];
+            return s.sessionDate === todayStr;
         });
 
     const fetchCommunityData = async () => {
@@ -579,7 +576,7 @@ function InterviewPrep() {
                                 >
                                     <option value="newest">Newest First</option>
                                     <option value="oldest">Oldest First</option>
-                                    <option value="today">Created Today</option>
+                                    <option value="today">Today</option>
                                 </select>
                             </div>
 
