@@ -69,11 +69,18 @@ function AdminSessions() {
                 resetForm();
                 showToast(editingSession ? 'Session updated!' : 'Session created!', 'success');
             } else {
-                showToast('Failed to save session', 'error');
+                let errorMsg = 'Failed to save session';
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.message || (errorData.errors ? Object.values(errorData.errors).join(', ') : 'Failed to save session');
+                } catch (e) {
+                    errorMsg = `Error ${response.status}: ${response.statusText}`;
+                }
+                showToast(errorMsg, 'error');
             }
         } catch (error) {
             console.error('Error saving session:', error);
-            showToast('Error saving session', 'error');
+            showToast(`Connection Error: ${error.message}`, 'error');
         }
     };
 
