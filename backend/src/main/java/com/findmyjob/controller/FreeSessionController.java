@@ -44,6 +44,7 @@ public class FreeSessionController {
             session.setLink(details.getLink());
             session.setSchedule(details.getSchedule());
             session.setActive(details.isActive());
+            session.setSessionDate(details.getSessionDate());
             return ResponseEntity.ok(repository.save(session));
         }).orElse(ResponseEntity.notFound().build());
     }
