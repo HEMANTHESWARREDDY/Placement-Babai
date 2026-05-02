@@ -206,7 +206,7 @@ function InterviewPrep() {
                     <div className="ip-title-bottom">Let Placement<span className="highlight-violet">Babai</span> Prepare <span className="mobile-break">You for Interviews</span></div>
                 </h1>
 
-                <p className="ip-subtitle">Practice with Company-Specific Questions for Top 12 Companies</p>
+                <p className="ip-subtitle">Practice with Company-Specific Questions for Top Companies</p>
                 <p className="ip-desc">Practice, Perform, and get Placed</p>
 
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
@@ -337,7 +337,7 @@ function InterviewPrep() {
             <div className="ip-details-section">
                 <div className="ip-explore-header">
                     <h2><span className="ip-explore-icon">👥</span> Explore Prepzo</h2>
-                    <p>Browse company+role combos from top 12 companies — click to view questions</p>
+                    <p>Browse company+role combos from top companies — click to view questions</p>
                 </div>
             </div>
             {selectedCompany && (
