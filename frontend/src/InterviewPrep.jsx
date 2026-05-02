@@ -590,7 +590,7 @@ function InterviewPrep() {
                                 {filteredSessions.length > 0 ? (
                                     filteredSessions.map(session => (
                                          <div key={session.id} className="session-card" onClick={() => setSelectedSession(session)}>
-                                             <div className="session-info" style={{ paddingRight: '100px' }}>
+                                             <div className="session-info">
                                                  <div className="session-header-row" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                                                      <h4 style={{ margin: 0 }}>{session.title}</h4>
                                                      {session.sessionDate && (

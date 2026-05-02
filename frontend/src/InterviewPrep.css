@@ -441,6 +441,45 @@
     cursor: pointer;
 }
 
+/* Mobile Fixes for Sessions Modal */
+@media (max-width: 640px) {
+    .sessions-modal {
+        width: 96% !important;
+        max-width: none !important;
+        padding: 1.25rem !important;
+    }
+
+    .session-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 1.25rem !important;
+        gap: 1rem !important;
+    }
+
+    .session-info {
+        padding-right: 0 !important;
+    }
+
+    .session-header-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
+
+    .session-link-btn {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 0.8rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .modal-intro {
+        white-space: normal !important;
+        text-align: left !important;
+        display: block !important;
+    }
+}
+
 .ip-trending-card:hover {
     transform: translateY(-3px);
     background: #1c1c21;
