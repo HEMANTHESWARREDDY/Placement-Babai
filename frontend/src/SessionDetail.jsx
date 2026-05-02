@@ -74,7 +74,7 @@ function SessionDetail({ session, onClose }) {
 
                         <div className="sd-info-banner">
                             <span className="sd-banner-icon">✨</span>
-                            <p>This is a free mentorship session provided by PlacementBabai experts. Make sure to join on time!</p>
+                            <p>This is a free mentorship session. Make sure to join on time!</p>
                         </div>
                     </div>
                 </div>
