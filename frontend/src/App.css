@@ -368,7 +368,6 @@
   flex: 1.5;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
   padding: 0.8rem 1.4rem;
   border-right: 1px solid #e5e7eb;
   min-width: 120px;
@@ -384,12 +383,17 @@
 }
 
 .search-icon {
+  position: absolute;
+  left: 1.4rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--text-gray);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .search-input {
@@ -401,6 +405,9 @@
   min-width: 0;
   color: var(--text-dark);
   background: transparent;
+  padding-left: 2.2rem !important; /* Push text away from icon */
+  position: relative;
+  z-index: 1;
 }
 
 .search-input::placeholder {
