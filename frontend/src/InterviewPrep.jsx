@@ -198,6 +198,33 @@ function InterviewPrep() {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (suggestions.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setSuggestionIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setSuggestionIndex(prev => (prev > 0 ? prev - 1 : prev));
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (suggestionIndex >= 0) {
+                const s = suggestions[suggestionIndex];
+                setSearchTerm(s);
+                setCompany(s);
+                setSelectedCompany(s);
+                setShowSuggestions(false);
+                fetchQuestions(s);
+            } else if (searchTerm) {
+                setSelectedCompany(searchTerm);
+                fetchQuestions(searchTerm);
+            }
+        } else if (e.key === 'Escape') {
+            setShowSuggestions(false);
+        }
+    };
+
     return (
         <div className="ip-container">
             <div className="ip-hero">
@@ -212,24 +239,31 @@ function InterviewPrep() {
                 <div className="search-container ip-hero-search" style={{ position: 'relative' }}>
                     <div className="search-input-group" style={{ flex: '3.15 1 0', minWidth: '0' }}>
                         <span className="search-icon">🏢</span>
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Company"
-                            value={searchTerm}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            onFocus={() => searchTerm && setShowSuggestions(true)}
-                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                        />
+                            <input
+                                type="text"
+                                className="search-input"
+                                placeholder="Company"
+                                value={searchTerm}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                onFocus={() => searchTerm && setShowSuggestions(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                            />
                         {showSuggestions && suggestions.length > 0 && (
                             <div className="search-suggestions ip-suggestions">
                                 {suggestions.map((s, i) => (
-                                    <div key={i} className="suggestion-item" onClick={() => {
-                                        setSearchTerm(s);
-                                        setCompany(s);
-                                        setShowSuggestions(false);
-                                        fetchQuestions(s);
-                                    }}>
+                                    <div 
+                                        key={i} 
+                                        className={`suggestion-item ${i === suggestionIndex ? 'active' : ''}`} 
+                                        onClick={() => {
+                                            setSearchTerm(s);
+                                            setCompany(s);
+                                            setSelectedCompany(s);
+                                            setShowSuggestions(false);
+                                            fetchQuestions(s);
+                                        }}
+                                        onMouseEnter={() => setSuggestionIndex(i)}
+                                    >
                                         <div className="suggestion-info">
                                             <span className="suggestion-name">{s}</span>
                                         </div>

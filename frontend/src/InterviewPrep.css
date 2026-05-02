@@ -246,8 +246,11 @@
     color: #1e293b !important;
 }
 
-.ip-suggestions .suggestion-item:hover {
+.ip-suggestions .suggestion-item:hover,
+.ip-suggestions .suggestion-item.active {
     background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-left: 4px solid #f97316;
 }
 
 .ip-hero-clear-btn {
