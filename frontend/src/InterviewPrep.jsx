@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './InterviewPrep.css';
+import CustomSelect from './CustomSelect';
 import { API_BASE_URL } from './config';
 
 const TRENDING_COMPANIES = [
@@ -569,15 +570,16 @@ function InterviewPrep() {
                                         className="session-search-input"
                                     />
                                 </div>
-                                <select
+                                <CustomSelect 
+                                    options={[
+                                        { label: 'Newest First', value: 'newest' },
+                                        { label: 'Oldest First', value: 'oldest' },
+                                        { label: 'Today', value: 'today' },
+                                    ]}
                                     value={sessionSort}
-                                    onChange={(e) => setSessionSort(e.target.value)}
-                                    className="session-sort-select"
-                                >
-                                    <option value="newest">Newest First</option>
-                                    <option value="oldest">Oldest First</option>
-                                    <option value="today">Today</option>
-                                </select>
+                                    onChange={(val) => setSessionSort(val)}
+                                    theme="dark"
+                                />
                             </div>
 
                             <div className="sessions-list">

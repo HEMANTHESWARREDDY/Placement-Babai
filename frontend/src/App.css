@@ -368,8 +368,8 @@
   flex: 1.5;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.4rem;
+  gap: 0.85rem;
+  padding: 0.8rem 1.4rem;
   border-right: 1px solid #e5e7eb;
   min-width: 120px;
   position: relative;
@@ -386,6 +386,10 @@
 .search-icon {
   color: var(--text-gray);
   font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .search-input {
@@ -393,6 +397,8 @@
   outline: none;
   font-size: 1.05rem;
   width: 100%;
+  flex: 1;
+  min-width: 0;
   color: var(--text-dark);
   background: transparent;
 }

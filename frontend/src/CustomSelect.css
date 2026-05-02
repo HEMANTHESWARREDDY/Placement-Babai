@@ -114,6 +114,49 @@
     border-radius: 20px;
 }
 
+/* Dark Theme Styles */
+.custom-select-container.theme-dark .custom-select-trigger {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.custom-select-container.theme-dark:hover .custom-select-trigger {
+    border-color: rgba(249, 115, 22, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-select-container.theme-dark.open .custom-select-trigger {
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+.custom-select-container.theme-dark.active .custom-select-trigger {
+    background: rgba(249, 115, 22, 0.1);
+    border-color: #f97316;
+    color: #f97316;
+}
+
+.custom-select-options.theme-dark {
+    background: #18181b;
+    border: 1px solid #27272a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.custom-select-options.theme-dark .custom-option {
+    color: #94a3b8;
+}
+
+.custom-select-options.theme-dark .custom-option:hover {
+    background: #27272a;
+    color: white;
+}
+
+.custom-select-options.theme-dark .custom-option.selected {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+}
+
 @media (max-width: 768px) {
     .custom-select-container {
         /* Each pill = exactly 50% of filter-bar width → always 2 pills visible, never cut */

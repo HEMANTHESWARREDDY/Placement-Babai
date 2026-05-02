@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import './CustomSelect.css';
 
-const CustomSelect = ({ options, value, onChange, placeholder }) => {
+const CustomSelect = ({ options, value, onChange, placeholder, theme = 'light' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownStyle, setDropdownStyle] = useState({});
     const containerRef = useRef(null);
@@ -58,7 +58,7 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
     const dropdownPortal = isOpen ? ReactDOM.createPortal(
         <div
             id="custom-select-portal"
-            className="custom-select-options"
+            className={`custom-select-options theme-${theme}`}
             style={dropdownStyle}
         >
             {options.map((option) => (
@@ -76,7 +76,7 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
 
     return (
         <div
-            className={`custom-select-container ${isOpen ? 'open' : ''} ${value ? 'active' : ''}`}
+            className={`custom-select-container theme-${theme} ${isOpen ? 'open' : ''} ${value ? 'active' : ''}`}
             ref={containerRef}
         >
             <div className="custom-select-trigger" onClick={openDropdown}>
