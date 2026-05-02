@@ -509,6 +509,10 @@ function InterviewPrep() {
                                 })()}
                             </div>
                         </div>
+                    </div>
+                </div>
+            )}
+
             {showSessionsModal && (
                 <div className="ip-modal-overlay" onClick={() => setShowSessionsModal(false)}>
                     <div className="ip-sessions-modal" onClick={e => e.stopPropagation()}>
