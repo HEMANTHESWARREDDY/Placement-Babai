@@ -75,40 +75,33 @@ function App() {
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.has('proConnect') || params.has('pro')) return 'pro-connect';
-    if (params.has('prepZo') || params.has('prepzo')) return 'interview-prep';
+    const path = window.location.pathname;
+    
+    if (path === '/proConnect' || params.has('proConnect') || params.has('pro')) return 'pro-connect';
+    if (path === '/prepZo' || params.has('prepZo') || params.has('prepzo')) return 'interview-prep';
     return localStorage.getItem('activeMainTab') || 'jobs';
   });
 
   useEffect(() => {
     localStorage.setItem('activeMainTab', activeMainTab);
-    const url = new URL(window.location.href);
     
-    // Clear old and new section params
-    url.searchParams.delete('pro');
-    url.searchParams.delete('prepzo');
-    url.searchParams.delete('proConnect');
-    url.searchParams.delete('prepZo');
+    let newPath = '/';
+    if (activeMainTab === 'pro-connect') newPath = '/proConnect';
+    else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
     
-    let newPath = url.pathname;
-    let newSearch = '';
-    
-    if (activeMainTab === 'pro-connect') newSearch = '?proConnect';
-    else if (activeMainTab === 'interview-prep') newSearch = '?prepZo';
-    
-    // Manual string manipulation for clean "?key" instead of "?key="
-    const finalUrl = window.location.protocol + "//" + window.location.host + newPath + newSearch;
-    
-    if (window.location.search !== newSearch) {
-      window.history.pushState({}, '', finalUrl);
+    // Check if we already have this path to avoid redundant pushState
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({}, '', newPath);
     }
   }, [activeMainTab]);
 
   useEffect(() => {
     const handlePopState = () => {
+      const path = window.location.pathname;
       const params = new URLSearchParams(window.location.search);
-      if (params.has('proConnect') || params.has('pro')) setActiveMainTab('pro-connect');
-      else if (params.has('prepZo') || params.has('prepzo')) setActiveMainTab('interview-prep');
+      
+      if (path === '/proConnect' || params.has('proConnect') || params.has('pro')) setActiveMainTab('pro-connect');
+      else if (path === '/prepZo' || params.has('prepZo') || params.has('prepzo')) setActiveMainTab('interview-prep');
       else setActiveMainTab('jobs');
     };
     window.addEventListener('popstate', handlePopState);

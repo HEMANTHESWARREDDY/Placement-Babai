@@ -6,8 +6,7 @@ function SessionDetail({ session, onClose }) {
     if (!session) return null;
 
     const handleShare = async () => {
-        const url = new URL(window.location.href);
-        const shareUrl = window.location.protocol + "//" + window.location.host + "/?prepZo&session=" + session.id;
+        const shareUrl = window.location.protocol + "//" + window.location.host + "/prepZo?session=" + session.id;
         const shareData = {
             title: `Mentorship Session: ${session.title}`,
             text: `Join this free mentorship session on PlacementBabai: ${session.title}`,
