@@ -31,6 +31,14 @@ public class SchemaUpdateConfig implements CommandLineRunner {
                     System.err.println("Note: Could not alter column " + column + " (it might already be TEXT): " + e.getMessage());
                 }
             }
+            System.out.println("--- ALTERING FREE_SESSIONS TABLE ---");
+            String[] sessionCols = {"title", "description", "link", "schedule"};
+            for (String col : sessionCols) {
+                try {
+                    jdbcTemplate.execute("ALTER TABLE free_sessions ALTER COLUMN " + col + " TYPE TEXT");
+                } catch (Exception e) {}
+            }
+
             System.out.println("--- SCHEMA UPDATE COMPLETED ---");
         } catch (Exception e) {
             System.err.println("Fatal error during schema update: " + e.getMessage());

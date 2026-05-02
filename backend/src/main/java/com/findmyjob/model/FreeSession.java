@@ -12,8 +12,9 @@ public class FreeSession {
     private Long id;
     
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String link;
     private String schedule;
     private boolean active = true;
