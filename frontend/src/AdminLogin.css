@@ -3,18 +3,43 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #c4b5fd 100%);
+    background: url('/images/admin-bg.jpg') no-repeat center center;
+    background-size: cover;
     padding: 2rem;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .admin-login-container:not(.mentor-portal-bg) {
+        background: url('/images/admin-login-mobile-bg.jpg?v=1') no-repeat center center !important;
+        background-size: cover !important;
+    }
+}
+
+.admin-login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 .admin-login-box {
-    background: var(--white);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
     padding: 2.5rem 3.5rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 580px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
     width: 100%;
     margin: 2rem 0;
+    position: relative;
+    z-index: 2;
 }
 
 .back-home-btn {
@@ -75,6 +100,35 @@
     outline: none;
     border-color: var(--primary-purple);
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    padding-right: 3rem; /* Space for the eye icon */
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    transition: color 0.2s ease;
+    z-index: 5;
+}
+
+.password-toggle:hover {
+    color: var(--primary-purple);
 }
 
 .submit-btn {
@@ -146,6 +200,35 @@
     color: var(--primary-purple);
 }
 
+/* Specific styles for Mentor Login */
+.mentor-portal-bg {
+    background: url('/images/mentor-login-bg.png') no-repeat center center !important;
+    background-size: cover !important;
+}
+
+@media (max-width: 768px) {
+    .mentor-portal-bg {
+        background: url('/images/mentor-login-mobile-bg.jpg?v=1') no-repeat center center !important;
+        background-size: cover !important;
+    }
+}
+
+.mentor-portal-bg .admin-login-box {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+}
+
+.mentor-portal-bg .submit-btn {
+    background: linear-gradient(135deg, #0284c7, #0369a1); /* Using a blue gradient for mentorship/trust */
+}
+
+.mentor-portal-bg .submit-btn:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+}
+
 @media (max-width: 768px) {
     .admin-login-box {
         padding: 2rem;
@@ -154,10 +237,4 @@
     .admin-login-box h2 {
         font-size: 1.5rem;
     }
-
-    /* Specific background for Mentor Login on Mobile */
-    .mentor-portal-bg {
-        background: black url('/images/mentor-login-bg.png') no-repeat center center;
-        background-size: cover;
-    }
-}
+}

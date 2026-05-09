@@ -3,6 +3,7 @@ import './InterviewPrep.css';
 import CustomSelect from './CustomSelect';
 import SessionDetail from './SessionDetail';
 import { API_BASE_URL } from './config';
+import { recordSessionJoin } from './analyticsUtils';
 
 const TRENDING_COMPANIES = [
     { name: 'Accenture', searches: '542 searches', icon: 'A', color: '#1e40af' },
@@ -133,7 +134,48 @@ function InterviewPrep() {
         }
     };
 
+    const isSessionPast = (session) => {
+        if (!session.sessionDate) return false;
+        
+        const now = new Date();
+        const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+        
+        // 1. If date has passed
+        if (session.sessionDate < todayStr) return true;
+        
+        // 2. If it's today, check time if schedule exists
+        if (session.sessionDate === todayStr && session.schedule) {
+            try {
+                // Simple parser for "7 PM" or "7:30 PM" or "19:00"
+                const timeStr = session.schedule.toUpperCase();
+                let hours = 0;
+                let minutes = 0;
+                
+                const timeMatch = timeStr.match(/(\d+)(?::(\d+))?\s*(AM|PM)?/);
+                if (timeMatch) {
+                    hours = parseInt(timeMatch[1]);
+                    minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+                    const ampm = timeMatch[3];
+                    
+                    if (ampm === 'PM' && hours < 12) hours += 12;
+                    if (ampm === 'AM' && hours === 12) hours = 0;
+                    
+                    const sessionTime = new Date();
+                    sessionTime.setHours(hours, minutes, 0, 0);
+                    
+                    // Hide if current time is after session time (giving 30 mins grace period)
+                    return now.getTime() > (sessionTime.getTime() + 30 * 60 * 1000);
+                }
+            } catch (e) {
+                console.error("Time parse error:", e);
+            }
+        }
+        
+        return false;
+    };
+
     const filteredSessions = sessions
+        .filter(s => !isSessionPast(s)) // Filter out past sessions
         .filter(s =>
             (s.title || '').toLowerCase().includes(sessionSearch.toLowerCase()) ||
             (s.description || '').toLowerCase().includes(sessionSearch.toLowerCase())
@@ -406,8 +448,13 @@ function InterviewPrep() {
                     </div>
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">50+</span>
-                        <span className="ip-stat-label">Free Sessions</span>
+                        <span className="ip-stat-number">{
+                            sessions.filter(s => {
+                                const todayStr = new Date().toISOString().split('T')[0];
+                                return s.sessionDate === todayStr && !isSessionPast(s);
+                            }).length
+                        }</span>
+                        <span className="ip-stat-label">Free Sessions Today</span>
                     </div>
                 </div>
             </div>
@@ -608,14 +655,31 @@ function InterviewPrep() {
                                                          </span>
                                                      )}
                                                  </div>
-                                                 <p 
-                                                     className="session-desc"
-                                                     title="Click for full details"
-                                                 >
-                                                     {session.description} {session.schedule && `• ${session.schedule}`}
-                                                 </p>
-                                             </div>
-                                             <a href={session.link} target="_blank" rel="noreferrer" className="session-link-btn" onClick={(e) => e.stopPropagation()}>Join Now</a>
+                                                  <p 
+                                                      className="session-desc"
+                                                      title="Click for full details"
+                                                  >
+                                                      {session.description} {session.schedule && `• ${session.schedule}`}
+                                                  </p>
+                                                  {session.skills && (
+                                                      <div className="session-skills-tags" style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+                                                          {session.skills.split(',').map((skill, idx) => (
+                                                              <span key={idx} className="session-skill-tag" style={{
+                                                                  fontSize: '0.65rem',
+                                                                  background: 'rgba(124, 58, 237, 0.1)',
+                                                                  color: '#7c3aed',
+                                                                  padding: '2px 8px',
+                                                                  borderRadius: '4px',
+                                                                  fontWeight: '600',
+                                                                  border: '1px solid rgba(124, 58, 237, 0.2)'
+                                                              }}>
+                                                                  {skill.trim()}
+                                                              </span>
+                                                          ))}
+                                                      </div>
+                                                  )}
+                                              </div>
+                                             <a href={session.link} target="_blank" rel="noreferrer" className="session-link-btn" onClick={(e) => { e.stopPropagation(); recordSessionJoin(session.id); }}>Join Now</a>
                                          </div>
                                     ))
                                 ) : (

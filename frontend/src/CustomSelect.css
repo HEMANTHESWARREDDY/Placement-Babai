@@ -159,12 +159,10 @@
 
 @media (max-width: 768px) {
     .custom-select-container {
-        /* Each pill = exactly 50% of filter-bar width → always 2 pills visible, never cut */
-        flex: 0 0 calc(50% - 2px);
-        width: calc(50% - 2px);
-        min-width: 0;
-        max-width: calc(50% - 2px);
         flex-shrink: 0;
+        width: auto;
+        min-width: 120px;
+        max-width: none;
         overflow: visible;
     }
 

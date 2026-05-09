@@ -17,12 +17,17 @@ public class FreeSessionController {
 
     @GetMapping
     public List<FreeSession> getAllSessions() {
-        return repository.findAll();
+        return repository.findByDeletedFalseOrderByCreatedAtDesc();
     }
 
     @GetMapping("/active")
     public List<FreeSession> getActiveSessions() {
-        return repository.findByActiveTrue();
+        return repository.findByActiveTrueAndDeletedFalse();
+    }
+
+    @GetMapping("/deleted")
+    public List<FreeSession> getDeletedSessions() {
+        return repository.findByDeletedTrueOrderByDeletedAtDesc();
     }
 
     @PostMapping
@@ -43,8 +48,18 @@ public class FreeSessionController {
             session.setDescription(details.getDescription());
             session.setLink(details.getLink());
             session.setSchedule(details.getSchedule());
+            session.setSkills(details.getSkills());
             session.setActive(details.isActive());
             session.setSessionDate(details.getSessionDate());
+            return ResponseEntity.ok(repository.save(session));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<FreeSession> restoreSession(@PathVariable Long id) {
+        return repository.findById(id).map(session -> {
+            session.setDeleted(false);
+            session.setDeletedAt(null);
             return ResponseEntity.ok(repository.save(session));
         }).orElse(ResponseEntity.notFound().build());
     }
@@ -52,8 +67,23 @@ public class FreeSessionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
         return repository.findById(id).map(session -> {
+            session.setDeleted(true);
+            session.setDeletedAt(java.time.LocalDateTime.now());
+            repository.save(session);
+            return ResponseEntity.ok().<Void>build();
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/permanent/{id}")
+    public ResponseEntity<Void> permanentDelete(@PathVariable Long id) {
+        return repository.findById(id).map(session -> {
             repository.delete(session);
             return ResponseEntity.ok().<Void>build();
         }).orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/today-count")
+    public long getTodayCount() {
+        return repository.countBySessionDateAndActiveTrueAndDeletedFalse(java.time.LocalDate.now());
     }
 }

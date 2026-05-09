@@ -254,7 +254,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                showToast('Profile updated successfully! ✨');
+                showToast('Success! Your profile has been updated.', 'success');
                 setInitialProfile(JSON.parse(JSON.stringify(profile)));
                 setHasChanges(false);
                 setIsEditingProfile(false);
@@ -678,10 +678,21 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 )}
 
-                {/* Toast Notification */}
+                {/* Professional Toast Notification */}
                 {toast.show && (
-                    <div className={`mentor-toast ${toast.type}`}>
-                        {toast.type === 'success' ? '✅' : '❌'} {toast.message}
+                    <div className={`mentor-toast-container ${toast.show ? 'show' : ''}`}>
+                        <div className={`mentor-toast ${toast.type}`}>
+                            <div className="toast-icon">
+                                {toast.type === 'success' ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                )}
+                            </div>
+                            <div className="toast-content">
+                                <span className="toast-message">{toast.message}</span>
+                            </div>
+                        </div>
                     </div>
                 )}
 

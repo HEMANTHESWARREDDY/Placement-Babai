@@ -1,4 +1,5 @@
 com\findmyjob\repository\JobApplyRepository.class
+com\findmyjob\controller\FreeSessionController.class
 com\findmyjob\model\Booking.class
 com\findmyjob\service\JobParserService.class
 com\findmyjob\model\Admin.class
@@ -18,16 +19,19 @@ com\findmyjob\repository\JobViewRepository.class
 com\findmyjob\repository\SearchHistoryRepository.class
 com\findmyjob\service\EmailService.class
 com\findmyjob\controller\AuthController.class
+com\findmyjob\repository\FreeSessionRepository.class
 com\findmyjob\config\DataInitializer.class
 com\findmyjob\repository\QuestionRepository.class
 com\findmyjob\model\Mentor.class
 com\findmyjob\service\AtsService.class
 com\findmyjob\config\WebConfig.class
 com\findmyjob\FindMyJobApplication.class
+com\findmyjob\model\SessionJoin.class
 com\findmyjob\repository\PasswordResetTokenRepository.class
 com\findmyjob\model\PasswordResetToken.class
 com\findmyjob\controller\MentorController.class
 com\findmyjob\model\WebsiteView.class
+com\findmyjob\repository\SessionJoinRepository.class
 com\findmyjob\repository\BookingRepository.class
 com\findmyjob\model\SearchHistory.class
 com\findmyjob\repository\AdminRepository.class
@@ -36,6 +40,7 @@ com\findmyjob\service\JobSchedulerService.class
 com\findmyjob\repository\MentorApplicantRepository.class
 com\findmyjob\config\SecurityConfig.class
 com\findmyjob\service\JobService.class
+com\findmyjob\model\FreeSession.class
 com\findmyjob\repository\WebsiteViewRepository.class
 com\findmyjob\controller\JobController.class
 com\findmyjob\model\JobView.class

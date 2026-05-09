@@ -717,38 +717,40 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             onChange={(e) => setAutofillUrl(e.target.value)}
                                             className="autofill-input"
                                         />
-                                        <button
-                                            type="button"
-                                            className="btn-autofill"
-                                            onClick={handleAutofill}
-                                            disabled={isAutofilling || retryCountdown > 0}
-                                            title="Auto-fill using Gemini AI"
-                                        >
-                                            {isAutofilling
-                                                ? '⏳ Extracting...'
-                                                : retryCountdown > 0
-                                                    ? `⏳ Retry in ${retryCountdown}s`
-                                                    : '✨ Auto-Fill'}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn-key-setup"
-                                            onClick={() => setShowKeyInput(v => !v)}
-                                            title={geminiKey ? 'Gemini key is set ✅ (click to change)' : 'Set Gemini API key'}
-                                            style={{
-                                                padding: '0.5rem 0.75rem',
-                                                borderRadius: '8px',
-                                                border: `2px solid ${geminiKey ? '#10b981' : '#f59e0b'}`,
-                                                background: geminiKey ? '#d1fae5' : '#fef3c7',
-                                                color: geminiKey ? '#065f46' : '#92400e',
-                                                cursor: 'pointer',
-                                                fontWeight: '600',
-                                                fontSize: '0.85rem',
-                                                whiteSpace: 'nowrap'
-                                            }}
-                                        >
-                                            {geminiKey ? '🔑 Key Set ✅' : '🔑 Set Key'}
-                                        </button>
+                                        <div className="autofill-buttons-group">
+                                            <button
+                                                type="button"
+                                                className="btn-autofill"
+                                                onClick={handleAutofill}
+                                                disabled={isAutofilling || retryCountdown > 0}
+                                                title="Auto-fill using Gemini AI"
+                                            >
+                                                {isAutofilling
+                                                    ? '⏳ Extracting...'
+                                                    : retryCountdown > 0
+                                                        ? `⏳ Retry in ${retryCountdown}s`
+                                                        : '✨ Auto-Fill'}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn-key-setup"
+                                                onClick={() => setShowKeyInput(v => !v)}
+                                                title={geminiKey ? 'Gemini key is set ✅ (click to change)' : 'Set Gemini API key'}
+                                                style={{
+                                                    padding: '0.5rem 0.75rem',
+                                                    borderRadius: '8px',
+                                                    border: `2px solid ${geminiKey ? '#10b981' : '#f59e0b'}`,
+                                                    background: geminiKey ? '#d1fae5' : '#fef3c7',
+                                                    color: geminiKey ? '#065f46' : '#92400e',
+                                                    cursor: 'pointer',
+                                                    fontWeight: '600',
+                                                    fontSize: '0.85rem',
+                                                    whiteSpace: 'nowrap'
+                                                }}
+                                            >
+                                                {geminiKey ? '🔑 Key Set ✅' : '🔑 Set Key'}
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                                 {showKeyInput && !editingJob && (

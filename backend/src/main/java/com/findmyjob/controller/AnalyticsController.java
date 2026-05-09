@@ -11,6 +11,9 @@ import com.findmyjob.repository.WebsiteViewRepository;
 import com.findmyjob.repository.JobRepository;
 import com.findmyjob.repository.MentorRepository;
 import com.findmyjob.repository.MentorApplicantRepository;
+import com.findmyjob.repository.FreeSessionRepository;
+import com.findmyjob.repository.SessionJoinRepository;
+import com.findmyjob.model.SessionJoin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +52,12 @@ public class AnalyticsController {
     @Autowired
     private MentorApplicantRepository mentorApplicantRepository;
 
+    @Autowired
+    private FreeSessionRepository freeSessionRepository;
+
+    @Autowired
+    private SessionJoinRepository sessionJoinRepository;
+
     @PostMapping("/view/website")
     public ResponseEntity<?> recordWebsiteView() {
         websiteViewRepository.save(new WebsiteView(LocalDateTime.now()));
@@ -64,6 +73,12 @@ public class AnalyticsController {
     @PostMapping("/apply/job/{jobId}")
     public ResponseEntity<?> recordJobApply(@PathVariable Long jobId) {
         jobApplyRepository.save(new JobApply(jobId, LocalDateTime.now()));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/join/session/{sessionId}")
+    public ResponseEntity<?> recordSessionJoin(@PathVariable Long sessionId) {
+        sessionJoinRepository.save(new SessionJoin(sessionId, LocalDateTime.now()));
         return ResponseEntity.ok().build();
     }
 
@@ -118,6 +133,18 @@ public class AnalyticsController {
         stats.put("todayMentorApplicants", mentorApplicantRepository.countByStatusAndCreatedAtAfter("PENDING", now.toLocalDate().atStartOfDay()));
         stats.put("last1HourMentorApplicants", mentorApplicantRepository.countByStatusAndCreatedAtAfter("PENDING", now.minusHours(1)));
 
+        // Add free session stats
+        stats.put("lifetimeSessions", freeSessionRepository.count());
+        stats.put("last7DaysSessions", freeSessionRepository.countByCreatedAtAfter(now.minusDays(7)));
+        stats.put("todaySessions", freeSessionRepository.countByCreatedAtAfter(now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourSessions", freeSessionRepository.countByCreatedAtAfter(now.minusHours(1)));
+
+        // Add session join stats
+        stats.put("lifetimeSessionJoins", sessionJoinRepository.count());
+        stats.put("last7DaysSessionJoins", sessionJoinRepository.countByJoinedAtAfter(now.minusDays(7)));
+        stats.put("todaySessionJoins", sessionJoinRepository.countByJoinedAtAfter(now.toLocalDate().atStartOfDay()));
+        stats.put("last1HourSessionJoins", sessionJoinRepository.countByJoinedAtAfter(now.minusHours(1)));
+
         return ResponseEntity.ok(stats);
     }
 
@@ -168,6 +195,8 @@ public class AnalyticsController {
             long jobsCreated = jobRepository.countByPostedDateBetween(startOfDay, endOfDay);
             long mentorsJoined = mentorRepository.countByStatusAndCreatedAtBetween("APPROVED", startOfDay, endOfDay);
             long mentorApplicants = mentorApplicantRepository.countByStatusAndCreatedAtBetween("PENDING", startOfDay, endOfDay);
+            long freeSessionsCreated = freeSessionRepository.countByCreatedAtBetween(startOfDay, endOfDay);
+            long sessionJoins = sessionJoinRepository.countByJoinedAtBetween(startOfDay, endOfDay);
             List<Object[]> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay,
                     PageRequest.of(0, 5));
             List<Map<String, Object>> topSearches = searches.stream().map(row -> {
@@ -184,6 +213,8 @@ public class AnalyticsController {
             dayStat.put("jobsCreated", jobsCreated);
             dayStat.put("mentorsJoined", mentorsJoined);
             dayStat.put("mentorApplicants", mentorApplicants);
+            dayStat.put("freeSessionsCreated", freeSessionsCreated);
+            dayStat.put("sessionJoins", sessionJoins);
             dayStat.put("topSearches", topSearches);
             history.add(dayStat);
         }

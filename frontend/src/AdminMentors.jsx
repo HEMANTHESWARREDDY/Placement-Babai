@@ -124,6 +124,75 @@ function AdminMentors() {
         }
     };
 
+    const [selectedMentor, setSelectedMentor] = useState(null);
+
+    const MentorDetailModal = ({ mentor, onClose }) => {
+        if (!mentor) return null;
+        return (
+            <div className="mentor-modal-overlay" onClick={onClose}>
+                <div className="mentor-modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="mentor-modal-header">
+                        <h3>Mentor Details</h3>
+                        <button className="close-modal" onClick={onClose}>×</button>
+                    </div>
+                    <div className="mentor-modal-body">
+                        <div className="modal-section">
+                            <label>Name</label>
+                            <p className="modal-name">{mentor.name}</p>
+                        </div>
+                        <div className="modal-section">
+                            <label>Role & Company</label>
+                            <p>{mentor.role} @ {mentor.company}</p>
+                        </div>
+                        <div className="modal-section">
+                            <label>Experience</label>
+                            <p>{mentor.experience} Years</p>
+                        </div>
+                        <div className="modal-section">
+                            <label>Contact Info</label>
+                            <p>{mentor.email}</p>
+                            {mentor.phone && <p>{mentor.phone}</p>}
+                            <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="mentor-link">LinkedIn Profile ↗</a>
+                        </div>
+                        <div className="modal-section">
+                            <label>Bio</label>
+                            <p className="modal-bio">{mentor.bio}</p>
+                        </div>
+                        <div className="modal-section">
+                            <label>Skills</label>
+                            <div className="mentor-skills-tags">
+                                {mentor.skills.split(',').map((s, i) => (
+                                    <span key={i} className="mentor-skill-tag">{s.trim()}</span>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="modal-section">
+                            <label>Submitted On</label>
+                            <p>{new Date(mentor.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <div className="mentor-modal-footer">
+                        <div className="mentor-actions">
+                            {activeSubTab === 'PENDING' && (
+                                <>
+                                    <button className="btn-approve" onClick={() => { handleUpdateStatus(mentor.id, 'APPROVED'); onClose(); }} disabled={isUpdating}>Approve</button>
+                                    <button className="btn-reject" onClick={() => { handleUpdateStatus(mentor.id, 'REJECTED'); onClose(); }} disabled={isUpdating}>Reject</button>
+                                </>
+                            )}
+                            {activeSubTab === 'APPROVED' && (
+                                <button className="btn-reject" onClick={() => { handleUpdateStatus(mentor.id, 'REJECTED'); onClose(); }} disabled={isUpdating}>Revoke</button>
+                            )}
+                            {activeSubTab === 'REJECTED' && (
+                                <button className="btn-approve" onClick={() => { handleUpdateStatus(mentor.id, 'APPROVED'); onClose(); }} disabled={isUpdating}>Re-Approve</button>
+                            )}
+                            <button className="btn-delete-hard" onClick={() => { handleDelete(mentor.id); onClose(); }} disabled={isUpdating}>Delete Permanently</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="admin-mentors-container">
             <div className="admin-mentors-header">
@@ -172,89 +241,90 @@ function AdminMentors() {
                         </thead>
                         <tbody>
                             {mentors.map(mentor => (
-
-                                 <tr key={mentor.id}>
-                                     <td data-label="Name">
-                                         <strong>{mentor.name}</strong>
-                                     </td>
-                                     <td data-label="Role & Company">
-                                         <div style={{ fontWeight: '600' }}>{mentor.role}</div>
-                                         <div style={{ color: '#64748b', fontSize: '0.85rem' }}>@ {mentor.company}</div>
-                                     </td>
-                                     <td data-label="Experience">{mentor.experience} Years</td>
-                                     <td data-label="Contact / Links">
-                                         <div style={{ fontSize: '0.85rem', marginBottom: '4px' }}>{mentor.email}</div>
-                                         {mentor.phone && <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{mentor.phone}</div>}
-                                         <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="mentor-link">
-                                             LinkedIn ↗
-                                         </a>
-                                     </td>
-                                     <td data-label="Bio & Skills">
-                                         <div className="mentor-bio-text" title={mentor.bio}>{mentor.bio}</div>
-                                         <div className="mentor-skills-tags">
-                                             {mentor.skills.split(',').slice(0, 3).map((s, i) => (
-                                                 <span key={i} className="mentor-skill-tag">{s.trim()}</span>
-                                             ))}
-                                             {mentor.skills.split(',').length > 3 && <span className="mentor-skill-tag">+{mentor.skills.split(',').length - 3}</span>}
-                                         </div>
-                                     </td>
-                                     <td data-label="Submitted On">
-                                         {new Date(mentor.createdAt).toLocaleDateString()}
-                                     </td>
-                                     <td data-label="Actions" className="mentor-actions">
-                                         {activeSubTab === 'PENDING' && (
-                                             <>
-                                                 <button
-                                                     className="btn-approve"
-                                                     onClick={() => handleUpdateStatus(mentor.id, 'APPROVED')}
-                                                     disabled={isUpdating}
-                                                 >
-                                                     Approve
-                                                 </button>
-                                                 <button
-                                                     className="btn-reject"
-                                                     onClick={() => handleUpdateStatus(mentor.id, 'REJECTED')}
-                                                     disabled={isUpdating}
-                                                 >
-                                                     Reject
-                                                 </button>
-                                             </>
-                                         )}
-                                         {activeSubTab === 'APPROVED' && (
-                                             <button
-                                                 className="btn-reject"
-                                                 onClick={() => handleUpdateStatus(mentor.id, 'REJECTED')}
-                                                 disabled={isUpdating}
-                                             >
-                                                 Revoke
-                                             </button>
-                                         )}
-                                         {activeSubTab === 'REJECTED' && (
-                                             <button
-                                                 className="btn-approve"
-                                                 onClick={() => handleUpdateStatus(mentor.id, 'APPROVED')}
-                                                 disabled={isUpdating}
-                                             >
-                                                 Re-Approve
-                                             </button>
-                                         )}
-                                         <button
-                                             className="btn-delete-hard"
-                                             onClick={() => handleDelete(mentor.id)}
-                                             disabled={isUpdating}
-                                         >
-                                             Delete
-                                         </button>
-                                     </td>
-                                 </tr>
-
+                                <tr key={mentor.id} onClick={() => window.innerWidth <= 768 && setSelectedMentor(mentor)} className="mentor-row-clickable">
+                                    <td data-label="Name">
+                                        <strong>{mentor.name}</strong>
+                                        <div className="mobile-only-hint">Click to view details</div>
+                                    </td>
+                                    <td data-label="Role & Company">
+                                        <div style={{ fontWeight: '600' }}>{mentor.role}</div>
+                                        <div style={{ color: '#64748b', fontSize: '0.85rem' }}>@ {mentor.company}</div>
+                                    </td>
+                                    <td data-label="Experience">{mentor.experience} Years</td>
+                                    <td data-label="Contact / Links">
+                                        <div style={{ fontSize: '0.85rem', marginBottom: '4px' }}>{mentor.email}</div>
+                                        {mentor.phone && <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{mentor.phone}</div>}
+                                        <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="mentor-link">
+                                            LinkedIn ↗
+                                        </a>
+                                    </td>
+                                    <td data-label="Bio & Skills">
+                                        <div className="mentor-bio-text" title={mentor.bio}>{mentor.bio}</div>
+                                        <div className="mentor-skills-tags">
+                                            {mentor.skills.split(',').slice(0, 3).map((s, i) => (
+                                                <span key={i} className="mentor-skill-tag">{s.trim()}</span>
+                                            ))}
+                                            {mentor.skills.split(',').length > 3 && <span className="mentor-skill-tag">+{mentor.skills.split(',').length - 3}</span>}
+                                        </div>
+                                    </td>
+                                    <td data-label="Submitted On">
+                                        {new Date(mentor.createdAt).toLocaleDateString()}
+                                    </td>
+                                    <td data-label="Actions" className="mentor-actions">
+                                        {activeSubTab === 'PENDING' && (
+                                            <>
+                                                <button
+                                                    className="btn-approve"
+                                                    onClick={(e) => { e.stopPropagation(); handleUpdateStatus(mentor.id, 'APPROVED'); }}
+                                                    disabled={isUpdating}
+                                                >
+                                                    Approve
+                                                </button>
+                                                <button
+                                                    className="btn-reject"
+                                                    onClick={(e) => { e.stopPropagation(); handleUpdateStatus(mentor.id, 'REJECTED'); }}
+                                                    disabled={isUpdating}
+                                                >
+                                                    Reject
+                                                </button>
+                                            </>
+                                        )}
+                                        {activeSubTab === 'APPROVED' && (
+                                            <button
+                                                className="btn-reject"
+                                                onClick={(e) => { e.stopPropagation(); handleUpdateStatus(mentor.id, 'REJECTED'); }}
+                                                disabled={isUpdating}
+                                            >
+                                                Revoke
+                                            </button>
+                                        )}
+                                        {activeSubTab === 'REJECTED' && (
+                                            <button
+                                                className="btn-approve"
+                                                onClick={(e) => { e.stopPropagation(); handleUpdateStatus(mentor.id, 'APPROVED'); }}
+                                                disabled={isUpdating}
+                                            >
+                                                Re-Approve
+                                            </button>
+                                        )}
+                                        <button
+                                            className="btn-delete-hard"
+                                            onClick={(e) => { e.stopPropagation(); handleDelete(mentor.id); }}
+                                            disabled={isUpdating}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
             )}
+            {selectedMentor && <MentorDetailModal mentor={selectedMentor} onClose={() => setSelectedMentor(null)} />}
         </div>
     );
 }
+
 
 export default AdminMentors;

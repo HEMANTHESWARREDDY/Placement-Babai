@@ -17,7 +17,11 @@ public class FreeSession {
     @Column(columnDefinition = "TEXT")
     private String link;
     private String schedule;
+    private String skills;
     private boolean active = true;
+    @Column(nullable = false, name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean deleted = false;
+    private java.time.LocalDateTime deletedAt;
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
     private java.time.LocalDate sessionDate = java.time.LocalDate.now();
 }

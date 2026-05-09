@@ -39,17 +39,36 @@ function App() {
   const [showLocSuggestions, setShowLocSuggestions] = useState(false);
   const [searchExperience, setSearchExperience] = useState('');
   const [currentView, setCurrentView] = useState(() => {
+    const path = window.location.pathname;
     const savedView = localStorage.getItem('currentView');
     const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === 'true') {
+
+    if (path === '/admin' || params.get('admin') === 'true') {
       return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login';
     }
+    
     if (savedView) return savedView;
-    return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'home';
+    return 'home';
   });
 
   useEffect(() => {
     localStorage.setItem('currentView', currentView);
+    
+    // Sync currentView to URL
+    let newPath = '/';
+    if (currentView === 'admin-dashboard' || currentView === 'admin-login') {
+      newPath = '/admin';
+    } else if (currentView === 'mentor-dashboard' || currentView === 'mentor-login') {
+      newPath = '/mentor';
+    } else if (activeMainTab === 'pro-connect') {
+      newPath = '/proConnect';
+    } else if (activeMainTab === 'interview-prep') {
+      newPath = '/prepZo';
+    }
+
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({}, '', newPath);
+    }
   }, [currentView]);
 
   const [adminData, setAdminData] = useState(() => {
@@ -72,6 +91,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Dropdown for Menu
   const [appliesCount, setAppliesCount] = useState({});
+  const [todaySessionsCount, setTodaySessionsCount] = useState(0);
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState(() => {
     const path = window.location.pathname;
@@ -80,31 +100,39 @@ function App() {
     if (path === '/proConnect' || params.has('proConnect')) return 'pro-connect';
     if (path === '/prepZo' || params.has('prepZo')) return 'interview-prep';
     
-    // Default to jobs for root path or any other unknown path
     return 'jobs';
   });
 
   useEffect(() => {
     localStorage.setItem('activeMainTab', activeMainTab);
     
-    let newPath = '/';
-    if (activeMainTab === 'pro-connect') newPath = '/proConnect';
-    else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
-    
-    // Check if we already have this path to avoid redundant pushState
-    if (window.location.pathname !== newPath) {
-      window.history.pushState({}, '', newPath);
+    // Only update path if not in a special dashboard view
+    if (currentView === 'home') {
+      let newPath = '/';
+      if (activeMainTab === 'pro-connect') newPath = '/proConnect';
+      else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
+      
+      if (window.location.pathname !== newPath) {
+        window.history.pushState({}, '', newPath);
+      }
     }
-  }, [activeMainTab]);
+  }, [activeMainTab, currentView]);
 
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
       const params = new URLSearchParams(window.location.search);
       
-      if (path === '/proConnect' || params.has('proConnect') || params.has('pro')) setActiveMainTab('pro-connect');
-      else if (path === '/prepZo' || params.has('prepZo') || params.has('prepzo')) setActiveMainTab('interview-prep');
-      else setActiveMainTab('jobs');
+      if (path === '/admin') {
+        setCurrentView(localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login');
+      } else if (path === '/mentor') {
+        setCurrentView(localStorage.getItem('mentorToken') ? 'mentor-dashboard' : 'mentor-login');
+      } else {
+        setCurrentView('home');
+        if (path === '/proConnect' || params.has('proConnect')) setActiveMainTab('pro-connect');
+        else if (path === '/prepZo' || params.has('prepZo')) setActiveMainTab('interview-prep');
+        else setActiveMainTab('jobs');
+      }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -490,6 +518,7 @@ function App() {
   useEffect(() => {
     fetchJobs();
     fetchMentors();
+    fetchTodaySessionsCount();
     fetch(`${API_BASE_URL}/api/analytics/view/website`, { method: 'POST' }).catch(() => { });
 
     fetch(`${API_BASE_URL}/api/analytics/applies/grouped`)
@@ -572,6 +601,18 @@ function App() {
       console.error('Error fetching mentors:', err);
     } finally {
       setMentorsLoading(false);
+    }
+  };
+
+  const fetchTodaySessionsCount = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/sessions/today-count`);
+      if (response.ok) {
+        const count = await response.json();
+        setTodaySessionsCount(count);
+      }
+    } catch (err) {
+      console.error('Error fetching today sessions count:', err);
     }
   };
 
@@ -776,26 +817,29 @@ function App() {
             </span>
           </div>
 
-          {activeMainTab !== 'interview-prep' && (
-            <div className="header-badge" onClick={() => {
-              if (activeMainTab === 'pro-connect') {
-                document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
-              } else {
-                setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
-                setShowAll(true);
-                setIsMobileMenuOpen(false);
-                if (filterBarRef.current) {
-                  setTimeout(() => {
-                    filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
-                  }, 100);
-                }
-                document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
+          <div className="header-badge" onClick={() => {
+            if (activeMainTab === 'interview-prep') {
+               // Navigate to PrepZo and maybe focus on sessions if possible, 
+               // but for now just showing the info is good.
+               window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (activeMainTab === 'pro-connect') {
+              document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
+              setShowAll(true);
+              setIsMobileMenuOpen(false);
+              if (filterBarRef.current) {
+                setTimeout(() => {
+                  filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
+                }, 100);
               }
-            }}>
-              🔥 {activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
-                  `${newJobsToday} New Jobs Today`}
-            </div>
-          )}
+              document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
+            🔥 {activeMainTab === 'interview-prep' ? `${todaySessionsCount} Free Sessions Today` :
+                activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
+                `${newJobsToday} New Jobs Today`}
+          </div>
 
           <div className="header-actions-mobile">
             {activeMainTab !== 'jobs' && (

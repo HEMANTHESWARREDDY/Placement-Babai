@@ -7,6 +7,56 @@ function AdminBookings() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('PENDING'); // 'PENDING', 'APPROVED', 'SCHEDULED', 'REJECTED' or 'ALL'
     const [counts, setCounts] = useState({ PENDING: 0, APPROVED: 0, SCHEDULED: 0, REJECTED: 0, ALL: 0 });
+    const [selectedBooking, setSelectedBooking] = useState(null);
+
+    const BookingDetailModal = ({ booking, onClose }) => {
+        if (!booking) return null;
+        return (
+            <div className="mentor-modal-overlay" onClick={onClose}>
+                <div className="mentor-modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="mentor-modal-header">
+                        <h3>Booking Details</h3>
+                        <button className="close-modal" onClick={onClose}>×</button>
+                    </div>
+                    <div className="mentor-modal-body">
+                        <div className="modal-section">
+                            <label>Guest Details</label>
+                            <p className="modal-name">{booking.guestName}</p>
+                            <p>📧 {booking.guestEmail}</p>
+                            <p>📱 {booking.guestWhatsapp}</p>
+                        </div>
+                        <div className="modal-section">
+                            <label>Mentor & Service</label>
+                            <p>{booking.mentorName}</p>
+                            <span className="service-type">{booking.serviceType}</span>
+                        </div>
+                        <div className="modal-section">
+                            <label>Schedule</label>
+                            <p>📅 {booking.bookingDate}</p>
+                            <p>⏰ {booking.bookingTime}</p>
+                        </div>
+                        <div className="modal-section">
+                            <label>Status</label>
+                            <span className={`booking-status-pill status-${booking.status.toLowerCase()}`}>
+                                {booking.status}
+                            </span>
+                        </div>
+                        <div className="modal-section">
+                            <label>Notes</label>
+                            <p className="modal-bio">{booking.customRequest || "No notes provided."}</p>
+                        </div>
+                    </div>
+                    <div className="mentor-modal-footer">
+                        <div className="admin-booking-actions">
+                            <button className="btn-delete-hard" onClick={() => { handleDelete(booking.id); onClose(); }}>
+                                Delete Permanently
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     useEffect(() => {
         fetchBookings();
@@ -70,6 +120,9 @@ function AdminBookings() {
             <div className="admin-bookings-header">
                 <h2>Session Bookings</h2>
                 <div className="bookings-tabs">
+                    <button className={`booking-tab ${activeTab === 'ALL' ? 'active' : ''}`} onClick={() => setActiveTab('ALL')}>
+                        All ({counts.ALL})
+                    </button>
                     <button className={`booking-tab ${activeTab === 'PENDING' ? 'active' : ''}`} onClick={() => setActiveTab('PENDING')}>
                         Requests ({counts.PENDING})
                     </button>
@@ -78,9 +131,6 @@ function AdminBookings() {
                     </button>
                     <button className={`booking-tab ${activeTab === 'SCHEDULED' ? 'active' : ''}`} onClick={() => setActiveTab('SCHEDULED')}>
                         Scheduled ({counts.SCHEDULED})
-                    </button>
-                    <button className={`booking-tab ${activeTab === 'ALL' ? 'active' : ''}`} onClick={() => setActiveTab('ALL')}>
-                        All ({counts.ALL})
                     </button>
                 </div>
             </div>
@@ -114,35 +164,35 @@ function AdminBookings() {
                     </thead>
                     <tbody>
                         {filteredBookings.map(booking => (
-                            <tr key={booking.id}>
-                                <td>
+                            <tr key={booking.id} onClick={() => window.innerWidth <= 768 && setSelectedBooking(booking)} className="mentor-row-clickable">
+                                <td data-label="Guest">
                                     <div className="guest-cell">
                                         <div className="guest-name">{booking.guestName}</div>
-                                        <div className="guest-sub">📧 {booking.guestEmail}</div>
-                                        <div className="guest-sub">📱 {booking.guestWhatsapp}</div>
+                                        <div className="mobile-only-hint">📅 {booking.bookingDate} | ⏰ {booking.bookingTime}</div>
+                                        <div className="mobile-only-hint" style={{ color: '#0ea5e9', fontWeight: '600' }}>Click for details</div>
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Mentor & Service">
                                     <div className="mentor-cell">{booking.mentorName}</div>
                                     <div className="service-type">{booking.serviceType}</div>
                                 </td>
-                                <td>
+                                <td data-label="Schedule">
                                     <div style={{ fontWeight: '700' }}>📅 {booking.bookingDate}</div>
                                     <div style={{ color: '#64748b' }}>⏰ {booking.bookingTime}</div>
                                 </td>
-                                <td>
+                                <td data-label="Notes">
                                     <div className="booking-notes" title={booking.customRequest}>
                                         {booking.customRequest || "No notes provided."}
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                     <span className={`booking-status-pill status-${booking.status.toLowerCase()}`}>
                                         {booking.status}
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Action">
                                     <div className="admin-booking-actions">
-                                        <button className="btn-delete-small" onClick={() => handleDelete(booking.id)} title="Delete permanently">
+                                        <button className="btn-delete-small" onClick={(e) => { e.stopPropagation(); handleDelete(booking.id); }} title="Delete permanently">
                                             🗑️
                                         </button>
                                     </div>
@@ -151,7 +201,7 @@ function AdminBookings() {
                         ))}
                         {filteredBookings.length === 0 && (
                             <tr>
-                                <td colSpan="6" style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>
+                                <td colSpan="6" className="empty-row-bookings">
                                     No booking requests found for this tab.
                                 </td>
                             </tr>
@@ -159,6 +209,7 @@ function AdminBookings() {
                     </tbody>
                 </table>
             </div>
+            {selectedBooking && <BookingDetailModal booking={selectedBooking} onClose={() => setSelectedBooking(null)} />}
         </div>
     );
 }

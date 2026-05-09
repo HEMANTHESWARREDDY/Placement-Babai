@@ -1,5 +1,6 @@
 import React from 'react';
 import './SessionDetail.css';
+import { recordSessionJoin } from './analyticsUtils';
 
 function SessionDetail({ session, onClose }) {
     const [copied, setCopied] = React.useState(false);
@@ -59,6 +60,27 @@ function SessionDetail({ session, onClose }) {
                             <p className="sd-description">{session.description}</p>
                         </div>
 
+                        {session.skills && (
+                            <div className="sd-section">
+                                <h3>Skills you will gain</h3>
+                                <div className="sd-skills-list" style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
+                                    {session.skills.split(',').map((skill, idx) => (
+                                        <span key={idx} className="sd-skill-pill" style={{
+                                            fontSize: '0.8rem',
+                                            background: 'rgba(124, 58, 237, 0.1)',
+                                            color: '#7c3aed',
+                                            padding: '4px 12px',
+                                            borderRadius: '6px',
+                                            fontWeight: '600',
+                                            border: '1px solid rgba(124, 58, 237, 0.2)'
+                                        }}>
+                                            {skill.trim()}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {session.schedule && (
                             <div className="sd-section">
                                 <h3>Schedule</h3>
@@ -78,7 +100,7 @@ function SessionDetail({ session, onClose }) {
 
                 <div className="sd-footer">
                     <button className="sd-cancel-btn" onClick={onClose}>Close</button>
-                    <a href={session.link} target="_blank" rel="noreferrer" className="sd-join-btn">
+                    <a href={session.link} target="_blank" rel="noreferrer" className="sd-join-btn" onClick={() => recordSessionJoin(session.id)}>
                         Join Session Now
                     </a>
                 </div>
