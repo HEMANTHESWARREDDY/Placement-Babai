@@ -1,18 +1,15 @@
 package com.findmyjob.repository;
 
 import com.findmyjob.model.Job;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface JobRepository extends JpaRepository<Job, Long> {
+public interface JobRepository extends MongoRepository<Job, String> {
 
     List<Job> findByTitleContainingIgnoreCaseAndIsDeletedFalse(String title);
 
@@ -24,20 +21,18 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     List<Job> findByIsDeletedTrue();
 
-    @Query("SELECT j FROM Job j WHERE j.isDeleted = false AND (" +
-            "LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(j.company) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(j.location) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(j.passoutYear) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(j.skills) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-    List<Job> searchJobs(@Param("keyword") String keyword);
+    @Query("{ 'isDeleted': false, '$or': [ " +
+            "{ 'title': { '$regex': ?0, '$options': 'i' } }, " +
+            "{ 'company': { '$regex': ?0, '$options': 'i' } }, " +
+            "{ 'location': { '$regex': ?0, '$options': 'i' } }, " +
+            "{ 'passoutYear': { '$regex': ?0, '$options': 'i' } }, " +
+            "{ 'skills': { '$regex': ?0, '$options': 'i' } } " +
+            "] }")
+    List<Job> searchJobs(String keyword);
 
-    long countByPostedDateAfter(java.time.LocalDateTime date);
+    long countByPostedDateAfter(LocalDateTime date);
 
-    long countByPostedDateBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
+    long countByPostedDateBetween(LocalDateTime start, LocalDateTime end);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Job j WHERE j.isDeleted = true AND j.deletedAt < :cutoffDate")
-    void deleteOldDeletedJobs(@Param("cutoffDate") java.time.LocalDateTime cutoffDate);
+    void deleteAllByIsDeletedTrueAndDeletedAtBefore(LocalDateTime cutoffDate);
 }

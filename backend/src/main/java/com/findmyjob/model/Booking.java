@@ -1,18 +1,17 @@
 package com.findmyjob.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "bookings")
+@Document(collection = "bookings")
 @Data
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private Long mentorId;
+    private String mentorId;
     private String mentorName;
     private String mentorEmail;
     private String serviceType;
@@ -23,7 +22,6 @@ public class Booking {
     private String bookingDate; // Store as string for simplicity or LocalDate
     private String bookingTime; // Time slot like "10:30 AM"
     
-    @Column(columnDefinition = "TEXT")
     private String customRequest;
     
     private String meetLink;

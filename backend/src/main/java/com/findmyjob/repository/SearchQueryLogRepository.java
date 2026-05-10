@@ -1,27 +1,27 @@
 package com.findmyjob.repository;
 
 import com.findmyjob.model.SearchQueryLog;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.Aggregation;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
-public interface SearchQueryLogRepository extends JpaRepository<SearchQueryLog, Long> {
+public interface SearchQueryLogRepository extends MongoRepository<SearchQueryLog, String> {
 
-    @Query("SELECT s.keyword, COUNT(s.id) as cnt FROM SearchQueryLog s " +
-            "WHERE s.searchedAt > :date " +
-            "GROUP BY s.keyword " +
-            "ORDER BY cnt DESC")
-    List<Object[]> findTopSearchesSince(@Param("date") LocalDateTime date, Pageable pageable);
+    @Aggregation(pipeline = {
+        "{ '$match': { 'searchedAt': { '$gt': ?0 } } }",
+        "{ '$group': { '_id': '$keyword', 'count': { '$sum': 1 } } }",
+        "{ '$sort': { 'count': -1 } }"
+    })
+    List<Map<String, Object>> findTopSearchesSince(LocalDateTime date);
 
-    @Query("SELECT s.keyword, COUNT(s.id) as cnt FROM SearchQueryLog s " +
-            "WHERE s.searchedAt >= :start AND s.searchedAt < :end " +
-            "GROUP BY s.keyword " +
-            "ORDER BY cnt DESC")
-    List<Object[]> findTopSearchesBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
-            Pageable pageable);
+    @Aggregation(pipeline = {
+        "{ '$match': { 'searchedAt': { '$gte': ?0, '$lt': ?1 } } }",
+        "{ '$group': { '_id': '$keyword', 'count': { '$sum': 1 } } }",
+        "{ '$sort': { 'count': -1 } }"
+    })
+    List<Map<String, Object>> findTopSearchesBetween(LocalDateTime start, LocalDateTime end);
 }

@@ -19,7 +19,7 @@ public class AtsController {
     }
 
     @PostMapping("/{id}/ats-check")
-    public ResponseEntity<?> checkAtsScore(@PathVariable Long id, @RequestParam("resume") MultipartFile resume) {
+    public ResponseEntity<?> checkAtsScore(@PathVariable String id, @RequestParam("resume") MultipartFile resume) {
         System.out.println("====== checkAtsScore hit for job " + id + " ======");
         try {
             Map<String, Object> response = atsService.calculateAtsScore(id, resume);

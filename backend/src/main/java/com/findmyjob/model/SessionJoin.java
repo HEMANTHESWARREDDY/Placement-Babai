@@ -1,23 +1,22 @@
 package com.findmyjob.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
-@Entity
+@Document(collection = "session_joins")
 @Data
 @NoArgsConstructor
-@Table(name = "session_joins")
 public class SessionJoin {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private Long sessionId;
+    private String sessionId;
     private LocalDateTime joinedAt;
 
-    public SessionJoin(Long sessionId, LocalDateTime joinedAt) {
+    public SessionJoin(String sessionId, LocalDateTime joinedAt) {
         this.sessionId = sessionId;
         this.joinedAt = joinedAt;
     }

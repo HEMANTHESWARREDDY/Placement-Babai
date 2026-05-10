@@ -1,20 +1,21 @@
 package com.findmyjob.repository;
 
 import com.findmyjob.model.Mentor;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface MentorRepository extends JpaRepository<Mentor, Long> {
+public interface MentorRepository extends MongoRepository<Mentor, String> {
     List<Mentor> findByStatusOrderByCreatedAtDesc(String status);
 
     List<Mentor> findAllByOrderByCreatedAtDesc();
 
-    java.util.Optional<Mentor> findFirstByUsernameOrderByIdDesc(String username);
+    Optional<Mentor> findFirstByUsernameOrderByCreatedAtDesc(String username);
 
-    java.util.Optional<Mentor> findFirstByEmailOrderByIdDesc(String email);
+    Optional<Mentor> findFirstByEmailOrderByCreatedAtDesc(String email);
 
     boolean existsByUsername(String username);
 

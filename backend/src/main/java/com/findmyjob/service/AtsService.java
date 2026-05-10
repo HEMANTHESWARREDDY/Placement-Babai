@@ -41,7 +41,7 @@ public class AtsService {
         this.jobRepository = jobRepository;
     }
 
-    public Map<String, Object> calculateAtsScore(Long jobId, MultipartFile file) throws Exception {
+    public Map<String, Object> calculateAtsScore(String jobId, MultipartFile file) throws Exception {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found"));
 
         String resumeText = extractText(file);

@@ -1,25 +1,21 @@
 package com.findmyjob.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
-@Entity
+@Document(collection = "free_sessions")
 @Data
-@Table(name = "free_sessions")
 public class FreeSession {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     
     private String title;
-    @Column(columnDefinition = "TEXT")
     private String description;
-    @Column(columnDefinition = "TEXT")
     private String link;
     private String schedule;
     private String skills;
     private boolean active = true;
-    @Column(nullable = false, name = "is_deleted", columnDefinition = "boolean default false")
     private boolean deleted = false;
     private java.time.LocalDateTime deletedAt;
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();

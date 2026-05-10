@@ -65,29 +65,29 @@ public class AnalyticsController {
     }
 
     @PostMapping("/view/job/{jobId}")
-    public ResponseEntity<?> recordJobView(@PathVariable Long jobId) {
+    public ResponseEntity<?> recordJobView(@PathVariable String jobId) {
         jobViewRepository.save(new JobView(jobId, LocalDateTime.now()));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/apply/job/{jobId}")
-    public ResponseEntity<?> recordJobApply(@PathVariable Long jobId) {
+    public ResponseEntity<?> recordJobApply(@PathVariable String jobId) {
         jobApplyRepository.save(new JobApply(jobId, LocalDateTime.now()));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/join/session/{sessionId}")
-    public ResponseEntity<?> recordSessionJoin(@PathVariable Long sessionId) {
+    public ResponseEntity<?> recordSessionJoin(@PathVariable String sessionId) {
         sessionJoinRepository.save(new SessionJoin(sessionId, LocalDateTime.now()));
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/applies/grouped")
-    public ResponseEntity<Map<Long, Long>> getGroupedApplies() {
-        List<Object[]> results = jobApplyRepository.countAppliesGroupedByJob();
-        Map<Long, Long> groupedApplies = new HashMap<>();
-        for (Object[] row : results) {
-            groupedApplies.put((Long) row[0], (Long) row[1]);
+    public ResponseEntity<Map<String, Long>> getGroupedApplies() {
+        List<Map<String, Object>> results = jobApplyRepository.countAppliesGroupedByJob();
+        Map<String, Long> groupedApplies = new HashMap<>();
+        for (Map<String, Object> row : results) {
+            groupedApplies.put(row.get("_id").toString(), ((Number) row.get("count")).longValue());
         }
         return ResponseEntity.ok(groupedApplies);
     }
@@ -149,7 +149,7 @@ public class AnalyticsController {
     }
 
     @GetMapping("/job/{jobId}")
-    public ResponseEntity<Map<String, Long>> getJobAnalytics(@PathVariable Long jobId) {
+    public ResponseEntity<Map<String, Long>> getJobAnalytics(@PathVariable String jobId) {
         Map<String, Long> stats = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         stats.put("lifetime", jobViewRepository.countByJobId(jobId));
@@ -168,12 +168,12 @@ public class AnalyticsController {
     @GetMapping("/searches/top")
     public ResponseEntity<List<Map<String, Object>>> getTopSearchesDaily() {
         LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
-        List<Object[]> results = searchQueryLogRepository.findTopSearchesSince(startOfDay, PageRequest.of(0, 5));
+        List<Map<String, Object>> results = searchQueryLogRepository.findTopSearchesSince(startOfDay);
 
-        List<Map<String, Object>> formattedResults = results.stream().map(row -> {
+        List<Map<String, Object>> formattedResults = results.stream().limit(5).map(row -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("keyword", row[0]);
-            map.put("count", row[1]);
+            map.put("keyword", row.get("_id"));
+            map.put("count", row.get("count"));
             return map;
         }).collect(Collectors.toList());
 
@@ -197,12 +197,11 @@ public class AnalyticsController {
             long mentorApplicants = mentorApplicantRepository.countByStatusAndCreatedAtBetween("PENDING", startOfDay, endOfDay);
             long freeSessionsCreated = freeSessionRepository.countByCreatedAtBetween(startOfDay, endOfDay);
             long sessionJoins = sessionJoinRepository.countByJoinedAtBetween(startOfDay, endOfDay);
-            List<Object[]> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay,
-                    PageRequest.of(0, 5));
-            List<Map<String, Object>> topSearches = searches.stream().map(row -> {
+            List<Map<String, Object>> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay);
+            List<Map<String, Object>> topSearches = searches.stream().limit(5).map(row -> {
                 Map<String, Object> m = new HashMap<>();
-                m.put("keyword", row[0]);
-                m.put("count", row[1]);
+                m.put("keyword", row.get("_id"));
+                m.put("count", row.get("count"));
                 return m;
             }).collect(Collectors.toList());
 

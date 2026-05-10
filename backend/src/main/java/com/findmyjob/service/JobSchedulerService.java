@@ -29,7 +29,6 @@ public class JobSchedulerService {
 
     // Run every day at 11:59 PM (23:59:00) IST
     @Scheduled(cron = "0 59 23 * * ?", zone = "Asia/Kolkata")
-    @Transactional
     public void autoDeleteExpiredJobs() {
         logger.info("Running scheduled task to auto-delete expired jobs...");
         List<Job> activeJobs = jobRepository.findByIsDeletedFalse();
@@ -86,7 +85,7 @@ public class JobSchedulerService {
         logger.info("Running scheduled task to permanently delete jobs soft-deleted more than 15 days ago...");
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(15);
         try {
-            jobRepository.deleteOldDeletedJobs(cutoffDate);
+            jobRepository.deleteAllByIsDeletedTrueAndDeletedAtBefore(cutoffDate);
             logger.info("Finished permanent deletion task.");
         } catch (Exception e) {
             logger.error("Error during permanent deletion: ", e);

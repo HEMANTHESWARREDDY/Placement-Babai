@@ -57,7 +57,7 @@ public class AdminMentorController {
 
     // Update mentor status (Approve/Reject)
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateMentorStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> updateMentorStatus(@PathVariable String id, @RequestBody Map<String, String> payload) {
         String newStatus = payload.get("status");
         if (newStatus == null
                 || (!newStatus.equals("APPROVED") && !newStatus.equals("REJECTED") && !newStatus.equals("PENDING"))) {
@@ -114,7 +114,7 @@ public class AdminMentorController {
 
     // Delete mentor application completely
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMentor(@PathVariable Long id) {
+    public ResponseEntity<?> deleteMentor(@PathVariable String id) {
         boolean deleted = false;
         if (mentorApplicantRepository.existsById(id)) {
             mentorApplicantRepository.deleteById(id);

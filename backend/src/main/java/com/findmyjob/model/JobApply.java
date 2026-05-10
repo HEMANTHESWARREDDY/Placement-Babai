@@ -1,42 +1,39 @@
 package com.findmyjob.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
-@Entity
+@Document(collection = "job_applies")
 public class JobApply {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private Long jobId;
+    private String jobId;
     private LocalDateTime appliedAt;
 
     public JobApply() {
     }
 
-    public JobApply(Long jobId, LocalDateTime appliedAt) {
+    public JobApply(String jobId, LocalDateTime appliedAt) {
         this.jobId = jobId;
         this.appliedAt = appliedAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getJobId() {
+    public String getJobId() {
         return jobId;
     }
 
-    public void setJobId(Long jobId) {
+    public void setJobId(String jobId) {
         this.jobId = jobId;
     }
 

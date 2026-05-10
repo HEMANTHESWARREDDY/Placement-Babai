@@ -1,13 +1,13 @@
 package com.findmyjob.repository;
 
 import com.findmyjob.model.JobView;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 @Repository
-public interface JobViewRepository extends JpaRepository<JobView, Long> {
-    long countByJobId(Long jobId);
+public interface JobViewRepository extends MongoRepository<JobView, String> {
+    long countByJobId(String jobId);
 
-    long countByJobIdAndViewedAtAfter(Long jobId, LocalDateTime date);
+    long countByJobIdAndViewedAtAfter(String jobId, LocalDateTime date);
 }

@@ -1,12 +1,11 @@
 package com.findmyjob.repository;
 
 import com.findmyjob.model.MentorApplicant;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface MentorApplicantRepository extends JpaRepository<MentorApplicant, Long> {
+public interface MentorApplicantRepository extends MongoRepository<MentorApplicant, String> {
     List<MentorApplicant> findByStatusOrderByCreatedAtDesc(String status);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);

@@ -1,16 +1,15 @@
 package com.findmyjob.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import java.time.LocalDateTime;
 
-@Entity
+@Document(collection = "mentor_applicants")
 @Data
-@Table(name = "mentor_applicants")
 public class MentorApplicant {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String name;
     private String email;
@@ -20,23 +19,13 @@ public class MentorApplicant {
     private String experience;
     private String linkedin;
     private String skills;
-    @Column(columnDefinition = "TEXT")
     private String bio;
 
-    private String status; // PENDING, APPROVED, REJECTED
+    private String status = "PENDING"; // PENDING, APPROVED, REJECTED
 
     // Login credentials set at registration
-    @Column(unique = true)
     private String username;
     private String password; // stored as BCrypt hash
 
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        if (status == null) {
-            status = "PENDING";
-        }
-    }
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

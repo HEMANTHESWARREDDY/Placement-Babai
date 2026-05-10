@@ -1,16 +1,15 @@
 package com.findmyjob.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import java.time.LocalDateTime;
 
-@Entity
+@Document(collection = "mentors")
 @Data
-@Table(name = "mentors")
 public class Mentor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String name;
     private String email;
@@ -20,49 +19,33 @@ public class Mentor {
     private String experience;
     private String linkedin;
     private String skills;
-    @Column(columnDefinition = "TEXT")
     private String bio;
 
-    private String status; // PENDING, APPROVED, REJECTED
+    private String status = "PENDING"; // PENDING, APPROVED, REJECTED
 
     // Login credentials set at registration
-    @Column(unique = true)
     private String username;
     private String password; // stored as BCrypt hash
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     // Fields used when approved
-    @Column(columnDefinition = "TEXT")
     private String headerBg;
     private String avatarBg;
     
-    @Column(columnDefinition = "TEXT")
     private String image;
     private Double rating;
     private Integer reviews;
     private String instagram;
     
     // JSON strings for complex structures
-    @Column(columnDefinition = "TEXT")
     private String topics;
     
-    @Column(columnDefinition = "TEXT")
     private String education;
     
-    @Column(columnDefinition = "TEXT")
     private String workExperience;
     
-    @Column(columnDefinition = "TEXT")
     private String services;
 
     private Boolean isAvailable;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        if (status == null) {
-            status = "PENDING";
-        }
-    }
 }

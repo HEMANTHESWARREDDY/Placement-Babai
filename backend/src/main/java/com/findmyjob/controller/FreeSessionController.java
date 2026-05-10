@@ -42,7 +42,7 @@ public class FreeSessionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FreeSession> updateSession(@PathVariable Long id, @RequestBody FreeSession details) {
+    public ResponseEntity<FreeSession> updateSession(@PathVariable String id, @RequestBody FreeSession details) {
         return repository.findById(id).map(session -> {
             session.setTitle(details.getTitle());
             session.setDescription(details.getDescription());
@@ -56,7 +56,7 @@ public class FreeSessionController {
     }
 
     @PutMapping("/restore/{id}")
-    public ResponseEntity<FreeSession> restoreSession(@PathVariable Long id) {
+    public ResponseEntity<FreeSession> restoreSession(@PathVariable String id) {
         return repository.findById(id).map(session -> {
             session.setDeleted(false);
             session.setDeletedAt(null);
@@ -65,7 +65,7 @@ public class FreeSessionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSession(@PathVariable String id) {
         return repository.findById(id).map(session -> {
             session.setDeleted(true);
             session.setDeletedAt(java.time.LocalDateTime.now());
@@ -75,7 +75,7 @@ public class FreeSessionController {
     }
 
     @DeleteMapping("/permanent/{id}")
-    public ResponseEntity<Void> permanentDelete(@PathVariable Long id) {
+    public ResponseEntity<Void> permanentDelete(@PathVariable String id) {
         return repository.findById(id).map(session -> {
             repository.delete(session);
             return ResponseEntity.ok().<Void>build();

@@ -26,7 +26,7 @@ public class BookingController {
     }
 
     @GetMapping("/mentor/{mentorId}")
-    public List<Booking> getBookingsByMentor(@PathVariable Long mentorId) {
+    public List<Booking> getBookingsByMentor(@PathVariable String mentorId) {
         return bookingRepository.findByMentorId(mentorId);
     }
     
@@ -37,7 +37,7 @@ public class BookingController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Booking> updateBookingStatus(
-            @PathVariable Long id, 
+            @PathVariable String id, 
             @RequestParam String status,
             @RequestParam(required = false) String meetLink) {
         return bookingRepository.findById(id)
@@ -52,7 +52,7 @@ public class BookingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable String id) {
         if (bookingRepository.existsById(id)) {
             bookingRepository.deleteById(id);
             return ResponseEntity.ok().build();

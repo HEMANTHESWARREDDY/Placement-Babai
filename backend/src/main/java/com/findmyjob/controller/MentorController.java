@@ -98,10 +98,10 @@ public class MentorController {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        Optional<Mentor> mentorOpt = mentorRepository.findFirstByUsernameOrderByIdDesc(username);
+        Optional<Mentor> mentorOpt = mentorRepository.findFirstByUsernameOrderByCreatedAtDesc(username);
         if (mentorOpt.isEmpty()) {
             // Try by email
-            mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(username);
+            mentorOpt = mentorRepository.findFirstByEmailOrderByCreatedAtDesc(username);
         }
 
         if (mentorOpt.isEmpty()) {
@@ -154,12 +154,7 @@ public class MentorController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         
-        Long id;
-        try {
-            id = Long.parseLong(authUser.substring(7));
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        String id = authUser.substring(7);
 
         Optional<Mentor> mentorOpt = mentorRepository.findById(id);
         if (mentorOpt.isEmpty()) {
@@ -178,12 +173,7 @@ public class MentorController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         
-        Long id;
-        try {
-            id = Long.parseLong(authUser.substring(7));
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        String id = authUser.substring(7);
 
         Optional<Mentor> mentorOpt = mentorRepository.findById(id);
         if (mentorOpt.isEmpty()) {
@@ -229,7 +219,7 @@ public class MentorController {
         
         System.out.println("Password reset request for: " + email);
         
-        Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(email);
+        Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByCreatedAtDesc(email);
         
         if (mentorOpt.isEmpty()) {
             System.out.println("Email not found in database: " + email);
@@ -280,7 +270,7 @@ public class MentorController {
             return ResponseEntity.badRequest().body(Map.of("error", "Code session expired. Please start over."));
         }
 
-        Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByIdDesc(email);
+        Optional<Mentor> mentorOpt = mentorRepository.findFirstByEmailOrderByCreatedAtDesc(email);
         if (mentorOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         Mentor mentor = mentorOpt.get();
