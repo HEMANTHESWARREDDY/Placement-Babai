@@ -53,31 +53,19 @@ jobs:
         strip_components: 1
 
     - name: Restart Service
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          echo "🚀 Starting Deployment Cleanup..."
-          
-          # Kill only the specific backend process
-          sudo pkill -f 'findmyjob-backend' || true
+          echo "Stopping old process..."
+          pkill -f findmyjob-backend || true
           sleep 2
           
-          # Navigate and Start
-          cd /home/${{ secrets.EC2_USERNAME }}/app/
-          echo "Starting application: $(ls *.jar)"
+          echo "Starting new process..."
+          cd $HOME/app/
+          nohup java -jar *.jar > app.log 2>&1 &
           
-          # Run with nohup and ensure it persists
-          BUILD_ID=dontKillMe nohup java -jar *.jar > app.log 2>&1 &
-          
-          # Quick Verification
           sleep 5
-          if pgrep -f 'findmyjob-backend' > /dev/null; then
-            echo "✅ Backend is UP and running!"
-          else
-            echo "❌ Backend failed to start. Logs:"
-            tail -n 20 app.log
-            exit 1
-          fi
+          pgrep -f findmyjob-backend && echo "SUCCESS" || (echo "FAILED" && cat app.log && exit 1)
