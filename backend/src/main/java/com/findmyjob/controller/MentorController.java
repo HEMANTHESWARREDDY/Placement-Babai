@@ -212,7 +212,7 @@ public class MentorController {
 
     // Forgot Password - Send Code
     @PostMapping("/forgot-password")
-    @jakarta.transaction.Transactional
+    @org.springframework.transaction.annotation.Transactional
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         if (email != null) email = email.toLowerCase().trim();

@@ -13,7 +13,6 @@ com\findmyjob\model\MentorApplicant.class
 com\findmyjob\service\GeminiInterviewService.class
 com\findmyjob\controller\AdminMentorController.class
 com\findmyjob\repository\SearchQueryLogRepository.class
-com\findmyjob\config\SchemaUpdateConfig.class
 com\findmyjob\model\JobApply.class
 com\findmyjob\repository\JobViewRepository.class
 com\findmyjob\repository\SearchHistoryRepository.class
