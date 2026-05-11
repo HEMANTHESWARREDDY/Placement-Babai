@@ -39,15 +39,19 @@ function App() {
   const [showLocSuggestions, setShowLocSuggestions] = useState(false);
   const [searchExperience, setSearchExperience] = useState('');
   const [currentView, setCurrentView] = useState(() => {
-    const path = window.location.pathname;
-    const savedView = localStorage.getItem('currentView');
+    const path = window.location.pathname.toLowerCase();
     const params = new URLSearchParams(window.location.search);
 
-    if (path === '/admin' || params.get('admin') === 'true') {
+    if (path.includes('/admin') || params.get('admin') === 'true') {
       return localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login';
     }
     
-    if (savedView) return savedView;
+    if (path.includes('/mentor')) {
+      return localStorage.getItem('mentorToken') ? 'mentor-dashboard' : 'mentor-login';
+    }
+    
+    const savedView = localStorage.getItem('currentView');
+    if (savedView && savedView !== 'home' && path === '/') return savedView;
     return 'home';
   });
 
