@@ -72,7 +72,7 @@ jobs:
           export MONGODB_PASSWORD="${{ secrets.MONGODB_PASSWORD }}"
           export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
           
-          nohup java -jar *.jar > app.log 2>&1 &
+          nohup java -jar -Dspring.profiles.active=prod *.jar > app.log 2>&1 &
           
           echo "Verifying startup (waiting 20s)..."
           sleep 20
