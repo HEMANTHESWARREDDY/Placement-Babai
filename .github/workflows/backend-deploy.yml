@@ -58,35 +58,26 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
-        command_timeout: 10m
         script: |
-          # Ensure target directory exists
-          mkdir -p /home/${{ secrets.EC2_USERNAME }}/app/
+          echo "🚀 Starting Deployment Cleanup..."
           
-          # Install Java 17 if not present (using non-interactive mode)
-          if ! command -v java > /dev/null 2>&1; then
-            echo "Java not found, installing OpenJDK 17..."
-            sudo apt-get update
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-17-jdk
-          fi
+          # Kill only the specific backend process
+          sudo pkill -f 'findmyjob-backend' || true
+          sleep 2
           
-          # Kill existing process if running
-          echo "Stopping existing java processes..."
-          sudo pkill -f 'java -jar' || true
-          
-          # Start the application
+          # Navigate and Start
           cd /home/${{ secrets.EC2_USERNAME }}/app/
-          echo "Starting application..."
-          nohup java -jar *.jar > app.log 2>&1 &
+          echo "Starting application: $(ls *.jar)"
           
-          # Health check
-          echo "Waiting for app to start..."
-          sleep 10
-          if pgrep -f 'java -jar' > /dev/null; then
-            echo "✅ Application started successfully!"
-            pgrep -a -f 'java -jar'
+          # Run with nohup and ensure it persists
+          BUILD_ID=dontKillMe nohup java -jar *.jar > app.log 2>&1 &
+          
+          # Quick Verification
+          sleep 5
+          if pgrep -f 'findmyjob-backend' > /dev/null; then
+            echo "✅ Backend is UP and running!"
           else
-            echo "❌ Application failed to start. Check app.log below:"
-            cat app.log
+            echo "❌ Backend failed to start. Logs:"
+            tail -n 20 app.log
             exit 1
           fi
