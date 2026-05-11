@@ -58,4 +58,23 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          sudo systemctl restart findmyjob.service || (cd /home/${{ secrets.EC2_USERNAME }}/app/ && nohup java -jar *.jar > app.log 2>&1 &)
+          # Ensure target directory exists
+          mkdir -p /home/${{ secrets.EC2_USERNAME }}/app/
+          
+          # Install Java 17 if not present
+          if ! type -p java > /dev/null; then
+            echo "Java not found, installing..."
+            sudo apt-get update
+            sudo apt-get install -y openjdk-17-jdk
+          fi
+          
+          # Kill existing process if running
+          sudo pkill -f 'java -jar' || true
+          
+          # Start the application
+          cd /home/${{ secrets.EC2_USERNAME }}/app/
+          nohup java -jar *.jar > app.log 2>&1 &
+          
+          # Wait a bit and check if it's running
+          sleep 10
+          pgrep -f 'java -jar'
