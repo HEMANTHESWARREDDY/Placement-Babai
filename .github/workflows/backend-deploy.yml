@@ -64,20 +64,22 @@ jobs:
           pkill -f '[f]indmyjob-backend' || true
           sleep 2
           
-          echo "Starting application..."
+          echo "Starting application with Secrets..."
           cd $HOME/app/
-          # Clear old logs to be sure
           rm -f app.log
+          
+          # Pass the secrets directly to the Java process
+          export MONGODB_PASSWORD="${{ secrets.MONGODB_PASSWORD }}"
+          export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
+          
           nohup java -jar *.jar > app.log 2>&1 &
           
-          echo "Verifying startup (waiting 15s)..."
-          sleep 15
+          echo "Verifying startup (waiting 20s)..."
+          sleep 20
           if pgrep -f '[f]indmyjob-backend' > /dev/null; then
             echo "✅ SUCCESS: App is running on port 8080."
-            echo "Latest Logs:"
-            tail -n 20 app.log
           else
-            echo "❌ FAILED: App did not stay alive. Check logs below:"
+            echo "❌ FAILED: App crashed. Check logs below:"
             cat app.log
             exit 1
           fi
