@@ -59,13 +59,21 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          echo "Stopping old process..."
-          pkill -f findmyjob-backend || true
+          echo "Cleaning up old processes..."
+          # The [f] trick prevents pkill from killing its own session
+          pkill -f '[f]indmyjob-backend' || true
           sleep 2
           
-          echo "Starting new process..."
+          echo "Starting application..."
           cd $HOME/app/
           nohup java -jar *.jar > app.log 2>&1 &
           
-          sleep 5
-          pgrep -f findmyjob-backend && echo "SUCCESS" || (echo "FAILED" && cat app.log && exit 1)
+          echo "Verifying startup..."
+          sleep 10
+          if pgrep -f '[f]indmyjob-backend' > /dev/null; then
+            echo "✅ SUCCESS: App is running."
+          else
+            echo "❌ FAILED: App did not start. Logs:"
+            tail -n 20 app.log
+            exit 1
+          fi
