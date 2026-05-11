@@ -59,21 +59,25 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          echo "🌐 EC2 Public IP: $(curl -s ifconfig.me)"
           echo "Cleaning up old processes..."
-          # The [f] trick prevents pkill from killing its own session
           pkill -f '[f]indmyjob-backend' || true
           sleep 2
           
           echo "Starting application..."
           cd $HOME/app/
+          # Clear old logs to be sure
+          rm -f app.log
           nohup java -jar *.jar > app.log 2>&1 &
           
-          echo "Verifying startup..."
-          sleep 10
+          echo "Verifying startup (waiting 15s)..."
+          sleep 15
           if pgrep -f '[f]indmyjob-backend' > /dev/null; then
-            echo "✅ SUCCESS: App is running."
-          else
-            echo "❌ FAILED: App did not start. Logs:"
+            echo "✅ SUCCESS: App is running on port 8080."
+            echo "Latest Logs:"
             tail -n 20 app.log
+          else
+            echo "❌ FAILED: App did not stay alive. Check logs below:"
+            cat app.log
             exit 1
           fi
