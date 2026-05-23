@@ -1212,7 +1212,7 @@
     position: static;
     left: auto;
     transform: none;
-    margin: 0 0.2rem 0 0.4rem;
+    margin: 0 auto 0 0.5rem !important;
     width: auto;
     white-space: nowrap;
     text-align: center;
