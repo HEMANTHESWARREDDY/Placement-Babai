@@ -1144,15 +1144,15 @@
   }
 
   .header {
-    padding: 1rem;
+    padding: 0.75rem 0.5rem;
   }
 
   .header-content {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap !important;
     align-items: center;
     justify-content: space-between;
-    gap: 0;
+    gap: 0.35rem;
   }
 
   .logo {
@@ -1163,7 +1163,7 @@
   }
 
   .logo-img {
-    height: 40px;
+    height: 38px;
     width: auto;
     object-fit: contain;
   }
@@ -1212,12 +1212,12 @@
     position: static;
     left: auto;
     transform: none;
-    margin: 0 auto 0 0.5rem !important;
+    margin: 0 0 0 0.35rem !important;
     width: auto;
     white-space: nowrap;
     text-align: center;
     font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
+    padding: 0.25rem 0.5rem;
     order: 2;
     flex: 0 1 auto;
   }
