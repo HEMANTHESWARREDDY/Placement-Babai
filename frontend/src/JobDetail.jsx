@@ -348,68 +348,257 @@ function JobDetail({ job, onClose }) {
 
                         {atsResult ? (
                             <div className="ats-result-box">
-                                <div className="ats-progress-container">
-                                    <svg className="ats-progress-svg" viewBox="0 0 100 100">
-                                        <circle className="ats-progress-bg" cx="50" cy="50" r="45" />
-                                        <circle
-                                            className="ats-progress-bar"
-                                            cx="50" cy="50" r="45"
-                                            stroke={atsResult.score >= 70 ? '#10b981' : atsResult.score >= 40 ? '#f59e0b' : '#ef4444'}
-                                            strokeDasharray="283"
-                                            strokeDashoffset={283 - (283 * atsResult.score) / 100}
-                                        />
-                                    </svg>
-                                    <div className="ats-progress-text">
-                                        <span className="ats-score-value">{atsResult.score}%</span>
-                                        <span className="ats-score-label">MATCH</span>
+                                <div className="ats-header-summary">
+                                    <div className="ats-progress-outer">
+                                        <div className="ats-progress-container">
+                                            <svg className="ats-progress-svg" viewBox="0 0 100 100">
+                                                <circle className="ats-progress-bg" cx="50" cy="50" r="45" />
+                                                <circle
+                                                    className="ats-progress-bar"
+                                                    cx="50" cy="50" r="45"
+                                                    stroke={atsResult.score >= 80 ? '#10b981' : atsResult.score >= 60 ? '#f59e0b' : '#ef4444'}
+                                                    strokeDasharray="283"
+                                                    strokeDashoffset={283 - (283 * atsResult.score) / 100}
+                                                />
+                                            </svg>
+                                            <div className="ats-progress-text">
+                                                <span className="ats-score-value">{atsResult.score}</span>
+                                                <span className="ats-score-label">ATS MATCH</span>
+                                            </div>
+                                        </div>
+                                        <p className="ats-overall-message">{atsResult.message}</p>
                                     </div>
+
+                                    {/* Grid of Subscores */}
+                                    {atsResult.subScores && (
+                                        <div className="ats-subscores-grid">
+                                            <div className="ats-subscore-card">
+                                                <div className="ats-subscore-header">
+                                                    <span className="ats-subscore-icon">🛠️</span>
+                                                    <span className="ats-subscore-title">Skills Match</span>
+                                                    <span className="ats-subscore-num">{atsResult.subScores.skillsMatch}%</span>
+                                                </div>
+                                                <div className="ats-subscore-bar-bg">
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.skillsMatch}%`, background: '#10b981' }} />
+                                                </div>
+                                            </div>
+                                            <div className="ats-subscore-card">
+                                                <div className="ats-subscore-header">
+                                                    <span className="ats-subscore-icon">💼</span>
+                                                    <span className="ats-subscore-title">Experience</span>
+                                                    <span className="ats-subscore-num">{atsResult.subScores.experienceMatch}%</span>
+                                                </div>
+                                                <div className="ats-subscore-bar-bg">
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.experienceMatch}%`, background: '#3b82f6' }} />
+                                                </div>
+                                            </div>
+                                            <div className="ats-subscore-card">
+                                                <div className="ats-subscore-header">
+                                                    <span className="ats-subscore-icon">🔑</span>
+                                                    <span className="ats-subscore-title">Keywords</span>
+                                                    <span className="ats-subscore-num">{atsResult.subScores.keywordMatch}%</span>
+                                                </div>
+                                                <div className="ats-subscore-bar-bg">
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.keywordMatch}%`, background: '#f59e0b' }} />
+                                                </div>
+                                            </div>
+                                            <div className="ats-subscore-card">
+                                                <div className="ats-subscore-header">
+                                                    <span className="ats-subscore-icon">🚀</span>
+                                                    <span className="ats-subscore-title">Projects</span>
+                                                    <span className="ats-subscore-num">{atsResult.subScores.projectRelevance}%</span>
+                                                </div>
+                                                <div className="ats-subscore-bar-bg">
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.projectRelevance}%`, background: '#8b5cf6' }} />
+                                                </div>
+                                            </div>
+                                            <div className="ats-subscore-card">
+                                                <div className="ats-subscore-header">
+                                                    <span className="ats-subscore-icon">📄</span>
+                                                    <span className="ats-subscore-title">Formatting</span>
+                                                    <span className="ats-subscore-num">{atsResult.subScores.formattingScore}%</span>
+                                                </div>
+                                                <div className="ats-subscore-bar-bg">
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.formattingScore}%`, background: '#06b6d4' }} />
+                                                </div>
+                                            </div>
+                                            <div className="ats-subscore-card">
+                                                <div className="ats-subscore-header">
+                                                    <span className="ats-subscore-icon">🎓</span>
+                                                    <span className="ats-subscore-title">Education</span>
+                                                    <span className="ats-subscore-num">{atsResult.subScores.educationMatch}%</span>
+                                                </div>
+                                                <div className="ats-subscore-bar-bg">
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.educationMatch}%`, background: '#ec4899' }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
-                                <h3>{atsResult.message}</h3>
-
                                 <div className="ats-analysis-details">
-                                    <div className="ats-detail-section">
-                                        <h4>✅ Matched Skills</h4>
-                                        <div className="ats-skill-pills">
-                                            {atsResult.matched_skills?.map((s, i) => (
-                                                <span key={i} className="ats-pill matched">{s}</span>
-                                            ))}
-                                            {(!atsResult.matched_skills || atsResult.matched_skills.length === 0) && (
-                                                <span className="ats-empty-msg">No key skills matched yet.</span>
-                                            )}
+                                    {/* AI Insights Card */}
+                                    {atsResult.aiInsights && (
+                                        <div className="ats-insight-card">
+                                            <div className="ats-insight-header">
+                                                <span className="ats-insight-avatar">🤖</span>
+                                                <h4>AI Recruiter Insights</h4>
+                                            </div>
+                                            <p className="ats-insight-text">{atsResult.aiInsights}</p>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    <div className="ats-detail-section">
-                                        <h4>❌ Missing Skills</h4>
-                                        <div className="ats-skill-pills">
-                                            {atsResult.missing_skills?.map((s, i) => (
-                                                <span key={i} className="ats-pill missing">{s}</span>
-                                            ))}
-                                            {(!atsResult.missing_skills || atsResult.missing_skills.length === 0) && (
-                                                <span className="ats-empty-msg">Great! No major skills missing.</span>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {atsResult.tips && atsResult.tips.length > 0 && (
+                                    {/* Keywords Section */}
+                                    {atsResult.keywordAnalysis && (
                                         <div className="ats-detail-section">
-                                            <h4>💡 Improvement Tips</h4>
-                                            <ul className="ats-tips-list">
-                                                {atsResult.tips.map((tip, i) => (
+                                            <h4 className="ats-section-subtitle">🔑 Keyword Match Analysis</h4>
+                                            <div className="ats-keywords-container">
+                                                <div className="ats-keywords-box matched">
+                                                    <h5>Matched Keywords ({atsResult.keywordAnalysis.matched?.length || 0})</h5>
+                                                    <div className="ats-keyword-list">
+                                                        {atsResult.keywordAnalysis.matched?.map((k, i) => (
+                                                            <div key={i} className="ats-keyword-badge matched">
+                                                                <span className="ats-keyword-name">{k.keyword}</span>
+                                                                {k.synonymUsed && k.synonymUsed !== 'exact' && (
+                                                                    <span className="ats-keyword-synonym">via "{k.synonymUsed}"</span>
+                                                                )}
+                                                                {k.category && (
+                                                                    <span className="ats-keyword-category">{k.category}</span>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                        {(!atsResult.keywordAnalysis.matched || atsResult.keywordAnalysis.matched.length === 0) && (
+                                                            <p className="ats-empty-text">No keywords matched yet.</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="ats-keywords-box missing">
+                                                    <h5>Missing Core Keywords ({atsResult.keywordAnalysis.missing?.length || 0})</h5>
+                                                    <div className="ats-keyword-list">
+                                                        {atsResult.keywordAnalysis.missing?.map((k, i) => (
+                                                            <div key={i} className="ats-keyword-badge missing">
+                                                                <span className="ats-keyword-name">{k.keyword}</span>
+                                                                {k.importance && (
+                                                                    <span className={`ats-keyword-importance ${k.importance.toLowerCase()}`}>
+                                                                        {k.importance}
+                                                                    </span>
+                                                                )}
+                                                                {k.category && (
+                                                                    <span className="ats-keyword-category">{k.category}</span>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                        {(!atsResult.keywordAnalysis.missing || atsResult.keywordAnalysis.missing.length === 0) && (
+                                                            <p className="ats-empty-text">Perfect! No critical missing keywords.</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Strengths & Weaknesses */}
+                                    <div className="ats-columns-grid">
+                                        <div className="ats-column-card strengths">
+                                            <h5>💪 Key Strengths</h5>
+                                            <ul className="ats-bullet-list">
+                                                {atsResult.strengths?.map((s, i) => (
                                                     <li key={i}>
-                                                        <span style={{ fontSize: '1rem', flexShrink: 0 }}>💡</span>
-                                                        <span>{tip}</span>
+                                                        <span className="ats-bullet-icon green">✓</span>
+                                                        <span>{s}</span>
                                                     </li>
                                                 ))}
+                                                {(!atsResult.strengths || atsResult.strengths.length === 0) && (
+                                                    <p className="ats-empty-text">No major strengths analyzed.</p>
+                                                )}
                                             </ul>
+                                        </div>
+
+                                        <div className="ats-column-card weaknesses">
+                                            <h5>⚠️ Improvement Areas</h5>
+                                            <ul className="ats-bullet-list">
+                                                {atsResult.weaknesses?.map((w, i) => (
+                                                    <li key={i}>
+                                                        <span className="ats-bullet-icon red">!</span>
+                                                        <span>{w}</span>
+                                                    </li>
+                                                ))}
+                                                {(!atsResult.weaknesses || atsResult.weaknesses.length === 0) && (
+                                                    <p className="ats-empty-text">No significant improvement areas detected.</p>
+                                                )}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {/* Bullet point improvements */}
+                                    {atsResult.improvements && atsResult.improvements.length > 0 && (
+                                        <div className="ats-detail-section">
+                                            <h4 className="ats-section-subtitle">💡 Before / After Resume Enhancements</h4>
+                                            <div className="ats-improvements-list">
+                                                {atsResult.improvements.map((imp, i) => (
+                                                    <div key={i} className="ats-imp-card">
+                                                        <span className="ats-imp-section-label">Section: {imp.section}</span>
+                                                        <div className="ats-imp-flow">
+                                                            <div className="ats-imp-box original">
+                                                                <span className="ats-imp-type original">Before</span>
+                                                                <p className="ats-imp-text">"{imp.original}"</p>
+                                                            </div>
+                                                            <div className="ats-imp-arrow">➔</div>
+                                                            <div className="ats-imp-box suggested">
+                                                                <span className="ats-imp-type suggested">AI Suggested (Stronger Action Verbs & Metrics)</span>
+                                                                <p className="ats-imp-text">"{imp.suggested}"</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Formatting checks */}
+                                    {atsResult.formattingAnalysis && (
+                                        <div className="ats-detail-section">
+                                            <h4 className="ats-section-subtitle">📋 ATS Formatting Checks</h4>
+                                            <div className="ats-formatting-grid">
+                                                <div className="ats-format-check-card">
+                                                    <div className="ats-format-header">
+                                                        <span className="ats-format-icon">📌</span>
+                                                        <span className="ats-format-title">Bullet Points</span>
+                                                        <span className={`ats-format-pill ${atsResult.formattingAnalysis.bulletPointsCheck?.toLowerCase()}`}>
+                                                            {atsResult.formattingAnalysis.bulletPointsCheck}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="ats-format-check-card">
+                                                    <div className="ats-format-header">
+                                                        <span className="ats-format-icon">🗂️</span>
+                                                        <span className="ats-format-title">Section Headers</span>
+                                                        <span className={`ats-format-pill ${atsResult.formattingAnalysis.sectionHeaderCheck?.toLowerCase()}`}>
+                                                            {atsResult.formattingAnalysis.sectionHeaderCheck}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="ats-format-check-card">
+                                                    <div className="ats-format-header">
+                                                        <span className="ats-format-icon">📊</span>
+                                                        <span className="ats-format-title">Tables / Columns</span>
+                                                        <span className={`ats-format-pill ${atsResult.formattingAnalysis.tablesCheck?.toLowerCase()}`}>
+                                                            {atsResult.formattingAnalysis.tablesCheck}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="ats-formatting-feedback">
+                                                <strong>Recruiter Advice:</strong> {atsResult.formattingAnalysis.feedback}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
 
                                 <button
                                     className="jd-ats-btn"
-                                    style={{ marginTop: '2rem', width: '100%', background: '#f8fafc' }}
+                                    style={{ marginTop: '2.5rem', width: '100%', background: 'linear-gradient(135deg, #1e293b, #0f172a)', color: '#fff', border: 'none', padding: '0.9rem' }}
                                     onClick={() => { 
                                         setAtsResult(null); 
                                         setAtsFile(null); 

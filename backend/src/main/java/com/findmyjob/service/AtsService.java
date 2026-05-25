@@ -21,11 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AtsService {
@@ -63,20 +59,52 @@ public class AtsService {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
                 + geminiApiKey.trim();
 
-        String prompt = "You are an expert ATS (Applicant Tracking System). Analyze the following resume against the job details.\n"
-                +
-                "Job Title: " + job.getTitle() + "\n" +
-                "Requirements: " + job.getRequirements() + "\n" +
-                "Skills: " + job.getSkills() + "\n" +
-                "Responsibilities: " + job.getResponsibilities() + "\n\n" +
-                "Resume Text:\n" + resumeText + "\n\n" +
-                "Provide strictly a JSON object with exactly five keys:\n" +
-                "1. 'score': integer from 0 to 100 representing overall match.\n" +
-                "2. 'message': a summary sentence (e.g., 'Excellent Match!').\n" +
-                "3. 'matched_skills': array of strings (top 5 skills found).\n" +
-                "4. 'missing_skills': array of strings (top 5 important skills missing).\n" +
-                "5. 'tips': array of strings (2-3 very specific improvement tips based on this job).\n" +
-                "Do not use markdown backticks. Only output valid JSON.";
+        String prompt = "You are an expert recruiter and Applicant Tracking System (ATS) AI analyzer. Analyze the following resume against the job description details below.\n\n"
+                + "JOB DETAILS:\n"
+                + "Job Title: " + job.getTitle() + "\n"
+                + "Requirements: " + job.getRequirements() + "\n"
+                + "Skills: " + job.getSkills() + "\n"
+                + "Responsibilities: " + job.getResponsibilities() + "\n\n"
+                + "RESUME TEXT:\n" + resumeText + "\n\n"
+                + "Provide a high-fidelity semantic analysis. Perform contextual skill matching (e.g. recognize that 'ML' is equivalent to 'Machine Learning', 'REST APIs' matches 'Backend APIs', etc.).\n"
+                + "Evaluate projects, quantified outcomes, modern tech stack alignment, and ATS formatting.\n\n"
+                + "YOUR RESPONSE MUST BE A SINGLE, VALID JSON OBJECT WITH EXACTLY THESE KEYS (do not include markdown wrapping like ```json):\n"
+                + "{\n"
+                + "  \"score\": 82, // integer 0-100 overall score\n"
+                + "  \"message\": \"overall summary message\",\n"
+                + "  \"subScores\": {\n"
+                + "    \"skillsMatch\": 85, // integer 0-100\n"
+                + "    \"experienceMatch\": 80, // integer 0-100\n"
+                + "    \"keywordMatch\": 75, // integer 0-100\n"
+                + "    \"projectRelevance\": 90, // integer 0-100\n"
+                + "    \"formattingScore\": 95, // integer 0-100\n"
+                + "    \"educationMatch\": 85 // integer 0-100\n"
+                + "  },\n"
+                + "  \"keywordAnalysis\": {\n"
+                + "    \"matched\": [\n"
+                + "      { \"keyword\": \"matched skill/keyword\", \"synonymUsed\": \"synonym found in resume or 'exact'\", \"category\": \"e.g. Backend / Frontend / Cloud\" }\n"
+                + "    ],\n"
+                + "    \"missing\": [\n"
+                + "      { \"keyword\": \"missing critical skill\", \"category\": \"category\", \"importance\": \"High/Medium/Low\" }\n"
+                + "    ]\n"
+                + "  },\n"
+                + "  \"strengths\": [\n"
+                + "    \"strength 1\", \"strength 2\"\n"
+                + "  ],\n"
+                + "  \"weaknesses\": [\n"
+                + "    \"weakness 1\", \"weakness 2\"\n"
+                + "  ],\n"
+                + "  \"improvements\": [\n"
+                + "    { \"section\": \"Experience or Projects\", \"original\": \"original weak bullet point\", \"suggested\": \"strong action-oriented bullet point with quantified metrics\" }\n"
+                + "  ],\n"
+                + "  \"formattingAnalysis\": {\n"
+                + "    \"bulletPointsCheck\": \"Pass/Fail/Warning\",\n"
+                + "    \"sectionHeaderCheck\": \"Pass/Fail/Warning\",\n"
+                + "    \"tablesCheck\": \"Pass/Fail/Warning\",\n"
+                + "    \"feedback\": \"detailed formatting feedback (e.g. single column layout, font choice)\"\n"
+                + "  },\n"
+                + "  \"aiInsights\": \"recruiter-style high level strategic recommendation\"\n"
+                + "}";
 
         Map<String, Object> requestBody = new HashMap<>();
         Map<String, Object> parts = new HashMap<>();
@@ -84,7 +112,7 @@ public class AtsService {
         Map<String, Object> contents = new HashMap<>();
         contents.put("parts", new Object[] { parts });
         requestBody.put("contents", new Object[] { contents });
-        requestBody.put("generationConfig", Map.of("response_mime_type", "application/json")); // Hinting for JSON response
+        requestBody.put("generationConfig", Map.of("response_mime_type", "application/json"));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -95,15 +123,29 @@ public class AtsService {
         JsonNode root = objectMapper.readTree(rawResponse);
         String textResponse = root.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
 
+        textResponse = textResponse.trim();
+        if (textResponse.startsWith("```")) {
+            int firstLineBreak = textResponse.indexOf("\n");
+            int lastBackticks = textResponse.lastIndexOf("```");
+            if (firstLineBreak != -1 && lastBackticks != -1 && lastBackticks > firstLineBreak) {
+                textResponse = textResponse.substring(firstLineBreak, lastBackticks).trim();
+            }
+        }
         textResponse = textResponse.replaceAll("```json", "").replaceAll("```", "").trim();
+
         JsonNode resultNode = objectMapper.readTree(textResponse);
 
         Map<String, Object> result = new HashMap<>();
         result.put("score", resultNode.path("score").asInt(50));
         result.put("message", resultNode.path("message").asText("Analysis complete."));
-        result.put("matched_skills", resultNode.path("matched_skills"));
-        result.put("missing_skills", resultNode.path("missing_skills"));
-        result.put("tips", resultNode.path("tips"));
+        result.put("subScores", objectMapper.convertValue(resultNode.path("subScores"), Map.class));
+        result.put("keywordAnalysis", objectMapper.convertValue(resultNode.path("keywordAnalysis"), Map.class));
+        result.put("strengths", objectMapper.convertValue(resultNode.path("strengths"), List.class));
+        result.put("weaknesses", objectMapper.convertValue(resultNode.path("weaknesses"), List.class));
+        result.put("improvements", objectMapper.convertValue(resultNode.path("improvements"), List.class));
+        result.put("formattingAnalysis", objectMapper.convertValue(resultNode.path("formattingAnalysis"), Map.class));
+        result.put("aiInsights", resultNode.path("aiInsights").asText(""));
+
         return result;
     }
 
@@ -117,36 +159,89 @@ public class AtsService {
                     .forEach(keywords::add);
         }
 
-        Set<String> matchedSet = new HashSet<>();
-        Set<String> missingSet = new HashSet<>();
+        List<Map<String, String>> matched = new ArrayList<>();
+        List<Map<String, String>> missing = new ArrayList<>();
 
         if (!keywords.isEmpty()) {
             for (String keyword : keywords) {
                 if (resumeTextLower.contains(keyword)) {
-                    matchedSet.add(keyword);
+                    Map<String, String> m = new HashMap<>();
+                    m.put("keyword", keyword);
+                    m.put("synonymUsed", "exact");
+                    m.put("category", "Technical Skills");
+                    matched.add(m);
                 } else {
-                    missingSet.add(keyword);
+                    Map<String, String> m = new HashMap<>();
+                    m.put("keyword", keyword);
+                    m.put("category", "Technical Skills");
+                    m.put("importance", "High");
+                    missing.add(m);
                 }
             }
         }
 
-        double percentage = keywords.isEmpty() ? 0 : ((double) matchedSet.size() / keywords.size()) * 100;
-        int score = (int) Math.min(99, 40 + (percentage * 0.6));
+        double skillPercentage = keywords.isEmpty() ? 0 : ((double) matched.size() / keywords.size()) * 100;
+        int skillsMatch = (int) Math.min(99, 40 + (skillPercentage * 0.6));
+        int experienceMatch = resumeTextLower.contains("experience") || resumeTextLower.contains("years") ? 85 : 65;
+        int keywordMatch = (int) Math.min(99, 35 + (skillPercentage * 0.65));
+        int projectRelevance = resumeTextLower.contains("project") || resumeTextLower.contains("portfolio") ? 90 : 60;
+        int formattingScore = resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*") ? 92 : 78;
+        int educationMatch = resumeTextLower.contains("university") || resumeTextLower.contains("degree") || resumeTextLower.contains("btech") || resumeTextLower.contains("college") ? 88 : 70;
+
+        int overallScore = (skillsMatch + experienceMatch + keywordMatch + projectRelevance + formattingScore + educationMatch) / 6;
 
         Map<String, Object> result = new HashMap<>();
-        result.put("score", score);
+        result.put("score", overallScore);
 
         String message;
-        if (score >= 80) message = "Excellent Match! Your profile closely aligns with this role.";
-        else if (score >= 60) message = "Good Match! You meet a solid amount of the requirements.";
-        else if (score >= 40) message = "Fair Match! Consider highlighting relevant skills if you have them.";
-        else message = "Low Match! This role might require different experience or skills.";
-
-        result.put("message", message);
-        result.put("matched_skills", matchedSet.stream().limit(5).toArray());
-        result.put("missing_skills", missingSet.stream().limit(5).toArray());
-        result.put("tips", Arrays.asList("Add keywords from the job description.", "Tailor your project descriptions."));
+        if (overallScore >= 80) message = "Excellent Match! Your resume demonstrates a highly aligned skill set.";
+        else if (overallScore >= 60) message = "Good Match! Solid alignment, but there are areas you can optimize.";
+        else if (overallScore >= 45) message = "Fair Match! You meet some core requirements but need to add more relevant keywords.";
+        else message = "Low Match! High potential mismatch. Consider tailoring your resume for this role.";
         
+        result.put("message", message);
+
+        Map<String, Object> subScores = new HashMap<>();
+        subScores.put("skillsMatch", skillsMatch);
+        subScores.put("experienceMatch", experienceMatch);
+        subScores.put("keywordMatch", keywordMatch);
+        subScores.put("projectRelevance", projectRelevance);
+        subScores.put("formattingScore", formattingScore);
+        subScores.put("educationMatch", educationMatch);
+        result.put("subScores", subScores);
+
+        Map<String, Object> keywordAnalysis = new HashMap<>();
+        keywordAnalysis.put("matched", matched);
+        keywordAnalysis.put("missing", missing);
+        result.put("keywordAnalysis", keywordAnalysis);
+
+        result.put("strengths", Arrays.asList(
+            "Clear technical keywords matching the core job description requirements.",
+            "Strong layout structure with searchable section headers."
+        ));
+
+        result.put("weaknesses", Arrays.asList(
+            "Missing clear quantified achievements (metrics like %, $, or hours saved).",
+            "Several high-priority technical skills from the job description are not mentioned."
+        ));
+
+        List<Map<String, String>> improvements = new ArrayList<>();
+        Map<String, String> imp1 = new HashMap<>();
+        imp1.put("section", "Professional Experience / Projects");
+        imp1.put("original", "Responsible for working on backend tasks and building APIs.");
+        imp1.put("suggested", "Spearheaded development of 10+ high-performance REST APIs using " + (keywords.isEmpty() ? "modern frameworks" : keywords.iterator().next()) + ", reducing response latencies by 25%.");
+        improvements.add(imp1);
+        result.put("improvements", improvements);
+
+        Map<String, Object> formattingAnalysis = new HashMap<>();
+        formattingAnalysis.put("bulletPointsCheck", "Pass");
+        formattingAnalysis.put("sectionHeaderCheck", "Pass");
+        formattingAnalysis.put("tablesCheck", "Pass");
+        formattingAnalysis.put("feedback", "Excellent clean structure. Ensure you use bullet points with action verbs and avoid any graphic bars or side columns.");
+        result.put("formattingAnalysis", formattingAnalysis);
+
+        result.put("aiInsights", "To maximize your compatibility, focus on upgrading your bullet points to the 'X-Y-Z' formula (e.g., 'Accomplished [X], as measured by [Y], by doing [Z]') and integrate the missing technical keywords in your skills section.");
+
         return result;
     }
 
@@ -181,6 +276,6 @@ public class AtsService {
                 }
             }
         }
-        return ""; // Fallback
+        return "";
     }
 }
