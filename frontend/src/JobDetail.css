@@ -495,14 +495,14 @@
 }
 
 .ats-modal {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 1.5rem 1.5rem 2.5rem;
-  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 2.5rem 3rem 3rem;
+  border-radius: 32px;
   width: 95%;
-  max-width: 800px;
-  max-height: 90vh;
+  max-width: 1200px;
+  max-height: 92vh;
   overflow-y: auto;
   position: relative;
   text-align: center;
