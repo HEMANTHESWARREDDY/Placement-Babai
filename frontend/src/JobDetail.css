@@ -495,19 +495,19 @@
 }
 
 .ats-modal {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  padding: 2.5rem 3rem 3rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  padding: 2.5rem 4rem 3.5rem;
   border-radius: 32px;
-  width: 95%;
-  max-width: 1200px;
-  max-height: 92vh;
+  width: 96%;
+  max-width: 1400px;
+  max-height: 94vh;
   overflow-y: auto;
   position: relative;
   text-align: center;
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 50px 120px -20px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   animation: ats-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -525,13 +525,13 @@
 
 .ats-close {
   position: absolute;
-  top: 1rem;
-  right: 1.25rem;
-  font-size: 1.5rem;
+  top: 1.5rem;
+  right: 1.75rem;
+  font-size: 1.75rem;
   background: #f1f5f9;
   border: none;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   color: #64748b;
@@ -549,9 +549,9 @@
 /* Radial Progress Styles */
 .ats-progress-container {
   position: relative;
-  width: 140px;
-  height: 140px;
-  margin: 1.5rem auto;
+  width: 160px;
+  height: 160px;
+  margin: 1rem auto;
 }
 
 .ats-progress-svg {
@@ -901,13 +901,13 @@
 /* Premium AskJobs.ai Vibe Styles */
 .ats-header-summary {
   display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 2rem;
+  grid-template-columns: 260px 1fr;
+  gap: 3rem;
   align-items: center;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 20px;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   margin-top: 1.5rem;
 }
 
@@ -919,7 +919,7 @@
 }
 
 .ats-overall-message {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #1e293b;
   margin-top: 0.75rem;
@@ -928,8 +928,8 @@
 
 .ats-subscores-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 
 .ats-subscore-card {
