@@ -86,8 +86,18 @@ public class AnalyticsController {
     public ResponseEntity<Map<String, Long>> getGroupedApplies() {
         List<Map<String, Object>> results = jobApplyRepository.countAppliesGroupedByJob();
         Map<String, Long> groupedApplies = new HashMap<>();
-        for (Map<String, Object> row : results) {
-            groupedApplies.put(row.get("_id").toString(), ((Number) row.get("count")).longValue());
+        if (results != null) {
+            for (Map<String, Object> row : results) {
+                if (row != null && row.get("_id") != null && row.get("count") != null) {
+                    try {
+                        String id = row.get("_id").toString();
+                        Number countNum = (Number) row.get("count");
+                        groupedApplies.put(id, countNum.longValue());
+                    } catch (Exception e) {
+                        // ignore malformed rows
+                    }
+                }
+            }
         }
         return ResponseEntity.ok(groupedApplies);
     }
