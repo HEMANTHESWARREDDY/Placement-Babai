@@ -485,9 +485,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -495,19 +495,18 @@
 }
 
 .ats-modal {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: #ffffff;
   padding: 2.5rem 4rem 3.5rem;
   border-radius: 32px;
   width: 96%;
   max-width: 1400px;
   max-height: 94vh;
   overflow-y: auto;
+  scroll-behavior: smooth;
   position: relative;
   text-align: center;
-  box-shadow: 0 50px 120px -20px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 50px 120px -20px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   animation: ats-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
