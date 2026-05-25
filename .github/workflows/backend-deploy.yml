@@ -62,6 +62,8 @@ jobs:
           echo "🌐 EC2 Public IP: $(curl -s ifconfig.me)"
           echo "Cleaning up old processes..."
           pkill -f '[f]indmyjob-backend' || true
+          sudo fuser -k 8080/tcp || true
+          kill -9 $(lsof -t -i:8080) 2>/dev/null || true
           sleep 2
           
           echo "Starting application with Secrets..."
@@ -72,7 +74,10 @@ jobs:
           export MONGODB_PASSWORD="${{ secrets.MONGODB_PASSWORD }}"
           export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
           
-          nohup java -jar -Dspring.profiles.active=prod *.jar > app.log 2>&1 &
+          # Find the latest deployed jar to prevent conflicts
+          LATEST_JAR=$(ls -t *.jar | head -n1)
+          echo "Running latest jar: $LATEST_JAR"
+          nohup java -jar -Dspring.profiles.active=prod "$LATEST_JAR" > app.log 2>&1 &
           
           echo "Verifying startup (waiting 20s)..."
           sleep 20

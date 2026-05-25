@@ -84,20 +84,24 @@ public class AnalyticsController {
 
     @GetMapping("/applies/grouped")
     public ResponseEntity<Map<String, Long>> getGroupedApplies() {
-        List<Map<String, Object>> results = jobApplyRepository.countAppliesGroupedByJob();
         Map<String, Long> groupedApplies = new HashMap<>();
-        if (results != null) {
-            for (Map<String, Object> row : results) {
-                if (row != null && row.get("_id") != null && row.get("count") != null) {
-                    try {
-                        String id = row.get("_id").toString();
-                        Number countNum = (Number) row.get("count");
-                        groupedApplies.put(id, countNum.longValue());
-                    } catch (Exception e) {
-                        // ignore malformed rows
+        try {
+            List<Map<String, Object>> results = jobApplyRepository.countAppliesGroupedByJob();
+            if (results != null) {
+                for (Map<String, Object> row : results) {
+                    if (row != null && row.get("_id") != null && row.get("count") != null) {
+                        try {
+                            String id = row.get("_id").toString();
+                            Number countNum = (Number) row.get("count");
+                            groupedApplies.put(id, countNum.longValue());
+                        } catch (Exception e) {
+                            // ignore mapping errors
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            System.err.println("Aggregation query failed: " + e.getMessage());
         }
         return ResponseEntity.ok(groupedApplies);
     }
