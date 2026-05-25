@@ -149,44 +149,113 @@ public class AtsService {
         return result;
     }
 
-    private Map<String, Object> basicCalculate(Job job, String resumeTextLower) {
+    private static final Set<String> STOP_WORDS = Set.of(
+        "the", "and", "for", "with", "you", "are", "our", "will", "this", "that",
+        "have", "from", "your", "their", "about", "role", "description", "required",
+        "skills", "responsibilities", "requirements", "job", "work", "about",
+        "a", "an", "of", "to", "in", "is", "at", "by", "on", "as", "or", "but", "not",
+        "so", "be", "been", "was", "were", "has", "had", "do", "does", "did", "can",
+        "could", "should", "would", "must", "may", "might", "shall", "into", "onto",
+        "upon", "each", "every", "some", "any", "no", "not", "only", "own", "same"
+    );
+
+    private Set<String> extractCleanKeywords(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return Collections.emptySet();
+        }
         Set<String> keywords = new HashSet<>();
+        String[] words = text.toLowerCase().split("[\\s\\p{Punct}]+");
+        for (String w : words) {
+            String clean = w.trim();
+            if (clean.length() > 2 && !STOP_WORDS.contains(clean) && clean.matches("[a-z0-9]+")) {
+                keywords.add(clean);
+            }
+        }
+        return keywords;
+    }
+
+    private Map<String, Object> basicCalculate(Job job, String resumeTextLower) {
+        Set<String> skillsKeywords = new HashSet<>();
         if (job.getSkills() != null) {
             Arrays.stream(job.getSkills().split(","))
                     .map(String::trim)
                     .map(String::toLowerCase)
                     .filter(s -> !s.isEmpty())
-                    .forEach(keywords::add);
+                    .forEach(skillsKeywords::add);
         }
+
+        // Extract descriptive keywords from Requirements, Responsibilities, and Title
+        Set<String> descKeywords = new HashSet<>();
+        descKeywords.addAll(extractCleanKeywords(job.getRequirements()));
+        descKeywords.addAll(extractCleanKeywords(job.getResponsibilities()));
+
+        Set<String> titleKeywords = extractCleanKeywords(job.getTitle());
 
         List<Map<String, String>> matched = new ArrayList<>();
         List<Map<String, String>> missing = new ArrayList<>();
 
-        if (!keywords.isEmpty()) {
-            for (String keyword : keywords) {
-                if (resumeTextLower.contains(keyword)) {
-                    Map<String, String> m = new HashMap<>();
-                    m.put("keyword", keyword);
-                    m.put("synonymUsed", "exact");
-                    m.put("category", "Technical Skills");
-                    matched.add(m);
-                } else {
-                    Map<String, String> m = new HashMap<>();
-                    m.put("keyword", keyword);
-                    m.put("category", "Technical Skills");
-                    m.put("importance", "High");
-                    missing.add(m);
-                }
+        int matchedSkills = 0;
+        for (String skill : skillsKeywords) {
+            if (resumeTextLower.contains(skill)) {
+                matchedSkills++;
+                Map<String, String> m = new HashMap<>();
+                m.put("keyword", skill);
+                m.put("synonymUsed", "exact");
+                m.put("category", "Required Skills");
+                matched.add(m);
+            } else {
+                Map<String, String> m = new HashMap<>();
+                m.put("keyword", skill);
+                m.put("category", "Required Skills");
+                m.put("importance", "High");
+                missing.add(m);
             }
         }
 
-        double skillPercentage = keywords.isEmpty() ? 0 : ((double) matched.size() / keywords.size()) * 100;
-        int skillsMatch = (int) Math.min(99, 40 + (skillPercentage * 0.6));
-        int experienceMatch = resumeTextLower.contains("experience") || resumeTextLower.contains("years") ? 85 : 65;
-        int keywordMatch = (int) Math.min(99, 35 + (skillPercentage * 0.65));
-        int projectRelevance = resumeTextLower.contains("project") || resumeTextLower.contains("portfolio") ? 90 : 60;
-        int formattingScore = resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*") ? 92 : 78;
-        int educationMatch = resumeTextLower.contains("university") || resumeTextLower.contains("degree") || resumeTextLower.contains("btech") || resumeTextLower.contains("college") ? 88 : 70;
+        int matchedDesc = 0;
+        for (String word : descKeywords) {
+            if (resumeTextLower.contains(word)) {
+                matchedDesc++;
+            }
+        }
+
+        int matchedTitle = 0;
+        for (String word : titleKeywords) {
+            if (resumeTextLower.contains(word)) {
+                matchedTitle++;
+            }
+        }
+
+        double skillPercentage = skillsKeywords.isEmpty() ? 0 : ((double) matchedSkills / skillsKeywords.size());
+        double descPercentage = descKeywords.isEmpty() ? 0 : ((double) matchedDesc / descKeywords.size());
+        double titlePercentage = titleKeywords.isEmpty() ? 0 : ((double) matchedTitle / titleKeywords.size());
+
+        // Alignment penalty if JD has descriptions but none match the resume (indicates fake or completely mismatched JD)
+        double alignmentFactor = 1.0;
+        if (!descKeywords.isEmpty() && matchedDesc == 0) {
+            alignmentFactor = 0.15;
+        }
+
+        // Calculate subscores, heavily scaled by the alignment factor
+        int skillsMatch = (int) ((skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 69))) * alignmentFactor);
+        if (skillsMatch < 5) skillsMatch = 5;
+
+        int experienceMatch = (int) (((resumeTextLower.contains("experience") || resumeTextLower.contains("years")) ? 85 : 55) * alignmentFactor);
+        if (experienceMatch < 5) experienceMatch = 5;
+
+        int keywordMatch = (int) ((30 + (((skillPercentage * 0.4) + (descPercentage * 0.5) + (titlePercentage * 0.1)) * 69)) * alignmentFactor);
+        if (keywordMatch < 5) keywordMatch = 5;
+
+        int projectRelevance = (int) (((resumeTextLower.contains("project") || resumeTextLower.contains("portfolio")) ? 80 : 45) * alignmentFactor);
+        if (projectRelevance < 5) projectRelevance = 5;
+
+        int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
+        if (alignmentFactor < 0.2) {
+            formattingScore = (int) (formattingScore * 0.65);
+        }
+
+        int educationMatch = (int) (((resumeTextLower.contains("university") || resumeTextLower.contains("degree") || resumeTextLower.contains("btech") || resumeTextLower.contains("college")) ? 85 : 55) * alignmentFactor);
+        if (educationMatch < 5) educationMatch = 5;
 
         int overallScore = (skillsMatch + experienceMatch + keywordMatch + projectRelevance + formattingScore + educationMatch) / 6;
 
@@ -194,10 +263,17 @@ public class AtsService {
         result.put("score", overallScore);
 
         String message;
-        if (overallScore >= 80) message = "Excellent Match! Your resume demonstrates a highly aligned skill set.";
-        else if (overallScore >= 60) message = "Good Match! Solid alignment, but there are areas you can optimize.";
-        else if (overallScore >= 45) message = "Fair Match! You meet some core requirements but need to add more relevant keywords.";
-        else message = "Low Match! High potential mismatch. Consider tailoring your resume for this role.";
+        if (overallScore >= 80) {
+            message = "Excellent Match! Your resume demonstrates a highly aligned skill set.";
+        } else if (overallScore >= 60) {
+            message = "Good Match! Solid alignment, but there are areas you can optimize.";
+        } else if (overallScore >= 40) {
+            message = "Fair Match! You meet some core requirements but need to add more relevant keywords.";
+        } else if (alignmentFactor < 0.2) {
+            message = "Extremely Low Match! The job requirements and responsibilities do not align with your resume at all (unrecognized content).";
+        } else {
+            message = "Low Match! High potential mismatch. Consider tailoring your resume for this role.";
+        }
         
         result.put("message", message);
 
@@ -215,32 +291,56 @@ public class AtsService {
         keywordAnalysis.put("missing", missing);
         result.put("keywordAnalysis", keywordAnalysis);
 
-        result.put("strengths", Arrays.asList(
-            "Clear technical keywords matching the core job description requirements.",
-            "Strong layout structure with searchable section headers."
-        ));
+        if (alignmentFactor < 0.2) {
+            result.put("strengths", Arrays.asList(
+                "Resume uses basic clean structural formatting.",
+                "Primary contact information and section titles are legible."
+            ));
 
-        result.put("weaknesses", Arrays.asList(
-            "Missing clear quantified achievements (metrics like %, $, or hours saved).",
-            "Several high-priority technical skills from the job description are not mentioned."
-        ));
+            result.put("weaknesses", Arrays.asList(
+                "Critical mismatch: Job description keywords are completely absent from your resume.",
+                "Zero contextual overlap between your work experience and the target role's core responsibilities."
+            ));
+        } else {
+            result.put("strengths", Arrays.asList(
+                "Clear technical keywords matching the core job description requirements.",
+                "Strong layout structure with searchable section headers."
+            ));
+
+            result.put("weaknesses", Arrays.asList(
+                "Missing clear quantified achievements (metrics like %, $, or hours saved).",
+                "Several high-priority technical skills from the job description are not mentioned."
+            ));
+        }
 
         List<Map<String, String>> improvements = new ArrayList<>();
         Map<String, String> imp1 = new HashMap<>();
         imp1.put("section", "Professional Experience / Projects");
         imp1.put("original", "Responsible for working on backend tasks and building APIs.");
-        imp1.put("suggested", "Spearheaded development of 10+ high-performance REST APIs using " + (keywords.isEmpty() ? "modern frameworks" : keywords.iterator().next()) + ", reducing response latencies by 25%.");
+        if (alignmentFactor < 0.2) {
+            imp1.put("suggested", "Tailor your work history to include authentic tech terms and accomplishments instead of generic filler descriptions.");
+        } else {
+            imp1.put("suggested", "Spearheaded development of 10+ high-performance REST APIs using " + (skillsKeywords.isEmpty() ? "modern frameworks" : skillsKeywords.iterator().next()) + ", reducing response latencies by 25%.");
+        }
         improvements.add(imp1);
         result.put("improvements", improvements);
 
         Map<String, Object> formattingAnalysis = new HashMap<>();
-        formattingAnalysis.put("bulletPointsCheck", "Pass");
-        formattingAnalysis.put("sectionHeaderCheck", "Pass");
+        formattingAnalysis.put("bulletPointsCheck", alignmentFactor < 0.2 ? "Warning" : "Pass");
+        formattingAnalysis.put("sectionHeaderCheck", alignmentFactor < 0.2 ? "Warning" : "Pass");
         formattingAnalysis.put("tablesCheck", "Pass");
-        formattingAnalysis.put("feedback", "Excellent clean structure. Ensure you use bullet points with action verbs and avoid any graphic bars or side columns.");
+        if (alignmentFactor < 0.2) {
+            formattingAnalysis.put("feedback", "Formatting is acceptable but the semantic content is a complete mismatch. Ensure you are targeting appropriate job listings.");
+        } else {
+            formattingAnalysis.put("feedback", "Excellent clean structure. Ensure you use bullet points with action verbs and avoid any graphic bars or side columns.");
+        }
         result.put("formattingAnalysis", formattingAnalysis);
 
-        result.put("aiInsights", "To maximize your compatibility, focus on upgrading your bullet points to the 'X-Y-Z' formula (e.g., 'Accomplished [X], as measured by [Y], by doing [Z]') and integrate the missing technical keywords in your skills section.");
+        if (alignmentFactor < 0.2) {
+            result.put("aiInsights", "ALERT: Complete content mismatch detected. Please check if the job details are valid, or rewrite your resume experience to address the target responsibilities.");
+        } else {
+            result.put("aiInsights", "To maximize your compatibility, focus on upgrading your bullet points to the 'X-Y-Z' formula (e.g., 'Accomplished [X], as measured by [Y], by doing [Z]') and integrate the missing technical keywords in your skills section.");
+        }
 
         return result;
     }
