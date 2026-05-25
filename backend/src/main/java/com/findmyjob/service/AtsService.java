@@ -152,11 +152,11 @@ public class AtsService {
     private static final Set<String> STOP_WORDS = Set.of(
         "the", "and", "for", "with", "you", "are", "our", "will", "this", "that",
         "have", "from", "your", "their", "about", "role", "description", "required",
-        "skills", "responsibilities", "requirements", "job", "work", "about",
+        "skills", "responsibilities", "requirements", "job", "work",
         "a", "an", "of", "to", "in", "is", "at", "by", "on", "as", "or", "but", "not",
         "so", "be", "been", "was", "were", "has", "had", "do", "does", "did", "can",
         "could", "should", "would", "must", "may", "might", "shall", "into", "onto",
-        "upon", "each", "every", "some", "any", "no", "not", "only", "own", "same"
+        "upon", "each", "every", "some", "any", "no", "only", "own", "same"
     );
 
     private Set<String> extractCleanKeywords(String text) {
