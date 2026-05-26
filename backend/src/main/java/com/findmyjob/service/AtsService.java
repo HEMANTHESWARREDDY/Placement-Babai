@@ -500,8 +500,8 @@ public class AtsService {
         result.put("improvements", improvements);
 
         Map<String, Object> formattingAnalysis = new HashMap<>();
-        formattingAnalysis.put("bulletPointsCheck", alignmentFactor < 0.2 ? "Warning" : "Pass");
-        formattingAnalysis.put("sectionHeaderCheck", alignmentFactor < 0.2 ? "Warning" : "Pass");
+        formattingAnalysis.put("bulletPointsCheck", hasBulletPoints ? "Pass" : "Warning");
+        formattingAnalysis.put("sectionHeaderCheck", (hasEducationHeader && hasExperienceHeader && hasSkillsHeader) ? "Pass" : ((hasEducationHeader || hasExperienceHeader || hasSkillsHeader) ? "Warning" : "Fail"));
         formattingAnalysis.put("tablesCheck", "Pass");
         if (alignmentFactor < 0.2) {
             formattingAnalysis.put("feedback", "Formatting is acceptable but the semantic content is a complete mismatch. Ensure you are targeting appropriate job listings.");
