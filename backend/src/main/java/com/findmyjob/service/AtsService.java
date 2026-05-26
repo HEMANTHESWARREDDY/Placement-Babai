@@ -250,11 +250,11 @@ public class AtsService {
         }
 
         // Calculate subscores authentically without scaling by the alignment factor
-        int skillsMatch = (int) (skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 69)));
+        int skillsMatch = (int) (skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 55)));
         if (skillsMatch < 5) skillsMatch = 5;
 
-        // Determine experience match authentically
-        int experienceMatch = 75;
+        // Determine experience match authentically and conservatively
+        int experienceMatch = 70;
         String expReq = job.getExperienceLevel() != null ? job.getExperienceLevel().toLowerCase() : "";
         boolean isEntryOrFresherJob = expReq.contains("0-2") || expReq.contains("entry") || expReq.contains("fresher") || expReq.isEmpty();
         boolean isMidOrSeniorJob = expReq.contains("3-5") || expReq.contains("mid") || expReq.contains("senior") || expReq.contains("5+");
@@ -263,21 +263,23 @@ public class AtsService {
         
         if (isEntryOrFresherJob) {
             if (hasInternshipOrTeaching || hasWorkExp) {
-                experienceMatch = 95; // Perfect match for 0-2 years entry-level!
+                experienceMatch = 72; // Genuine internship/teaching match for fresher job!
             } else {
-                experienceMatch = 85;
+                experienceMatch = 65;
             }
         } else if (isMidOrSeniorJob) {
             if (hasWorkExp && (resumeTextLower.contains("lead") || resumeTextLower.contains("senior") || resumeTextLower.contains("manager") || resumeTextLower.contains("3") || resumeTextLower.contains("4") || resumeTextLower.contains("5"))) {
-                experienceMatch = 95;
+                experienceMatch = 85; // Genuine experienced developer match
             } else if (hasWorkExp || hasInternshipOrTeaching) {
-                experienceMatch = 75;
+                experienceMatch = 60;
             } else {
-                experienceMatch = 45;
+                experienceMatch = 35;
             }
         } else {
             if (hasWorkExp || hasInternshipOrTeaching) {
-                experienceMatch = 90;
+                experienceMatch = 70;
+            } else {
+                experienceMatch = 50;
             }
         }
         if (experienceMatch < 5) experienceMatch = 5;
@@ -292,7 +294,7 @@ public class AtsService {
                                      resumeTextLower.contains("capstone");
                                      
         if (hasProjectsSection) {
-            projectRelevance = 70; // Base score for listing projects
+            projectRelevance = 65; // Base score for listing projects
             int matchedSkillsInProjects = 0;
             for (String skill : skillsKeywords) {
                 if (resumeTextLower.contains(skill.toLowerCase())) {
@@ -300,16 +302,16 @@ public class AtsService {
                 }
             }
             if (matchedSkillsInProjects >= 3) {
-                projectRelevance = 95; // Exceptional project-tech stack alignment!
+                projectRelevance = 80; // Genuine exceptional projects tech alignment
             } else if (matchedSkillsInProjects >= 2) {
-                projectRelevance = 85; // Strong alignment!
+                projectRelevance = 74; // Genuine strong projects tech alignment
             } else if (matchedSkillsInProjects >= 1) {
-                projectRelevance = 75; // Moderate alignment
+                projectRelevance = 68; // Moderate projects tech alignment
             } else {
-                projectRelevance = 60; // Unrelated projects
+                projectRelevance = 55; // Unrelated projects
             }
         } else {
-            projectRelevance = 35; // No projects listed
+            projectRelevance = 25; // No projects listed
         }
         if (projectRelevance < 5) projectRelevance = 5;
 
@@ -340,19 +342,19 @@ public class AtsService {
         
         switch (structuralChecksPassed) {
             case 6:
-                formattingScore = 95; // Flawless ATS layout structure!
+                formattingScore = 78; // Flawless ATS structure (genuine range limit)
                 break;
             case 5:
-                formattingScore = 85;
+                formattingScore = 72;
                 break;
             case 4:
-                formattingScore = 75;
+                formattingScore = 65;
                 break;
             case 3:
-                formattingScore = 60;
+                formattingScore = 55;
                 break;
             default:
-                formattingScore = 40;
+                formattingScore = 35;
                 break;
         }
 
@@ -415,17 +417,17 @@ public class AtsService {
 
             if (specifiedRequirementFound) {
                 if (candidateMatchesSpecified) {
-                    educationMatch = 98; // Perfect matching education!
+                    educationMatch = 82; // Perfect matching education (genuine limit)
                 } else {
-                    educationMatch = 55; // Branch mismatch: candidate does not have the specified branch!
+                    educationMatch = 45; // Branch mismatch: candidate does not have the specified branch!
                 }
             } else {
                 // Generic job: candidate has a degree
-                educationMatch = 95;
+                educationMatch = 75;
             }
         } else {
             // No degree
-            educationMatch = 45;
+            educationMatch = 35;
         }
         if (educationMatch < 5) educationMatch = 5;
 

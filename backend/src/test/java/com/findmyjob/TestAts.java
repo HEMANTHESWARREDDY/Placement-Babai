@@ -73,6 +73,6 @@ public class TestAts {
 
         java.util.Map<String, Object> subScores = (java.util.Map<String, Object>) result.get("subScores");
         int eduScore = (Integer) subScores.get("educationMatch");
-        assertTrue(eduScore == 55, "ECE candidate should get 55% mismatch score for a CSE job");
+        assertTrue(eduScore == 45, "ECE candidate should get 45% mismatch score for a CSE job");
     }
 }
