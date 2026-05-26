@@ -202,6 +202,8 @@ public class AtsService {
 
         Set<String> titleKeywords = extractCleanKeywords(stripHtml(job.getTitle()));
 
+        Set<String> resumeWords = extractCleanKeywords(resumeTextLower);
+
         List<Map<String, String>> matched = new ArrayList<>();
         List<Map<String, String>> missing = new ArrayList<>();
 
@@ -225,14 +227,14 @@ public class AtsService {
 
         int matchedDesc = 0;
         for (String word : descKeywords) {
-            if (resumeTextLower.contains(word)) {
+            if (resumeWords.contains(word)) {
                 matchedDesc++;
             }
         }
 
         int matchedTitle = 0;
         for (String word : titleKeywords) {
-            if (resumeTextLower.contains(word)) {
+            if (resumeWords.contains(word)) {
                 matchedTitle++;
             }
         }
