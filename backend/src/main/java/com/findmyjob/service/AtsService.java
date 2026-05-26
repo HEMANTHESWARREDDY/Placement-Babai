@@ -431,8 +431,9 @@ public class AtsService {
         }
         if (educationMatch < 5) educationMatch = 5;
 
-        // Overall score is the pure unpenalized average of all six subscores
-        int overallScore = (skillsMatch + experienceMatch + keywordMatch + projectRelevance + formattingScore + educationMatch) / 6;
+        // Overall score is weighted: 75% for structural matches (skills, experience, projects, formatting, education) + 25% for content match (keywordMatch)
+        double structuralAverage = (skillsMatch + experienceMatch + projectRelevance + formattingScore + educationMatch) / 5.0;
+        int overallScore = (int) Math.round((structuralAverage * 0.75) + (keywordMatch * 0.25));
 
         Map<String, Object> result = new HashMap<>();
         result.put("score", overallScore);
