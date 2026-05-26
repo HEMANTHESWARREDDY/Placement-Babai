@@ -41,6 +41,17 @@ function JobDetail({ job, onClose }) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 
+    const [collapsedSections, setCollapsedSections] = useState({
+        skills: true,
+        strengths: true,
+        weaknesses: true,
+        formatting: true
+    });
+
+    const toggleSection = (sec) => {
+        setCollapsedSections(prev => ({ ...prev, [sec]: !prev[sec] }));
+    };
+
     const handleAtsFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setAtsFile(e.target.files[0]);
@@ -450,84 +461,111 @@ function JobDetail({ job, onClose }) {
 
                                     {/* Keywords Section */}
                                     {atsResult.keywordAnalysis && (
-                                        <div className="ats-detail-section">
-                                            <h4 className="ats-section-subtitle">🛠️ Skills Match Analysis</h4>
-                                            <div className="ats-keywords-container">
-                                                <div className="ats-keywords-box matched">
-                                                    <h5>Matched Skills ({atsResult.keywordAnalysis.matched?.length || 0})</h5>
-                                                    <div className="ats-keyword-list">
-                                                        {atsResult.keywordAnalysis.matched?.map((k, i) => (
-                                                            <div key={i} className="ats-keyword-badge matched">
-                                                                <span className="ats-keyword-name">{k.keyword}</span>
-                                                                {k.synonymUsed && k.synonymUsed !== 'exact' && (
-                                                                    <span className="ats-keyword-synonym">via "{k.synonymUsed}"</span>
-                                                                )}
-                                                                {k.category && (
-                                                                    <span className="ats-keyword-category">{k.category}</span>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                        {(!atsResult.keywordAnalysis.matched || atsResult.keywordAnalysis.matched.length === 0) && (
-                                                            <p className="ats-empty-text">No skills matched yet.</p>
-                                                        )}
+                                        <div className="ats-detail-section collapsible">
+                                            <button 
+                                                className={`ats-section-toggle-btn ${!collapsedSections.skills ? 'active' : ''}`}
+                                                onClick={() => toggleSection('skills')}
+                                            >
+                                                <span className="ats-section-toggle-title">🛠️ Skills Match Analysis</span>
+                                                <span className="ats-section-toggle-chevron">{collapsedSections.skills ? '▼' : '▲'}</span>
+                                            </button>
+                                            <div className={`ats-section-collapse-content ${collapsedSections.skills ? 'collapsed' : ''}`}>
+                                                <div className="ats-keywords-container" style={{ marginTop: '1.25rem' }}>
+                                                    <div className="ats-keywords-box matched">
+                                                        <h5>Matched Skills ({atsResult.keywordAnalysis.matched?.length || 0})</h5>
+                                                        <div className="ats-keyword-list">
+                                                            {atsResult.keywordAnalysis.matched?.map((k, i) => (
+                                                                <div key={i} className="ats-keyword-badge matched">
+                                                                    <span className="ats-keyword-name">{k.keyword}</span>
+                                                                    {k.synonymUsed && k.synonymUsed !== 'exact' && (
+                                                                        <span className="ats-keyword-synonym">via "{k.synonymUsed}"</span>
+                                                                    )}
+                                                                    {k.category && (
+                                                                        <span className="ats-keyword-category">{k.category}</span>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                            {(!atsResult.keywordAnalysis.matched || atsResult.keywordAnalysis.matched.length === 0) && (
+                                                                <p className="ats-empty-text">No skills matched yet.</p>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="ats-keywords-box missing">
-                                                    <h5>Missing Core Skills ({atsResult.keywordAnalysis.missing?.length || 0})</h5>
-                                                    <div className="ats-keyword-list">
-                                                        {atsResult.keywordAnalysis.missing?.map((k, i) => (
-                                                            <div key={i} className="ats-keyword-badge missing">
-                                                                <span className="ats-keyword-name">{k.keyword}</span>
-                                                                {k.importance && (
-                                                                    <span className={`ats-keyword-importance ${k.importance.toLowerCase()}`}>
-                                                                        {k.importance}
-                                                                    </span>
-                                                                )}
-                                                                {k.category && (
-                                                                    <span className="ats-keyword-category">{k.category}</span>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                        {(!atsResult.keywordAnalysis.missing || atsResult.keywordAnalysis.missing.length === 0) && (
-                                                            <p className="ats-empty-text">Perfect! No critical missing skills.</p>
-                                                        )}
+                                                    <div className="ats-keywords-box missing">
+                                                        <h5>Missing Core Skills ({atsResult.keywordAnalysis.missing?.length || 0})</h5>
+                                                        <div className="ats-keyword-list">
+                                                            {atsResult.keywordAnalysis.missing?.map((k, i) => (
+                                                                <div key={i} className="ats-keyword-badge missing">
+                                                                    <span className="ats-keyword-name">{k.keyword}</span>
+                                                                    {k.importance && (
+                                                                        <span className={`ats-keyword-importance ${k.importance.toLowerCase()}`}>
+                                                                            {k.importance}
+                                                                        </span>
+                                                                    )}
+                                                                    {k.category && (
+                                                                        <span className="ats-keyword-category">{k.category}</span>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                            {(!atsResult.keywordAnalysis.missing || atsResult.keywordAnalysis.missing.length === 0) && (
+                                                                <p className="ats-empty-text">Perfect! No critical missing skills.</p>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* Strengths & Weaknesses */}
-                                    <div className="ats-columns-grid">
-                                        <div className="ats-column-card strengths">
-                                            <h5>💪 Key Strengths</h5>
-                                            <ul className="ats-bullet-list">
-                                                {atsResult.strengths?.map((s, i) => (
-                                                    <li key={i}>
-                                                        <span className="ats-bullet-icon green">✓</span>
-                                                        <span>{s}</span>
-                                                    </li>
-                                                ))}
-                                                {(!atsResult.strengths || atsResult.strengths.length === 0) && (
-                                                    <p className="ats-empty-text">No major strengths analyzed.</p>
-                                                )}
-                                            </ul>
+                                    {/* Key Strengths Collapsible */}
+                                    <div className="ats-detail-section collapsible">
+                                        <button 
+                                            className={`ats-section-toggle-btn ${!collapsedSections.strengths ? 'active' : ''}`}
+                                            onClick={() => toggleSection('strengths')}
+                                        >
+                                            <span className="ats-section-toggle-title">💪 Key Strengths</span>
+                                            <span className="ats-section-toggle-chevron">{collapsedSections.strengths ? '▼' : '▲'}</span>
+                                        </button>
+                                        <div className={`ats-section-collapse-content ${collapsedSections.strengths ? 'collapsed' : ''}`}>
+                                            <div className="ats-keywords-box matched" style={{ border: '1px solid #bbf7d0', boxShadow: 'none', marginTop: '1.25rem' }}>
+                                                <ul className="ats-bullet-list">
+                                                    {atsResult.strengths?.map((s, i) => (
+                                                        <li key={i}>
+                                                            <span className="ats-bullet-icon green">✓</span>
+                                                            <span>{s}</span>
+                                                        </li>
+                                                    ))}
+                                                    {(!atsResult.strengths || atsResult.strengths.length === 0) && (
+                                                        <p className="ats-empty-text">No major strengths analyzed.</p>
+                                                    )}
+                                                </ul>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        <div className="ats-column-card weaknesses">
-                                            <h5>⚠️ Improvement Areas</h5>
-                                            <ul className="ats-bullet-list">
-                                                {atsResult.weaknesses?.map((w, i) => (
-                                                    <li key={i}>
-                                                        <span className="ats-bullet-icon red">!</span>
-                                                        <span>{w}</span>
-                                                    </li>
-                                                ))}
-                                                {(!atsResult.weaknesses || atsResult.weaknesses.length === 0) && (
-                                                    <p className="ats-empty-text">No significant improvement areas detected.</p>
-                                                )}
-                                            </ul>
+                                    {/* Improvement Areas Collapsible */}
+                                    <div className="ats-detail-section collapsible">
+                                        <button 
+                                            className={`ats-section-toggle-btn ${!collapsedSections.weaknesses ? 'active' : ''}`}
+                                            onClick={() => toggleSection('weaknesses')}
+                                        >
+                                            <span className="ats-section-toggle-title">⚠️ Improvement Areas</span>
+                                            <span className="ats-section-toggle-chevron">{collapsedSections.weaknesses ? '▼' : '▲'}</span>
+                                        </button>
+                                        <div className={`ats-section-collapse-content ${collapsedSections.weaknesses ? 'collapsed' : ''}`}>
+                                            <div className="ats-keywords-box missing" style={{ border: '1px solid #fecdd3', boxShadow: 'none', marginTop: '1.25rem' }}>
+                                                <ul className="ats-bullet-list">
+                                                    {atsResult.weaknesses?.map((w, i) => (
+                                                        <li key={i}>
+                                                            <span className="ats-bullet-icon red">!</span>
+                                                            <span>{w}</span>
+                                                        </li>
+                                                    ))}
+                                                    {(!atsResult.weaknesses || atsResult.weaknesses.length === 0) && (
+                                                        <p className="ats-empty-text">No significant improvement areas detected.</p>
+                                                    )}
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -558,40 +596,48 @@ function JobDetail({ job, onClose }) {
 
                                     {/* Formatting checks */}
                                     {atsResult.formattingAnalysis && (
-                                        <div className="ats-detail-section">
-                                            <h4 className="ats-section-subtitle">📋 ATS Formatting Checks</h4>
-                                            <div className="ats-formatting-grid">
-                                                <div className="ats-format-check-card">
-                                                    <div className="ats-format-header">
-                                                        <span className="ats-format-icon">📌</span>
-                                                        <span className="ats-format-title">Bullet Points</span>
-                                                        <span className={`ats-format-pill ${atsResult.formattingAnalysis.bulletPointsCheck?.toLowerCase()}`}>
-                                                            {atsResult.formattingAnalysis.bulletPointsCheck}
-                                                        </span>
+                                        <div className="ats-detail-section collapsible">
+                                            <button 
+                                                className={`ats-section-toggle-btn ${!collapsedSections.formatting ? 'active' : ''}`}
+                                                onClick={() => toggleSection('formatting')}
+                                            >
+                                                <span className="ats-section-toggle-title">📋 ATS Formatting Checks</span>
+                                                <span className="ats-section-toggle-chevron">{collapsedSections.formatting ? '▼' : '▲'}</span>
+                                            </button>
+                                            <div className={`ats-section-collapse-content ${collapsedSections.formatting ? 'collapsed' : ''}`}>
+                                                <div className="ats-formatting-grid" style={{ marginTop: '1.25rem' }}>
+                                                    <div className="ats-format-check-card">
+                                                        <div className="ats-format-header">
+                                                            <span className="ats-format-icon">📌</span>
+                                                            <span className="ats-format-title">Bullet Points</span>
+                                                            <span className={`ats-format-pill ${atsResult.formattingAnalysis.bulletPointsCheck?.toLowerCase()}`}>
+                                                                {atsResult.formattingAnalysis.bulletPointsCheck}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="ats-format-check-card">
+                                                        <div className="ats-format-header">
+                                                            <span className="ats-format-icon">🗂️</span>
+                                                            <span className="ats-format-title">Section Headers</span>
+                                                            <span className={`ats-format-pill ${atsResult.formattingAnalysis.sectionHeaderCheck?.toLowerCase()}`}>
+                                                                {atsResult.formattingAnalysis.sectionHeaderCheck}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="ats-format-check-card">
+                                                        <div className="ats-format-header">
+                                                            <span className="ats-format-icon">📊</span>
+                                                            <span className="ats-format-title">Tables / Columns</span>
+                                                            <span className={`ats-format-pill ${atsResult.formattingAnalysis.tablesCheck?.toLowerCase()}`}>
+                                                                {atsResult.formattingAnalysis.tablesCheck}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="ats-format-check-card">
-                                                    <div className="ats-format-header">
-                                                        <span className="ats-format-icon">🗂️</span>
-                                                        <span className="ats-format-title">Section Headers</span>
-                                                        <span className={`ats-format-pill ${atsResult.formattingAnalysis.sectionHeaderCheck?.toLowerCase()}`}>
-                                                            {atsResult.formattingAnalysis.sectionHeaderCheck}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="ats-format-check-card">
-                                                    <div className="ats-format-header">
-                                                        <span className="ats-format-icon">📊</span>
-                                                        <span className="ats-format-title">Tables / Columns</span>
-                                                        <span className={`ats-format-pill ${atsResult.formattingAnalysis.tablesCheck?.toLowerCase()}`}>
-                                                            {atsResult.formattingAnalysis.tablesCheck}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                <p className="ats-formatting-feedback">
+                                                    <strong>Recruiter Advice:</strong> {atsResult.formattingAnalysis.feedback}
+                                                </p>
                                             </div>
-                                            <p className="ats-formatting-feedback">
-                                                <strong>Recruiter Advice:</strong> {atsResult.formattingAnalysis.feedback}
-                                            </p>
                                         </div>
                                     )}
                                 </div>
