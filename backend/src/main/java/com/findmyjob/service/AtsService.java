@@ -42,6 +42,54 @@ public class AtsService {
 
         String resumeText = extractText(file);
 
+        if (resumeText == null || resumeText.trim().isEmpty() || resumeText.trim().length() < 20) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("score", 0);
+            result.put("message", "Invalid File: The uploaded document does not contain readable text or is not a valid resume.");
+            
+            Map<String, Object> subScores = new HashMap<>();
+            subScores.put("skillsMatch", 0);
+            subScores.put("experienceMatch", 0);
+            subScores.put("keywordMatch", 0);
+            subScores.put("projectRelevance", 0);
+            subScores.put("formattingScore", 0);
+            subScores.put("educationMatch", 0);
+            result.put("subScores", subScores);
+            
+            Map<String, Object> keywordAnalysis = new HashMap<>();
+            keywordAnalysis.put("matched", new ArrayList<>());
+            
+            List<Map<String, String>> missing = new ArrayList<>();
+            if (job.getSkills() != null) {
+                for (String skill : job.getSkills().split(",")) {
+                    String clean = skill.trim();
+                    if (!clean.isEmpty()) {
+                        Map<String, String> m = new HashMap<>();
+                        m.put("keyword", clean);
+                        m.put("category", "Required Skills");
+                        m.put("importance", "High");
+                        missing.add(m);
+                    }
+                }
+            }
+            keywordAnalysis.put("missing", missing);
+            result.put("keywordAnalysis", keywordAnalysis);
+            
+            result.put("strengths", Collections.singletonList("None: Document contains no parsable text."));
+            result.put("weaknesses", Collections.singletonList("Invalid file: No readable resume text could be parsed. Ensure you upload a valid PDF or DOCX file containing text rather than images."));
+            result.put("improvements", new ArrayList<>());
+            
+            Map<String, Object> formattingAnalysis = new HashMap<>();
+            formattingAnalysis.put("bulletPointsCheck", "Fail");
+            formattingAnalysis.put("sectionHeaderCheck", "Fail");
+            formattingAnalysis.put("tablesCheck", "Fail");
+            formattingAnalysis.put("feedback", "No readable text detected. Please upload a standard text-based resume (PDF or DOCX).");
+            result.put("formattingAnalysis", formattingAnalysis);
+            
+            result.put("aiInsights", "ALERT: Invalid document uploaded. The file does not contain any recognizable resume text or layout structure.");
+            return result;
+        }
+
         if (geminiApiKey == null || geminiApiKey.trim().isEmpty()) {
             return basicCalculate(job, resumeText.toLowerCase());
         }
@@ -250,51 +298,42 @@ public class AtsService {
         }
 
         // Calculate subscores authentically without scaling by the alignment factor
-        int skillsMatch = (int) (skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 55)));
-        if (skillsMatch < 5) skillsMatch = 5;
+        int skillsMatch = skillsKeywords.isEmpty() ? 0 : (int) Math.round(skillPercentage * 100);
 
         // Determine experience match authentically and conservatively
-        int experienceMatch = 70;
+        int experienceMatch = 0;
         String expReq = job.getExperienceLevel() != null ? job.getExperienceLevel().toLowerCase() : "";
         boolean isEntryOrFresherJob = expReq.contains("0-2") || expReq.contains("entry") || expReq.contains("fresher") || expReq.isEmpty();
         boolean isMidOrSeniorJob = expReq.contains("3-5") || expReq.contains("mid") || expReq.contains("senior") || expReq.contains("5+");
         boolean hasInternshipOrTeaching = resumeTextLower.contains("intern") || resumeTextLower.contains("assistant") || resumeTextLower.contains("teaching");
         boolean hasWorkExp = resumeTextLower.contains("experience") || resumeTextLower.contains("years") || resumeTextLower.contains("worked") || resumeTextLower.contains("employment");
         
-        if (isEntryOrFresherJob) {
-            if (hasInternshipOrTeaching || hasWorkExp) {
-                experienceMatch = 72; // Genuine internship/teaching match for fresher job!
+        if (hasWorkExp || hasInternshipOrTeaching) {
+            if (isEntryOrFresherJob) {
+                experienceMatch = hasInternshipOrTeaching || hasWorkExp ? 72 : 50;
+            } else if (isMidOrSeniorJob) {
+                if (hasWorkExp && (resumeTextLower.contains("lead") || resumeTextLower.contains("senior") || resumeTextLower.contains("manager") || resumeTextLower.contains("3") || resumeTextLower.contains("4") || resumeTextLower.contains("5"))) {
+                    experienceMatch = 85; // Genuine experienced developer match
+                } else {
+                    experienceMatch = 60;
+                }
             } else {
-                experienceMatch = 65;
-            }
-        } else if (isMidOrSeniorJob) {
-            if (hasWorkExp && (resumeTextLower.contains("lead") || resumeTextLower.contains("senior") || resumeTextLower.contains("manager") || resumeTextLower.contains("3") || resumeTextLower.contains("4") || resumeTextLower.contains("5"))) {
-                experienceMatch = 85; // Genuine experienced developer match
-            } else if (hasWorkExp || hasInternshipOrTeaching) {
-                experienceMatch = 60;
-            } else {
-                experienceMatch = 35;
-            }
-        } else {
-            if (hasWorkExp || hasInternshipOrTeaching) {
                 experienceMatch = 70;
-            } else {
-                experienceMatch = 50;
             }
         }
-        if (experienceMatch < 5) experienceMatch = 5;
 
-        int keywordMatch = (int) ((30 + (((skillPercentage * 0.4) + (descPercentage * 0.5) + (titlePercentage * 0.1)) * 69)) * alignmentFactor);
-        if (keywordMatch < 5) keywordMatch = 5;
+        int keywordMatch = 0;
+        if (skillPercentage > 0 || descPercentage > 0 || titlePercentage > 0) {
+            keywordMatch = (int) Math.round(((skillPercentage * 40) + (descPercentage * 50) + (titlePercentage * 10)) * alignmentFactor);
+        }
 
         // Determine project relevance authentically based on matching tech stack inside projects
-        int projectRelevance = 45; // Default score if no projects are listed
+        int projectRelevance = 0;
         boolean hasProjectsSection = resumeTextLower.contains("project") || 
                                      resumeTextLower.contains("portfolio") || 
                                      resumeTextLower.contains("capstone");
                                      
         if (hasProjectsSection) {
-            projectRelevance = 65; // Base score for listing projects
             int matchedSkillsInProjects = 0;
             for (String skill : skillsKeywords) {
                 if (resumeTextLower.contains(skill.toLowerCase())) {
@@ -304,19 +343,16 @@ public class AtsService {
             if (matchedSkillsInProjects >= 3) {
                 projectRelevance = 80; // Genuine exceptional projects tech alignment
             } else if (matchedSkillsInProjects >= 2) {
-                projectRelevance = 74; // Genuine strong projects tech alignment
+                projectRelevance = 70; // Genuine strong projects tech alignment
             } else if (matchedSkillsInProjects >= 1) {
-                projectRelevance = 68; // Moderate projects tech alignment
+                projectRelevance = 60; // Moderate projects tech alignment
             } else {
-                projectRelevance = 55; // Unrelated projects
+                projectRelevance = 50; // Unrelated projects
             }
-        } else {
-            projectRelevance = 25; // No projects listed
         }
-        if (projectRelevance < 5) projectRelevance = 5;
 
-        // Determine formatting score authentically based on structural ATS parsing standards
-        int formattingScore = 70; // Base score
+        // Determine formatting score authentically based on structural ATS standards
+        int formattingScore = 0;
         boolean hasEmail = resumeTextLower.contains("@") && (resumeTextLower.contains(".com") || resumeTextLower.contains(".org") || resumeTextLower.contains(".in") || resumeTextLower.contains(".edu"));
         boolean hasPhone = resumeTextLower.replaceAll("[^0-9]", "").length() >= 10;
         
@@ -340,26 +376,31 @@ public class AtsService {
         if (hasExperienceHeader) structuralChecksPassed++;
         if (hasSkillsHeader) structuralChecksPassed++;
         
-        switch (structuralChecksPassed) {
-            case 6:
-                formattingScore = 78; // Flawless ATS structure (genuine range limit)
-                break;
-            case 5:
-                formattingScore = 72;
-                break;
-            case 4:
-                formattingScore = 65;
-                break;
-            case 3:
-                formattingScore = 55;
-                break;
-            default:
-                formattingScore = 35;
-                break;
+        if (structuralChecksPassed > 0) {
+            switch (structuralChecksPassed) {
+                case 6:
+                    formattingScore = 95; // Flawless ATS structure
+                    break;
+                case 5:
+                    formattingScore = 80;
+                    break;
+                case 4:
+                    formattingScore = 65;
+                    break;
+                case 3:
+                    formattingScore = 50;
+                    break;
+                case 2:
+                    formattingScore = 35;
+                    break;
+                default:
+                    formattingScore = 20;
+                    break;
+            }
         }
 
         // Determine dynamic education match authentically based on job specified requirements vs candidate resume fields
-        int educationMatch = 75; // Default score
+        int educationMatch = 0;
         boolean hasDegree = resumeTextLower.contains("btech") || 
                              resumeTextLower.contains("bachelor") || 
                              resumeTextLower.contains("degree") || 
@@ -427,9 +468,8 @@ public class AtsService {
             }
         } else {
             // No degree
-            educationMatch = 35;
+            educationMatch = 0;
         }
-        if (educationMatch < 5) educationMatch = 5;
 
         // Overall score is weighted: 25% for skillsMatch, 25% for content match (keywordMatch), and 50% for structural matches (experience, projects, formatting, education)
         double remainingFourAverage = (experienceMatch + projectRelevance + formattingScore + educationMatch) / 4.0;
