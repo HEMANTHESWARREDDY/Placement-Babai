@@ -1448,6 +1448,10 @@
     gap: 1rem;
   }
 
+  .ats-keyword-category {
+    display: none !important;
+  }
+
   .ats-columns-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
