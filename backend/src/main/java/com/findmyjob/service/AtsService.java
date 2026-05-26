@@ -490,15 +490,13 @@ public class AtsService {
         }
 
         List<Map<String, String>> improvements = new ArrayList<>();
-        Map<String, String> imp1 = new HashMap<>();
-        imp1.put("section", "Professional Experience / Projects");
-        imp1.put("original", "Responsible for working on backend tasks and building APIs.");
-        if (alignmentFactor < 0.2) {
-            imp1.put("suggested", "Tailor your work history to include authentic tech terms and accomplishments instead of generic filler descriptions.");
-        } else {
+        if (alignmentFactor >= 0.2) {
+            Map<String, String> imp1 = new HashMap<>();
+            imp1.put("section", "Professional Experience / Projects");
+            imp1.put("original", "Responsible for working on backend tasks and building APIs.");
             imp1.put("suggested", "Spearheaded development of 10+ high-performance REST APIs using " + (skillsKeywords.isEmpty() ? "modern frameworks" : skillsKeywords.iterator().next()) + ", reducing response latencies by 25%.");
+            improvements.add(imp1);
         }
-        improvements.add(imp1);
         result.put("improvements", improvements);
 
         Map<String, Object> formattingAnalysis = new HashMap<>();
