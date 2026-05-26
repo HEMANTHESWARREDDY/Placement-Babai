@@ -644,7 +644,7 @@ function JobDetail({ job, onClose }) {
 
                                 <button
                                     className="jd-ats-btn"
-                                    style={{ marginTop: '2.5rem', width: '100%', background: 'linear-gradient(135deg, #1e293b, #0f172a)', color: '#fff', border: 'none', padding: '0.9rem' }}
+                                    style={{ marginTop: '0.75rem', width: '100%', background: 'linear-gradient(135deg, #1e293b, #0f172a)', color: '#fff', border: 'none', padding: '0.9rem' }}
                                     onClick={() => { 
                                         setAtsResult(null); 
                                         setAtsFile(null); 

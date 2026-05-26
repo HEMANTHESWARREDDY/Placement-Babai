@@ -1432,11 +1432,12 @@
   }
 
   .ats-section-toggle-btn {
-    padding: 0.45rem 0.75rem !important;
+    padding: 0.55rem 0.85rem !important;
   }
 
   .ats-section-toggle-title {
-    font-size: 0.8rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
   }
 
   .ats-header-summary {
@@ -1541,8 +1542,8 @@
 }
 
 .ats-section-toggle-title {
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: #0f172a;
   text-align: left;
 }
