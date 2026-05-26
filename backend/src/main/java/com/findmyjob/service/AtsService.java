@@ -179,6 +179,11 @@ public class AtsService {
         return keywords;
     }
 
+    private String stripHtml(String html) {
+        if (html == null) return "";
+        return html.replaceAll("<[^>]*>", " ");
+    }
+
     private Map<String, Object> basicCalculate(Job job, String resumeTextLower) {
         Set<String> skillsKeywords = new HashSet<>();
         if (job.getSkills() != null) {
@@ -189,12 +194,13 @@ public class AtsService {
                     .forEach(skillsKeywords::add);
         }
 
-        // Extract descriptive keywords from Requirements, Responsibilities, and Title
+        // Extract descriptive keywords from Description, Requirements, Responsibilities, and Title
         Set<String> descKeywords = new HashSet<>();
-        descKeywords.addAll(extractCleanKeywords(job.getRequirements()));
-        descKeywords.addAll(extractCleanKeywords(job.getResponsibilities()));
+        descKeywords.addAll(extractCleanKeywords(stripHtml(job.getDescription())));
+        descKeywords.addAll(extractCleanKeywords(stripHtml(job.getRequirements())));
+        descKeywords.addAll(extractCleanKeywords(stripHtml(job.getResponsibilities())));
 
-        Set<String> titleKeywords = extractCleanKeywords(job.getTitle());
+        Set<String> titleKeywords = extractCleanKeywords(stripHtml(job.getTitle()));
 
         List<Map<String, String>> matched = new ArrayList<>();
         List<Map<String, String>> missing = new ArrayList<>();
@@ -238,7 +244,7 @@ public class AtsService {
         // Alignment penalty if JD has descriptions but none match the resume (indicates fake or completely mismatched JD)
         double alignmentFactor = 1.0;
         if (!descKeywords.isEmpty() && matchedDesc == 0) {
-            alignmentFactor = 0.15;
+            alignmentFactor = 0.08;
         }
 
         // Calculate subscores, heavily scaled by the alignment factor

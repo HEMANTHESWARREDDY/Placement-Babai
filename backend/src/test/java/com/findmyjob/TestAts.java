@@ -1,35 +1,47 @@
 package com.findmyjob;
 
 import com.findmyjob.service.AtsService;
-import org.springframework.mock.web.MockMultipartFile;
-import java.io.FileInputStream;
-import java.io.File;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestAts {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Starting AtsService test...");
-        // Mock the JobRepository with null (it will NPE on calculateAtsScore but we
-        // only want to test extractText)
+
+    @Test
+    public void testBasicCalculatePenalty() throws Exception {
+        System.out.println("Starting AtsService local fallback test...");
         AtsService atsService = new AtsService(null);
 
-        File f = new File("test.pdf");
-        if (!f.exists()) {
-            System.out.println("Need a valid PDF");
-            return;
-        }
+        // Mock job details with the user's fake/gibberish values
+        com.findmyjob.model.Job fakeJob = new com.findmyjob.model.Job();
+        fakeJob.setId("test-job-id");
+        fakeJob.setTitle("DSE & SP");
+        fakeJob.setCompany("Infosys");
+        fakeJob.setSkills("Java, Python, C++, Data Structures, Algorithms, SQL, Problem Solving, Communication Skills");
+        fakeJob.setDescription("hjLHA:XHSCAjc[sdhl;br.el;\"dlermemrjenvmngljg;lew.lgm.enger");
+        fakeJob.setResponsibilities("ge.ng.eng.emg/lermgl/merl/ghmermhbrem hb erb wgl;ejg;lwjg;lw;lgw wjg;wgewg");
+        fakeJob.setRequirements("wgl;ejg;lwjg;lw;lgw wjg;wgewg");
 
-        MockMultipartFile file = new MockMultipartFile("resume", "test.pdf", "application/pdf", new FileInputStream(f));
+        // The user's exact resume text
+        String resumeText = "MOILLAHEMANTHESWARREDDY\n" +
+                "Guntur, Andhra Pradesh, India\n" +
+                "7095259880\n" +
+                "hemanth14082004@gmail.com\n" +
+                "Computer Science graduate specializing in Artificial Intelligence and Machine Learning...\n" +
+                "Skills: Programming Languages: Python, SQL, Java. Coursework: DSA, DBMS, Operating Systems, Machine Learning.\n" +
+                "Projects: Student Learning Analytics Pipeline | Python, Pandas, SQL, MySQL, AWS";
 
-        try {
-            // Using reflection to call the private extractText method
-            java.lang.reflect.Method method = AtsService.class.getDeclaredMethod("extractText",
-                    org.springframework.web.multipart.MultipartFile.class);
-            method.setAccessible(true);
-            String text = (String) method.invoke(atsService, file);
-            System.out.println("Extracted text length: " + text.length());
-            System.out.println("First 50 chars: " + (text.length() > 50 ? text.substring(0, 50) : text));
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        java.lang.reflect.Method method = AtsService.class.getDeclaredMethod("basicCalculate",
+                com.findmyjob.model.Job.class, String.class);
+        method.setAccessible(true);
+        java.util.Map<String, Object> result = (java.util.Map<String, Object>) method.invoke(atsService, fakeJob, resumeText.toLowerCase());
+        
+        System.out.println("====== BASIC CALCULATE TEST RESULT ======");
+        System.out.println("Overall Score: " + result.get("score"));
+        System.out.println("Message: " + result.get("message"));
+        System.out.println("Subscores: " + result.get("subScores"));
+        System.out.println("=========================================");
+        
+        int overallScore = (Integer) result.get("score");
+        assertTrue(overallScore < 20, "Score should be heavily penalized for fake JD details");
     }
 }
