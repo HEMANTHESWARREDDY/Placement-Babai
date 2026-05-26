@@ -44,4 +44,35 @@ public class TestAts {
         int overallScore = (Integer) result.get("score");
         assertTrue(overallScore < 20, "Score should be heavily penalized for fake JD details");
     }
+
+    @Test
+    public void testEceMismatch() throws Exception {
+        System.out.println("Starting AtsService ECE branch mismatch test...");
+        AtsService atsService = new AtsService(null);
+
+        // Mock software job requiring CSE
+        com.findmyjob.model.Job softwareJob = new com.findmyjob.model.Job();
+        softwareJob.setId("test-job-id");
+        softwareJob.setTitle("Software Engineer - CSE");
+        softwareJob.setCompany("TechCorp");
+        softwareJob.setSkills("Java, Spring Boot");
+
+        // Resume of an ECE (Electronics & Communication Engineering) candidate
+        String eceResume = "John Doe\n" +
+                "B.Tech in Electronics and Communication Engineering (ECE)\n" +
+                "Project in IoT and VLSI";
+
+        java.lang.reflect.Method method = AtsService.class.getDeclaredMethod("basicCalculate",
+                com.findmyjob.model.Job.class, String.class);
+        method.setAccessible(true);
+        java.util.Map<String, Object> result = (java.util.Map<String, Object>) method.invoke(atsService, softwareJob, eceResume.toLowerCase());
+
+        System.out.println("====== ECE MISMATCH TEST RESULT ======");
+        System.out.println("Subscores: " + result.get("subScores"));
+        System.out.println("======================================");
+
+        java.util.Map<String, Object> subScores = (java.util.Map<String, Object>) result.get("subScores");
+        int eduScore = (Integer) subScores.get("educationMatch");
+        assertTrue(eduScore == 55, "ECE candidate should get 55% mismatch score for a CSE job");
+    }
 }

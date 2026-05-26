@@ -290,7 +290,7 @@ public class AtsService {
 
         int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
 
-        // Determine education match authentically
+        // Determine education match authentically based on specific engineering branches (CSE vs ECE/others)
         int educationMatch = 75;
         boolean hasDegree = resumeTextLower.contains("btech") || 
                              resumeTextLower.contains("bachelor") || 
@@ -300,17 +300,60 @@ public class AtsService {
                              resumeTextLower.contains("b.e.") || 
                              resumeTextLower.contains("mca") || 
                              resumeTextLower.contains("tech");
-        boolean hasCSorIT = resumeTextLower.contains("computer science") || 
-                            resumeTextLower.contains("information technology") || 
-                            resumeTextLower.contains("engineering") || 
-                            resumeTextLower.contains("artificial intelligence") || 
-                            resumeTextLower.contains("machine learning");
-        if (hasDegree && hasCSorIT) {
-            educationMatch = 98; // Perfect educational credentials!
-        } else if (hasDegree) {
-            educationMatch = 88;
-        } else if (hasCSorIT) {
-            educationMatch = 85;
+                             
+        boolean hasCSE = resumeTextLower.contains("computer science") || 
+                          resumeTextLower.contains("information technology") || 
+                          resumeTextLower.contains("cse") || 
+                          resumeTextLower.contains("aiml") || 
+                          resumeTextLower.contains("ai/ml") || 
+                          resumeTextLower.contains("software engineering") || 
+                          resumeTextLower.contains("artificial intelligence") || 
+                          resumeTextLower.contains("machine learning");
+                          
+        boolean hasECE = resumeTextLower.contains("electronics") || 
+                          resumeTextLower.contains("communication") || 
+                          resumeTextLower.contains("ece") || 
+                          resumeTextLower.contains("electrical") || 
+                          resumeTextLower.contains("eee") || 
+                          resumeTextLower.contains("mechanical");
+                          
+        String jobTextLower = (job.getTitle() != null ? job.getTitle().toLowerCase() : "") + " " + 
+                              (job.getRequirements() != null ? job.getRequirements().toLowerCase() : "") + " " + 
+                              (job.getSkills() != null ? job.getSkills().toLowerCase() : "");
+                              
+        boolean jobWantsCS = jobTextLower.contains("computer science") || 
+                             jobTextLower.contains("cse") || 
+                             jobTextLower.contains("software") || 
+                             jobTextLower.contains("it") || 
+                             jobTextLower.contains("information technology") || 
+                             jobTextLower.contains("aiml") || 
+                             jobTextLower.contains("developer") || 
+                             jobTextLower.contains("programmer");
+                             
+        if (hasDegree) {
+            if (jobWantsCS) {
+                if (hasCSE && !hasECE) {
+                    educationMatch = 98; // Perfect CS/IT branch alignment!
+                } else if (hasCSE && hasECE) {
+                    educationMatch = 88; // Dual/minor context
+                } else if (hasECE) {
+                    educationMatch = 55; // Mismatch: candidate is ECE but job specifically wants CSE/Software!
+                } else {
+                    educationMatch = 75; // Generic degree
+                }
+            } else {
+                if (hasCSE || hasECE) {
+                    educationMatch = 95;
+                } else {
+                    educationMatch = 85;
+                }
+            }
+        } else {
+            if (hasCSE) {
+                educationMatch = 75;
+            } else {
+                educationMatch = 45;
+            }
         }
         if (educationMatch < 5) educationMatch = 5;
 
