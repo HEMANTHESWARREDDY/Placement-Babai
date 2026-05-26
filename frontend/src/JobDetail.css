@@ -880,14 +880,14 @@
   }
 
   .ats-desc {
-    font-size: 0.82rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
+    margin-bottom: 0px !important;
   }
 
   .ats-progress-container {
     width: 110px;
     height: 110px;
-    margin: 0.25rem auto 0.5rem;
+    margin: 0px auto !important;
   }
 
   .ats-overall-message {
@@ -1432,7 +1432,11 @@
   }
 
   .ats-section-toggle-btn {
-    padding: 0.8rem 1rem !important;
+    padding: 0.45rem 0.75rem !important;
+  }
+
+  .ats-section-toggle-title {
+    font-size: 0.8rem !important;
   }
 
   .ats-header-summary {
@@ -1524,7 +1528,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.25rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   background: #ffffff;
   border: none;
   cursor: pointer;
@@ -1537,20 +1541,14 @@
 }
 
 .ats-section-toggle-title {
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-size: 0.88rem;
+  font-weight: 500;
   color: #0f172a;
   text-align: left;
 }
 
 .ats-section-toggle-chevron {
-  font-size: 0.85rem;
-  color: #64748b;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ats-section-toggle-btn.active .ats-section-toggle-chevron {
-  transform: rotate(180deg);
+  display: none !important;
 }
 
 .ats-section-collapse-content {
