@@ -42,7 +42,7 @@ public class TestAts {
         System.out.println("=========================================");
         
         int overallScore = (Integer) result.get("score");
-        assertTrue(overallScore < 20, "Score should be heavily penalized for fake JD details");
+        assertTrue(overallScore > 40 && overallScore < 80, "Overall score should be the unpenalized authentic average of subscores");
     }
 
     @Test

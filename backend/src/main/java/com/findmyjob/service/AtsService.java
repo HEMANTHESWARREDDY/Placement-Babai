@@ -290,8 +290,8 @@ public class AtsService {
 
         int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
 
-        // Determine education match authentically based on specific engineering branches (CSE vs ECE/others)
-        int educationMatch = 75;
+        // Determine dynamic education match authentically based on job specified requirements vs candidate resume fields
+        int educationMatch = 75; // Default score
         boolean hasDegree = resumeTextLower.contains("btech") || 
                              resumeTextLower.contains("bachelor") || 
                              resumeTextLower.contains("degree") || 
@@ -299,69 +299,72 @@ public class AtsService {
                              resumeTextLower.contains("b.tech") || 
                              resumeTextLower.contains("b.e.") || 
                              resumeTextLower.contains("mca") || 
-                             resumeTextLower.contains("tech");
-                             
-        boolean hasCSE = resumeTextLower.contains("computer science") || 
-                          resumeTextLower.contains("information technology") || 
-                          resumeTextLower.contains("cse") || 
-                          resumeTextLower.contains("aiml") || 
-                          resumeTextLower.contains("ai/ml") || 
-                          resumeTextLower.contains("software engineering") || 
-                          resumeTextLower.contains("artificial intelligence") || 
-                          resumeTextLower.contains("machine learning");
-                          
-        boolean hasECE = resumeTextLower.contains("electronics") || 
-                          resumeTextLower.contains("communication") || 
-                          resumeTextLower.contains("ece") || 
-                          resumeTextLower.contains("electrical") || 
-                          resumeTextLower.contains("eee") || 
-                          resumeTextLower.contains("mechanical");
-                          
+                             resumeTextLower.contains("tech") || 
+                             resumeTextLower.contains("diploma");
+
         String jobTextLower = (job.getTitle() != null ? job.getTitle().toLowerCase() : "") + " " + 
                               (job.getRequirements() != null ? job.getRequirements().toLowerCase() : "") + " " + 
-                              (job.getSkills() != null ? job.getSkills().toLowerCase() : "");
-                              
-        boolean jobWantsCS = jobTextLower.contains("computer science") || 
-                             jobTextLower.contains("cse") || 
-                             jobTextLower.contains("software") || 
-                             jobTextLower.contains("it") || 
-                             jobTextLower.contains("information technology") || 
-                             jobTextLower.contains("aiml") || 
-                             jobTextLower.contains("developer") || 
-                             jobTextLower.contains("programmer");
-                             
+                              (job.getSkills() != null ? job.getSkills().toLowerCase() : "") + " " + 
+                              (job.getDescription() != null ? job.getDescription().toLowerCase() : "");
+
+        // Categorize candidate fields
+        boolean candCS = resumeTextLower.contains("computer science") || resumeTextLower.contains("cse") || resumeTextLower.contains("aiml") || resumeTextLower.contains("ai/ml") || resumeTextLower.contains("software") || resumeTextLower.contains("information technology") || resumeTextLower.contains("it ");
+        boolean candECE = resumeTextLower.contains("electronics") || resumeTextLower.contains("ece") || resumeTextLower.contains("communication");
+        boolean candMech = resumeTextLower.contains("mechanical") || resumeTextLower.contains("mech ");
+        boolean candCivil = resumeTextLower.contains("civil ");
+        boolean candBiz = resumeTextLower.contains("mba") || resumeTextLower.contains("business") || resumeTextLower.contains("marketing") || resumeTextLower.contains("sales");
+
+        // Categorize job requirement fields
+        boolean jobWantsCS = jobTextLower.contains("computer science") || jobTextLower.contains("cse") || jobTextLower.contains("software") || jobTextLower.contains("it ") || jobTextLower.contains("information technology") || jobTextLower.contains("aiml") || jobTextLower.contains("developer") || jobTextLower.contains("programmer");
+        boolean jobWantsECE = jobTextLower.contains("electronics") || jobTextLower.contains("ece") || jobTextLower.contains("communication");
+        boolean jobWantsMech = jobTextLower.contains("mechanical") || jobTextLower.contains("mech ");
+        boolean jobWantsCivil = jobTextLower.contains("civil ");
+        boolean jobWantsBiz = jobTextLower.contains("mba") || jobTextLower.contains("business") || jobTextLower.contains("marketing") || jobTextLower.contains("sales");
+
         if (hasDegree) {
+            // Check if job specifies a branch and candidate matches it
+            boolean specifiedRequirementFound = false;
+            boolean candidateMatchesSpecified = false;
+
             if (jobWantsCS) {
-                if (hasCSE && !hasECE) {
-                    educationMatch = 98; // Perfect CS/IT branch alignment!
-                } else if (hasCSE && hasECE) {
-                    educationMatch = 88; // Dual/minor context
-                } else if (hasECE) {
-                    educationMatch = 55; // Mismatch: candidate is ECE but job specifically wants CSE/Software!
+                specifiedRequirementFound = true;
+                if (candCS) candidateMatchesSpecified = true;
+            }
+            if (jobWantsECE) {
+                specifiedRequirementFound = true;
+                if (candECE) candidateMatchesSpecified = true;
+            }
+            if (jobWantsMech) {
+                specifiedRequirementFound = true;
+                if (candMech) candidateMatchesSpecified = true;
+            }
+            if (jobWantsCivil) {
+                specifiedRequirementFound = true;
+                if (candCivil) candidateMatchesSpecified = true;
+            }
+            if (jobWantsBiz) {
+                specifiedRequirementFound = true;
+                if (candBiz) candidateMatchesSpecified = true;
+            }
+
+            if (specifiedRequirementFound) {
+                if (candidateMatchesSpecified) {
+                    educationMatch = 98; // Perfect matching education!
                 } else {
-                    educationMatch = 75; // Generic degree
+                    educationMatch = 55; // Branch mismatch: candidate does not have the specified branch!
                 }
             } else {
-                if (hasCSE || hasECE) {
-                    educationMatch = 95;
-                } else {
-                    educationMatch = 85;
-                }
+                // Generic job: candidate has a degree
+                educationMatch = 95;
             }
         } else {
-            if (hasCSE) {
-                educationMatch = 75;
-            } else {
-                educationMatch = 45;
-            }
+            // No degree
+            educationMatch = 45;
         }
         if (educationMatch < 5) educationMatch = 5;
 
+        // Overall score is the pure unpenalized average of all six subscores
         int overallScore = (skillsMatch + experienceMatch + keywordMatch + projectRelevance + formattingScore + educationMatch) / 6;
-        if (alignmentFactor < 1.0) {
-            overallScore = (int) Math.round(overallScore * alignmentFactor);
-            overallScore = Math.max(5, Math.min(18, overallScore));
-        }
 
         Map<String, Object> result = new HashMap<>();
         result.put("score", overallScore);
