@@ -253,7 +253,33 @@ public class AtsService {
         int skillsMatch = (int) (skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 69)));
         if (skillsMatch < 5) skillsMatch = 5;
 
-        int experienceMatch = (int) ((resumeTextLower.contains("experience") || resumeTextLower.contains("years")) ? 85 : 55);
+        // Determine experience match authentically
+        int experienceMatch = 75;
+        String expReq = job.getExperienceLevel() != null ? job.getExperienceLevel().toLowerCase() : "";
+        boolean isEntryOrFresherJob = expReq.contains("0-2") || expReq.contains("entry") || expReq.contains("fresher") || expReq.isEmpty();
+        boolean isMidOrSeniorJob = expReq.contains("3-5") || expReq.contains("mid") || expReq.contains("senior") || expReq.contains("5+");
+        boolean hasInternshipOrTeaching = resumeTextLower.contains("intern") || resumeTextLower.contains("assistant") || resumeTextLower.contains("teaching");
+        boolean hasWorkExp = resumeTextLower.contains("experience") || resumeTextLower.contains("years") || resumeTextLower.contains("worked") || resumeTextLower.contains("employment");
+        
+        if (isEntryOrFresherJob) {
+            if (hasInternshipOrTeaching || hasWorkExp) {
+                experienceMatch = 95; // Perfect match for 0-2 years entry-level!
+            } else {
+                experienceMatch = 85;
+            }
+        } else if (isMidOrSeniorJob) {
+            if (hasWorkExp && (resumeTextLower.contains("lead") || resumeTextLower.contains("senior") || resumeTextLower.contains("manager") || resumeTextLower.contains("3") || resumeTextLower.contains("4") || resumeTextLower.contains("5"))) {
+                experienceMatch = 95;
+            } else if (hasWorkExp || hasInternshipOrTeaching) {
+                experienceMatch = 75;
+            } else {
+                experienceMatch = 45;
+            }
+        } else {
+            if (hasWorkExp || hasInternshipOrTeaching) {
+                experienceMatch = 90;
+            }
+        }
         if (experienceMatch < 5) experienceMatch = 5;
 
         int keywordMatch = (int) ((30 + (((skillPercentage * 0.4) + (descPercentage * 0.5) + (titlePercentage * 0.1)) * 69)) * alignmentFactor);
@@ -264,7 +290,28 @@ public class AtsService {
 
         int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
 
-        int educationMatch = (int) ((resumeTextLower.contains("university") || resumeTextLower.contains("degree") || resumeTextLower.contains("btech") || resumeTextLower.contains("college")) ? 85 : 55);
+        // Determine education match authentically
+        int educationMatch = 75;
+        boolean hasDegree = resumeTextLower.contains("btech") || 
+                             resumeTextLower.contains("bachelor") || 
+                             resumeTextLower.contains("degree") || 
+                             resumeTextLower.contains("graduate") || 
+                             resumeTextLower.contains("b.tech") || 
+                             resumeTextLower.contains("b.e.") || 
+                             resumeTextLower.contains("mca") || 
+                             resumeTextLower.contains("tech");
+        boolean hasCSorIT = resumeTextLower.contains("computer science") || 
+                            resumeTextLower.contains("information technology") || 
+                            resumeTextLower.contains("engineering") || 
+                            resumeTextLower.contains("artificial intelligence") || 
+                            resumeTextLower.contains("machine learning");
+        if (hasDegree && hasCSorIT) {
+            educationMatch = 98; // Perfect educational credentials!
+        } else if (hasDegree) {
+            educationMatch = 88;
+        } else if (hasCSorIT) {
+            educationMatch = 85;
+        }
         if (educationMatch < 5) educationMatch = 5;
 
         int overallScore = (skillsMatch + experienceMatch + keywordMatch + projectRelevance + formattingScore + educationMatch) / 6;
