@@ -513,7 +513,7 @@ public class AtsService {
         result.put("formattingAnalysis", formattingAnalysis);
 
         if (alignmentFactor < 0.2) {
-            result.put("aiInsights", "ALERT: Complete content mismatch detected. Please check if the job details are valid, or rewrite your resume experience to address the target responsibilities.");
+            result.put("aiInsights", "ALERT: Complete content mismatch detected. Please check if the job details are valid, or rewrite your resume content to address the target right.");
         } else {
             result.put("aiInsights", "To maximize your compatibility, focus on upgrading your bullet points to the 'X-Y-Z' formula (e.g., 'Accomplished [X], as measured by [Y], by doing [Z]') and integrate the missing technical keywords in your skills section.");
         }
