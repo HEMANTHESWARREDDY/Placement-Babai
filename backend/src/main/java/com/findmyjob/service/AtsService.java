@@ -313,7 +313,48 @@ public class AtsService {
         }
         if (projectRelevance < 5) projectRelevance = 5;
 
-        int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
+        // Determine formatting score authentically based on structural ATS parsing standards
+        int formattingScore = 70; // Base score
+        boolean hasEmail = resumeTextLower.contains("@") && (resumeTextLower.contains(".com") || resumeTextLower.contains(".org") || resumeTextLower.contains(".in") || resumeTextLower.contains(".edu"));
+        boolean hasPhone = resumeTextLower.replaceAll("[^0-9]", "").length() >= 10;
+        
+        boolean hasBulletPoints = resumeTextLower.contains("\n-") || 
+                                   resumeTextLower.contains("\n*") || 
+                                   resumeTextLower.contains("\n•") || 
+                                   resumeTextLower.contains(" bullet ") ||
+                                   resumeTextLower.contains("•") ||
+                                   resumeTextLower.contains("▪") ||
+                                   resumeTextLower.contains("◦");
+                                   
+        boolean hasEducationHeader = resumeTextLower.contains("education") || resumeTextLower.contains("academic") || resumeTextLower.contains("qualification");
+        boolean hasExperienceHeader = resumeTextLower.contains("experience") || resumeTextLower.contains("internship") || resumeTextLower.contains("history") || resumeTextLower.contains("employment");
+        boolean hasSkillsHeader = resumeTextLower.contains("skills") || resumeTextLower.contains("abilities") || resumeTextLower.contains("expertise");
+        
+        int structuralChecksPassed = 0;
+        if (hasEmail) structuralChecksPassed++;
+        if (hasPhone) structuralChecksPassed++;
+        if (hasBulletPoints) structuralChecksPassed++;
+        if (hasEducationHeader) structuralChecksPassed++;
+        if (hasExperienceHeader) structuralChecksPassed++;
+        if (hasSkillsHeader) structuralChecksPassed++;
+        
+        switch (structuralChecksPassed) {
+            case 6:
+                formattingScore = 95; // Flawless ATS layout structure!
+                break;
+            case 5:
+                formattingScore = 85;
+                break;
+            case 4:
+                formattingScore = 75;
+                break;
+            case 3:
+                formattingScore = 60;
+                break;
+            default:
+                formattingScore = 40;
+                break;
+        }
 
         // Determine dynamic education match authentically based on job specified requirements vs candidate resume fields
         int educationMatch = 75; // Default score
