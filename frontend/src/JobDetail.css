@@ -1417,7 +1417,24 @@
   }
 
   .ats-subscores-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .ats-subscore-card {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .ats-subscore-title {
+    font-size: 0.72rem;
+  }
+
+  .ats-subscore-num {
+    font-size: 0.85rem;
+  }
+
+  .ats-subscore-icon {
+    font-size: 0.95rem;
   }
 
   .ats-keywords-container {
