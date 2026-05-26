@@ -867,10 +867,11 @@
 
 @media (max-width: 600px) {
   .ats-modal {
-    padding: 1.25rem 1rem 1.5rem;
-    width: 92%;
+    padding: 1.25rem 0.65rem 1.5rem;
+    width: 95%;
     max-height: none;
     border-radius: 24px;
+    box-sizing: border-box;
   }
 
   .ats-modal h2 {
@@ -957,7 +958,7 @@
 
 .ats-subscores-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
@@ -967,6 +968,7 @@
   padding: 0.75rem 1rem;
   border: 1px solid #e2e8f0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  min-width: 0;
 }
 
 .ats-subscore-header {
@@ -974,6 +976,7 @@
   align-items: center;
   gap: 0.4rem;
   margin-bottom: 0.4rem;
+  min-width: 0;
 }
 
 .ats-subscore-icon {
@@ -986,6 +989,9 @@
   color: #64748b;
   flex: 1;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ats-subscore-num {
@@ -1417,8 +1423,8 @@
   }
 
   .ats-subscores-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
   }
 
   .ats-subscore-card {
