@@ -1457,6 +1457,10 @@
 
   .ats-subscore-title {
     font-size: 0.72rem;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.15;
   }
 
   .ats-subscore-num {
