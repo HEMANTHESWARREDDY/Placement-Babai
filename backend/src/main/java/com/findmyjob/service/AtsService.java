@@ -285,7 +285,32 @@ public class AtsService {
         int keywordMatch = (int) ((30 + (((skillPercentage * 0.4) + (descPercentage * 0.5) + (titlePercentage * 0.1)) * 69)) * alignmentFactor);
         if (keywordMatch < 5) keywordMatch = 5;
 
-        int projectRelevance = (int) ((resumeTextLower.contains("project") || resumeTextLower.contains("portfolio")) ? 80 : 45);
+        // Determine project relevance authentically based on matching tech stack inside projects
+        int projectRelevance = 45; // Default score if no projects are listed
+        boolean hasProjectsSection = resumeTextLower.contains("project") || 
+                                     resumeTextLower.contains("portfolio") || 
+                                     resumeTextLower.contains("capstone");
+                                     
+        if (hasProjectsSection) {
+            projectRelevance = 70; // Base score for listing projects
+            int matchedSkillsInProjects = 0;
+            for (String skill : skillsKeywords) {
+                if (resumeTextLower.contains(skill.toLowerCase())) {
+                    matchedSkillsInProjects++;
+                }
+            }
+            if (matchedSkillsInProjects >= 3) {
+                projectRelevance = 95; // Exceptional project-tech stack alignment!
+            } else if (matchedSkillsInProjects >= 2) {
+                projectRelevance = 85; // Strong alignment!
+            } else if (matchedSkillsInProjects >= 1) {
+                projectRelevance = 75; // Moderate alignment
+            } else {
+                projectRelevance = 60; // Unrelated projects
+            }
+        } else {
+            projectRelevance = 35; // No projects listed
+        }
         if (projectRelevance < 5) projectRelevance = 5;
 
         int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
