@@ -60,6 +60,16 @@ function JobDetail({ job, onClose }) {
         setCollapsedSections(prev => ({ ...prev, [sec]: !prev[sec] }));
     };
 
+    const getSubscoreColor = (score) => {
+        if (score >= 70) return '#10b981'; // Green
+        if (score >= 40) return '#f59e0b'; // Orange
+        return '#ef4444'; // Red
+    };
+
+    const getVisualProgress = (score) => {
+        return score === 0 ? 4 : score;
+    };
+
     const handleAtsFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setAtsFile(e.target.files[0]);
@@ -375,9 +385,9 @@ function JobDetail({ job, onClose }) {
                                                 <circle
                                                     className="ats-progress-bar"
                                                     cx="50" cy="50" r="45"
-                                                    stroke={atsResult.score >= 80 ? '#10b981' : atsResult.score >= 60 ? '#f59e0b' : '#ef4444'}
+                                                    stroke={getSubscoreColor(atsResult.score)}
                                                     strokeDasharray="283"
-                                                    strokeDashoffset={283 - (283 * atsResult.score) / 100}
+                                                    strokeDashoffset={283 - (283 * getVisualProgress(atsResult.score)) / 100}
                                                 />
                                             </svg>
                                             <div className="ats-progress-text">
@@ -398,7 +408,7 @@ function JobDetail({ job, onClose }) {
                                                     <span className="ats-subscore-num">{atsResult.subScores.skillsMatch}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
-                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.skillsMatch}%`, background: '#10b981' }} />
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(atsResult.subScores.skillsMatch)}%`, background: getSubscoreColor(atsResult.subScores.skillsMatch) }} />
                                                 </div>
                                             </div>
                                             <div className="ats-subscore-card">
@@ -408,7 +418,7 @@ function JobDetail({ job, onClose }) {
                                                     <span className="ats-subscore-num">{atsResult.subScores.experienceMatch}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
-                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.experienceMatch}%`, background: '#3b82f6' }} />
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(atsResult.subScores.experienceMatch)}%`, background: getSubscoreColor(atsResult.subScores.experienceMatch) }} />
                                                 </div>
                                             </div>
                                             <div className="ats-subscore-card">
@@ -418,7 +428,7 @@ function JobDetail({ job, onClose }) {
                                                     <span className="ats-subscore-num">{atsResult.subScores.keywordMatch}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
-                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.keywordMatch}%`, background: '#f59e0b' }} />
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(atsResult.subScores.keywordMatch)}%`, background: getSubscoreColor(atsResult.subScores.keywordMatch) }} />
                                                 </div>
                                             </div>
                                             <div className="ats-subscore-card">
@@ -428,7 +438,7 @@ function JobDetail({ job, onClose }) {
                                                     <span className="ats-subscore-num">{atsResult.subScores.projectRelevance}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
-                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.projectRelevance}%`, background: '#8b5cf6' }} />
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(atsResult.subScores.projectRelevance)}%`, background: getSubscoreColor(atsResult.subScores.projectRelevance) }} />
                                                 </div>
                                             </div>
                                             <div className="ats-subscore-card">
@@ -438,7 +448,7 @@ function JobDetail({ job, onClose }) {
                                                     <span className="ats-subscore-num">{atsResult.subScores.formattingScore}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
-                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.formattingScore}%`, background: '#06b6d4' }} />
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(atsResult.subScores.formattingScore)}%`, background: getSubscoreColor(atsResult.subScores.formattingScore) }} />
                                                 </div>
                                             </div>
                                             <div className="ats-subscore-card">
@@ -448,7 +458,7 @@ function JobDetail({ job, onClose }) {
                                                     <span className="ats-subscore-num">{atsResult.subScores.educationMatch}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
-                                                    <div className="ats-subscore-bar-fill" style={{ width: `${atsResult.subScores.educationMatch}%`, background: '#ec4899' }} />
+                                                    <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(atsResult.subScores.educationMatch)}%`, background: getSubscoreColor(atsResult.subScores.educationMatch) }} />
                                                 </div>
                                             </div>
                                         </div>
