@@ -68,7 +68,7 @@ public class AtsService {
                 + "Responsibilities: " + job.getResponsibilities() + "\n\n"
                 + "RESUME TEXT:\n" + resumeText + "\n\n"
                 + "STRICT CRITERIA & RULES:\n"
-                + "1. DETECT GIBBERISH/JUNK/FAKE DETAILS: Analyze the JD Title, Requirements, and Responsibilities. If any of these fields contain gibberish (e.g., non-dictionary scrambled letters, junk words like 'hjLHA', 'ge.ng.eng', 'wgl;ejg', random letters, or look fake/nonsensical), you MUST evaluate this as a COMPLETE CONTENT MISMATCH. Immediately drop the overall score to between 5 and 15, drop all subscores except formatting to below 10, set matched keywords to empty, and output an explicit alert/warning in 'aiInsights' and 'message' declaring that the Job Description is invalid or fake.\n"
+                + "1. DETECT GIBBERISH/JUNK/FAKE DETAILS: Analyze the JD Title, Requirements, and Responsibilities. If any of these fields contain gibberish (e.g., non-dictionary scrambled letters, junk words like 'hjLHA', 'ge.ng.eng', 'wgl;ejg', random letters, or look fake/nonsensical), you MUST evaluate this as a COMPLETE CONTENT MISMATCH. Immediately drop the overall score to between 5 and 15, and the 'keywordMatch' subscore to below 10. However, if their resume genuinely has matching technical skills, experience, or academic qualifications, do NOT penalize those specific subscores (skillsMatch, experienceMatch, educationMatch) - calculate and keep their authentic match scores! Output an explicit alert/warning in 'aiInsights' and 'message' declaring that the Job Description is invalid or fake.\n"
                 + "2. RIGOROUS SEMANTIC COMPARISON: Do not just count static skill matches. Genuinely read the resume's projects, experience bullet points, and achievements, and evaluate if they semantically match the actual job responsibilities. If the resume projects (e.g. deep learning / speech grading) are completely unrelated to the job requirements, 'projectRelevance' and 'experienceMatch' must be scored extremely low (below 15).\n"
                 + "3. REALISTIC SCORING: Be highly critical. Do not inflate scores. Most candidates fail ATS screening. If a candidate has a weak match, score them realistically (40-60). Only candidates with perfect alignment should score 80+. If there is a complete mismatch, the score MUST be below 20.\n"
                 + "4. QUANTIFIABLE IMPROVEMENTS: For the 'improvements' array, provide top-tier, highly tailored 'Before' and 'After' resume bullet points from the user's actual projects or experience. Rewrite them using the standard STAR / Google 'X-Y-Z' formula (e.g. 'Accomplished [X], as measured by [Y], by doing [Z]') using realistic tech terms matching the JD (if the JD is valid).\n"
@@ -249,28 +249,29 @@ public class AtsService {
             alignmentFactor = 0.08;
         }
 
-        // Calculate subscores, heavily scaled by the alignment factor
-        int skillsMatch = (int) ((skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 69))) * alignmentFactor);
+        // Calculate subscores authentically without scaling by the alignment factor
+        int skillsMatch = (int) (skillsKeywords.isEmpty() ? 30 : (30 + (skillPercentage * 69)));
         if (skillsMatch < 5) skillsMatch = 5;
 
-        int experienceMatch = (int) (((resumeTextLower.contains("experience") || resumeTextLower.contains("years")) ? 85 : 55) * alignmentFactor);
+        int experienceMatch = (int) ((resumeTextLower.contains("experience") || resumeTextLower.contains("years")) ? 85 : 55);
         if (experienceMatch < 5) experienceMatch = 5;
 
         int keywordMatch = (int) ((30 + (((skillPercentage * 0.4) + (descPercentage * 0.5) + (titlePercentage * 0.1)) * 69)) * alignmentFactor);
         if (keywordMatch < 5) keywordMatch = 5;
 
-        int projectRelevance = (int) (((resumeTextLower.contains("project") || resumeTextLower.contains("portfolio")) ? 80 : 45) * alignmentFactor);
+        int projectRelevance = (int) ((resumeTextLower.contains("project") || resumeTextLower.contains("portfolio")) ? 80 : 45);
         if (projectRelevance < 5) projectRelevance = 5;
 
         int formattingScore = (resumeTextLower.contains(" bullet ") || resumeTextLower.contains("\n-") || resumeTextLower.contains("\n*")) ? 90 : 70;
-        if (alignmentFactor < 0.2) {
-            formattingScore = (int) (formattingScore * 0.65);
-        }
 
-        int educationMatch = (int) (((resumeTextLower.contains("university") || resumeTextLower.contains("degree") || resumeTextLower.contains("btech") || resumeTextLower.contains("college")) ? 85 : 55) * alignmentFactor);
+        int educationMatch = (int) ((resumeTextLower.contains("university") || resumeTextLower.contains("degree") || resumeTextLower.contains("btech") || resumeTextLower.contains("college")) ? 85 : 55);
         if (educationMatch < 5) educationMatch = 5;
 
         int overallScore = (skillsMatch + experienceMatch + keywordMatch + projectRelevance + formattingScore + educationMatch) / 6;
+        if (alignmentFactor < 1.0) {
+            overallScore = (int) Math.round(overallScore * alignmentFactor);
+            overallScore = Math.max(5, Math.min(18, overallScore));
+        }
 
         Map<String, Object> result = new HashMap<>();
         result.put("score", overallScore);

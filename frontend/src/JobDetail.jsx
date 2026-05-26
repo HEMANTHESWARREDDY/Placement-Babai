@@ -394,8 +394,8 @@ function JobDetail({ job, onClose }) {
                                             </div>
                                             <div className="ats-subscore-card">
                                                 <div className="ats-subscore-header">
-                                                    <span className="ats-subscore-icon">🔑</span>
-                                                    <span className="ats-subscore-title">Keywords</span>
+                                                    <span className="ats-subscore-icon">🎯</span>
+                                                    <span className="ats-subscore-title">Content Match</span>
                                                     <span className="ats-subscore-num">{atsResult.subScores.keywordMatch}%</span>
                                                 </div>
                                                 <div className="ats-subscore-bar-bg">
@@ -451,10 +451,10 @@ function JobDetail({ job, onClose }) {
                                     {/* Keywords Section */}
                                     {atsResult.keywordAnalysis && (
                                         <div className="ats-detail-section">
-                                            <h4 className="ats-section-subtitle">🔑 Keyword Match Analysis</h4>
+                                            <h4 className="ats-section-subtitle">🛠️ Skills Match Analysis</h4>
                                             <div className="ats-keywords-container">
                                                 <div className="ats-keywords-box matched">
-                                                    <h5>Matched Keywords ({atsResult.keywordAnalysis.matched?.length || 0})</h5>
+                                                    <h5>Matched Skills ({atsResult.keywordAnalysis.matched?.length || 0})</h5>
                                                     <div className="ats-keyword-list">
                                                         {atsResult.keywordAnalysis.matched?.map((k, i) => (
                                                             <div key={i} className="ats-keyword-badge matched">
@@ -468,13 +468,13 @@ function JobDetail({ job, onClose }) {
                                                             </div>
                                                         ))}
                                                         {(!atsResult.keywordAnalysis.matched || atsResult.keywordAnalysis.matched.length === 0) && (
-                                                            <p className="ats-empty-text">No keywords matched yet.</p>
+                                                            <p className="ats-empty-text">No skills matched yet.</p>
                                                         )}
                                                     </div>
                                                 </div>
 
                                                 <div className="ats-keywords-box missing">
-                                                    <h5>Missing Core Keywords ({atsResult.keywordAnalysis.missing?.length || 0})</h5>
+                                                    <h5>Missing Core Skills ({atsResult.keywordAnalysis.missing?.length || 0})</h5>
                                                     <div className="ats-keyword-list">
                                                         {atsResult.keywordAnalysis.missing?.map((k, i) => (
                                                             <div key={i} className="ats-keyword-badge missing">
@@ -490,7 +490,7 @@ function JobDetail({ job, onClose }) {
                                                             </div>
                                                         ))}
                                                         {(!atsResult.keywordAnalysis.missing || atsResult.keywordAnalysis.missing.length === 0) && (
-                                                            <p className="ats-empty-text">Perfect! No critical missing keywords.</p>
+                                                            <p className="ats-empty-text">Perfect! No critical missing skills.</p>
                                                         )}
                                                     </div>
                                                 </div>
