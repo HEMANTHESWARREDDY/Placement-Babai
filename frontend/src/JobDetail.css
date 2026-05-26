@@ -527,6 +527,17 @@
   border: 1px solid rgba(226, 232, 240, 0.85);
   animation: ats-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   margin-bottom: 2rem;
+  transition: max-width 0.3s ease, padding 0.3s ease;
+}
+
+.ats-modal.compact {
+  max-width: 780px;
+  padding: 2.25rem 3rem 2.5rem;
+}
+
+.ats-modal.compact .ats-upload-area {
+  padding: 2.25rem 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 @keyframes ats-pop-in {

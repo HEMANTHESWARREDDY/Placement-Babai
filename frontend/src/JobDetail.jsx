@@ -288,7 +288,7 @@ function JobDetail({ job, onClose }) {
 
             {showAts && (
                 <div className="ats-overlay" onClick={() => setShowAts(false)}>
-                    <div className="ats-modal" onClick={e => e.stopPropagation()}>
+                    <div className={`ats-modal ${!atsResult ? 'compact' : ''}`} onClick={e => e.stopPropagation()}>
                         <button className="ats-close" onClick={() => setShowAts(false)}>×</button>
                         <h2>ATS Match Checker</h2>
                         <p className="ats-desc">Upload your resume to see how well it matches this job's keywords, requirements, and role.</p>
