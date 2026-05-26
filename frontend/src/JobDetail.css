@@ -1416,6 +1416,20 @@
 }
 
 @media (max-width: 768px) {
+  .ats-analysis-details {
+    gap: 0.2rem !important;
+    margin-top: 1rem !important;
+  }
+
+  .ats-detail-section.collapsible {
+    margin: 0.1rem 0 !important;
+    border-radius: 12px !important;
+  }
+
+  .ats-section-toggle-btn {
+    padding: 0.8rem 1rem !important;
+  }
+
   .ats-header-summary {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -1486,7 +1500,7 @@
 
 /* Premium Collapsible Accordion Styles */
 .ats-detail-section.collapsible {
-  margin: 1.5rem 0;
+  margin: 0.35rem 0;
   border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: 16px;
   background: #f8fafc;
