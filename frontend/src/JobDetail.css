@@ -495,24 +495,13 @@
   padding: 4vh 2vw;
   z-index: 999999;
   scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-/* Styled Premium Scrollbar for Overlay */
+/* Hide scrollbar for Chrome, Safari and Opera */
 .ats-overlay::-webkit-scrollbar {
-  width: 8px;
-}
-
-.ats-overlay::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.ats-overlay::-webkit-scrollbar-thumb {
-  background: rgba(0, 115, 177, 0.35);
-  border-radius: 10px;
-}
-
-.ats-overlay::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 115, 177, 0.6);
+  display: none;
 }
 
 .ats-modal {
@@ -918,19 +907,6 @@
     margin-bottom: 0.5rem;
   }
 
-  /* Custom thin scrollbar for ATS overlay on mobile */
-  .ats-overlay::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .ats-overlay::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .ats-overlay::-webkit-scrollbar-thumb {
-    background: rgba(0, 115, 177, 0.3);
-    border-radius: 10px;
-  }
 }
 
 /* Premium AskJobs.ai Vibe Styles */
