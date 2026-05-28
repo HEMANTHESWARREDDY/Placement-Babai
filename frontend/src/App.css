@@ -1172,8 +1172,9 @@
   .header-actions-mobile {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.45rem;
     margin-left: auto;
+    margin-right: 0.6rem;
     order: 3;
     flex-shrink: 0;
   }
