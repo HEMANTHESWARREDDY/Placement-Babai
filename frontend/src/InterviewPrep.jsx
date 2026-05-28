@@ -322,7 +322,7 @@ function InterviewPrep() {
                         <span className="search-icon">🏢</span>
                             <input
                                 type="text"
-                                className="search-input"
+                                className="search-input ip-company-input"
                                 placeholder="Company"
                                 value={searchTerm}
                                 onChange={(e) => handleSearchChange(e.target.value)}
