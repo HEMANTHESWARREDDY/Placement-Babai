@@ -110,6 +110,8 @@ function AdminDashboard({ adminData, onLogout }) {
     const [retryCountdown, setRetryCountdown] = useState(0);
     const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
     const [showKeyInput, setShowKeyInput] = useState(false);
+    const [restoreExpiredJob, setRestoreExpiredJob] = useState(null);
+    const [newExpiryDate, setNewExpiryDate] = useState('');
     const retryTimerRef = useRef(null);
 
     const showToast = (message, type = 'success') => {
@@ -406,6 +408,33 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
     };
 
     const handleRestore = (id) => {
+        const job = deletedJobs.find(j => j.id === id);
+        if (job) {
+            const isPastDate = (dateStr) => {
+                if (!dateStr || dateStr === "Don't know") return false;
+                let normalized = dateStr;
+                if (dateStr.includes('-')) {
+                    const parts = dateStr.split('-');
+                    if (parts[0].length === 2 && parts[2].length === 4) {
+                        normalized = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                    }
+                }
+                const expiry = new Date(normalized);
+                if (isNaN(expiry.getTime())) return false;
+                
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                expiry.setHours(0, 0, 0, 0);
+                return expiry < today;
+            };
+
+            if (isPastDate(job.expiryDate)) {
+                setRestoreExpiredJob(job);
+                setNewExpiryDate('');
+                return;
+            }
+        }
+
         setConfirmDialog({
             show: true,
             message: 'Are you sure you want to restore (revoke) this job?',
@@ -589,6 +618,91 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 if (confirmDialog.onConfirm) confirmDialog.onConfirm();
                                 setConfirmDialog({ show: false, message: '', onConfirm: null });
                             }}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Expired Job Restore Modal */}
+            {restoreExpiredJob && (
+                <div className="admin-modal-overlay">
+                    <div className="admin-modal" style={{ maxWidth: '450px', padding: '2rem', borderRadius: '16px' }}>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '1rem', textAlign: 'center' }}>⚠️</div>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#1e293b', marginBottom: '0.75rem', textAlign: 'center' }}>Job Has Expired</h3>
+                        <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '1.5rem', textAlign: 'center' }}>
+                            The job <strong>"{restoreExpiredJob.title}"</strong> has expired (Expiry Date: <strong>{restoreExpiredJob.expiryDate}</strong>). 
+                            To restore this job, please set a new future expiry date.
+                        </p>
+                        
+                        <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '600', color: '#334155' }}>New Expiry Date *</label>
+                            <input 
+                                type="date" 
+                                value={newExpiryDate} 
+                                onChange={(e) => setNewExpiryDate(e.target.value)}
+                                style={{ 
+                                    padding: '0.625rem 0.75rem', 
+                                    border: '1px solid #cbd5e1', 
+                                    borderRadius: '8px',
+                                    width: '100%',
+                                    fontSize: '0.95rem',
+                                    outline: 'none',
+                                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                }}
+                                min={new Date().toISOString().split('T')[0]}
+                            />
+                        </div>
+                        
+                        <div className="admin-modal-actions" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                            <button className="btn-cancel" style={{ flex: 1 }} onClick={() => { setRestoreExpiredJob(null); setNewExpiryDate(''); }}>Cancel</button>
+                            <button 
+                                className="btn-edit" 
+                                disabled={!newExpiryDate}
+                                style={{ flex: 1, backgroundColor: '#3b82f6', color: 'white', opacity: !newExpiryDate ? 0.6 : 1, cursor: !newExpiryDate ? 'not-allowed' : 'pointer' }}
+                                onClick={async () => {
+                                    try {
+                                        // 1. First format the new date back to DD-MM-YYYY format if the backend expects it, or keep it as YYYY-MM-DD
+                                        // Let's see: in their screenshot, it shows "27-05-2026".
+                                        // Let's format the date from YYYY-MM-DD (e.g. "2026-05-28") to DD-MM-YYYY (e.g. "28-05-2026") to match their exact format!
+                                        let formattedDate = newExpiryDate;
+                                        if (newExpiryDate.includes('-')) {
+                                            const parts = newExpiryDate.split('-');
+                                            if (parts[0].length === 4) {
+                                                formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                                            }
+                                        }
+
+                                        const updatedJob = { ...restoreExpiredJob, expiryDate: formattedDate };
+                                        
+                                        const updateRes = await fetch(`${API_BASE_URL}/api/jobs/${restoreExpiredJob.id}`, {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify(updatedJob),
+                                        });
+                                        
+                                        if (updateRes.ok) {
+                                            const restoreRes = await fetch(`${API_BASE_URL}/api/jobs/${restoreExpiredJob.id}/restore`, { method: 'PUT' });
+                                            if (restoreRes.ok) {
+                                                fetchJobs();
+                                                fetchDeletedJobs();
+                                                showToast('Job updated and restored successfully!', 'success');
+                                            } else {
+                                                showToast('Failed to restore job after updating expiry date', 'error');
+                                            }
+                                        } else {
+                                            showToast('Failed to update expiry date', 'error');
+                                        }
+                                    } catch (error) {
+                                        console.error('Error restoring expired job:', error);
+                                        showToast('Error occurred during restore', 'error');
+                                    } finally {
+                                        setRestoreExpiredJob(null);
+                                        setNewExpiryDate('');
+                                    }
+                                }}
+                            >
+                                Update & Restore
+                            </button>
                         </div>
                     </div>
                 </div>
