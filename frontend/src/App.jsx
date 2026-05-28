@@ -1299,7 +1299,6 @@ function App() {
                         </button>
 
                         <div className="jobs-grid" ref={jobsGridRef} onScroll={checkScroll}>
-                          {/* recent-label removed — now in section-header */}
                           {filtered.map((job) => {
                             const isNewJob = job.postedDate && new Date(job.postedDate).toDateString() === new Date().toDateString();
                             const isLastDay = job.expiryDate && job.expiryDate !== "Don't know" && new Date(job.expiryDate).toDateString() === new Date().toDateString();
