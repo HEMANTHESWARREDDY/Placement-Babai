@@ -54,6 +54,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:5173",
                 "https://main.d1smp3vpptz385.amplifyapp.com",
+                "https://placementbabai.online",
+                "https://www.placementbabai.online",
                 "*"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
