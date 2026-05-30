@@ -1163,22 +1163,28 @@ function App() {
               
               <div className="home-pillars-grid">
                 <div className="home-pillar-card job-pillar" onClick={() => { setActiveMainTab('jobs'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                  <div className="pillar-icon-wrapper">💼</div>
-                  <h3>Verified Jobs Board</h3>
+                  <div className="pillar-card-header">
+                    <div className="pillar-icon-wrapper">💼</div>
+                    <h3>Verified Jobs Board</h3>
+                  </div>
                   <p>Access handpicked hiring links from top tech MNCs and startups. Checked daily, zero spam.</p>
                   <span className="pillar-link">Browse Jobs &rarr;</span>
                 </div>
 
                 <div className="home-pillar-card connect-pillar" onClick={() => { setActiveMainTab('pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                  <div className="pillar-icon-wrapper">👥</div>
-                  <h3>ProConnect Mentorship</h3>
+                  <div className="pillar-card-header">
+                    <div className="pillar-icon-wrapper">👥</div>
+                    <h3>ProConnect Mentorship</h3>
+                  </div>
                   <p>Connect 1:1 with verified industry leaders for resume reviews, mock interviews, and career guidance.</p>
                   <span className="pillar-link">Find Mentors &rarr;</span>
                 </div>
 
                 <div className="home-pillar-card prep-pillar" onClick={() => { setActiveMainTab('interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                  <div className="pillar-icon-wrapper">🎓</div>
-                  <h3>PrepZo AI Interview Prep</h3>
+                  <div className="pillar-card-header">
+                    <div className="pillar-icon-wrapper">🎓</div>
+                    <h3>PrepZo AI Interview Prep</h3>
+                  </div>
                   <p>Practice company-specific interview questions and join free live mentorship workshops daily.</p>
                   <span className="pillar-link">Start Practice &rarr;</span>
                 </div>
