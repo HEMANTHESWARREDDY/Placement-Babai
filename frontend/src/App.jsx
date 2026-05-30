@@ -103,8 +103,9 @@ function App() {
     
     if (path === '/proConnect' || params.has('proConnect')) return 'pro-connect';
     if (path === '/prepZo' || params.has('prepZo')) return 'interview-prep';
+    if (path === '/jobs' || params.has('jobs')) return 'jobs';
     
-    return 'jobs';
+    return 'home';
   });
 
   useEffect(() => {
@@ -115,6 +116,7 @@ function App() {
       let newPath = '/';
       if (activeMainTab === 'pro-connect') newPath = '/proConnect';
       else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
+      else if (activeMainTab === 'jobs') newPath = '/jobs';
       
       if (window.location.pathname !== newPath) {
         window.history.pushState({}, '', newPath);
@@ -821,29 +823,31 @@ function App() {
             </span>
           </div>
 
-          <div className="header-badge" onClick={() => {
-            if (activeMainTab === 'interview-prep') {
-               // Navigate to PrepZo and maybe focus on sessions if possible, 
-               // but for now just showing the info is good.
-               window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (activeMainTab === 'pro-connect') {
-              document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
-            } else {
-              setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
-              setShowAll(true);
-              setIsMobileMenuOpen(false);
-              if (filterBarRef.current) {
-                setTimeout(() => {
-                  filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
-                }, 100);
+          {activeMainTab !== 'home' && (
+            <div className="header-badge" onClick={() => {
+              if (activeMainTab === 'interview-prep') {
+                 // Navigate to PrepZo and maybe focus on sessions if possible, 
+                 // but for now just showing the info is good.
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else if (activeMainTab === 'pro-connect') {
+                document.querySelector('.pro-profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                setActiveFilters(prev => ({ ...prev, datePosted: '24h' }));
+                setShowAll(true);
+                setIsMobileMenuOpen(false);
+                if (filterBarRef.current) {
+                  setTimeout(() => {
+                    filterBarRef.current.scrollTo({ left: filterBarRef.current.scrollWidth, behavior: 'smooth' });
+                  }, 100);
+                }
+                document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
               }
-              document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}>
-            🔥 {activeMainTab === 'interview-prep' ? `${todaySessionsCount} Free Sessions Today` :
-                activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
-                `${newJobsToday} New Jobs Today`}
-          </div>
+            }}>
+              🔥 {activeMainTab === 'interview-prep' ? `${todaySessionsCount} Free Sessions Today` :
+                  activeMainTab === 'pro-connect' ? `${newMentorsToday} New Mentors Today` : 
+                  `${newJobsToday} New Jobs Today`}
+            </div>
+          )}
 
           <div className="header-actions-mobile">
             {activeMainTab !== 'jobs' && (
@@ -899,6 +903,29 @@ function App() {
           <nav className={isMobileMenuOpen ? "nav-open" : ""}>
             <ul className="nav-links">
               <li>
+                <a href="#home" onClick={(e) => {
+                  e.preventDefault();
+                  setActiveMainTab('home');
+                  sessionStorage.setItem('activeMainTab', 'home');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} className={activeMainTab === 'home' ? 'active-nav' : ''}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#jobs" onClick={(e) => {
+                  e.preventDefault();
+                  setActiveMainTab('jobs');
+                  sessionStorage.setItem('activeMainTab', 'jobs');
+                  setSearchKeyword(''); setSearchLocation(''); setShowAll(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); fetchJobs();
+                }} className={activeMainTab === 'jobs' ? 'active-nav' : ''}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
+                  Jobs
+                </a>
+              </li>
+              <li>
                 <a href="#pro-connect" onClick={(e) => {
                   e.preventDefault();
                   setActiveMainTab('pro-connect');
@@ -920,17 +947,6 @@ function App() {
                 }} className={activeMainTab === 'interview-prep' ? 'active-nav' : ''}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
                   PrepZo
-                </a>
-              </li>
-              <li>
-                <a href="#home" onClick={(e) => {
-                  e.preventDefault();
-                  setActiveMainTab('jobs');
-                  sessionStorage.setItem('activeMainTab', 'jobs');
-                  setSearchKeyword(''); setSearchLocation(''); setShowAll(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); fetchJobs();
-                }} className={activeMainTab === 'jobs' ? 'active-nav' : ''}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
-                  Jobs
                 </a>
               </li>
               <li>
@@ -1002,7 +1018,237 @@ function App() {
         </div>
       </header>
 
-      {activeMainTab === 'jobs' ? (
+      {activeMainTab === 'home' ? (
+        <>
+          {/* AI-Powered Hero Section */}
+          <section className="hero-ai">
+            <div className="hero-ai-container">
+              <div className="hero-ai-left">
+                <div className="hero-badge-container">
+                  <div className="hero-pill-excellent">
+                    Excellent <span>★★★★★</span>
+                  </div>
+                  <div className="hero-pill-india">
+                    Jobs in India
+                  </div>
+                </div>
+                
+                <h1>
+                  Your Ultimate Career Buddy to<br />
+                  <span className="hero-ai-gradient-text">Land Tech Placements</span>
+                </h1>
+                
+                <p className="hero-ai-desc">
+                  Discover 100% verified placement links, practice MNC interview archives on PrepZo, and connect 1:1 with top industry mentors via ProConnect to accelerate your tech career.
+                </p>
+                
+                <button className="hero-ai-cta-btn" onClick={() => {
+                  setActiveMainTab('jobs');
+                  setTimeout(() => {
+                    document.getElementById('jobs')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}>
+                  Start Getting Interviews &rarr;
+                </button>
+                
+                <div className="hero-ai-bullets">
+                  <div className="hero-ai-bullet-item">
+                    <span className="hero-ai-bullet-icon">✓</span> 100% Verified Job Links
+                  </div>
+                  <div className="hero-ai-bullet-item">
+                    <span className="hero-ai-bullet-icon">✓</span> Real Interview Questions & Answers
+                  </div>
+                  <div className="hero-ai-bullet-item">
+                    <span className="hero-ai-bullet-icon">✓</span> 1:1 Verified Mentorship
+                  </div>
+                </div>
+                
+                <div className="hero-ai-social-proof">
+                  <div className="hero-ai-avatars">
+                    <div className="hero-ai-avatar avatar-1">H</div>
+                    <div className="hero-ai-avatar avatar-2">B</div>
+                    <div className="hero-ai-avatar avatar-3">K</div>
+                    <div className="hero-ai-avatar avatar-4">S</div>
+                  </div>
+                  <div className="hero-ai-rating-container">
+                    <div className="hero-ai-stars">★★★★★</div>
+                  </div>
+                </div>
+
+                <div className="hero-ai-certified-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L9 7h6l-3-5zm-4 6h8v12H8V8zm2 3h4v1h-4v-1zm0 3h4v1h-4v-1zm0 3h4v1h-4v-1z"/>
+                  </svg>
+                  <span>Certified by DPIIT STARTUP INDIA</span>
+                </div>
+              </div>
+              
+              <div className="hero-ai-right">
+                <div className="hero-ai-glow"></div>
+                
+                {/* Card 1: AI Match Score Card */}
+                <div className="card-match-score">
+                  <div className="card-match-score-header">
+                    <div className="card-match-icon">✦</div>
+                    <div className="card-match-title">
+                      <h3>AI Match Score</h3>
+                      <span>Based on your profile</span>
+                    </div>
+                  </div>
+                  <div className="card-match-circle-score">94%</div>
+                  <div className="card-match-status">Perfect Match Found</div>
+                  
+                  <div className="card-match-stats-list">
+                    <div className="card-match-stat-row">
+                      <span>Skills Match</span>
+                      <span>95%</span>
+                    </div>
+                    <div className="card-match-stat-row">
+                      <span>Experience</span>
+                      <span>88%</span>
+                    </div>
+                    <div className="card-match-stat-row">
+                      <span>Culture Fit</span>
+                      <span>92%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Card 2: Resume Analysis Card */}
+                <div className="card-resume-analysis">
+                  <h4>Resume Analysis</h4>
+                  <div className="card-resume-item">
+                    <span className="card-resume-item-check">✓</span>
+                    <span>Skills extracted: 12</span>
+                  </div>
+                  <div className="card-resume-item">
+                    <span className="card-resume-item-check">✓</span>
+                    <span>Experience: 5+ years</span>
+                  </div>
+                  <div className="card-resume-pulsing">
+                    <span className="pulse-dot"></span>
+                    <span>Finding matches...</span>
+                  </div>
+                </div>
+                
+                {/* Card 3: Google Job Card */}
+                <div className="card-google-job">
+                  <div className="card-google-logo">G</div>
+                  <div className="card-google-info">
+                    <h4>Google</h4>
+                    <span>Senior Engineer</span>
+                    <div className="card-google-pills">
+                      <span className="card-google-pill-remote">Remote</span>
+                      <span className="card-google-pill-salary">$180K-$250K</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Card 4: Matched Today Card */}
+                <div className="card-matched-today">
+                  <h3>{jobs.length * 12 + 2348}+</h3>
+                  <span>Jobs matched today</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Core Pillars Section */}
+          <section className="home-pillars-section">
+            <div className="home-pillars-container">
+              <div className="home-section-header">
+                <h2>Placement<span>Babai</span> Core Ecosystem</h2>
+                <p>Everything you need to go from preparation to verified placement links</p>
+              </div>
+              
+              <div className="home-pillars-grid">
+                <div className="home-pillar-card job-pillar" onClick={() => { setActiveMainTab('jobs'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                  <div className="pillar-icon-wrapper">💼</div>
+                  <h3>Verified Jobs Board</h3>
+                  <p>Access handpicked hiring links from top tech MNCs and startups. Checked daily, zero spam.</p>
+                  <span className="pillar-link">Browse Jobs &rarr;</span>
+                </div>
+
+                <div className="home-pillar-card connect-pillar" onClick={() => { setActiveMainTab('pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                  <div className="pillar-icon-wrapper">👥</div>
+                  <h3>ProConnect Mentorship</h3>
+                  <p>Connect 1:1 with verified industry leaders for resume reviews, mock interviews, and career guidance.</p>
+                  <span className="pillar-link">Find Mentors &rarr;</span>
+                </div>
+
+                <div className="home-pillar-card prep-pillar" onClick={() => { setActiveMainTab('interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                  <div className="pillar-icon-wrapper">🎓</div>
+                  <h3>PrepZo AI Interview Prep</h3>
+                  <p>Practice company-specific interview questions and join free live mentorship workshops daily.</p>
+                  <span className="pillar-link">Start Practice &rarr;</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* How It Works Section */}
+          <section className="how-it-works-section">
+            <div className="how-it-works-container">
+              <div className="home-section-header">
+                <h2>How Placement<span>Babai</span> Works</h2>
+                <p>Simple 4-step path to landing your next tech interview</p>
+              </div>
+
+              <div className="timeline-steps-circular">
+                {/* SVG connection line behind the circles */}
+                <div className="timeline-svg-line">
+                  <svg viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {/* Gap 1 Wave */}
+                    <path d="M 220,100 C 245,145 295,145 340,45" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" strokeDasharray="12 8" opacity="0.9" />
+
+                    {/* Gap 2 Wave */}
+                    <path d="M 537,100 C 562,145 612,145 660,45" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" strokeDasharray="12 8" opacity="0.9" />
+
+                    {/* Gap 3 Wave */}
+                    <path d="M 854,100 C 879,145 929,145 982,45" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" strokeDasharray="12 8" opacity="0.9" />
+                  </svg>
+                </div>
+
+                <div className="circular-step-card">
+                  <div className="circular-step-badge">
+                    <span className="badge-num">01</span>
+                    <span className="badge-lbl">Step</span>
+                  </div>
+                  <h4>Explore Jobs</h4>
+                  <p>See and search through 100% verified jobs on our active jobs dashboard daily.</p>
+                </div>
+
+                <div className="circular-step-card">
+                  <div className="circular-step-badge">
+                    <span className="badge-num">02</span>
+                    <span className="badge-lbl">Step</span>
+                  </div>
+                  <h4>ATS & Resume Match</h4>
+                  <p>Check your ATS score freely and match your resume using our AI-powered analyzer.</p>
+                </div>
+
+                <div className="circular-step-card">
+                  <div className="circular-step-badge">
+                    <span className="badge-num">03</span>
+                    <span className="badge-lbl">Step</span>
+                  </div>
+                  <h4>ProConnect Insights</h4>
+                  <p>Connect with a pro 1:1 via ProConnect to get real industry insights and feedback.</p>
+                </div>
+
+                <div className="circular-step-card">
+                  <div className="circular-step-badge">
+                    <span className="badge-num">04</span>
+                    <span className="badge-lbl">Step</span>
+                  </div>
+                  <h4>PrepZo Practice</h4>
+                  <p>Prepare in PrepZo accordingly using real company-specific interview archives.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </>
+      ) : activeMainTab === 'jobs' ? (
         <>
           {/* Hero Section */}
           <section className="hero">
@@ -1142,8 +1388,7 @@ function App() {
           </section >
 
           {/* Jobs Section */}
-          < section className="jobs-section" id="jobs" >
-            {/* Filter Bar */}
+          <section className="jobs-section" id="jobs">
             <div className="filter-bar-wrapper">
               {/* Fixed label - mobile only */}
               <span className="filter-bar-label" style={{ color: '#334155' }}>Filters</span>

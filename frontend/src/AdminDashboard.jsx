@@ -342,12 +342,39 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
         }
     };
 
+    const isPastDate = (dateStr) => {
+        if (!dateStr || dateStr === "Don't know") return false;
+        let normalized = dateStr;
+        if (dateStr.includes('-')) {
+            const parts = dateStr.split('-');
+            if (parts[0].length === 2 && parts[2].length === 4) {
+                normalized = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+        }
+        const expiry = new Date(normalized);
+        if (isNaN(expiry.getTime())) return false;
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        expiry.setHours(0, 0, 0, 0);
+        return expiry < today;
+    };
+
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Expiry Date Validation
+        if (formData.expiryDate) {
+            if (isPastDate(formData.expiryDate)) {
+                showToast('Expiry date is not valid. It must be a future date.', 'error');
+                return;
+            }
+        }
+
         try {
             const url = editingJob
                 ? `${API_BASE_URL}/api/jobs/${editingJob.id}`
@@ -410,24 +437,6 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
     const handleRestore = (id) => {
         const job = deletedJobs.find(j => j.id === id);
         if (job) {
-            const isPastDate = (dateStr) => {
-                if (!dateStr || dateStr === "Don't know") return false;
-                let normalized = dateStr;
-                if (dateStr.includes('-')) {
-                    const parts = dateStr.split('-');
-                    if (parts[0].length === 2 && parts[2].length === 4) {
-                        normalized = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                    }
-                }
-                const expiry = new Date(normalized);
-                if (isNaN(expiry.getTime())) return false;
-                
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                expiry.setHours(0, 0, 0, 0);
-                return expiry < today;
-            };
-
             if (isPastDate(job.expiryDate)) {
                 setRestoreExpiredJob(job);
                 setNewExpiryDate('');

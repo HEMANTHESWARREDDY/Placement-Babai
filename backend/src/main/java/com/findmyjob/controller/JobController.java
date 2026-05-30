@@ -63,11 +63,16 @@ public class JobController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Job> updateJob(@PathVariable String id, @Valid @RequestBody Job job) {
+    public ResponseEntity<?> updateJob(@PathVariable String id, @Valid @RequestBody Job job) {
         try {
             Job updatedJob = jobService.updateJob(id, job);
             return ResponseEntity.ok(updatedJob);
         } catch (RuntimeException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Expiry date")) {
+                Map<String, String> error = new java.util.HashMap<>();
+                error.put("message", e.getMessage());
+                return ResponseEntity.badRequest().body(error);
+            }
             return ResponseEntity.notFound().build();
         }
     }
