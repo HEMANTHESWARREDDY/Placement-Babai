@@ -25,9 +25,34 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private com.findmyjob.repository.JobRepository jobRepository;
 
+    @Autowired
+    private org.springframework.data.mongodb.core.MongoOperations mongoOperations;
+
     @Override
     public void run(String... args) throws Exception {
         try {
+            // Delete sessions that have non-numeric IDs to force re-seeding with numeric IDs
+            boolean hasNonNumericId = sessionRepository.findAll().stream()
+                    .anyMatch(s -> {
+                        if (s.getId() == null) return true;
+                        try {
+                            Long.parseLong(s.getId());
+                            return false;
+                        } catch (NumberFormatException e) {
+                            return true;
+                        }
+                    });
+            if (hasNonNumericId) {
+                sessionRepository.deleteAll();
+                mongoOperations.remove(
+                    org.springframework.data.mongodb.core.query.Query.query(
+                        org.springframework.data.mongodb.core.query.Criteria.where("_id").is("sessions_sequence")
+                    ), 
+                    com.findmyjob.model.DatabaseSequence.class
+                );
+                System.out.println("🗑️ Cleared sessions with non-numeric IDs and reset sessions_sequence to trigger clean numeric ID re-seeding");
+            }
+
             // Create initial free sessions if none exist
             if (sessionRepository.count() == 0) {
                 com.findmyjob.model.FreeSession s1 = new com.findmyjob.model.FreeSession();
