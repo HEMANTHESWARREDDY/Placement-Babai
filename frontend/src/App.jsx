@@ -13,8 +13,25 @@ import { API_BASE_URL } from './config';
 import './App.css';
 
 // Force Redeploy Stable State f881810
+const getStableDailyNumber = () => {
+  const today = new Date();
+  const dateString = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  
+  let hash = 0;
+  for (let i = 0; i < dateString.length; i++) {
+    hash = dateString.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const min = 500;
+  const max = 900;
+  const range = max - min + 1;
+  const stableRandom = Math.abs(hash) % range;
+  return min + stableRandom;
+};
+
 function App() {
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+  const [expandedPillar, setExpandedPillar] = useState(null);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -97,6 +114,92 @@ function App() {
   const [appliesCount, setAppliesCount] = useState({});
   const [todaySessionsCount, setTodaySessionsCount] = useState(0);
   const [showAllJobsModal, setShowAllJobsModal] = useState(false);
+
+  // General ATS States
+  const [genAtsFile, setGenAtsFile] = useState(null);
+  const [genAtsResult, setGenAtsResult] = useState(null);
+  const [genAtsError, setGenAtsError] = useState(null);
+  const [genAtsLoading, setGenAtsLoading] = useState(false);
+  const genFileInputRef = useRef(null);
+  const [isGenDragging, setIsGenDragging] = useState(false);
+  const [genAtsJd, setGenAtsJd] = useState("");
+  const [atsCheckType, setAtsCheckType] = useState("general"); // "general" or "targeted"
+
+  const handleGenAtsFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setGenAtsFile(file);
+      setGenAtsResult(null);
+      setGenAtsError(null);
+    }
+  };
+
+  const handleGenAtsUpload = async () => {
+    if (!genAtsFile) {
+      setGenAtsError("Please select or drop a resume file first.");
+      return;
+    }
+    if (atsCheckType === "targeted" && !genAtsJd.trim()) {
+      setGenAtsError("Please paste the target job description to run a Targeted JD Match.");
+      return;
+    }
+    setGenAtsLoading(true);
+    setGenAtsError(null);
+    setGenAtsResult(null);
+
+    const formData = new FormData();
+    formData.append("resume", genAtsFile);
+    if (atsCheckType === "targeted" && genAtsJd.trim()) {
+      formData.append("jd", genAtsJd.trim());
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/jobs/general-ats-check`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        // Response was not JSON
+      }
+
+      if (!res.ok) {
+        const errorMsg = data && data.error ? data.error : `Server returned status: ${res.status}`;
+        throw new Error(errorMsg);
+      }
+
+      if (data && data.error) {
+        setGenAtsError(data.error);
+      } else {
+        setGenAtsResult(data);
+      }
+    } catch (err) {
+      console.error(err);
+      setGenAtsError(err.message || "Failed to parse and analyze resume. Please try again with a valid PDF or DOCX file.");
+    } finally {
+      setGenAtsLoading(false);
+    }
+  };
+
+  const getSubscoreColor = (score) => {
+    if (score >= 70) return '#10b981'; // Green
+    if (score >= 40) return '#f59e0b'; // Orange
+    return '#ef4444'; // Red
+  };
+
+  const getVisualProgress = (score) => {
+    return score === 0 ? 4 : score;
+  };
+
+  const [showGeneralAtsModal, setShowGeneralAtsModal] = useState(() => {
+    const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
+    return path.toLowerCase() === '/resumereview' || params.has('resumeReview');
+  });
+
   const [activeMainTab, setActiveMainTab] = useState(() => {
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
@@ -108,11 +211,31 @@ function App() {
     return 'home';
   });
 
+  // Keep path synchronized when general ATS modal is open/closed
+  useEffect(() => {
+    if (currentView === 'home') {
+      if (showGeneralAtsModal) {
+        if (window.location.pathname !== '/ResumeReview') {
+          window.history.pushState({}, '', '/ResumeReview');
+        }
+      } else {
+        let newPath = '/';
+        if (activeMainTab === 'pro-connect') newPath = '/proConnect';
+        else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
+        else if (activeMainTab === 'jobs') newPath = '/jobs';
+        
+        if (window.location.pathname !== newPath && window.location.pathname === '/ResumeReview') {
+          window.history.pushState({}, '', newPath);
+        }
+      }
+    }
+  }, [showGeneralAtsModal, activeMainTab, currentView]);
+
   useEffect(() => {
     localStorage.setItem('activeMainTab', activeMainTab);
     
     // Only update path if not in a special dashboard view
-    if (currentView === 'home') {
+    if (currentView === 'home' && !showGeneralAtsModal) {
       let newPath = '/';
       if (activeMainTab === 'pro-connect') newPath = '/proConnect';
       else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
@@ -122,7 +245,7 @@ function App() {
         window.history.pushState({}, '', newPath);
       }
     }
-  }, [activeMainTab, currentView]);
+  }, [activeMainTab, currentView, showGeneralAtsModal]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -135,9 +258,15 @@ function App() {
         setCurrentView(localStorage.getItem('mentorToken') ? 'mentor-dashboard' : 'mentor-login');
       } else {
         setCurrentView('home');
-        if (path === '/proConnect' || params.has('proConnect')) setActiveMainTab('pro-connect');
-        else if (path === '/prepZo' || params.has('prepZo')) setActiveMainTab('interview-prep');
-        else setActiveMainTab('jobs');
+        if (path.toLowerCase() === '/resumereview' || params.has('resumeReview')) {
+          setShowGeneralAtsModal(true);
+        } else {
+          setShowGeneralAtsModal(false);
+          if (path === '/proConnect' || params.has('proConnect')) setActiveMainTab('pro-connect');
+          else if (path === '/prepZo' || params.has('prepZo')) setActiveMainTab('interview-prep');
+          else if (path === '/jobs' || params.has('jobs')) setActiveMainTab('jobs');
+          else setActiveMainTab('home');
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -612,10 +741,50 @@ function App() {
 
   const fetchTodaySessionsCount = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/sessions/today-count`);
+      const response = await fetch(`${API_BASE_URL}/api/sessions/active`);
       if (response.ok) {
-        const count = await response.json();
-        setTodaySessionsCount(count);
+        const sessions = await response.json();
+        
+        const isSessionPast = (session) => {
+          if (!session.sessionDate) return false;
+          
+          const now = new Date();
+          const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+          
+          if (session.sessionDate < todayStr) return true;
+          
+          if (session.sessionDate === todayStr && session.schedule) {
+            try {
+              const timeStr = session.schedule.toUpperCase();
+              let hours = 0;
+              let minutes = 0;
+              
+              const timeMatch = timeStr.match(/(\d+)(?::(\d+))?\s*(AM|PM)?/);
+              if (timeMatch) {
+                hours = parseInt(timeMatch[1]);
+                minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+                const ampm = timeMatch[3];
+                
+                if (ampm === 'PM' && hours < 12) hours += 12;
+                if (ampm === 'AM' && hours === 12) hours = 0;
+                
+                const sessionTime = new Date();
+                sessionTime.setHours(hours, minutes, 0, 0);
+                
+                return now.getTime() > (sessionTime.getTime() + 30 * 60 * 1000);
+              }
+            } catch (e) {
+              console.error("Time parse error:", e);
+            }
+          }
+          return false;
+        };
+
+        const now = new Date();
+        const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+        
+        const todaySessions = sessions.filter(s => s.sessionDate === todayStr && !isSessionPast(s));
+        setTodaySessionsCount(todaySessions.length);
       }
     } catch (err) {
       console.error('Error fetching today sessions count:', err);
@@ -784,6 +953,38 @@ function App() {
 
   return (
     <div className="App">
+      {/* Floating Check ATS Score Button */}
+      {activeMainTab === 'jobs' && !showGeneralAtsModal && (
+        <button
+          onClick={() => {
+            setShowGeneralAtsModal(true);
+          }}
+          className="ats-floating-button"
+          style={{
+            position: 'fixed',
+            bottom: '35px',
+            right: '35px',
+            zIndex: 9999,
+            background: 'linear-gradient(135deg, #0ea5e9, #0073b1)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '50px',
+            padding: '0.85rem 1.75rem',
+            fontWeight: '700',
+            fontSize: '0.95rem',
+            cursor: 'pointer',
+            boxShadow: '0 8px 24px rgba(0, 115, 177, 0.35)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6rem',
+            transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          }}
+        >
+          <span style={{ fontSize: '1.2rem' }}>📊</span>
+          Check ATS Score
+        </button>
+      )}
+
       {/* Job Detail Modal */}
       {selectedJob && (
         <JobDetail job={selectedJob} onClose={closeJob} />
@@ -792,6 +993,428 @@ function App() {
       {/* Legal Content Modal */}
       {legalContent && (
         <LegalModal type={legalContent} onClose={() => setLegalContent(null)} />
+      )}
+
+      {/* AI General ATS Resume Reviewer Modal */}
+      {showGeneralAtsModal && (
+        <div className="general-ats-modal-overlay" onClick={() => setShowGeneralAtsModal(false)}>
+          <div className="general-ats-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="general-ats-modal-header">
+              <h2>AI ATS Resume Reviewer</h2>
+              <button className="general-ats-modal-close" onClick={() => setShowGeneralAtsModal(false)}>✕</button>
+            </div>
+            <div className="general-ats-modal-body">
+              <div className="resume-review-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <p style={{ fontSize: '1.05rem', color: '#64748b', margin: 0 }}>
+                  Upload your resume for a comprehensive general ATS compliance score!
+                </p>
+              </div>
+
+              <div className="resume-review-card" style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem' }}>
+                
+                {/* Segmented Pill Tabs for Check Mode */}
+                {!genAtsResult && (
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    background: '#f1f5f9',
+                    borderRadius: '24px',
+                    padding: '4px',
+                    marginBottom: '2rem',
+                    border: '1px solid #e2e8f0',
+                    width: 'fit-content',
+                    margin: '0 auto 2rem auto'
+                  }}>
+                    <button
+                      onClick={() => {
+                        setAtsCheckType("general");
+                        setGenAtsError(null);
+                      }}
+                      style={{
+                        padding: '0.6rem 1.8rem',
+                        borderRadius: '20px',
+                        border: 'none',
+                        fontWeight: '600',
+                        fontSize: '0.9rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        background: atsCheckType === 'general' ? '#0073b1' : 'transparent',
+                        color: atsCheckType === 'general' ? '#ffffff' : '#64748b',
+                        boxShadow: atsCheckType === 'general' ? '0 2px 8px rgba(0, 115, 177, 0.15)' : 'none'
+                      }}
+                    >
+                      General ATS Check
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAtsCheckType("targeted");
+                        setGenAtsError(null);
+                      }}
+                      style={{
+                        padding: '0.6rem 1.8rem',
+                        borderRadius: '20px',
+                        border: 'none',
+                        fontWeight: '600',
+                        fontSize: '0.9rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        background: atsCheckType === 'targeted' ? '#0073b1' : 'transparent',
+                        color: atsCheckType === 'targeted' ? '#ffffff' : '#64748b',
+                        boxShadow: atsCheckType === 'targeted' ? '0 2px 8px rgba(0, 115, 177, 0.15)' : 'none'
+                      }}
+                    >
+                      Targeted JD Match
+                    </button>
+                  </div>
+                )}
+
+                {/* Target JD Textarea */}
+                {atsCheckType === "targeted" && !genAtsResult && (
+                  <div style={{ marginBottom: '2rem', animation: 'fadeIn 0.3s ease' }}>
+                    <label style={{
+                      display: 'block',
+                      fontWeight: '600',
+                      color: '#0f172a',
+                      fontSize: '0.95rem',
+                      marginBottom: '0.5rem',
+                      textAlign: 'left'
+                    }}>
+                      Target Job Description (JD)
+                    </label>
+                    <textarea
+                      value={genAtsJd}
+                      onChange={(e) => setGenAtsJd(e.target.value)}
+                      placeholder="Paste the target job description details here (skills, responsibilities, credentials) to evaluate how well your resume matches the role requirements..."
+                      style={{
+                        width: '100%',
+                        height: '120px',
+                        borderRadius: '12px',
+                        border: '1px solid #cbd5e1',
+                        padding: '0.85rem 1rem',
+                        fontSize: '0.95rem',
+                        color: '#1e293b',
+                        background: '#f8fafc',
+                        resize: 'none',
+                        outline: 'none',
+                        transition: 'all 0.2s ease',
+                        boxSizing: 'border-box'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.border = '1px solid #0073b1';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(0, 115, 177, 0.1)';
+                        e.target.style.background = '#ffffff';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.border = '1px solid #cbd5e1';
+                        e.target.style.boxShadow = 'none';
+                        e.target.style.background = '#f8fafc';
+                      }}
+                    />
+                  </div>
+                )}
+                
+                {/* Upload Area */}
+                {!genAtsResult && (
+                  <div 
+                    className={`ats-upload-area ${isGenDragging ? 'dragging' : ''}`}
+                    onDragOver={(e) => { e.preventDefault(); setIsGenDragging(true); }}
+                    onDragLeave={() => setIsGenDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsGenDragging(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        setGenAtsFile(e.dataTransfer.files[0]);
+                        setGenAtsResult(null);
+                        setGenAtsError(null);
+                      }
+                    }}
+                    onClick={() => genFileInputRef.current && genFileInputRef.current.click()}
+                    style={{ 
+                      border: '2px dashed #38bdf8', 
+                      borderRadius: '12px', 
+                      padding: '3rem 2rem', 
+                      textAlign: 'center', 
+                      cursor: 'pointer',
+                      background: isGenDragging ? '#f0f9ff' : '#f8fafc',
+                      transition: 'all 0.2s ease',
+                      marginBottom: '2rem'
+                    }}
+                  >
+                    <input 
+                      type="file" 
+                      ref={genFileInputRef} 
+                      style={{ display: 'none' }} 
+                      accept=".pdf,.docx,.pptx"
+                      onChange={handleGenAtsFileChange}
+                    />
+                    
+                    {genAtsFile ? (
+                      <div className="ats-file-display" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                        <button 
+                          className="ats-remove-file" 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setGenAtsFile(null); 
+                            setGenAtsResult(null); 
+                            if (genFileInputRef.current) genFileInputRef.current.value = '';
+                          }}
+                          style={{
+                            background: '#ef4444',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '24px',
+                            height: '24px',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                          title="Remove file"
+                        >×</button>
+                        <div className="ats-file-icon-wrapper">
+                          {genAtsFile.name.endsWith('.pdf') ? (
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                          ) : (
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0073b1" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                          )}
+                        </div>
+                        <p style={{ fontWeight: '600', color: '#0f172a', margin: 0 }}>{genAtsFile.name}</p>
+                        <span style={{ fontSize: '0.85rem', color: '#0073b1', textDecoration: 'underline' }}>Click to change file</span>
+                      </div>
+                    ) : (
+                      <div className="ats-upload-prompt" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                        <div className="ats-resume-symbol">
+                          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#0073b1" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="12" cy="14" r="2"/><line x1="12" y1="16" x2="12" y2="18"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+                        </div>
+                        <p style={{ fontWeight: '600', color: '#334155', margin: 0 }}>Drop your resume here or click to browse</p>
+                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Supports PDF, DOCX, PPTX formats</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {genAtsError && <p className="ats-error" style={{ color: '#ef4444', textAlign: 'center', marginBottom: '1.5rem', fontWeight: '500' }}>{genAtsError}</p>}
+
+                {!genAtsResult && (
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button 
+                      onClick={handleGenAtsUpload}
+                      disabled={genAtsLoading || !genAtsFile}
+                      style={{
+                        background: genAtsFile ? 'linear-gradient(135deg, #0073b1, #0ea5e9)' : '#e2e8f0',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '0.85rem 2.5rem',
+                        borderRadius: '30px',
+                        fontWeight: '600',
+                        fontSize: '1rem',
+                        cursor: genAtsFile ? 'pointer' : 'not-allowed',
+                        transition: 'all 0.3s ease',
+                        boxShadow: genAtsFile ? '0 4px 15px rgba(0, 115, 177, 0.25)' : 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      {genAtsLoading ? (
+                        <>
+                          <span className="ats-spinner" style={{ display: 'inline-block', width: '18px', height: '18px', border: '2px solid #ffffff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                          Analyzing Resume...
+                        </>
+                      ) : 'Analyze Match'}
+                    </button>
+                  </div>
+                )}
+
+                {/* Results Display */}
+                {genAtsResult && (
+                  <div className="ats-result-box" style={{ animation: 'fadeIn 0.4s ease' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+                      <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#0f172a' }}>AI ATS Analysis Result</h3>
+                      <button 
+                        onClick={() => {
+                          setGenAtsFile(null);
+                          setGenAtsResult(null);
+                          setGenAtsError(null);
+                          setGenAtsJd("");
+                          if (genFileInputRef.current) genFileInputRef.current.value = '';
+                        }}
+                        style={{
+                          background: 'none',
+                          border: '1px solid #cbd5e1',
+                          borderRadius: '20px',
+                          padding: '0.4rem 1.2rem',
+                          color: '#475569',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: '600',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        Analyze New Resume
+                      </button>
+                    </div>
+
+                    <div className="ats-header-summary" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem', marginBottom: '2.5rem' }}>
+                      <div className="ats-progress-outer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#f8fafc', padding: '2rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                        <div className="ats-progress-container" style={{ position: 'relative', width: '130px', height: '130px' }}>
+                          <svg className="ats-progress-svg" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)', width: '100%', height: '100%' }}>
+                            <circle className="ats-progress-bg" cx="50" cy="50" r="45" style={{ fill: 'none', stroke: '#e2e8f0', strokeWidth: '8' }} />
+                            <circle
+                              className="ats-progress-bar"
+                              cx="50" cy="50" r="45"
+                              stroke={getSubscoreColor(genAtsResult.score)}
+                              strokeDasharray="283"
+                              strokeDashoffset={283 - (283 * getVisualProgress(genAtsResult.score)) / 100}
+                              style={{ fill: 'none', strokeWidth: '8', strokeLinecap: 'round', transition: 'stroke-dashoffset 0.8s ease' }}
+                            />
+                          </svg>
+                          <div className="ats-progress-text" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                            <span className="ats-score-value" style={{ fontSize: '2.2rem', fontWeight: '800', color: '#0f172a', display: 'block', lineHeight: 1 }}>{genAtsResult.score}</span>
+                            <span className="ats-score-label" style={{ fontSize: '0.65rem', fontWeight: '700', color: '#64748b', letterSpacing: '0.05em' }}>ATS SCORE</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Grid of Subscores */}
+                      {genAtsResult.subScores && (
+                        <div className="ats-subscores-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+                          <div className="ats-subscore-card" style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div className="ats-subscore-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: '600' }}>
+                              <span className="ats-subscore-title">🛠️ Skills Match</span>
+                              <span className="ats-subscore-num" style={{ color: getSubscoreColor(genAtsResult.subScores.skillsMatch) }}>{genAtsResult.subScores.skillsMatch}%</span>
+                            </div>
+                            <div className="ats-subscore-bar-bg" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(genAtsResult.subScores.skillsMatch)}%`, height: '100%', background: getSubscoreColor(genAtsResult.subScores.skillsMatch), borderRadius: '4px', transition: 'width 0.5s ease' }} />
+                            </div>
+                          </div>
+                          <div className="ats-subscore-card" style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div className="ats-subscore-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: '600' }}>
+                              <span className="ats-subscore-title">💼 Experience</span>
+                              <span className="ats-subscore-num" style={{ color: getSubscoreColor(genAtsResult.subScores.experienceMatch) }}>{genAtsResult.subScores.experienceMatch}%</span>
+                            </div>
+                            <div className="ats-subscore-bar-bg" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(genAtsResult.subScores.experienceMatch)}%`, height: '100%', background: getSubscoreColor(genAtsResult.subScores.experienceMatch), borderRadius: '4px', transition: 'width 0.5s ease' }} />
+                            </div>
+                          </div>
+                          <div className="ats-subscore-card" style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div className="ats-subscore-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: '600' }}>
+                              <span className="ats-subscore-title">🔑 Keyword Density</span>
+                              <span className="ats-subscore-num" style={{ color: getSubscoreColor(genAtsResult.subScores.keywordMatch) }}>{genAtsResult.subScores.keywordMatch}%</span>
+                            </div>
+                            <div className="ats-subscore-bar-bg" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(genAtsResult.subScores.keywordMatch)}%`, height: '100%', background: getSubscoreColor(genAtsResult.subScores.keywordMatch), borderRadius: '4px', transition: 'width 0.5s ease' }} />
+                            </div>
+                          </div>
+                          <div className="ats-subscore-card" style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div className="ats-subscore-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: '600' }}>
+                              <span className="ats-subscore-title">🌟 Projects Relevance</span>
+                              <span className="ats-subscore-num" style={{ color: getSubscoreColor(genAtsResult.subScores.projectRelevance) }}>{genAtsResult.subScores.projectRelevance}%</span>
+                            </div>
+                            <div className="ats-subscore-bar-bg" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(genAtsResult.subScores.projectRelevance)}%`, height: '100%', background: getSubscoreColor(genAtsResult.subScores.projectRelevance), borderRadius: '4px', transition: 'width 0.5s ease' }} />
+                            </div>
+                          </div>
+                          <div className="ats-subscore-card" style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div className="ats-subscore-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: '600' }}>
+                              <span className="ats-subscore-title">📋 Formatting Score</span>
+                              <span className="ats-subscore-num" style={{ color: getSubscoreColor(genAtsResult.subScores.formattingScore) }}>{genAtsResult.subScores.formattingScore}%</span>
+                            </div>
+                            <div className="ats-subscore-bar-bg" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(genAtsResult.subScores.formattingScore)}%`, height: '100%', background: getSubscoreColor(genAtsResult.subScores.formattingScore), borderRadius: '4px', transition: 'width 0.5s ease' }} />
+                            </div>
+                          </div>
+                          <div className="ats-subscore-card" style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div className="ats-subscore-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: '600' }}>
+                              <span className="ats-subscore-title">🎓 Education Match</span>
+                              <span className="ats-subscore-num" style={{ color: getSubscoreColor(genAtsResult.subScores.educationMatch) }}>{genAtsResult.subScores.educationMatch}%</span>
+                            </div>
+                            <div className="ats-subscore-bar-bg" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div className="ats-subscore-bar-fill" style={{ width: `${getVisualProgress(genAtsResult.subScores.educationMatch)}%`, height: '100%', background: getSubscoreColor(genAtsResult.subScores.educationMatch), borderRadius: '4px', transition: 'width 0.5s ease' }} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AI Insights */}
+                    {genAtsResult.aiInsights && (
+                      <div className="ats-insights-section" style={{ background: '#f0fdf4', borderLeft: '4px solid #16a34a', padding: '1.25rem 1.5rem', borderRadius: '0 8px 8px 0', marginBottom: '2.5rem' }}>
+                        <h4 style={{ margin: '0 0 0.5rem', color: '#14532d', fontSize: '1rem', fontWeight: '700' }}>💡 Recruiter Insights</h4>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#166534', lineHeight: 1.5 }}>{genAtsResult.aiInsights}</p>
+                      </div>
+                    )}
+
+                    {/* Detailed Analysis Tabs */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
+                      
+                      {/* Strengths */}
+                      <div className="ats-strengths-box" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: '12px' }}>
+                        <h4 style={{ margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', color: '#0f172a', fontWeight: '700' }}>
+                          <span style={{ color: '#22c55e' }}>✓</span> Strengths
+                        </h4>
+                        <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.9rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                          {genAtsResult.strengths && genAtsResult.strengths.map((str, idx) => (
+                            <li key={idx}>{str}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Weaknesses */}
+                      <div className="ats-weaknesses-box" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: '12px' }}>
+                        <h4 style={{ margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', color: '#0f172a', fontWeight: '700' }}>
+                          <span style={{ color: '#ef4444' }}>✗</span> Areas of Improvement
+                        </h4>
+                        <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.9rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                          {genAtsResult.weaknesses && genAtsResult.weaknesses.map((weak, idx) => (
+                            <li key={idx}>{weak}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                    </div>
+
+
+
+                    {/* Formatting Analysis */}
+                    {genAtsResult.formattingAnalysis && (
+                      <div className="ats-formatting-box" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: '12px' }}>
+                        <h4 style={{ margin: '0 0 1rem', fontSize: '1.1rem', color: '#0f172a', fontWeight: '700' }}>📋 Resume Formatting Check</h4>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+                          <div style={{ padding: '0.75rem', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                            <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Bullet Points</span>
+                            <strong style={{ fontSize: '0.95rem', color: genAtsResult.formattingAnalysis.bulletPointsCheck === 'Pass' ? '#22c55e' : '#f59e0b' }}>
+                              {genAtsResult.formattingAnalysis.bulletPointsCheck}
+                            </strong>
+                          </div>
+                          <div style={{ padding: '0.75rem', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                            <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Standard Headers</span>
+                            <strong style={{ fontSize: '0.95rem', color: genAtsResult.formattingAnalysis.sectionHeaderCheck === 'Pass' ? '#22c55e' : '#f59e0b' }}>
+                              {genAtsResult.formattingAnalysis.sectionHeaderCheck}
+                            </strong>
+                          </div>
+                          <div style={{ padding: '0.75rem', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                            <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>No Complex Tables</span>
+                            <strong style={{ fontSize: '0.95rem', color: genAtsResult.formattingAnalysis.tablesCheck === 'Pass' ? '#22c55e' : '#f59e0b' }}>
+                              {genAtsResult.formattingAnalysis.tablesCheck}
+                            </strong>
+                          </div>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.5 }}>
+                          <strong>Feedback:</strong> {genAtsResult.formattingAnalysis.feedback}
+                        </p>
+                      </div>
+                    )}
+
+                  </div>
+                )}
+
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* All Jobs Modal */}
@@ -1024,32 +1647,30 @@ function App() {
           <section className="hero-ai">
             <div className="hero-ai-container">
               <div className="hero-ai-left">
-                <div className="hero-badge-container">
-                  <div className="hero-pill-excellent">
-                    Excellent <span>★★★★★</span>
-                  </div>
-                  <div className="hero-pill-india">
-                    Jobs in India
-                  </div>
-                </div>
-                
                 <h1>
-                  Your Ultimate Career Buddy to<br />
+                  Your Ultimate Career<span className="mobile-br"><br /></span> Buddy to<br />
                   <span className="hero-ai-gradient-text">Land Tech Placements</span>
                 </h1>
                 
                 <p className="hero-ai-desc">
-                  Discover 100% verified placement links, practice MNC interview archives on PrepZo, and connect 1:1 with top industry mentors via ProConnect to accelerate your tech career.
+                  Get verified job openings, AI-powered resume analysis, interview preparation, and mentorship — all in one place.
                 </p>
                 
-                <button className="hero-ai-cta-btn" onClick={() => {
-                  setActiveMainTab('jobs');
-                  setTimeout(() => {
-                    document.getElementById('jobs')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }}>
-                  Start Getting Interviews &rarr;
-                </button>
+                <div className="hero-ai-cta-container">
+                  <button className="hero-ai-cta-btn" onClick={() => {
+                    setActiveMainTab('jobs');
+                    setTimeout(() => {
+                      document.getElementById('jobs')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}>
+                    Start Getting Interviews <span className="btn-arrow">&rarr;</span>
+                  </button>
+                  <button className="hero-ai-cta-btn secondary" onClick={() => {
+                    setShowGeneralAtsModal(true);
+                  }}>
+                    Analyze Resume Free <span className="btn-arrow">&rarr;</span>
+                  </button>
+                </div>
                 
                 <div className="hero-ai-bullets">
                   <div className="hero-ai-bullet-item">
@@ -1072,14 +1693,14 @@ function App() {
                   </div>
                   <div className="hero-ai-rating-container">
                     <div className="hero-ai-stars">★★★★★</div>
+                    <div className="hero-ai-rating-stats">
+                      <span className="stat-item"><strong>7,000+</strong><span className="stat-label">Students & Professionals</span></span>
+                      <span className="separator">•</span>
+                      <span className="stat-item"><strong>1,200+</strong><span className="stat-label">Placements</span></span>
+                      <span className="separator">•</span>
+                      <span className="stat-item"><strong>4.8/5</strong><span className="stat-label">User Rating</span></span>
+                    </div>
                   </div>
-                </div>
-
-                <div className="hero-ai-certified-badge">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L9 7h6l-3-5zm-4 6h8v12H8V8zm2 3h4v1h-4v-1zm0 3h4v1h-4v-1zm0 3h4v1h-4v-1z"/>
-                  </svg>
-                  <span>Certified by DPIIT STARTUP INDIA</span>
                 </div>
               </div>
               
@@ -1091,8 +1712,8 @@ function App() {
                   <div className="card-match-score-header">
                     <div className="card-match-icon">✦</div>
                     <div className="card-match-title">
-                      <h3>AI Match Score</h3>
-                      <span>Based on your profile</span>
+                      <h3>ATS Score</h3>
+                      <span>Based on your resume</span>
                     </div>
                   </div>
                   <div className="card-match-circle-score">94%</div>
@@ -1108,7 +1729,7 @@ function App() {
                       <span>88%</span>
                     </div>
                     <div className="card-match-stat-row">
-                      <span>Culture Fit</span>
+                      <span>Formatting</span>
                       <span>92%</span>
                     </div>
                   </div>
@@ -1119,11 +1740,11 @@ function App() {
                   <h4>Resume Analysis</h4>
                   <div className="card-resume-item">
                     <span className="card-resume-item-check">✓</span>
-                    <span>Skills extracted: 12</span>
+                    <span>Skills extracted: 15</span>
                   </div>
                   <div className="card-resume-item">
                     <span className="card-resume-item-check">✓</span>
-                    <span>Experience: 5+ years</span>
+                    <span>Experience: 2+ years</span>
                   </div>
                   <div className="card-resume-pulsing">
                     <span className="pulse-dot"></span>
@@ -1131,23 +1752,23 @@ function App() {
                   </div>
                 </div>
                 
-                {/* Card 3: Google Job Card */}
+                {/* Card 3: Amazon Job Card */}
                 <div className="card-google-job">
-                  <div className="card-google-logo">G</div>
+                  <div className="card-google-logo" style={{ background: '#ff9900', color: '#ffffff' }}>A</div>
                   <div className="card-google-info">
-                    <h4>Google</h4>
-                    <span>Senior Engineer</span>
+                    <h4>Amazon</h4>
+                    <span>Software Engineer</span>
                     <div className="card-google-pills">
-                      <span className="card-google-pill-remote">Remote</span>
-                      <span className="card-google-pill-salary">$180K-$250K</span>
+                      <span className="card-google-pill-remote" style={{ background: '#e0f2fe', color: '#0369a1' }}>Full Time</span>
+                      <span className="card-google-pill-salary">₹45 - ₹55 LPA</span>
                     </div>
                   </div>
                 </div>
                 
                 {/* Card 4: Matched Today Card */}
                 <div className="card-matched-today">
-                  <h3>{jobs.length * 12 + 2348}+</h3>
-                  <span>Jobs matched today</span>
+                  <h3>{getStableDailyNumber()}+</h3>
+                  <span>Members applied today</span>
                 </div>
               </div>
             </div>
@@ -1162,31 +1783,67 @@ function App() {
               </div>
               
               <div className="home-pillars-grid">
-                <div className="home-pillar-card job-pillar" onClick={() => { setActiveMainTab('jobs'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                <div
+                  className="home-pillar-card job-pillar"
+                  onClick={() => {
+                    if (window.innerWidth <= 640) {
+                      setExpandedPillar(expandedPillar === 'jobs' ? null : 'jobs');
+                    } else {
+                      setActiveMainTab('jobs'); window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                >
                   <div className="pillar-card-header">
                     <div className="pillar-icon-wrapper">💼</div>
                     <h3>Verified Jobs Board</h3>
+                    <span className={`pillar-chevron ${expandedPillar === 'jobs' ? 'open' : ''}`}>▾</span>
                   </div>
-                  <p>Access handpicked hiring links from top tech MNCs and startups. Checked daily, zero spam.</p>
-                  <span className="pillar-link">Browse Jobs &rarr;</span>
+                  <div className={`pillar-card-body ${expandedPillar === 'jobs' ? 'expanded' : ''}`}>
+                    <p>Access handpicked hiring links from top tech MNCs and startups. Checked daily, zero spam.</p>
+                    <span className="pillar-link" onClick={(e) => { e.stopPropagation(); setActiveMainTab('jobs'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Browse Jobs &rarr;</span>
+                  </div>
                 </div>
 
-                <div className="home-pillar-card connect-pillar" onClick={() => { setActiveMainTab('pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                <div
+                  className="home-pillar-card connect-pillar"
+                  onClick={() => {
+                    if (window.innerWidth <= 640) {
+                      setExpandedPillar(expandedPillar === 'connect' ? null : 'connect');
+                    } else {
+                      setActiveMainTab('pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                >
                   <div className="pillar-card-header">
                     <div className="pillar-icon-wrapper">👥</div>
                     <h3>ProConnect Mentorship</h3>
+                    <span className={`pillar-chevron ${expandedPillar === 'connect' ? 'open' : ''}`}>▾</span>
                   </div>
-                  <p>Connect 1:1 with verified industry leaders for resume reviews, mock interviews, and career guidance.</p>
-                  <span className="pillar-link">Find Mentors &rarr;</span>
+                  <div className={`pillar-card-body ${expandedPillar === 'connect' ? 'expanded' : ''}`}>
+                    <p>Connect 1:1 with verified industry leaders for resume reviews, mock interviews, and career guidance.</p>
+                    <span className="pillar-link" onClick={(e) => { e.stopPropagation(); setActiveMainTab('pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Find Mentors &rarr;</span>
+                  </div>
                 </div>
 
-                <div className="home-pillar-card prep-pillar" onClick={() => { setActiveMainTab('interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                <div
+                  className="home-pillar-card prep-pillar"
+                  onClick={() => {
+                    if (window.innerWidth <= 640) {
+                      setExpandedPillar(expandedPillar === 'prep' ? null : 'prep');
+                    } else {
+                      setActiveMainTab('interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                >
                   <div className="pillar-card-header">
                     <div className="pillar-icon-wrapper">🎓</div>
                     <h3>PrepZo AI Interview Prep</h3>
+                    <span className={`pillar-chevron ${expandedPillar === 'prep' ? 'open' : ''}`}>▾</span>
                   </div>
-                  <p>Practice company-specific interview questions and join free live mentorship workshops daily.</p>
-                  <span className="pillar-link">Start Practice &rarr;</span>
+                  <div className={`pillar-card-body ${expandedPillar === 'prep' ? 'expanded' : ''}`}>
+                    <p>Practice company-specific interview questions and join free live mentorship workshops daily.</p>
+                    <span className="pillar-link" onClick={(e) => { e.stopPropagation(); setActiveMainTab('interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Start Practice &rarr;</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1382,13 +2039,13 @@ function App() {
 
               {/* Trust Stats */}
               <div className="hero-stats">
-                <div className="hero-stat"><span className="stat-number">500+</span><span className="stat-label">Jobs Listed</span></div>
+                <div className="hero-stat"><span className="stat-number">1,500+</span><span className="stat-label">Jobs Listed</span></div>
                 <div className="hero-stat-divider" />
                 <div className="hero-stat"><span className="stat-number">150+</span><span className="stat-label">Companies</span></div>
                 <div className="hero-stat-divider" />
-                <div className="hero-stat"><span className="stat-number">2,000+</span><span className="stat-label">Job Seekers</span></div>
+                <div className="hero-stat"><span className="stat-number">7,000+</span><span className="stat-label">Job Seekers</span></div>
                 <div className="hero-stat-divider" />
-                <div className="hero-stat"><span className="stat-number">400+</span><span className="stat-label">Offers Secured</span></div>
+                <div className="hero-stat"><span className="stat-number">1,200+</span><span className="stat-label">Offers Secured</span></div>
               </div>
             </div>
           </section >
@@ -1732,12 +2389,12 @@ function App() {
             <img src="/logos/logo.png" alt="PlacementBabai" className="footer-logo" />
             {/* Short tagline for mobile */}
             <p className="footer-tagline footer-tagline-mobile">
-              PlacementBabai is a trusted job discovery platform helping students and professionals find verified placements from top companies. We simplify job searching by providing updated, genuine, and handpicked opportunities — all in one place. <strong>Explore. Apply. Get Hired.</strong>
+              PlacementBabai is India's trusted platform helping candidates secure dream jobs through verified off-campus links. We simplify your placement journey by providing active, genuine, and handpicked opportunities — all in one place. <strong>Explore. Apply. Get Hired.</strong>
             </p>
             {/* Full tagline for desktop */}
             <p className="footer-tagline footer-tagline-desktop">
-              PlacementBabai is a trusted job discovery platform helping students and professionals find verified placement links from top companies.<br /><br />
-              We simplify job searching by providing updated, genuine, and handpicked opportunities — all in one place.<br /><br />
+              PlacementBabai is India's trusted platform helping candidates secure dream jobs through verified off-campus links.<br /><br />
+              We simplify your placement journey by providing active, genuine, and handpicked opportunities — all in one place.<br /><br />
               <strong>Explore. Apply. Get Hired.</strong>
             </p>
           </div>
@@ -1745,9 +2402,11 @@ function App() {
             <div className="footer-column">
               <h3>Quick Links</h3>
               <ul>
-                <li><a href="#home" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Home</a></li>
-                <li><a href="#search" onClick={(e) => { e.preventDefault(); document.querySelector('.hero')?.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => document.querySelector('.search-input').focus(), 500); }}>Search Jobs</a></li>
-                <li><a href="#about" onClick={(e) => { e.preventDefault(); document.querySelector('.companies-section')?.scrollIntoView({ behavior: 'smooth' }); }}>Featured Companies</a></li>
+                <li><a href="#home" onClick={(e) => { e.preventDefault(); setActiveMainTab('home'); sessionStorage.setItem('activeMainTab', 'home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Home</a></li>
+                <li><a href="#jobs" onClick={(e) => { e.preventDefault(); setActiveMainTab('jobs'); sessionStorage.setItem('activeMainTab', 'jobs'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Search Jobs</a></li>
+                <li><a href="#pro-connect" onClick={(e) => { e.preventDefault(); setActiveMainTab('pro-connect'); sessionStorage.setItem('activeMainTab', 'pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>ProConnect</a></li>
+                <li><a href="#interview-prep" onClick={(e) => { e.preventDefault(); setActiveMainTab('interview-prep'); sessionStorage.setItem('activeMainTab', 'interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>PrepZo Practice</a></li>
+                <li><a href="#companies" onClick={(e) => { e.preventDefault(); if (activeMainTab !== 'home') { setActiveMainTab('home'); sessionStorage.setItem('activeMainTab', 'home'); setTimeout(() => { document.querySelector('.companies-section')?.scrollIntoView({ behavior: 'smooth' }); }, 150); } else { document.querySelector('.companies-section')?.scrollIntoView({ behavior: 'smooth' }); } }}>Featured Companies</a></li>
               </ul>
             </div>
             <div className="footer-column">
@@ -1761,7 +2420,7 @@ function App() {
             <div className="footer-column">
               <h3>Our Mission</h3>
               <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6', maxWidth: '250px', margin: 0 }}>
-                To make job searching simple, transparent, and accessible for every student in India.
+                To empower job seekers across India by providing verified off-campus opportunities, expert mentorship, and premium career prep tools to get placed with confidence.
               </p>
             </div>
 
@@ -1777,6 +2436,9 @@ function App() {
                   </a>
                   <a href="https://youtube.com/@placementbabai?si=UFcAEkaMRb6nyDeT" aria-label="YouTube" className="social-icon social-youtube" target="_blank" rel="noopener noreferrer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                  </a>
+                  <a href="https://t.me/+78I0GYO6f8A5MmQ9" aria-label="Telegram" className="social-icon social-telegram" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </a>
                 </div>
               </div>

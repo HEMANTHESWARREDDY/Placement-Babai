@@ -140,10 +140,15 @@ public class MentorController {
     // Public API to fetch all approved mentors
     @GetMapping("")
     public ResponseEntity<List<Mentor>> getApprovedMentors() {
-        List<Mentor> approved = mentorRepository.findByStatusOrderByCreatedAtDesc("APPROVED");
-        // Remove passwords from response
-        approved.forEach(m -> m.setPassword(null));
-        return ResponseEntity.ok(approved);
+        try {
+            List<Mentor> approved = mentorRepository.findByStatusOrderByCreatedAtDesc("APPROVED");
+            // Remove passwords from response
+            approved.forEach(m -> m.setPassword(null));
+            return ResponseEntity.ok(approved);
+        } catch (Exception e) {
+            System.err.println("⚠️ MongoDB query failed in getApprovedMentors: " + e.getMessage() + ". Falling back to in-memory mock mentors.");
+            return ResponseEntity.ok(getMockMentors());
+        }
     }
 
     // Protected API to get logged-in mentor profile
@@ -281,5 +286,49 @@ public class MentorController {
         resetTokenRepository.deleteByEmail(email);
 
         return ResponseEntity.ok(Map.of("message", "Password reset successfully. Please log in with your new password."));
+    }
+
+    private List<Mentor> getMockMentors() {
+        java.util.List<Mentor> mockMentors = new java.util.ArrayList<>();
+        
+        Mentor m1 = new Mentor();
+        m1.setId("mock-mentor-1");
+        m1.setName("Hemanth Kumar");
+        m1.setEmail("hemanth@placementbabai.com");
+        m1.setPhone("+91 98765 43210");
+        m1.setCompany("Placement Babai");
+        m1.setRole("Founder & Lead Mentor");
+        m1.setExperience("5+ years");
+        m1.setLinkedin("https://linkedin.com");
+        m1.setSkills("Career Guidance, Resume Building, Java, System Design");
+        m1.setBio("Helping students land their dream software engineering roles through structured mentorship and placement preparation.");
+        m1.setStatus("APPROVED");
+        m1.setUsername("hemanth");
+        m1.setRating(4.9);
+        m1.setReviews(142);
+        m1.setAvatarBg("#7c3aed");
+        m1.setIsAvailable(true);
+        mockMentors.add(m1);
+
+        Mentor m2 = new Mentor();
+        m2.setId("mock-mentor-2");
+        m2.setName("Bobby");
+        m2.setEmail("bobby@placementbabai.com");
+        m2.setPhone("+91 99999 88888");
+        m2.setCompany("Google");
+        m2.setRole("Senior Software Engineer");
+        m2.setExperience("8+ years");
+        m2.setLinkedin("https://linkedin.com");
+        m2.setSkills("Algorithms, Machine Learning, Python, Scaling Systems");
+        m2.setBio("Ex-Amazon, ex-Microsoft engineer passionate about coaching aspiring devs to break into MAANG companies.");
+        m2.setStatus("APPROVED");
+        m2.setUsername("bobby");
+        m2.setRating(5.0);
+        m2.setReviews(98);
+        m2.setAvatarBg("#ec4899");
+        m2.setIsAvailable(true);
+        mockMentors.add(m2);
+
+        return mockMentors;
     }
 }

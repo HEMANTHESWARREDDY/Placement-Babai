@@ -448,13 +448,8 @@ function InterviewPrep() {
                     </div>
                     <div className="ip-hero-stat-divider" />
                     <div className="ip-hero-stat">
-                        <span className="ip-stat-number">{
-                            sessions.filter(s => {
-                                const todayStr = new Date().toISOString().split('T')[0];
-                                return s.sessionDate === todayStr && !isSessionPast(s);
-                            }).length
-                        }</span>
-                        <span className="ip-stat-label">Free Sessions Today</span>
+                        <span className="ip-stat-number">35+</span>
+                        <span className="ip-stat-label">Free Sessions Conducted</span>
                     </div>
                 </div>
             </div>

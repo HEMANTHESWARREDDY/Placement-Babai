@@ -1211,6 +1211,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             <th>ID</th>
                                             <th>Title</th>
                                             <th>Company</th>
+                                            <th>Created At</th>
                                             <th>Location</th>
                                             <th>Salary</th>
                                             <th>Type</th>
@@ -1225,6 +1226,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     <td>{job.id}</td>
                                                     <td><strong>{job.title}</strong></td>
                                                     <td>{job.company}</td>
+                                                    <td>{job.createdAt ? new Date(job.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}</td>
                                                     <td>{job.location}</td>
                                                     <td>{job.salary || job.experienceLevel || '—'}</td>
                                                     <td><span className="job-type-badge">{job.jobType}</span></td>
@@ -1244,7 +1246,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>No jobs match your search/filter criteria.</td>
+                                                <td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>No jobs match your search/filter criteria.</td>
                                             </tr>
                                         )}
                                     </tbody>

@@ -29,4 +29,21 @@ public class AtsController {
             return ResponseEntity.badRequest().body(Map.of("error", "Failed to parse document: " + e.toString()));
         }
     }
+
+    @PostMapping("/general-ats-check")
+    public ResponseEntity<?> checkGeneralAtsScore(
+            @RequestParam("resume") MultipartFile resume,
+            @RequestParam(value = "jd", required = false) String jd) {
+        System.out.println("====== checkGeneralAtsScore hit ======");
+        try {
+            Map<String, Object> response = atsService.calculateGeneralAtsScore(resume, jd);
+            if (response.containsKey("error")) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            return ResponseEntity.ok(response);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("error", "Failed to parse document: " + e.toString()));
+        }
+    }
 }

@@ -36,6 +36,8 @@ public class Job {
 
     private LocalDateTime postedDate = LocalDateTime.now();
 
+    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+
     private String skills;
 
     private String salary;

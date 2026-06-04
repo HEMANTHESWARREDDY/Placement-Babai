@@ -762,30 +762,7 @@ function JobDetail({ job, onClose }) {
                                         </>
                                     )}
 
-                                    {/* Bullet point improvements */}
-                                    {atsResult.improvements && atsResult.improvements.length > 0 && (
-                                        <div className="ats-detail-section">
-                                            <h4 className="ats-section-subtitle">💡 Before / After Resume Enhancements</h4>
-                                            <div className="ats-improvements-list">
-                                                {atsResult.improvements.map((imp, i) => (
-                                                    <div key={i} className="ats-imp-card">
-                                                        <span className="ats-imp-section-label">Section: {imp.section}</span>
-                                                        <div className="ats-imp-flow">
-                                                            <div className="ats-imp-box original">
-                                                                <span className="ats-imp-type original">Before</span>
-                                                                <p className="ats-imp-text">"{imp.original}"</p>
-                                                            </div>
-                                                            <div className="ats-imp-arrow">➔</div>
-                                                            <div className="ats-imp-box suggested">
-                                                                <span className="ats-imp-type suggested">AI Suggested (Stronger Action Verbs & Metrics)</span>
-                                                                <p className="ats-imp-text">"{imp.suggested}"</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
+
                                 </div>
 
                                 <button

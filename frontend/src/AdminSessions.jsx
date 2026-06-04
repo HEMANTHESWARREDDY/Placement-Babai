@@ -403,6 +403,8 @@ function AdminSessions() {
                             <tr>
                                 <th>Status</th>
                                 <th>Session Details</th>
+                                <th>ID</th>
+                                <th>Created At</th>
                                 <th>Date</th>
                                 <th>Schedule</th>
                                 <th>Meeting Link</th>
@@ -440,6 +442,16 @@ function AdminSessions() {
                                                 )}
                                             </div>
                                         </td>
+                                        <td data-label="ID">
+                                            <span style={{ fontSize: '0.85rem', color: '#64748b', fontFamily: 'monospace' }}>
+                                                {session.id}
+                                            </span>
+                                        </td>
+                                        <td data-label="Created At">
+                                            <span className="date-tag" style={{ background: '#f1f5f9', color: '#475569' }}>
+                                                {session.createdAt ? new Date(session.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                                            </span>
+                                        </td>
                                         <td data-label="Date"><span className="date-tag">{session.sessionDate || 'Not Set'}</span></td>
                                         <td data-label="Schedule"><span className="schedule-tag">{session.schedule || 'Flexible'}</span></td>
                                         <td data-label="Meeting Link">
@@ -473,7 +485,7 @@ function AdminSessions() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="6" className="empty-row">
+                                    <td colSpan="8" className="empty-row">
                                         {loading ? 'Loading...' : `No ${viewMode === 'active' ? 'active' : 'expired'} sessions found.`}
                                     </td>
                                 </tr>
