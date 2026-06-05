@@ -1075,7 +1075,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 </div>
                                 <div className="admin-profile-header-info">
                                     <h2>{isEditingProfile ? profileEditForm.fullName : (adminData.fullName || 'Bobby')}</h2>
-                                    <p className="admin-profile-subtitle">Administrator</p>
+                                    <p className="admin-profile-subtitle">@{isEditingProfile ? profileEditForm.username : (adminData.username || 'bobby')}</p>
                                 </div>
                             </div>
                             <div className="admin-profile-header-actions">
