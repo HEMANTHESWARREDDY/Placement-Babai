@@ -13,6 +13,27 @@ const EMPTY_SESSION = {
 };
 
 function AdminSessions() {
+    const formatDateTime = (dateVal) => {
+        if (!dateVal) return '—';
+        let str = dateVal;
+        if (typeof str === 'string' && !str.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(str)) {
+            str = str + 'Z';
+        }
+        try {
+            return new Date(str).toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch (e) {
+            return dateVal;
+        }
+    };
+
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -629,7 +650,7 @@ function AdminSessions() {
                                         </td>
                                         <td data-label="Created At">
                                             <span className="date-tag" style={{ background: '#f1f5f9', color: '#475569' }}>
-                                                {session.createdAt ? new Date(session.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                                                {formatDateTime(session.createdAt)}
                                             </span>
                                         </td>
                                         <td data-label="Date"><span className="date-tag">{session.sessionDate || 'Not Set'}</span></td>

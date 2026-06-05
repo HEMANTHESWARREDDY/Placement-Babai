@@ -5,6 +5,27 @@ import BookingModal from './BookingModal';
 import { API_BASE_URL } from './config';
 
 function MentorDashboard({ mentorAuth, onLogout }) {
+    const formatDateTime = (dateVal) => {
+        if (!dateVal) return '—';
+        let str = dateVal;
+        if (typeof str === 'string' && !str.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(str)) {
+            str = str + 'Z';
+        }
+        try {
+            return new Date(str).toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch (e) {
+            return dateVal;
+        }
+    };
+
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -813,7 +834,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         </div>
                                         <div className="b-detail">
                                             <label>Requested At</label>
-                                            <p>⏲️ {new Date(booking.createdAt).toLocaleString()}</p>
+                                            <p>⏲️ {formatDateTime(booking.createdAt)}</p>
                                         </div>
                                         {booking.meetLink && (
                                             <div className="b-detail" style={{gridColumn: 'span 2'}}>

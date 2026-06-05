@@ -91,6 +91,27 @@ const EMPTY_FORM = {
 };
 
 function AdminDashboard({ adminData, onLogout }) {
+    const formatDateTime = (dateVal) => {
+        if (!dateVal) return '—';
+        let str = dateVal;
+        if (typeof str === 'string' && !str.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(str)) {
+            str = str + 'Z';
+        }
+        try {
+            return new Date(str).toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch (e) {
+            return dateVal;
+        }
+    };
+
     const [jobs, setJobs] = useState([]);
     const [deletedJobs, setDeletedJobs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -1780,11 +1801,11 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     <td>{job.company}</td>
                                                     <td>
                                                         {jobViewMode === 'active' ? (
-                                                            job.createdAt ? new Date(job.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'
+                                                            formatDateTime(job.createdAt)
                                                         ) : jobViewMode === 'expired' ? (
                                                             job.expiryDate || '—'
                                                         ) : (
-                                                            job.deletedAt ? new Date(job.deletedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'
+                                                            formatDateTime(job.deletedAt)
                                                         )}
                                                     </td>
                                                     <td>{job.location}</td>
