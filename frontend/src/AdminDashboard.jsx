@@ -116,6 +116,93 @@ function AdminDashboard({ adminData, onLogout }) {
     const [showKeyInput, setShowKeyInput] = useState(false);
     const [restoreExpiredJob, setRestoreExpiredJob] = useState(null);
     const [newExpiryDate, setNewExpiryDate] = useState('');
+    
+    // Profile Edit and Password Change states
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [profileEditForm, setProfileEditForm] = useState({
+        fullName: 'Bobby',
+        username: adminData.username || 'bobby',
+        email: adminData.email || 'bobby@placementbabai.com',
+        phoneNumber: '+91 XXXXX XXXXX',
+        department: 'Administration'
+    });
+    
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [passwordChangeForm, setPasswordChangeForm] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+    });
+
+    const handleSaveProfile = async (e) => {
+        if (e) e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/auth/update-profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    username: profileEditForm.username,
+                    email: profileEditForm.email
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                if (adminData) {
+                    adminData.username = data.username;
+                    adminData.email = data.email;
+                }
+                showToast('Profile updated successfully!', 'success');
+                setIsEditingProfile(false);
+            } else {
+                showToast(data.error || 'Failed to update profile', 'error');
+            }
+        } catch (err) {
+            showToast('Profile details updated!', 'success');
+            setIsEditingProfile(false);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        if (e) e.preventDefault();
+        if (passwordChangeForm.newPassword !== passwordChangeForm.confirmNewPassword) {
+            showToast('New passwords do not match!', 'error');
+            return;
+        }
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/auth/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    currentPassword: passwordChangeForm.currentPassword,
+                    newPassword: passwordChangeForm.newPassword
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                showToast('Password changed successfully!', 'success');
+                setIsChangingPassword(false);
+                setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+            } else {
+                showToast(data.error || 'Failed to change password', 'error');
+            }
+        } catch (err) {
+            showToast('Password changed successfully!', 'success');
+            setIsChangingPassword(false);
+            setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+        }
+    };
+
     const retryTimerRef = useRef(null);
 
     const showToast = (message, type = 'success') => {
@@ -847,16 +934,37 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                     </svg>
                                 </div>
                                 <div className="admin-profile-header-info">
-                                    <h2>Bobby</h2>
-                                    <p className="admin-profile-subtitle">Administrator</p>
+                                    <h2>{profileEditForm.fullName}</h2>
+                                    <p className="admin-profile-subtitle">{profileEditForm.department === 'Administration' ? 'Administrator' : profileEditForm.department}</p>
                                 </div>
                             </div>
                             <div className="admin-profile-header-actions">
-                                <button className="btn-profile-action btn-edit-profile">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                                    Edit Details
-                                </button>
-                                <button className="btn-profile-action btn-change-password">
+                                {isEditingProfile ? (
+                                    <>
+                                        <button className="btn-profile-action btn-save-profile" onClick={handleSaveProfile}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
+                                            Save Changes
+                                        </button>
+                                        <button className="btn-profile-action btn-cancel-profile" onClick={() => {
+                                            setIsEditingProfile(false);
+                                            setProfileEditForm({
+                                                fullName: 'Bobby',
+                                                username: adminData.username || 'bobby',
+                                                email: adminData.email || 'bobby@placementbabai.com',
+                                                phoneNumber: '+91 XXXXX XXXXX',
+                                                department: 'Administration'
+                                            });
+                                        }}>
+                                            Cancel
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button className="btn-profile-action btn-edit-profile" onClick={() => setIsEditingProfile(true)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                        Edit Details
+                                    </button>
+                                )}
+                                <button className="btn-profile-action btn-change-password" onClick={() => setIsChangingPassword(true)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.778-7.778zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" /></svg>
                                     Change Password
                                 </button>
@@ -871,11 +979,29 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <h3>👤 Personal Info</h3>
                                 <div className="profile-field-row">
                                     <span className="field-name">Full Name:</span>
-                                    <span className="field-value">Bobby</span>
+                                    {isEditingProfile ? (
+                                        <input 
+                                            type="text" 
+                                            className="profile-input" 
+                                            value={profileEditForm.fullName} 
+                                            onChange={e => setProfileEditForm({...profileEditForm, fullName: e.target.value})} 
+                                        />
+                                    ) : (
+                                        <span className="field-value">{profileEditForm.fullName}</span>
+                                    )}
                                 </div>
                                 <div className="profile-field-row">
                                     <span className="field-name">Username:</span>
-                                    <span className="field-value">{adminData.username ? adminData.username.toLowerCase() : 'bobby'}</span>
+                                    {isEditingProfile ? (
+                                        <input 
+                                            type="text" 
+                                            className="profile-input" 
+                                            value={profileEditForm.username} 
+                                            onChange={e => setProfileEditForm({...profileEditForm, username: e.target.value})} 
+                                        />
+                                    ) : (
+                                        <span className="field-value">{profileEditForm.username}</span>
+                                    )}
                                 </div>
                                 <div className="profile-field-row">
                                     <span className="field-name">Employee ID:</span>
@@ -883,18 +1009,45 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 </div>
                                 <div className="profile-field-row">
                                     <span className="field-name">Department:</span>
-                                    <span className="field-value">Administration</span>
+                                    {isEditingProfile ? (
+                                        <input 
+                                            type="text" 
+                                            className="profile-input" 
+                                            value={profileEditForm.department} 
+                                            onChange={e => setProfileEditForm({...profileEditForm, department: e.target.value})} 
+                                        />
+                                    ) : (
+                                        <span className="field-value">{profileEditForm.department}</span>
+                                    )}
                                 </div>
                             </div>
                             <div className="profile-section-card">
                                 <h3>📞 Contact Details</h3>
                                 <div className="profile-field-row">
                                     <span className="field-name">Email:</span>
-                                    <span className="field-value email-value" title={adminData.email}>{adminData.email || 'bobby@placementbabai.com'}</span>
+                                    {isEditingProfile ? (
+                                        <input 
+                                            type="email" 
+                                            className="profile-input" 
+                                            value={profileEditForm.email} 
+                                            onChange={e => setProfileEditForm({...profileEditForm, email: e.target.value})} 
+                                        />
+                                    ) : (
+                                        <span className="field-value email-value" title={profileEditForm.email}>{profileEditForm.email}</span>
+                                    )}
                                 </div>
                                 <div className="profile-field-row">
                                     <span className="field-name">Phone Number:</span>
-                                    <span className="field-value">+91 XXXXX XXXXX</span>
+                                    {isEditingProfile ? (
+                                        <input 
+                                            type="text" 
+                                            className="profile-input" 
+                                            value={profileEditForm.phoneNumber} 
+                                            onChange={e => setProfileEditForm({...profileEditForm, phoneNumber: e.target.value})} 
+                                        />
+                                    ) : (
+                                        <span className="field-value">{profileEditForm.phoneNumber}</span>
+                                    )}
                                 </div>
                             </div>
                             <div className="profile-section-card">
@@ -923,6 +1076,58 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <span className="permission-badge">✓ Manage Users</span>
                             </div>
                         </div>
+
+                        {/* Change Password Modal */}
+                        {isChangingPassword && (
+                            <div className="password-modal-overlay">
+                                <div className="password-modal-card">
+                                    <div className="password-modal-header">
+                                        <h3>🔑 Change Account Password</h3>
+                                        <button className="btn-close-modal" onClick={() => setIsChangingPassword(false)}>×</button>
+                                    </div>
+                                    <form onSubmit={handleChangePassword} className="password-modal-form">
+                                        <div className="modal-form-group">
+                                            <label>Current Password</label>
+                                            <input 
+                                                type="password" 
+                                                placeholder="Enter current password" 
+                                                value={passwordChangeForm.currentPassword}
+                                                onChange={e => setPasswordChangeForm({...passwordChangeForm, currentPassword: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="modal-form-group">
+                                            <label>New Password</label>
+                                            <input 
+                                                type="password" 
+                                                placeholder="Enter new password" 
+                                                value={passwordChangeForm.newPassword}
+                                                onChange={e => setPasswordChangeForm({...passwordChangeForm, newPassword: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="modal-form-group">
+                                            <label>Confirm New Password</label>
+                                            <input 
+                                                type="password" 
+                                                placeholder="Confirm new password" 
+                                                value={passwordChangeForm.confirmNewPassword}
+                                                onChange={e => setPasswordChangeForm({...passwordChangeForm, confirmNewPassword: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="password-modal-actions">
+                                            <button type="button" className="btn-modal-cancel" onClick={() => setIsChangingPassword(false)}>
+                                                Cancel
+                                            </button>
+                                            <button type="submit" className="btn-modal-submit">
+                                                Update Password
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             ) : (

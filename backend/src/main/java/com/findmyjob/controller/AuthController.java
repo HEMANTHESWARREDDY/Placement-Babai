@@ -128,4 +128,107 @@ public class AuthController {
                     .body(Map.of("valid", false, "error", "Token validation failed"));
         }
     }
+
+    @PostMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, String> request) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Unauthorized"));
+            }
+
+            String token = authHeader.substring(7);
+            String currentUsername = jwtUtil.extractUsername(token);
+
+            if (!jwtUtil.validateToken(token, currentUsername)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid or expired token"));
+            }
+
+            Admin admin = adminRepository.findByUsername(currentUsername).orElse(null);
+            if (admin == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Admin not found"));
+            }
+
+            String newUsername = request.get("username");
+            String newEmail = request.get("email");
+
+            if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equals(admin.getUsername())) {
+                if (adminRepository.existsByUsername(newUsername)) {
+                    return ResponseEntity.badRequest()
+                            .body(Map.of("error", "Username already exists"));
+                }
+                admin.setUsername(newUsername);
+            }
+
+            if (newEmail != null && !newEmail.trim().isEmpty() && !newEmail.equals(admin.getEmail())) {
+                if (adminRepository.existsByEmail(newEmail)) {
+                    return ResponseEntity.badRequest()
+                            .body(Map.of("error", "Email already exists"));
+                }
+                admin.setEmail(newEmail);
+            }
+
+            adminRepository.save(admin);
+
+            // Re-generate token since username might have changed
+            String newToken = jwtUtil.generateToken(admin.getUsername());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Profile updated successfully");
+            response.put("token", newToken);
+            response.put("username", admin.getUsername());
+            response.put("email", admin.getEmail());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update profile: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, String> request) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Unauthorized"));
+            }
+
+            String token = authHeader.substring(7);
+            String username = jwtUtil.extractUsername(token);
+
+            if (!jwtUtil.validateToken(token, username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid or expired token"));
+            }
+
+            Admin admin = adminRepository.findByUsername(username).orElse(null);
+            if (admin == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Admin not found"));
+            }
+
+            String currentPassword = request.get("currentPassword");
+            String newPassword = request.get("newPassword");
+
+            if (!passwordEncoder.matches(currentPassword, admin.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Incorrect current password"));
+            }
+
+            admin.setPassword(passwordEncoder.encode(newPassword));
+            adminRepository.save(admin);
+
+            return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to change password: " + e.getMessage()));
+        }
+    }
 }
