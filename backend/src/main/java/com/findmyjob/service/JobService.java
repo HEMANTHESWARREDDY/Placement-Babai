@@ -112,7 +112,7 @@ public class JobService {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
         job.setIsDeleted(true);
-        job.setDeletedAt(java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata")));
+        job.setDeletedAt(java.time.LocalDateTime.now());
         jobRepository.save(job);
     }
 

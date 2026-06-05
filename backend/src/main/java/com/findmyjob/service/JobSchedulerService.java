@@ -95,7 +95,7 @@ public class JobSchedulerService {
                     long daysExpired = java.time.temporal.ChronoUnit.DAYS.between(sessionDate, today);
                     if (daysExpired > 30) {
                         session.setDeleted(true);
-                        session.setDeletedAt(LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata")));
+                        session.setDeletedAt(LocalDateTime.now());
                         freeSessionRepository.save(session);
                         sessionsDeletedCount++;
                         logger.info("Soft-deleted expired session with ID: {} (Expired for {} days)", session.getId(), daysExpired);
@@ -112,7 +112,7 @@ public class JobSchedulerService {
     @Scheduled(cron = "0 0 2 * * ?", zone = "Asia/Kolkata")
     public void cleanUpOldDeletedJobs() {
         logger.info("Running scheduled task to permanently delete jobs and sessions soft-deleted more than 30 days ago...");
-        LocalDateTime cutoffDate = LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata")).minusDays(30);
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(30);
 
         // 1. Clean Jobs
         try {
