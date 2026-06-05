@@ -271,10 +271,11 @@
 }
 
 .profile-field-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 140px 1fr;
     align-items: center;
     font-size: 0.95rem;
+    gap: 1rem;
 }
 
 .field-name {
@@ -285,13 +286,7 @@
 .field-value {
     font-weight: 600;
     color: #1e293b;
-}
-
-.field-value.email-value {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-all;
 }
 
 .status-badge-active {
@@ -393,6 +388,7 @@
     }
 
     .profile-field-row {
+        display: flex;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.25rem;
