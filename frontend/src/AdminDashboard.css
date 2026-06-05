@@ -271,11 +271,10 @@
 }
 
 .profile-field-row {
-    display: grid;
-    grid-template-columns: 140px 1fr;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.95rem;
-    gap: 1rem;
 }
 
 .field-name {
@@ -286,7 +285,8 @@
 .field-value {
     font-weight: 600;
     color: #1e293b;
-    word-break: break-all;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .status-badge-active {
@@ -392,6 +392,12 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.25rem;
+    }
+
+    .profile-field-row .field-value {
+        text-align: left;
+        white-space: normal;
+        word-break: break-all;
     }
 }
 
