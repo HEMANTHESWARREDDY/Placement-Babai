@@ -215,7 +215,7 @@ function AdminDashboard({ adminData, onLogout }) {
         setIsVerifyingPassword(true);
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/auth/verify-password', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/verify-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ function AdminDashboard({ adminData, onLogout }) {
         }
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/auth/update-profile', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/update-profile`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ function AdminDashboard({ adminData, onLogout }) {
         }
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/auth/change-password', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
