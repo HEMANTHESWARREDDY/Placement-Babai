@@ -112,6 +112,13 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.admin-profile-header-left {
+    display: flex;
+    align-items: center;
     gap: 1.5rem;
 }
 
@@ -142,6 +149,62 @@
     color: #64748b;
     font-size: 0.95rem;
     margin: 0;
+}
+
+/* Header Actions Styling */
+.admin-profile-header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-profile-action {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-profile {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-edit-profile:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+.btn-change-password {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-change-password:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+.btn-logout-action {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+}
+
+.btn-logout-action:hover {
+    background: #dc2626;
+    color: white;
+    border-color: #dc2626;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+    transform: translateY(-1px);
 }
 
 .admin-profile-grid {
@@ -265,6 +328,18 @@
 }
 
 @media (max-width: 900px) {
+    .admin-profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .admin-profile-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
     .admin-profile-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -272,14 +347,19 @@
 }
 
 @media (max-width: 600px) {
+    .admin-profile-header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-profile-action {
+        width: 100%;
+    }
+
     .profile-field-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.25rem;
-    }
-    
-    .btn-profile-logout {
-        width: 100%;
     }
 }
 
