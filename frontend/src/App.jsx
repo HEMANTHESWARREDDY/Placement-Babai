@@ -1558,31 +1558,7 @@ function App() {
 
           <nav className={isMobileMenuOpen ? "nav-open" : ""}>
             <ul className="nav-links">
-              {/* Mobile User/Guest Profile Badge */}
-              <li className="mobile-nav-item" style={{ margin: '0 0.5rem 1rem 0.5rem', listStyle: 'none' }}>
-                <div 
-                  className="guest-profile-badge" 
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.55rem',
-                    background: userProfile.bg,
-                    padding: '0.5rem 1rem',
-                    borderRadius: '50px',
-                    border: `1.5px solid ${userProfile.border}`,
-                    fontSize: '0.95rem',
-                    fontWeight: '600',
-                    color: userProfile.color,
-                    width: 'fit-content'
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: userProfile.iconColor }}>
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                  <span>{userProfile.label}</span>
-                </div>
-              </li>
+
               <li>
                 <a href="#home" onClick={(e) => {
                   e.preventDefault();
@@ -1670,6 +1646,20 @@ function App() {
                   Mentor Login
                 </a>
               </li>
+              <li className="mobile-nav-item">
+                <a 
+                  href="#admin-login"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentView('admin-login');
+                    setIsMobileMenuOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Admin Login
+                </a>
+              </li>
 
               {/* PC ONLY DROPDOWN MENU */}
               <li className="nav-dropdown-item pc-nav-item" ref={dropdownRef}>
@@ -1691,38 +1681,15 @@ function App() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
                       Mentor Login
                     </button>
+                    <button onClick={() => { setCurrentView('admin-login'); setShowMenuDropdown(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      Admin Login
+                    </button>
                   </div>
                 )}
               </li>
 
-              {/* PC User/Guest Profile Badge */}
-              <li className="pc-nav-item" style={{ marginLeft: '0.5rem' }}>
-                <div 
-                  className="guest-profile-badge" 
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.55rem',
-                    background: userProfile.bg,
-                    padding: '0.45rem 1rem',
-                    borderRadius: '50px',
-                    border: `1.5px solid ${userProfile.border}`,
-                    fontSize: '0.9rem',
-                    fontWeight: '600',
-                    color: userProfile.color,
-                    cursor: 'default',
-                    userSelect: 'none',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: userProfile.iconColor }}>
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                  <span>{userProfile.label}</span>
-                </div>
-              </li>
+
             </ul>
           </nav>
         </div>

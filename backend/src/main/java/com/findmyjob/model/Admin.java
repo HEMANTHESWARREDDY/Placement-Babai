@@ -26,6 +26,12 @@ public class Admin {
     @Email(message = "Invalid email format")
     private String email;
 
+    @NotBlank(message = "Full Name is required")
+    private String fullName;
+
+    @NotBlank(message = "Phone Number is required")
+    private String phoneNumber;
+
     @NotBlank(message = "Password is required")
     private String password;
 

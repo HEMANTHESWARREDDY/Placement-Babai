@@ -67,7 +67,7 @@ function AdminLogin({ onLoginSuccess, onBack }) {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="username">Username</label>
+                        <label htmlFor="username">Username or Email</label>
                         <input
                             type="text"
                             id="username"
@@ -75,7 +75,7 @@ function AdminLogin({ onLoginSuccess, onBack }) {
                             value={formData.username}
                             onChange={handleChange}
                             required
-                            placeholder="Enter username"
+                            placeholder="Enter username or email"
                         />
                     </div>
 

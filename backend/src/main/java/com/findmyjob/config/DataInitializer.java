@@ -233,15 +233,23 @@ public class DataInitializer implements CommandLineRunner {
 
 
             // Create default admin if it doesn't exist
-            if (!adminRepository.existsByUsername("Bobby")) {
+            Admin bobbyAdmin = adminRepository.findByUsername("Bobby").orElse(null);
+            if (bobbyAdmin == null) {
                 Admin admin = new Admin();
                 admin.setUsername("Bobby");
                 admin.setEmail("bobby@placementbabai.com");
+                admin.setFullName("Bobby");
+                admin.setPhoneNumber("+91 99999 99999");
                 admin.setPassword(passwordEncoder.encode("PlacementBabai@14"));
                 admin.setCreatedAt(LocalDateTime.now());
                 adminRepository.save(admin);
                 System.out.println("✅ Default admin created: username=Bobby, password=PlacementBabai@14");
             } else {
+                if (bobbyAdmin.getFullName() == null || bobbyAdmin.getPhoneNumber() == null) {
+                    bobbyAdmin.setFullName("Bobby");
+                    bobbyAdmin.setPhoneNumber("+91 99999 99999");
+                    adminRepository.save(bobbyAdmin);
+                }
                 System.out.println("ℹ️ Bobby admin user already exists.");
             }
         } catch (Exception e) {

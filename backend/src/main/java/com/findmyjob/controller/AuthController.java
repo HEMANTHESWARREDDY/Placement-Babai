@@ -68,13 +68,15 @@ public class AuthController {
             String username = credentials.get("username");
             String password = credentials.get("password");
 
-            // Find admin by username
-            Admin admin = adminRepository.findByUsername(username)
-                    .orElse(null);
+            // Find admin by username OR email
+            Admin admin = adminRepository.findByUsername(username).orElse(null);
+            if (admin == null) {
+                admin = adminRepository.findByEmail(username).orElse(null);
+            }
 
             if (admin == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("error", "Invalid username or password"));
+                        .body(Map.of("error", "Invalid username/email or password"));
             }
 
             // Verify password
@@ -229,6 +231,40 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Failed to change password: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, String> request) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Unauthorized"));
+            }
+
+            String token = authHeader.substring(7);
+            String username = jwtUtil.extractUsername(token);
+
+            if (!jwtUtil.validateToken(token, username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid or expired token"));
+            }
+
+            Admin admin = adminRepository.findByUsername(username).orElse(null);
+            if (admin == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Admin not found"));
+            }
+
+            String currentPassword = request.get("currentPassword");
+            boolean matches = passwordEncoder.matches(currentPassword, admin.getPassword());
+
+            return ResponseEntity.ok(Map.of("valid", matches));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Verification failed: " + e.getMessage()));
         }
     }
 }

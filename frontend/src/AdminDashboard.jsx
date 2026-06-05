@@ -150,6 +150,10 @@ function AdminDashboard({ adminData, onLogout }) {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    const [isCurrentPasswordVerified, setIsCurrentPasswordVerified] = useState(false);
+    const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
+    const passwordVerifyTimeoutRef = useRef(null);
+
     const [profileErrors, setProfileErrors] = useState({});
     const [passwordErrors, setPasswordErrors] = useState({});
 
@@ -183,14 +187,55 @@ function AdminDashboard({ adminData, onLogout }) {
         if (!passwordChangeForm.currentPassword) {
             errors.currentPassword = 'Current password is required';
         }
-        if (!passwordChangeForm.newPassword || passwordChangeForm.newPassword.length < 6) {
-            errors.newPassword = 'New password must be at least 6 characters';
+        
+        const newPassword = passwordChangeForm.newPassword || '';
+        if (newPassword.length < 7) {
+            errors.newPassword = 'Password must be at least 7 characters';
+        } else if (!/[A-Z]/.test(newPassword)) {
+            errors.newPassword = 'Password must contain at least one capital letter';
+        } else if (!/[0-9]/.test(newPassword)) {
+            errors.newPassword = 'Password must contain at least one number';
+        } else if (!/[^A-Za-z0-9]/.test(newPassword)) {
+            errors.newPassword = 'Password must contain at least one symbol';
         }
+
         if (passwordChangeForm.newPassword !== passwordChangeForm.confirmNewPassword) {
             errors.confirmNewPassword = 'Passwords do not match';
         }
         setPasswordErrors(errors);
         return Object.keys(errors).length === 0;
+    };
+
+    const verifyCurrentPassword = async (passwordVal) => {
+        if (!passwordVal) {
+            setPasswordErrors(prev => ({ ...prev, currentPassword: null }));
+            setIsCurrentPasswordVerified(false);
+            return;
+        }
+        setIsVerifyingPassword(true);
+        try {
+            const token = localStorage.getItem('adminToken');
+            const response = await fetch('http://localhost:8080/api/auth/verify-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ currentPassword: passwordVal })
+            });
+            const data = await response.json();
+            if (response.ok && data.valid) {
+                setIsCurrentPasswordVerified(true);
+                setPasswordErrors(prev => ({ ...prev, currentPassword: null }));
+            } else {
+                setIsCurrentPasswordVerified(false);
+                setPasswordErrors(prev => ({ ...prev, currentPassword: "entered password is not this account's password" }));
+            }
+        } catch (err) {
+            setIsCurrentPasswordVerified(false);
+        } finally {
+            setIsVerifyingPassword(false);
+        }
     };
 
     const handleSaveProfile = async (e) => {
@@ -200,7 +245,7 @@ function AdminDashboard({ adminData, onLogout }) {
             return;
         }
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('adminToken');
             const response = await fetch('http://localhost:8080/api/auth/update-profile', {
                 method: 'POST',
                 headers: {
@@ -215,7 +260,7 @@ function AdminDashboard({ adminData, onLogout }) {
 
             const data = await response.json();
             if (response.ok) {
-                localStorage.setItem('token', data.token);
+                localStorage.setItem('adminToken', data.token);
                 if (adminData) {
                     adminData.username = data.username;
                     adminData.email = data.email;
@@ -240,7 +285,7 @@ function AdminDashboard({ adminData, onLogout }) {
             return;
         }
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('adminToken');
             const response = await fetch('http://localhost:8080/api/auth/change-password', {
                 method: 'POST',
                 headers: {
@@ -262,17 +307,16 @@ function AdminDashboard({ adminData, onLogout }) {
                 setShowCurrentPassword(false);
                 setShowNewPassword(false);
                 setShowConfirmPassword(false);
+                setIsCurrentPasswordVerified(false);
             } else {
-                showToast(data.error || 'Failed to change password', 'error');
+                if (data.error && data.error.includes("Incorrect current password")) {
+                    setPasswordErrors(prev => ({ ...prev, currentPassword: "entered password is not this account's password" }));
+                } else {
+                    showToast(data.error || 'Failed to change password', 'error');
+                }
             }
         } catch (err) {
-            showToast('Password changed successfully!', 'success');
-            setIsChangingPassword(false);
-            setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
-            setPasswordErrors({});
-            setShowCurrentPassword(false);
-            setShowNewPassword(false);
-            setShowConfirmPassword(false);
+            showToast('Failed to connect to authentication server', 'error');
         }
     };
 
@@ -980,7 +1024,6 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
-                                <span>Admin: {adminData.username}</span>
                             </button>
                         </div>
                     </div>
@@ -1181,6 +1224,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             setShowCurrentPassword(false);
                                             setShowNewPassword(false);
                                             setShowConfirmPassword(false);
+                                            setIsCurrentPasswordVerified(false);
                                         }}>×</button>
                                     </div>
                                     <form onSubmit={handleChangePassword} className="password-modal-form">
@@ -1192,7 +1236,20 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     className={passwordErrors.currentPassword ? 'input-error' : ''}
                                                     placeholder="Enter current password" 
                                                     value={passwordChangeForm.currentPassword}
-                                                    onChange={e => setPasswordChangeForm({...passwordChangeForm, currentPassword: e.target.value})}
+                                                    onChange={e => {
+                                                        const val = e.target.value;
+                                                        setPasswordChangeForm({...passwordChangeForm, currentPassword: val});
+                                                        if (passwordVerifyTimeoutRef.current) {
+                                                            clearTimeout(passwordVerifyTimeoutRef.current);
+                                                        }
+                                                        setPasswordErrors(prev => ({ ...prev, currentPassword: null }));
+                                                        setIsCurrentPasswordVerified(false);
+                                                        if (val.trim()) {
+                                                            passwordVerifyTimeoutRef.current = setTimeout(() => {
+                                                                verifyCurrentPassword(val);
+                                                            }, 500);
+                                                        }
+                                                    }}
                                                     required 
                                                 />
                                                 <button 
@@ -1202,9 +1259,9 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     aria-label="Toggle Password Visibility"
                                                 >
                                                     {showCurrentPassword ? (
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                                                    ) : (
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                                                     )}
                                                 </button>
                                             </div>
@@ -1218,19 +1275,26 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     className={passwordErrors.newPassword ? 'input-error' : ''}
                                                     placeholder="Enter new password" 
                                                     value={passwordChangeForm.newPassword}
-                                                    onChange={e => setPasswordChangeForm({...passwordChangeForm, newPassword: e.target.value})}
+                                                    onChange={e => {
+                                                        setPasswordChangeForm({...passwordChangeForm, newPassword: e.target.value});
+                                                        if (passwordErrors.newPassword) {
+                                                            setPasswordErrors(prev => ({ ...prev, newPassword: null }));
+                                                        }
+                                                    }}
+                                                    disabled={!isCurrentPasswordVerified}
                                                     required 
                                                 />
                                                 <button 
                                                     type="button" 
                                                     className="password-toggle-btn" 
                                                     onClick={() => setShowNewPassword(!showNewPassword)}
+                                                    disabled={!isCurrentPasswordVerified}
                                                     aria-label="Toggle Password Visibility"
                                                 >
                                                     {showNewPassword ? (
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                                                    ) : (
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                                                     )}
                                                 </button>
                                             </div>
@@ -1244,19 +1308,26 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     className={passwordErrors.confirmNewPassword ? 'input-error' : ''}
                                                     placeholder="Confirm new password" 
                                                     value={passwordChangeForm.confirmNewPassword}
-                                                    onChange={e => setPasswordChangeForm({...passwordChangeForm, confirmNewPassword: e.target.value})}
+                                                    onChange={e => {
+                                                        setPasswordChangeForm({...passwordChangeForm, confirmNewPassword: e.target.value});
+                                                        if (passwordErrors.confirmNewPassword) {
+                                                            setPasswordErrors(prev => ({ ...prev, confirmNewPassword: null }));
+                                                        }
+                                                    }}
+                                                    disabled={!isCurrentPasswordVerified}
                                                     required 
                                                 />
                                                 <button 
                                                     type="button" 
                                                     className="password-toggle-btn" 
                                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    disabled={!isCurrentPasswordVerified}
                                                     aria-label="Toggle Password Visibility"
                                                 >
                                                     {showConfirmPassword ? (
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                                                    ) : (
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                                                     )}
                                                 </button>
                                             </div>
@@ -1269,10 +1340,11 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                 setShowCurrentPassword(false);
                                                 setShowNewPassword(false);
                                                 setShowConfirmPassword(false);
+                                                setIsCurrentPasswordVerified(false);
                                             }}>
                                                 Cancel
                                             </button>
-                                            <button type="submit" className="btn-modal-submit">
+                                            <button type="submit" className="btn-modal-submit" disabled={!isCurrentPasswordVerified}>
                                                 Update Password
                                             </button>
                                         </div>
