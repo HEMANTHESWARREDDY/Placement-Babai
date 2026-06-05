@@ -845,21 +845,66 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
                             </div>
-                            <h2>Account Information</h2>
-                            <p className="admin-profile-subtitle">Manage your administrator account details</p>
+                            <div className="admin-profile-header-info">
+                                <h2>Bobby</h2>
+                                <p className="admin-profile-subtitle">Administrator</p>
+                            </div>
                         </div>
-                        <div className="admin-profile-details-grid">
-                            <div className="profile-detail-item">
-                                <span className="detail-label">Account Role:</span>
-                                <span className="detail-value role-badge-large">Administrator</span>
+                        <div className="admin-profile-grid">
+                            <div className="profile-section-card">
+                                <h3>👤 Personal Info</h3>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Full Name:</span>
+                                    <span className="field-value">Bobby</span>
+                                </div>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Username:</span>
+                                    <span className="field-value">{adminData.username ? adminData.username.toLowerCase() : 'bobby'}</span>
+                                </div>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Employee ID:</span>
+                                    <span className="field-value">ADM001</span>
+                                </div>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Department:</span>
+                                    <span className="field-value">Administration</span>
+                                </div>
                             </div>
-                            <div className="profile-detail-item">
-                                <span className="detail-label">Username:</span>
-                                <span className="detail-value">{adminData.username}</span>
+                            <div className="profile-section-card">
+                                <h3>📞 Contact Details</h3>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Email:</span>
+                                    <span className="field-value email-value" title={adminData.email}>{adminData.email || 'bobby@placementbabai.com'}</span>
+                                </div>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Phone Number:</span>
+                                    <span className="field-value">+91 XXXXX XXXXX</span>
+                                </div>
                             </div>
-                            <div className="profile-detail-item">
-                                <span className="detail-label">Email Address:</span>
-                                <span className="detail-value email-value" title={adminData.email}>{adminData.email || 'N/A'}</span>
+                            <div className="profile-section-card">
+                                <h3>⚙️ Account Status</h3>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Status:</span>
+                                    <span className="field-value status-badge-active">Active</span>
+                                </div>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Joined On:</span>
+                                    <span className="field-value">01 Jan 2025</span>
+                                </div>
+                                <div className="profile-field-row">
+                                    <span className="field-name">Last Login:</span>
+                                    <span className="field-value">05 Jun 2026, 10:30 AM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="profile-permissions-card">
+                            <h3>🔑 Assigned Permissions</h3>
+                            <div className="permissions-badge-list">
+                                <span className="permission-badge">✓ Manage Jobs</span>
+                                <span className="permission-badge">✓ Manage Mentors</span>
+                                <span className="permission-badge">✓ Manage Free Sessions</span>
+                                <span className="permission-badge">✓ View Analytics</span>
+                                <span className="permission-badge">✓ Manage Users</span>
                             </div>
                         </div>
                         <div className="admin-profile-actions">
