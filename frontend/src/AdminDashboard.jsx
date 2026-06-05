@@ -121,10 +121,10 @@ function AdminDashboard({ adminData, onLogout }) {
     const [profilePicture, setProfilePicture] = useState('');
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [profileEditForm, setProfileEditForm] = useState({
-        fullName: 'Bobby',
+        fullName: adminData.fullName || 'Bobby',
         username: adminData.username || 'bobby',
         email: adminData.email || 'bobby@placementbabai.com',
-        phoneNumber: '+91 XXXXX XXXXX',
+        phoneNumber: adminData.phoneNumber || '+91 99999 99999',
         department: 'Administration'
     });
     
@@ -254,16 +254,24 @@ function AdminDashboard({ adminData, onLogout }) {
                 },
                 body: JSON.stringify({
                     username: profileEditForm.username,
-                    email: profileEditForm.email
+                    email: profileEditForm.email,
+                    fullName: profileEditForm.fullName,
+                    phoneNumber: profileEditForm.phoneNumber
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminUsername', data.username);
+                localStorage.setItem('adminEmail', data.email);
+                localStorage.setItem('adminFullName', data.fullName);
+                localStorage.setItem('adminPhoneNumber', data.phoneNumber);
                 if (adminData) {
                     adminData.username = data.username;
                     adminData.email = data.email;
+                    adminData.fullName = data.fullName;
+                    adminData.phoneNumber = data.phoneNumber;
                 }
                 showToast('Profile updated successfully!', 'success');
                 setIsEditingProfile(false);
@@ -1066,7 +1074,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                     )}
                                 </div>
                                 <div className="admin-profile-header-info">
-                                    <h2>{profileEditForm.fullName}</h2>
+                                    <h2>{isEditingProfile ? profileEditForm.fullName : (adminData.fullName || 'Bobby')}</h2>
                                     <p className="admin-profile-subtitle">Administrator</p>
                                 </div>
                             </div>
@@ -1080,10 +1088,10 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                         <button className="btn-profile-action btn-cancel-profile" onClick={() => {
                                             setIsEditingProfile(false);
                                             setProfileEditForm({
-                                                fullName: 'Bobby',
+                                                fullName: adminData.fullName || 'Bobby',
                                                 username: adminData.username || 'bobby',
                                                 email: adminData.email || 'bobby@placementbabai.com',
-                                                phoneNumber: '+91 XXXXX XXXXX',
+                                                phoneNumber: adminData.phoneNumber || '+91 99999 99999',
                                                 department: 'Administration'
                                             });
                                         }}>
@@ -1091,7 +1099,16 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                         </button>
                                     </>
                                 ) : (
-                                    <button className="btn-profile-action btn-edit-profile" onClick={() => setIsEditingProfile(true)}>
+                                    <button className="btn-profile-action btn-edit-profile" onClick={() => {
+                                         setProfileEditForm({
+                                             fullName: adminData.fullName || 'Bobby',
+                                             username: adminData.username || 'bobby',
+                                             email: adminData.email || 'bobby@placementbabai.com',
+                                             phoneNumber: adminData.phoneNumber || '+91 99999 99999',
+                                             department: 'Administration'
+                                         });
+                                         setIsEditingProfile(true);
+                                     }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
                                         Edit Details
                                     </button>
@@ -1122,7 +1139,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             {profileErrors.fullName && <span className="profile-error-msg">{profileErrors.fullName}</span>}
                                         </div>
                                     ) : (
-                                        <span className="field-value">{profileEditForm.fullName}</span>
+                                        <span className="field-value">{adminData.fullName || 'Bobby'}</span>
                                     )}
                                 </div>
                                 <div className="profile-field-row">
@@ -1138,7 +1155,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             {profileErrors.username && <span className="profile-error-msg">{profileErrors.username}</span>}
                                         </div>
                                     ) : (
-                                        <span className="field-value">{profileEditForm.username}</span>
+                                        <span className="field-value">{adminData.username || 'bobby'}</span>
                                     )}
                                 </div>
                                 <div className="profile-field-row">
@@ -1165,7 +1182,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             {profileErrors.email && <span className="profile-error-msg">{profileErrors.email}</span>}
                                         </div>
                                     ) : (
-                                        <span className="field-value email-value" title={profileEditForm.email}>{profileEditForm.email}</span>
+                                        <span className="field-value email-value" title={adminData.email}>{adminData.email || 'bobby@placementbabai.com'}</span>
                                     )}
                                 </div>
                                 <div className="profile-field-row">
@@ -1181,7 +1198,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             {profileErrors.phoneNumber && <span className="profile-error-msg">{profileErrors.phoneNumber}</span>}
                                         </div>
                                     ) : (
-                                        <span className="field-value">{profileEditForm.phoneNumber}</span>
+                                        <span className="field-value">{adminData.phoneNumber || '+91 99999 99999'}</span>
                                     )}
                                 </div>
                             </div>

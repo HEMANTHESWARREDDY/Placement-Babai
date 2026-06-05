@@ -96,7 +96,9 @@ function App() {
     const token = localStorage.getItem('adminToken');
     const username = localStorage.getItem('adminUsername');
     const email = localStorage.getItem('adminEmail');
-    return token ? { token, username, email } : null;
+    const fullName = localStorage.getItem('adminFullName');
+    const phoneNumber = localStorage.getItem('adminPhoneNumber');
+    return token ? { token, username, email, fullName, phoneNumber } : null;
   });
   const [mentorData, setMentorData] = useState(() => {
     const token = localStorage.getItem('mentorToken');
@@ -890,6 +892,8 @@ function App() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUsername');
     localStorage.removeItem('adminEmail');
+    localStorage.removeItem('adminFullName');
+    localStorage.removeItem('adminPhoneNumber');
     setAdminData(null);
     setCurrentView('home');
   };

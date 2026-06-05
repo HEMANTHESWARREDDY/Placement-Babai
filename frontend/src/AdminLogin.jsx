@@ -43,6 +43,8 @@ function AdminLogin({ onLoginSuccess, onBack }) {
             localStorage.setItem('adminToken', data.token);
             localStorage.setItem('adminUsername', data.username);
             localStorage.setItem('adminEmail', data.email);
+            localStorage.setItem('adminFullName', data.fullName);
+            localStorage.setItem('adminPhoneNumber', data.phoneNumber);
 
             onLoginSuccess(data);
         } catch (err) {

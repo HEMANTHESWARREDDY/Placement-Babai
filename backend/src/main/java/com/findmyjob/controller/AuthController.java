@@ -157,23 +157,49 @@ public class AuthController {
 
             String newUsername = request.get("username");
             String newEmail = request.get("email");
+            String newFullName = request.get("fullName");
+            String newPhoneNumber = request.get("phoneNumber");
 
-            if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equals(admin.getUsername())) {
-                if (adminRepository.existsByUsername(newUsername)) {
-                    return ResponseEntity.badRequest()
-                            .body(Map.of("error", "Username already exists"));
-                }
-                admin.setUsername(newUsername);
+            // Full Name Validation
+            if (newFullName == null || newFullName.trim().length() < 2 || !newFullName.trim().matches("^[a-zA-Z\\s]+$")) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Full Name must be at least 2 characters and contain only letters"));
             }
 
-            if (newEmail != null && !newEmail.trim().isEmpty() && !newEmail.equals(admin.getEmail())) {
-                if (adminRepository.existsByEmail(newEmail)) {
-                    return ResponseEntity.badRequest()
-                            .body(Map.of("error", "Email already exists"));
-                }
-                admin.setEmail(newEmail);
+            // Username Validation
+            if (newUsername == null || !newUsername.matches("^[a-zA-Z0-9_]{3,20}$")) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Username must be 3-20 alphanumeric characters or underscores"));
+            }
+            if (!newUsername.equals(admin.getUsername()) && adminRepository.existsByUsername(newUsername)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Username already exists"));
             }
 
+            // Email Validation
+            if (newEmail == null || !newEmail.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Invalid email format"));
+            }
+            if (!newEmail.equals(admin.getEmail()) && adminRepository.existsByEmail(newEmail)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Email already exists"));
+            }
+
+            // Phone Number Validation
+            if (newPhoneNumber == null || !newPhoneNumber.matches("^\\+?[0-9\\s\\-X]{10,20}$")) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Invalid phone number format (at least 10 digits)"));
+            }
+            if (!newPhoneNumber.equals(admin.getPhoneNumber()) && adminRepository.existsByPhoneNumber(newPhoneNumber)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Phone Number already exists"));
+            }
+
+            admin.setUsername(newUsername);
+            admin.setEmail(newEmail);
+            admin.setFullName(newFullName);
+            admin.setPhoneNumber(newPhoneNumber);
             adminRepository.save(admin);
 
             // Re-generate token since username might have changed
@@ -184,6 +210,8 @@ public class AuthController {
             response.put("token", newToken);
             response.put("username", admin.getUsername());
             response.put("email", admin.getEmail());
+            response.put("fullName", admin.getFullName());
+            response.put("phoneNumber", admin.getPhoneNumber());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
