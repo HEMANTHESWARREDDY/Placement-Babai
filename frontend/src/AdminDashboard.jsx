@@ -848,22 +848,18 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                             <h2>Account Information</h2>
                             <p className="admin-profile-subtitle">Manage your administrator account details</p>
                         </div>
-                        <div className="admin-profile-details">
-                            <div className="profile-detail-row">
-                                <span className="detail-label">Account Role</span>
+                        <div className="admin-profile-details-grid">
+                            <div className="profile-detail-item">
+                                <span className="detail-label">Account Role:</span>
                                 <span className="detail-value role-badge-large">Administrator</span>
                             </div>
-                            <div className="profile-detail-row">
-                                <span className="detail-label">Username</span>
+                            <div className="profile-detail-item">
+                                <span className="detail-label">Username:</span>
                                 <span className="detail-value">{adminData.username}</span>
                             </div>
-                            <div className="profile-detail-row">
-                                <span className="detail-label">Email Address</span>
-                                <span className="detail-value">{adminData.email || 'N/A'}</span>
-                            </div>
-                            <div className="profile-detail-row">
-                                <span className="detail-label">Account Status</span>
-                                <span className="detail-value status-active">Active</span>
+                            <div className="profile-detail-item">
+                                <span className="detail-label">Email Address:</span>
+                                <span className="detail-value email-value" title={adminData.email}>{adminData.email || 'N/A'}</span>
                             </div>
                         </div>
                         <div className="admin-profile-actions">

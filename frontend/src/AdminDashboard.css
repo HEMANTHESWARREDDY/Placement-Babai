@@ -139,41 +139,43 @@
     margin: 0;
 }
 
-.admin-profile-details {
+.admin-profile-details-grid {
     background: #f8fafc;
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 1.75rem;
     margin-bottom: 2.5rem;
     border: 1px solid #e2e8f0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
     text-align: left;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
 }
 
-.profile-detail-row {
+.profile-detail-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-bottom: 1rem;
-    border-bottom: 1px dashed #e2e8f0;
+    gap: 0.75rem;
+    border-right: 1px dashed #cbd5e1;
+    padding-right: 1.5rem;
 }
 
-.profile-detail-row:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
+.profile-detail-item:last-child {
+    border-right: none;
+    padding-right: 0;
 }
 
 .detail-label {
-    font-weight: 600;
+    font-weight: 700;
     color: #475569;
     font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .detail-value {
     font-weight: 600;
     color: #1e293b;
     font-size: 0.95rem;
+    word-break: break-all;
 }
 
 .role-badge-large {
@@ -184,16 +186,6 @@
     font-size: 0.8rem;
     font-weight: 700;
     border: 1.5px solid #ddd6fe;
-}
-
-.status-active {
-    background: #ecfdf5;
-    color: #10b981;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    border: 1.5px solid #a7f3d0;
 }
 
 .admin-profile-actions {
@@ -223,14 +215,29 @@
     box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);
 }
 
-@media (max-width: 600px) {
-    .profile-detail-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+@media (max-width: 900px) {
+    .admin-profile-details-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
-    .profile-detail-row:last-child {
+    .profile-detail-item {
+        border-right: none;
+        border-bottom: 1px dashed #cbd5e1;
+        padding-right: 0;
+        padding-bottom: 1rem;
+    }
+    
+    .profile-detail-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 0.5rem;
     }
     
