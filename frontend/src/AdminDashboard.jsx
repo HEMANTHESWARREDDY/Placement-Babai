@@ -117,20 +117,6 @@ function AdminDashboard({ adminData, onLogout }) {
     const [restoreExpiredJob, setRestoreExpiredJob] = useState(null);
     const [newExpiryDate, setNewExpiryDate] = useState('');
     const retryTimerRef = useRef(null);
-    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-    const profileDropdownRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
-                setShowProfileDropdown(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
@@ -816,14 +802,14 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                         >
                             🎁 Free Sessions
                         </button>
-                        <div className="admin-profile-container" ref={profileDropdownRef} style={{ position: 'relative' }}>
+                        <div className="admin-profile-container">
                             <button 
-                                className="admin-profile-badge clickable" 
-                                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                                className={`admin-profile-badge clickable ${activeTab === 'profile' ? 'active' : ''}`}
+                                onClick={() => changeTab('profile')}
                                 style={{
                                     cursor: 'pointer',
                                     border: '1.5px solid rgba(255, 255, 255, 0.35)',
-                                    background: showProfileDropdown ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.15)',
+                                    background: activeTab === 'profile' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.15)',
                                     outline: 'none',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -835,35 +821,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
                                 <span>Admin: {adminData.username}</span>
-                                <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.2rem', transform: showProfileDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
                             </button>
-                            {showProfileDropdown && (
-                                <div className="admin-profile-dropdown">
-                                    <div className="admin-profile-dropdown-header">
-                                        <h4>Account Details</h4>
-                                    </div>
-                                    <div className="admin-profile-dropdown-body">
-                                        <div className="info-row">
-                                            <span className="info-label">Role:</span>
-                                            <span className="info-value role-tag">Administrator</span>
-                                        </div>
-                                        <div className="info-row">
-                                            <span className="info-label">Username:</span>
-                                            <span className="info-value">{adminData.username}</span>
-                                        </div>
-                                        <div className="info-row">
-                                            <span className="info-label">Email:</span>
-                                            <span className="info-value email-value" title={adminData.email}>{adminData.email || 'N/A'}</span>
-                                        </div>
-                                    </div>
-                                    <div className="admin-profile-dropdown-footer">
-                                        <button className="btn-logout-dropdown" onClick={onLogout}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
-                                            Logout
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -877,6 +835,45 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                 <AdminBookings />
             ) : activeTab === 'free-sessions' ? (
                 <AdminSessions />
+            ) : activeTab === 'profile' ? (
+                <div className="admin-profile-page-container">
+                    <div className="admin-profile-card">
+                        <div className="admin-profile-header">
+                            <div className="admin-profile-avatar-large">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#7c3aed' }}>
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </div>
+                            <h2>Account Information</h2>
+                            <p className="admin-profile-subtitle">Manage your administrator account details</p>
+                        </div>
+                        <div className="admin-profile-details">
+                            <div className="profile-detail-row">
+                                <span className="detail-label">Account Role</span>
+                                <span className="detail-value role-badge-large">Administrator</span>
+                            </div>
+                            <div className="profile-detail-row">
+                                <span className="detail-label">Username</span>
+                                <span className="detail-value">{adminData.username}</span>
+                            </div>
+                            <div className="profile-detail-row">
+                                <span className="detail-label">Email Address</span>
+                                <span className="detail-value">{adminData.email || 'N/A'}</span>
+                            </div>
+                            <div className="profile-detail-row">
+                                <span className="detail-label">Account Status</span>
+                                <span className="detail-value status-active">Active</span>
+                            </div>
+                        </div>
+                        <div className="admin-profile-actions">
+                            <button className="btn-profile-logout" onClick={onLogout}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                                Logout from Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
             ) : (
                 <>
                     {/* Job Form */}
