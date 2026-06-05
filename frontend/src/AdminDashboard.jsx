@@ -146,8 +146,55 @@ function AdminDashboard({ adminData, onLogout }) {
         confirmNewPassword: ''
     });
 
+    const [profileErrors, setProfileErrors] = useState({});
+    const [passwordErrors, setPasswordErrors] = useState({});
+
+    const validateProfile = () => {
+        const errors = {};
+        if (!profileEditForm.fullName || profileEditForm.fullName.trim().length < 2) {
+            errors.fullName = 'Full Name must be at least 2 characters';
+        }
+        
+        const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+        if (!profileEditForm.username || !usernameRegex.test(profileEditForm.username)) {
+            errors.username = 'Username must be 3-20 alphanumeric characters or underscores';
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!profileEditForm.email || !emailRegex.test(profileEditForm.email)) {
+            errors.email = 'Please enter a valid email address';
+        }
+
+        const phoneRegex = /^(\+?[0-9\s\-X]{10,20})$/;
+        if (!profileEditForm.phoneNumber || !phoneRegex.test(profileEditForm.phoneNumber)) {
+            errors.phoneNumber = 'Please enter a valid phone number (at least 10 chars)';
+        }
+
+        setProfileErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const validatePassword = () => {
+        const errors = {};
+        if (!passwordChangeForm.currentPassword) {
+            errors.currentPassword = 'Current password is required';
+        }
+        if (!passwordChangeForm.newPassword || passwordChangeForm.newPassword.length < 6) {
+            errors.newPassword = 'New password must be at least 6 characters';
+        }
+        if (passwordChangeForm.newPassword !== passwordChangeForm.confirmNewPassword) {
+            errors.confirmNewPassword = 'Passwords do not match';
+        }
+        setPasswordErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSaveProfile = async (e) => {
         if (e) e.preventDefault();
+        if (!validateProfile()) {
+            showToast('Please fix the validation errors.', 'error');
+            return;
+        }
         try {
             const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:8080/api/auth/update-profile', {
@@ -171,19 +218,21 @@ function AdminDashboard({ adminData, onLogout }) {
                 }
                 showToast('Profile updated successfully!', 'success');
                 setIsEditingProfile(false);
+                setProfileErrors({});
             } else {
                 showToast(data.error || 'Failed to update profile', 'error');
             }
         } catch (err) {
             showToast('Profile details updated!', 'success');
             setIsEditingProfile(false);
+            setProfileErrors({});
         }
     };
 
     const handleChangePassword = async (e) => {
         if (e) e.preventDefault();
-        if (passwordChangeForm.newPassword !== passwordChangeForm.confirmNewPassword) {
-            showToast('New passwords do not match!', 'error');
+        if (!validatePassword()) {
+            showToast('Please fix the validation errors.', 'error');
             return;
         }
         try {
@@ -205,6 +254,7 @@ function AdminDashboard({ adminData, onLogout }) {
                 showToast('Password changed successfully!', 'success');
                 setIsChangingPassword(false);
                 setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+                setPasswordErrors({});
             } else {
                 showToast(data.error || 'Failed to change password', 'error');
             }
@@ -212,6 +262,7 @@ function AdminDashboard({ adminData, onLogout }) {
             showToast('Password changed successfully!', 'success');
             setIsChangingPassword(false);
             setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+            setPasswordErrors({});
         }
     };
 
@@ -1008,12 +1059,15 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <div className="profile-field-row">
                                     <span className="field-name">Full Name:</span>
                                     {isEditingProfile ? (
-                                        <input 
-                                            type="text" 
-                                            className="profile-input" 
-                                            value={profileEditForm.fullName} 
-                                            onChange={e => setProfileEditForm({...profileEditForm, fullName: e.target.value})} 
-                                        />
+                                        <div className="profile-input-wrapper">
+                                            <input 
+                                                type="text" 
+                                                className={`profile-input ${profileErrors.fullName ? 'input-error' : ''}`}
+                                                value={profileEditForm.fullName} 
+                                                onChange={e => setProfileEditForm({...profileEditForm, fullName: e.target.value})} 
+                                            />
+                                            {profileErrors.fullName && <span className="profile-error-msg">{profileErrors.fullName}</span>}
+                                        </div>
                                     ) : (
                                         <span className="field-value">{profileEditForm.fullName}</span>
                                     )}
@@ -1021,12 +1075,15 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <div className="profile-field-row">
                                     <span className="field-name">Username:</span>
                                     {isEditingProfile ? (
-                                        <input 
-                                            type="text" 
-                                            className="profile-input" 
-                                            value={profileEditForm.username} 
-                                            onChange={e => setProfileEditForm({...profileEditForm, username: e.target.value})} 
-                                        />
+                                        <div className="profile-input-wrapper">
+                                            <input 
+                                                type="text" 
+                                                className={`profile-input ${profileErrors.username ? 'input-error' : ''}`}
+                                                value={profileEditForm.username} 
+                                                onChange={e => setProfileEditForm({...profileEditForm, username: e.target.value})} 
+                                            />
+                                            {profileErrors.username && <span className="profile-error-msg">{profileErrors.username}</span>}
+                                        </div>
                                     ) : (
                                         <span className="field-value">{profileEditForm.username}</span>
                                     )}
@@ -1045,12 +1102,15 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <div className="profile-field-row">
                                     <span className="field-name">Email:</span>
                                     {isEditingProfile ? (
-                                        <input 
-                                            type="email" 
-                                            className="profile-input" 
-                                            value={profileEditForm.email} 
-                                            onChange={e => setProfileEditForm({...profileEditForm, email: e.target.value})} 
-                                        />
+                                        <div className="profile-input-wrapper">
+                                            <input 
+                                                type="email" 
+                                                className={`profile-input ${profileErrors.email ? 'input-error' : ''}`}
+                                                value={profileEditForm.email} 
+                                                onChange={e => setProfileEditForm({...profileEditForm, email: e.target.value})} 
+                                            />
+                                            {profileErrors.email && <span className="profile-error-msg">{profileErrors.email}</span>}
+                                        </div>
                                     ) : (
                                         <span className="field-value email-value" title={profileEditForm.email}>{profileEditForm.email}</span>
                                     )}
@@ -1058,12 +1118,15 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <div className="profile-field-row">
                                     <span className="field-name">Phone Number:</span>
                                     {isEditingProfile ? (
-                                        <input 
-                                            type="text" 
-                                            className="profile-input" 
-                                            value={profileEditForm.phoneNumber} 
-                                            onChange={e => setProfileEditForm({...profileEditForm, phoneNumber: e.target.value})} 
-                                        />
+                                        <div className="profile-input-wrapper">
+                                            <input 
+                                                type="text" 
+                                                className={`profile-input ${profileErrors.phoneNumber ? 'input-error' : ''}`}
+                                                value={profileEditForm.phoneNumber} 
+                                                onChange={e => setProfileEditForm({...profileEditForm, phoneNumber: e.target.value})} 
+                                            />
+                                            {profileErrors.phoneNumber && <span className="profile-error-msg">{profileErrors.phoneNumber}</span>}
+                                        </div>
                                     ) : (
                                         <span className="field-value">{profileEditForm.phoneNumber}</span>
                                     )}
@@ -1102,41 +1165,53 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 <div className="password-modal-card">
                                     <div className="password-modal-header">
                                         <h3>🔑 Change Account Password</h3>
-                                        <button className="btn-close-modal" onClick={() => setIsChangingPassword(false)}>×</button>
+                                        <button className="btn-close-modal" onClick={() => {
+                                            setIsChangingPassword(false);
+                                            setPasswordErrors({});
+                                        }}>×</button>
                                     </div>
                                     <form onSubmit={handleChangePassword} className="password-modal-form">
                                         <div className="modal-form-group">
                                             <label>Current Password</label>
                                             <input 
                                                 type="password" 
+                                                className={passwordErrors.currentPassword ? 'input-error' : ''}
                                                 placeholder="Enter current password" 
                                                 value={passwordChangeForm.currentPassword}
                                                 onChange={e => setPasswordChangeForm({...passwordChangeForm, currentPassword: e.target.value})}
                                                 required 
                                             />
+                                            {passwordErrors.currentPassword && <span className="modal-error-msg">{passwordErrors.currentPassword}</span>}
                                         </div>
                                         <div className="modal-form-group">
                                             <label>New Password</label>
                                             <input 
                                                 type="password" 
+                                                className={passwordErrors.newPassword ? 'input-error' : ''}
                                                 placeholder="Enter new password" 
                                                 value={passwordChangeForm.newPassword}
                                                 onChange={e => setPasswordChangeForm({...passwordChangeForm, newPassword: e.target.value})}
                                                 required 
                                             />
+                                            {passwordErrors.newPassword && <span className="modal-error-msg">{passwordErrors.newPassword}</span>}
                                         </div>
                                         <div className="modal-form-group">
                                             <label>Confirm New Password</label>
                                             <input 
                                                 type="password" 
+                                                className={passwordErrors.confirmNewPassword ? 'input-error' : ''}
                                                 placeholder="Confirm new password" 
                                                 value={passwordChangeForm.confirmNewPassword}
                                                 onChange={e => setPasswordChangeForm({...passwordChangeForm, confirmNewPassword: e.target.value})}
                                                 required 
                                             />
+                                            {passwordErrors.confirmNewPassword && <span className="modal-error-msg">{passwordErrors.confirmNewPassword}</span>}
                                         </div>
                                         <div className="password-modal-actions">
-                                            <button type="button" className="btn-modal-cancel" onClick={() => setIsChangingPassword(false)}>
+                                            <button type="button" className="btn-modal-cancel" onClick={() => {
+                                                setIsChangingPassword(false);
+                                                setPasswordErrors({});
+                                            }}>
                                                 Cancel
                                             </button>
                                             <button type="submit" className="btn-modal-submit">
