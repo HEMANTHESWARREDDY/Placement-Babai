@@ -1014,6 +1014,12 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                         >
                             🎁 Free Sessions
                         </button>
+                        <button
+                            className={`btn-tab mobile-profile-btn ${activeTab === 'profile' ? 'active' : ''}`}
+                            onClick={() => changeTab('profile')}
+                        >
+                            👤 Profile
+                        </button>
                         <div className="admin-profile-container">
                             <button 
                                 className={`admin-profile-badge clickable ${activeTab === 'profile' ? 'active' : ''}`}

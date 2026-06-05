@@ -361,13 +361,14 @@
 @media (max-width: 900px) {
     .admin-profile-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
         gap: 1.5rem;
     }
     
     .admin-profile-header-actions {
         width: 100%;
-        justify-content: flex-start;
+        justify-content: center;
         flex-wrap: wrap;
     }
 
@@ -378,6 +379,25 @@
 }
 
 @media (max-width: 600px) {
+    .admin-profile-header {
+        align-items: center !important;
+        text-align: center !important;
+    }
+    
+    .admin-profile-header-left {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    .admin-profile-header-info {
+        text-align: center !important;
+    }
+
+    .profile-input {
+        max-width: 100% !important;
+    }
+
     .admin-profile-header-actions {
         flex-direction: column;
         width: 100%;
@@ -452,6 +472,10 @@
     background: var(--white);
     color: var(--primary-purple);
     border-color: var(--white);
+}
+
+.mobile-profile-btn {
+    display: none;
 }
 
 /* Job Form */
@@ -920,6 +944,20 @@
 @media (max-width: 768px) {
     .admin-header {
         padding: 1.5rem 1rem;
+    }
+
+    .mobile-profile-btn {
+        display: flex !important;
+    }
+
+    .admin-profile-page-container {
+        padding: 0 0.5rem !important;
+        margin: 1rem auto !important;
+    }
+
+    .admin-profile-card {
+        padding: 1.25rem 1rem !important;
+        border-radius: 12px !important;
     }
 
     .admin-header-content {

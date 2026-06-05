@@ -66,3 +66,27 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-purple);
 }
+
+/* Remove default focus outline/black border from all interactive elements */
+button,
+input,
+select,
+textarea,
+a {
+  outline: none !important;
+}
+
+button:focus,
+button:focus-visible,
+button:active,
+input:focus,
+input:focus-visible,
+select:focus,
+select:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+a:focus,
+a:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
