@@ -146,6 +146,10 @@ function AdminDashboard({ adminData, onLogout }) {
         confirmNewPassword: ''
     });
 
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const [profileErrors, setProfileErrors] = useState({});
     const [passwordErrors, setPasswordErrors] = useState({});
 
@@ -255,6 +259,9 @@ function AdminDashboard({ adminData, onLogout }) {
                 setIsChangingPassword(false);
                 setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
                 setPasswordErrors({});
+                setShowCurrentPassword(false);
+                setShowNewPassword(false);
+                setShowConfirmPassword(false);
             } else {
                 showToast(data.error || 'Failed to change password', 'error');
             }
@@ -263,6 +270,9 @@ function AdminDashboard({ adminData, onLogout }) {
             setIsChangingPassword(false);
             setPasswordChangeForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
             setPasswordErrors({});
+            setShowCurrentPassword(false);
+            setShowNewPassword(false);
+            setShowConfirmPassword(false);
         }
     };
 
@@ -1168,49 +1178,97 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                         <button className="btn-close-modal" onClick={() => {
                                             setIsChangingPassword(false);
                                             setPasswordErrors({});
+                                            setShowCurrentPassword(false);
+                                            setShowNewPassword(false);
+                                            setShowConfirmPassword(false);
                                         }}>×</button>
                                     </div>
                                     <form onSubmit={handleChangePassword} className="password-modal-form">
                                         <div className="modal-form-group">
                                             <label>Current Password</label>
-                                            <input 
-                                                type="password" 
-                                                className={passwordErrors.currentPassword ? 'input-error' : ''}
-                                                placeholder="Enter current password" 
-                                                value={passwordChangeForm.currentPassword}
-                                                onChange={e => setPasswordChangeForm({...passwordChangeForm, currentPassword: e.target.value})}
-                                                required 
-                                            />
+                                            <div className="modal-password-wrapper">
+                                                <input 
+                                                    type={showCurrentPassword ? "text" : "password"} 
+                                                    className={passwordErrors.currentPassword ? 'input-error' : ''}
+                                                    placeholder="Enter current password" 
+                                                    value={passwordChangeForm.currentPassword}
+                                                    onChange={e => setPasswordChangeForm({...passwordChangeForm, currentPassword: e.target.value})}
+                                                    required 
+                                                />
+                                                <button 
+                                                    type="button" 
+                                                    className="password-toggle-btn" 
+                                                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                                    aria-label="Toggle Password Visibility"
+                                                >
+                                                    {showCurrentPassword ? (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                    )}
+                                                </button>
+                                            </div>
                                             {passwordErrors.currentPassword && <span className="modal-error-msg">{passwordErrors.currentPassword}</span>}
                                         </div>
                                         <div className="modal-form-group">
                                             <label>New Password</label>
-                                            <input 
-                                                type="password" 
-                                                className={passwordErrors.newPassword ? 'input-error' : ''}
-                                                placeholder="Enter new password" 
-                                                value={passwordChangeForm.newPassword}
-                                                onChange={e => setPasswordChangeForm({...passwordChangeForm, newPassword: e.target.value})}
-                                                required 
-                                            />
+                                            <div className="modal-password-wrapper">
+                                                <input 
+                                                    type={showNewPassword ? "text" : "password"} 
+                                                    className={passwordErrors.newPassword ? 'input-error' : ''}
+                                                    placeholder="Enter new password" 
+                                                    value={passwordChangeForm.newPassword}
+                                                    onChange={e => setPasswordChangeForm({...passwordChangeForm, newPassword: e.target.value})}
+                                                    required 
+                                                />
+                                                <button 
+                                                    type="button" 
+                                                    className="password-toggle-btn" 
+                                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                                    aria-label="Toggle Password Visibility"
+                                                >
+                                                    {showNewPassword ? (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                    )}
+                                                </button>
+                                            </div>
                                             {passwordErrors.newPassword && <span className="modal-error-msg">{passwordErrors.newPassword}</span>}
                                         </div>
                                         <div className="modal-form-group">
                                             <label>Confirm New Password</label>
-                                            <input 
-                                                type="password" 
-                                                className={passwordErrors.confirmNewPassword ? 'input-error' : ''}
-                                                placeholder="Confirm new password" 
-                                                value={passwordChangeForm.confirmNewPassword}
-                                                onChange={e => setPasswordChangeForm({...passwordChangeForm, confirmNewPassword: e.target.value})}
-                                                required 
-                                            />
+                                            <div className="modal-password-wrapper">
+                                                <input 
+                                                    type={showConfirmPassword ? "text" : "password"} 
+                                                    className={passwordErrors.confirmNewPassword ? 'input-error' : ''}
+                                                    placeholder="Confirm new password" 
+                                                    value={passwordChangeForm.confirmNewPassword}
+                                                    onChange={e => setPasswordChangeForm({...passwordChangeForm, confirmNewPassword: e.target.value})}
+                                                    required 
+                                                />
+                                                <button 
+                                                    type="button" 
+                                                    className="password-toggle-btn" 
+                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    aria-label="Toggle Password Visibility"
+                                                >
+                                                    {showConfirmPassword ? (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                    )}
+                                                </button>
+                                            </div>
                                             {passwordErrors.confirmNewPassword && <span className="modal-error-msg">{passwordErrors.confirmNewPassword}</span>}
                                         </div>
                                         <div className="password-modal-actions">
                                             <button type="button" className="btn-modal-cancel" onClick={() => {
                                                 setIsChangingPassword(false);
                                                 setPasswordErrors({});
+                                                setShowCurrentPassword(false);
+                                                setShowNewPassword(false);
+                                                setShowConfirmPassword(false);
                                             }}>
                                                 Cancel
                                             </button>
