@@ -118,6 +118,7 @@ function AdminDashboard({ adminData, onLogout }) {
     const [newExpiryDate, setNewExpiryDate] = useState('');
     
     // Profile Edit and Password Change states
+    const [profilePicture, setProfilePicture] = useState('');
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [profileEditForm, setProfileEditForm] = useState({
         fullName: 'Bobby',
@@ -126,6 +127,17 @@ function AdminDashboard({ adminData, onLogout }) {
         phoneNumber: '+91 XXXXX XXXXX',
         department: 'Administration'
     });
+    
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfilePicture(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [passwordChangeForm, setPasswordChangeForm] = useState({
@@ -927,15 +939,31 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                     <div className="admin-profile-card">
                         <div className="admin-profile-header">
                             <div className="admin-profile-header-left">
-                                <div className="admin-profile-avatar-large">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#7c3aed' }}>
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                        <circle cx="12" cy="7" r="4" />
-                                    </svg>
+                                <div className={`admin-profile-avatar-large ${isEditingProfile ? 'editable-avatar' : ''}`}>
+                                    {profilePicture ? (
+                                        <img src={profilePicture} alt="Profile" className="admin-profile-img" />
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#7c3aed' }}>
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                    )}
+                                    {isEditingProfile && (
+                                        <label className="avatar-upload-overlay">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                            <span>Upload</span>
+                                            <input 
+                                                type="file" 
+                                                accept="image/*" 
+                                                onChange={handleAvatarChange} 
+                                                style={{ display: 'none' }} 
+                                            />
+                                        </label>
+                                    )}
                                 </div>
                                 <div className="admin-profile-header-info">
                                     <h2>{profileEditForm.fullName}</h2>
-                                    <p className="admin-profile-subtitle">{profileEditForm.department === 'Administration' ? 'Administrator' : profileEditForm.department}</p>
+                                    <p className="admin-profile-subtitle">Administrator</p>
                                 </div>
                             </div>
                             <div className="admin-profile-header-actions">
@@ -1009,16 +1037,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                 </div>
                                 <div className="profile-field-row">
                                     <span className="field-name">Department:</span>
-                                    {isEditingProfile ? (
-                                        <input 
-                                            type="text" 
-                                            className="profile-input" 
-                                            value={profileEditForm.department} 
-                                            onChange={e => setProfileEditForm({...profileEditForm, department: e.target.value})} 
-                                        />
-                                    ) : (
-                                        <span className="field-value">{profileEditForm.department}</span>
-                                    )}
+                                    <span className="field-value">Administration</span>
                                 </div>
                             </div>
                             <div className="profile-section-card">
