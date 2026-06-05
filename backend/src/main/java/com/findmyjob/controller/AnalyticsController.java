@@ -163,6 +163,11 @@ public class AnalyticsController {
         stats.put("todaySessionJoins", sessionJoinRepository.countByJoinedAtAfter(now.toLocalDate().atStartOfDay()));
         stats.put("last1HourSessionJoins", sessionJoinRepository.countByJoinedAtAfter(now.minusHours(1)));
 
+        // Add current active counts
+        stats.put("activeJobs", jobRepository.countByIsDeletedFalse());
+        stats.put("activeMentors", mentorRepository.countByStatus("APPROVED"));
+        stats.put("activeSessions", freeSessionRepository.countByDeletedFalse());
+
         return ResponseEntity.ok(stats);
     }
 

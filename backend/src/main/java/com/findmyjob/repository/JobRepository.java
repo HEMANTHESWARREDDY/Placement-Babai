@@ -30,6 +30,8 @@ public interface JobRepository extends MongoRepository<Job, String> {
             "] }")
     List<Job> searchJobs(String keyword);
 
+    long countByIsDeletedFalse();
+
     long countByPostedDateAfter(LocalDateTime date);
 
     long countByPostedDateBetween(LocalDateTime start, LocalDateTime end);

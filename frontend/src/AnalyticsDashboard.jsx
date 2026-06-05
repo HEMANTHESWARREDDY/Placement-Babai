@@ -144,6 +144,7 @@ function AnalyticsDashboard() {
 
     const [expandedSections, setExpandedSections] = useState({
         lifetime: true,
+        active: false,
         recent: false,
         daywise: false
     });
@@ -193,6 +194,29 @@ function AnalyticsDashboard() {
                                 <div className="stat-card" style={{ background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', color: 'white' }}>
                                     <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Total Session Joins</h3>
                                     <p style={{ color: 'white' }}>{websiteStats.lifetimeSessionJoins || 0}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={`analytics-section ${expandedSections.active ? 'expanded' : ''}`}>
+                        <div className="analytics-section-header" onClick={() => toggleSection('active')}>
+                            <h2>Active Stats</h2>
+                            <span className="expand-icon">{expandedSections.active ? '−' : '+'}</span>
+                        </div>
+                        {expandedSections.active && (
+                            <div className="stats-grid" style={{ marginBottom: '2rem' }}>
+                                <div className="stat-card" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white' }}>
+                                    <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Active Jobs</h3>
+                                    <p style={{ color: 'white' }}>{websiteStats.activeJobs || 0}</p>
+                                </div>
+                                <div className="stat-card" style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white' }}>
+                                    <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Active Mentors</h3>
+                                    <p style={{ color: 'white' }}>{websiteStats.activeMentors || 0}</p>
+                                </div>
+                                <div className="stat-card" style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', color: 'white' }}>
+                                    <h3 style={{ color: 'rgba(255,255,255,0.8)' }}>Active Sessions</h3>
+                                    <p style={{ color: 'white' }}>{websiteStats.activeSessions || 0}</p>
                                 </div>
                             </div>
                         )}
