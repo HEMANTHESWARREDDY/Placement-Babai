@@ -18,6 +18,7 @@ public class JobModelListener extends AbstractMongoEventListener<Job> {
         Job job = event.getSource();
         if (job.getId() == null || job.getId().trim().isEmpty()) {
             job.setId(String.valueOf(sequenceGenerator.generateSequence("jobs_sequence")));
+            sequenceGenerator.incrementLifetimeCount("lifetime_jobs_created", 0);
         }
         if (job.getCreatedAt() == null) {
             job.setCreatedAt(java.time.LocalDateTime.now());

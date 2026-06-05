@@ -17,6 +17,7 @@ public class FreeSessionModelListener extends AbstractMongoEventListener<FreeSes
         FreeSession session = event.getSource();
         if (session.getId() == null || session.getId().trim().isEmpty()) {
             session.setId(String.valueOf(sequenceGenerator.generateSequence("sessions_sequence")));
+            sequenceGenerator.incrementLifetimeCount("lifetime_sessions_created", 0);
         }
         if (session.getCreatedAt() == null) {
             session.setCreatedAt(java.time.LocalDateTime.now());

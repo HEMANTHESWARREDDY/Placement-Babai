@@ -59,6 +59,9 @@ public class AnalyticsController {
     @Autowired
     private SessionJoinRepository sessionJoinRepository;
 
+    @Autowired
+    private com.findmyjob.service.SequenceGeneratorService sequenceGenerator;
+
     @PostMapping("/view/website")
     public ResponseEntity<?> recordWebsiteView() {
         websiteViewRepository.save(new WebsiteView(LocalDateTime.now()));
@@ -131,13 +134,13 @@ public class AnalyticsController {
         stats.put("last1HourApplies", jobApplyRepository.countByAppliedAtAfter(now.minusHours(1)));
 
         // Add jobs created stats
-        stats.put("lifetimeJobs", jobRepository.count());
+        stats.put("lifetimeJobs", sequenceGenerator.getLifetimeCount("lifetime_jobs_created", jobRepository.count()));
         stats.put("last7DaysJobs", jobRepository.countByPostedDateAfter(now.minusDays(7)));
         stats.put("todayJobs", jobRepository.countByPostedDateAfter(now.toLocalDate().atStartOfDay()));
         stats.put("last1HourJobs", jobRepository.countByPostedDateAfter(now.minusHours(1)));
 
         // Add mentor stats
-        stats.put("lifetimeMentors", mentorRepository.countByStatus("APPROVED"));
+        stats.put("lifetimeMentors", sequenceGenerator.getLifetimeCount("lifetime_mentors_approved", mentorRepository.countByStatus("APPROVED")));
         stats.put("last7DaysMentors", mentorRepository.countByStatusAndCreatedAtAfter("APPROVED", now.minusDays(7)));
         stats.put("todayMentors", mentorRepository.countByStatusAndCreatedAtAfter("APPROVED", now.toLocalDate().atStartOfDay()));
         stats.put("last1HourMentors", mentorRepository.countByStatusAndCreatedAtAfter("APPROVED", now.minusHours(1)));
@@ -149,7 +152,7 @@ public class AnalyticsController {
         stats.put("last1HourMentorApplicants", mentorApplicantRepository.countByStatusAndCreatedAtAfter("PENDING", now.minusHours(1)));
 
         // Add free session stats
-        stats.put("lifetimeSessions", freeSessionRepository.count());
+        stats.put("lifetimeSessions", sequenceGenerator.getLifetimeCount("lifetime_sessions_created", freeSessionRepository.count()));
         stats.put("last7DaysSessions", freeSessionRepository.countByCreatedAtAfter(now.minusDays(7)));
         stats.put("todaySessions", freeSessionRepository.countByCreatedAtAfter(now.toLocalDate().atStartOfDay()));
         stats.put("last1HourSessions", freeSessionRepository.countByCreatedAtAfter(now.minusHours(1)));

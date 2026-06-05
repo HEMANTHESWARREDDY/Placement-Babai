@@ -36,4 +36,29 @@ public class SequenceGeneratorService {
         
         return counter.getSeq();
     }
+
+    public long getLifetimeCount(String counterName, long currentFallbackCount) {
+        DatabaseSequence counter = mongoOperations.findOne(query(where("_id").is(counterName)), DatabaseSequence.class);
+        if (counter == null) {
+            counter = new DatabaseSequence(counterName, currentFallbackCount);
+            mongoOperations.save(counter);
+            return currentFallbackCount;
+        }
+        if (counter.getSeq() < currentFallbackCount) {
+            counter.setSeq(currentFallbackCount);
+            mongoOperations.save(counter);
+            return currentFallbackCount;
+        }
+        return counter.getSeq();
+    }
+
+    public void incrementLifetimeCount(String counterName, long currentFallbackCount) {
+        DatabaseSequence counter = mongoOperations.findAndModify(query(where("_id").is(counterName)),
+                new Update().inc("seq", 1), options().returnNew(true).upsert(true),
+                DatabaseSequence.class);
+        if (counter != null && counter.getSeq() < currentFallbackCount) {
+            counter.setSeq(currentFallbackCount);
+            mongoOperations.save(counter);
+        }
+    }
 }
