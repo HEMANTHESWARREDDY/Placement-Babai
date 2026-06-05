@@ -1,7 +1,9 @@
 package com.findmyjob.service;
 
 import com.findmyjob.model.Job;
+import com.findmyjob.model.FreeSession;
 import com.findmyjob.repository.JobRepository;
+import com.findmyjob.repository.FreeSessionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,75 +27,127 @@ public class JobSchedulerService {
     private JobRepository jobRepository;
 
     @Autowired
+    private FreeSessionRepository freeSessionRepository;
+
+    @Autowired
     private JobService jobService;
 
-    // Run every day at 11:59 PM (23:59:00) IST
+    // Helper to parse job expiry date
+    private LocalDate parseJobExpiryDate(Job job) {
+        if (job.getExpiryDate() == null || job.getExpiryDate().trim().isEmpty()) {
+            return null;
+        }
+        try {
+            LocalDate expiry = null;
+            String cleanDate = job.getExpiryDate().trim();
+            if (cleanDate.contains("T")) {
+                cleanDate = cleanDate.substring(0, cleanDate.indexOf("T"));
+            }
+
+            String[] formats = { "yyyy-MM-dd", "dd-MM-yyyy", "MM/dd/yyyy", "dd/MM/yyyy" };
+            for (String format : formats) {
+                try {
+                    expiry = LocalDate.parse(cleanDate, java.time.format.DateTimeFormatter.ofPattern(format));
+                    break;
+                } catch (Exception e) {
+                    // Try next
+                }
+            }
+            return expiry;
+        } catch (Exception e) {
+            logger.error("Unexpected error parsing expiry for Job ID: {}", job.getId(), e);
+        }
+        return null;
+    }
+
+    // Run every day at 11:59 PM (23:59:00) IST to move expired items (older than 30 days) to deleted
     @Scheduled(cron = "0 59 23 * * ?", zone = "Asia/Kolkata")
     public void autoDeleteExpiredJobs() {
-        logger.info("Running scheduled task to auto-delete expired jobs...");
+        logger.info("Running scheduled task to auto-delete expired jobs and sessions...");
+        LocalDate today = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
+
+        // 1. Process Jobs
         List<Job> activeJobs = jobRepository.findByIsDeletedFalse();
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata"));
-
-        int deletedCount = 0;
+        int jobsDeletedCount = 0;
         for (Job job : activeJobs) {
-            if (job.getExpiryDate() == null || job.getExpiryDate().trim().isEmpty()) {
-                continue;
-            }
             try {
-                LocalDate expiry = null;
-                String cleanDate = job.getExpiryDate().trim();
-                if (cleanDate.contains("T")) {
-                    cleanDate = cleanDate.substring(0, cleanDate.indexOf("T"));
-                }
-
-                String[] formats = { "yyyy-MM-dd", "dd-MM-yyyy", "MM/dd/yyyy", "dd/MM/yyyy" };
-                for (String format : formats) {
-                    try {
-                        expiry = LocalDate.parse(cleanDate, java.time.format.DateTimeFormatter.ofPattern(format));
-                        break;
-                    } catch (Exception e) {
-                        // Try next
-                    }
-                }
-
-                if (expiry != null) {
-                    LocalDateTime expiryTime = expiry.atTime(23, 58, 0);
-
-                    // If current time in IST is strictly after the 11:58:00 PM of the expiry date
-                    if (now.isAfter(expiryTime)) {
+                LocalDate expiry = parseJobExpiryDate(job);
+                if (expiry != null && today.isAfter(expiry)) {
+                    long daysExpired = java.time.temporal.ChronoUnit.DAYS.between(expiry, today);
+                    if (daysExpired > 30) {
                         jobService.deleteJob(job.getId());
-                        deletedCount++;
-                        logger.info("Soft-deleted expired job with ID: {}", job.getId());
-                    }
-                } else {
-                    // Only log if it's not the generic "Don't know" phrase
-                    if (!"Don't know".equalsIgnoreCase(cleanDate)) {
-                        logger.error("Could not parse explicit expiry date '{}' for Job ID: {}", job.getExpiryDate(),
-                                job.getId());
+                        jobsDeletedCount++;
+                        logger.info("Soft-deleted expired job with ID: {} (Expired for {} days)", job.getId(), daysExpired);
                     }
                 }
             } catch (Exception e) {
                 logger.error("Unexpected error processing Job ID: {}", job.getId(), e);
             }
         }
-        logger.info("Finished auto-delete task. Deleted {} jobs.", deletedCount);
+
+        // 2. Process Free Sessions
+        List<FreeSession> activeSessions = freeSessionRepository.findByDeletedFalseOrderByCreatedAtDesc();
+        int sessionsDeletedCount = 0;
+        for (FreeSession session : activeSessions) {
+            try {
+                LocalDate sessionDate = session.getSessionDate();
+                if (sessionDate != null && today.isAfter(sessionDate)) {
+                    long daysExpired = java.time.temporal.ChronoUnit.DAYS.between(sessionDate, today);
+                    if (daysExpired > 30) {
+                        session.setDeleted(true);
+                        session.setDeletedAt(LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata")));
+                        freeSessionRepository.save(session);
+                        sessionsDeletedCount++;
+                        logger.info("Soft-deleted expired session with ID: {} (Expired for {} days)", session.getId(), daysExpired);
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Unexpected error processing Session ID: {}", session.getId(), e);
+            }
+        }
+        logger.info("Finished auto-delete task. Deleted {} jobs and {} sessions.", jobsDeletedCount, sessionsDeletedCount);
     }
 
-    // Run every day at 2:00 AM IST to clean up jobs deleted more than 15 days ago
+    // Run every day at 2:00 AM IST to clean up items deleted more than 30 days ago
     @Scheduled(cron = "0 0 2 * * ?", zone = "Asia/Kolkata")
     public void cleanUpOldDeletedJobs() {
-        logger.info("Running scheduled task to permanently delete jobs soft-deleted more than 15 days ago...");
-        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(15);
+        logger.info("Running scheduled task to permanently delete jobs and sessions soft-deleted more than 30 days ago...");
+        LocalDateTime cutoffDate = LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata")).minusDays(30);
+
+        // 1. Clean Jobs
         try {
-            jobRepository.deleteAllByIsDeletedTrueAndDeletedAtBefore(cutoffDate);
-            logger.info("Finished permanent deletion task.");
+            List<Job> deletedJobs = jobRepository.findByIsDeletedTrue();
+            int permanentlyDeletedJobsCount = 0;
+            for (Job job : deletedJobs) {
+                if (job.getDeletedAt() != null && job.getDeletedAt().isBefore(cutoffDate)) {
+                    jobRepository.delete(job);
+                    permanentlyDeletedJobsCount++;
+                    logger.info("Permanently deleted old soft-deleted job with ID: {}", job.getId());
+                }
+            }
+            logger.info("Finished permanent deletion task for jobs. Permanently deleted {} jobs.", permanentlyDeletedJobsCount);
         } catch (Exception e) {
-            logger.error("Error during permanent deletion: ", e);
+            logger.error("Error during permanent deletion of jobs: ", e);
+        }
+
+        // 2. Clean Sessions
+        try {
+            List<FreeSession> deletedSessions = freeSessionRepository.findByDeletedTrueOrderByDeletedAtDesc();
+            int permanentlyDeletedSessionsCount = 0;
+            for (FreeSession session : deletedSessions) {
+                if (session.getDeletedAt() != null && session.getDeletedAt().isBefore(cutoffDate)) {
+                    freeSessionRepository.delete(session);
+                    permanentlyDeletedSessionsCount++;
+                    logger.info("Permanently deleted old soft-deleted session with ID: {}", session.getId());
+                }
+            }
+            logger.info("Finished permanent deletion task for sessions. Permanently deleted {} sessions.", permanentlyDeletedSessionsCount);
+        } catch (Exception e) {
+            logger.error("Error during permanent deletion of sessions: ", e);
         }
     }
 
-    // Run immediately when the application starts in case tasks were missed during
-    // downtime
+    // Run immediately when the application starts in case tasks were missed during downtime
     @EventListener(ApplicationReadyEvent.class)
     public void runMissedSchedules() {
         logger.info("Application started. Running missed daily scheduled tasks...");

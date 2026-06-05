@@ -101,8 +101,12 @@ function AdminDashboard({ adminData, onLogout }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilters, setActiveFilters] = useState({});
     const [sortType, setSortType] = useState('');
-    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('adminActiveTab') || 'jobs'); // 'jobs', 'analytics', 'deleted', 'mentors', 'sessions'
+    const [activeTab, setActiveTab] = useState(() => {
+        const stored = localStorage.getItem('adminActiveTab');
+        return stored === 'deleted' ? 'jobs' : (stored || 'jobs');
+    }); // 'jobs', 'analytics', 'mentors', 'sessions'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
+    const [jobViewMode, setJobViewMode] = useState('active'); // 'active', 'expired', 'deleted'
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
     const [autofillUrl, setAutofillUrl] = useState('');
@@ -113,6 +117,20 @@ function AdminDashboard({ adminData, onLogout }) {
     const [restoreExpiredJob, setRestoreExpiredJob] = useState(null);
     const [newExpiryDate, setNewExpiryDate] = useState('');
     const retryTimerRef = useRef(null);
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+    const profileDropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+                setShowProfileDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
@@ -136,7 +154,7 @@ function AdminDashboard({ adminData, onLogout }) {
     useEffect(() => {
         fetchJobs();
         fetchDeletedJobs();
-    }, []);
+    }, [jobViewMode]);
 
     useEffect(() => {
         if (!searchQuery || !searchQuery.trim()) return;
@@ -365,46 +383,67 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         
-        // Expiry Date Validation
+        let isSavedAsExpired = false;
         if (formData.expiryDate) {
             if (isPastDate(formData.expiryDate)) {
-                showToast('Expiry date is not valid. It must be a future date.', 'error');
-                return;
+                isSavedAsExpired = true;
             }
         }
 
-        try {
-            const url = editingJob
-                ? `${API_BASE_URL}/api/jobs/${editingJob.id}`
-                : `${API_BASE_URL}/api/jobs`;
-            const method = editingJob ? 'PUT' : 'POST';
+        const proceedWithSave = async () => {
+            try {
+                const url = editingJob
+                    ? `${API_BASE_URL}/api/jobs/${editingJob.id}`
+                    : `${API_BASE_URL}/api/jobs`;
+                const method = editingJob ? 'PUT' : 'POST';
 
-            const response = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                });
 
-            if (response.ok) {
-                fetchJobs();
-                fetchDeletedJobs();
-                resetForm();
-                showToast(editingJob ? 'Job updated successfully!' : 'Job created successfully!', 'success');
-            } else {
-                let errorMsg = 'Failed to save job';
-                try {
-                    const errorData = await response.json();
-                    errorMsg = errorData.message || (errorData.errors ? Object.values(errorData.errors).join(', ') : 'Failed to save job');
-                } catch (e) {
-                    errorMsg = `Error ${response.status}: ${response.statusText}`;
+                if (response.ok) {
+                    fetchJobs();
+                    fetchDeletedJobs();
+                    resetForm();
+                    
+                    if (isSavedAsExpired) {
+                        showToast('Job successfully sent to expiry!', 'success');
+                    } else {
+                        showToast(editingJob ? 'Job updated successfully!' : 'Job created successfully!', 'success');
+                    }
+                } else {
+                    let errorMsg = 'Failed to save job';
+                    try {
+                        const errorData = await response.json();
+                        errorMsg = errorData.message || (errorData.errors ? Object.values(errorData.errors).join(', ') : 'Failed to save job');
+                    } catch (e) {
+                        errorMsg = `Error ${response.status}: ${response.statusText}`;
+                    }
+                    showToast(errorMsg, 'error');
                 }
-                showToast(errorMsg, 'error');
+            } catch (error) {
+                console.error('Error saving job:', error);
+                showToast(`Error: ${error.message}`, 'error');
             }
-        } catch (error) {
-            console.error('Error saving job:', error);
-            showToast(`Error: ${error.message}`, 'error');
+        };
+
+        // Check if editing an active job (or saving a new one) and setting a past date
+        // If editingJob exists and is currently active, or if creating a new job with a past date
+        const isEditingActiveJob = editingJob && !isPastDate(editingJob.expiryDate);
+        if (isSavedAsExpired && (isEditingActiveJob || !editingJob)) {
+            setConfirmDialog({
+                show: true,
+                message: `Caution: Setting the expiry date to ${formData.expiryDate} (which is in the past) will move this job to the Expired tab. Do you want to proceed?`,
+                onConfirm: () => {
+                    proceedWithSave();
+                }
+            });
+        } else {
+            proceedWithSave();
         }
     };
 
@@ -435,18 +474,19 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
     };
 
     const handleRestore = (id) => {
-        const job = deletedJobs.find(j => j.id === id);
-        if (job) {
-            if (isPastDate(job.expiryDate)) {
-                setRestoreExpiredJob(job);
-                setNewExpiryDate('');
-                return;
-            }
+        const job = jobs.find(j => j.id === id) || deletedJobs.find(j => j.id === id);
+        if (job && isPastDate(job.expiryDate)) {
+            showToast('Error: Cannot restore expired job. Expiry date must be set to today or a future date.', 'error');
+            setRestoreExpiredJob(job);
+            setNewExpiryDate('');
+            return;
         }
 
         setConfirmDialog({
             show: true,
-            message: 'Are you sure you want to restore (revoke) this job?',
+            title: 'Restore Job',
+            message: 'Are you sure you want to restore this job?',
+            confirmText: 'Restore',
             onConfirm: async () => {
                 try {
                     const response = await fetch(`${API_BASE_URL}/api/jobs/${id}/restore`, { method: 'PUT' });
@@ -466,22 +506,26 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
     };
 
     const handleDelete = (id) => {
+        const isPerm = jobViewMode === 'deleted';
         setConfirmDialog({
             show: true,
-            message: 'Are you sure you want to delete this job?',
+            message: isPerm 
+                ? 'Are you sure you want to permanently delete this job? This action cannot be undone.'
+                : 'Are you sure you want to delete this job?',
             onConfirm: async () => {
                 try {
-                    const response = await fetch(`${API_BASE_URL}/api/jobs/${id}`, { method: 'DELETE' });
+                    const endpoint = isPerm ? `${API_BASE_URL}/api/jobs/${id}/permanent` : `${API_BASE_URL}/api/jobs/${id}`;
+                    const response = await fetch(endpoint, { method: 'DELETE' });
                     if (response.ok) {
                         fetchJobs();
                         fetchDeletedJobs();
-                        showToast('Job deleted successfully!', 'success');
+                        showToast(isPerm ? 'Job permanently deleted!' : 'Job deleted successfully!', 'success');
                     } else {
-                        showToast('Failed to delete job', 'error');
+                        showToast(isPerm ? 'Failed to permanently delete job' : 'Failed to delete job', 'error');
                     }
                 } catch (error) {
                     console.error('Error deleting job:', error);
-                    showToast('Failed to delete job', 'error');
+                    showToast(isPerm ? 'Failed to permanently delete job' : 'Failed to delete job', 'error');
                 }
             }
         });
@@ -494,7 +538,19 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
         setShowForm(false);
     };
 
-    const filteredJobs = jobs.filter(job => {
+    const getJobsForCurrentView = () => {
+        if (jobViewMode === 'active') {
+            return jobs.filter(job => !isPastDate(job.expiryDate));
+        } else if (jobViewMode === 'expired') {
+            return jobs.filter(job => isPastDate(job.expiryDate));
+        } else {
+            return deletedJobs;
+        }
+    };
+
+    const currentJobsList = getJobsForCurrentView();
+
+    const filteredJobs = currentJobsList.filter(job => {
         // 1. Search Query
         const sq = searchQuery.toLowerCase();
         const matchesSearch =
@@ -760,7 +816,55 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                         >
                             🎁 Free Sessions
                         </button>
-                        <button className="btn-logout" onClick={onLogout}>Logout</button>
+                        <div className="admin-profile-container" ref={profileDropdownRef} style={{ position: 'relative' }}>
+                            <button 
+                                className="admin-profile-badge clickable" 
+                                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                                style={{
+                                    cursor: 'pointer',
+                                    border: '1.5px solid rgba(255, 255, 255, 0.35)',
+                                    background: showProfileDropdown ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.15)',
+                                    outline: 'none',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.55rem'
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#ffffff' }}>
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <span>Admin: {adminData.username}</span>
+                                <span style={{ fontSize: '0.75rem', opacity: 0.8, marginLeft: '0.2rem', transform: showProfileDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
+                            </button>
+                            {showProfileDropdown && (
+                                <div className="admin-profile-dropdown">
+                                    <div className="admin-profile-dropdown-header">
+                                        <h4>Account Details</h4>
+                                    </div>
+                                    <div className="admin-profile-dropdown-body">
+                                        <div className="info-row">
+                                            <span className="info-label">Role:</span>
+                                            <span className="info-value role-tag">Administrator</span>
+                                        </div>
+                                        <div className="info-row">
+                                            <span className="info-label">Username:</span>
+                                            <span className="info-value">{adminData.username}</span>
+                                        </div>
+                                        <div className="info-row">
+                                            <span className="info-label">Email:</span>
+                                            <span className="info-value email-value" title={adminData.email}>{adminData.email || 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                    <div className="admin-profile-dropdown-footer">
+                                        <button className="btn-logout-dropdown" onClick={onLogout}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                                            Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -773,57 +877,6 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                 <AdminBookings />
             ) : activeTab === 'free-sessions' ? (
                 <AdminSessions />
-            ) : activeTab === 'deleted' ? (
-                <div className="jobs-management">
-                    <div className="jobs-list-header">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <button className="btn-back" onClick={() => changeTab('jobs')}>
-                                ← Back to Jobs
-                            </button>
-                            <h2>Deleted Jobs History ({deletedJobs.length})</h2>
-                        </div>
-                        <p style={{ color: '#64748b' }}>Jobs are permanently deleted after 15 days.</p>
-                    </div>
-                    {deletedLoading ? (
-                        <div className="loading">Loading deleted jobs...</div>
-                    ) : (
-                        <div className="jobs-table-container">
-                            <table className="jobs-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>Company</th>
-                                        <th>Deleted At</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {deletedJobs.length > 0 ? (
-                                        deletedJobs.map((job) => (
-                                            <tr key={job.id}>
-                                                <td>{job.id}</td>
-                                                <td><strong>{job.title}</strong></td>
-                                                <td>{job.company}</td>
-                                                <td>{job.deletedAt ? new Date(job.deletedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—'}</td>
-                                                <td>
-                                                    <div className="action-buttons">
-                                                        <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
-                                                        <button className="btn-primary" onClick={() => handleRestore(job.id)}>↩️ Revoke</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>No deleted jobs found.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
             ) : (
                 <>
                     {/* Job Form */}
@@ -1119,14 +1172,13 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                     {/* Jobs List */}
                     <div className="jobs-management">
                         <div className="jobs-list-header">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                                 <h2>All Jobs ({filteredJobs.length})</h2>
-                                <button
-                                    className="btn-history-secondary"
-                                    onClick={() => changeTab('deleted')}
-                                >
-                                    🗑️ History
-                                </button>
+                                <div className="view-mode-tabs">
+                                    <button className={`mode-btn ${jobViewMode === 'active' ? 'active' : ''}`} onClick={() => setJobViewMode('active')}>📋 Active</button>
+                                    <button className={`mode-btn ${jobViewMode === 'expired' ? 'active' : ''}`} onClick={() => setJobViewMode('expired')}>⌛ Expired</button>
+                                    <button className={`mode-btn ${jobViewMode === 'deleted' ? 'active' : ''}`} onClick={() => setJobViewMode('deleted')}>🗑️ Deleted</button>
+                                </div>
                             </div>
                             <div className="jobs-filter-controls">
                                 <input
@@ -1211,7 +1263,7 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                             <th>ID</th>
                                             <th>Title</th>
                                             <th>Company</th>
-                                            <th>Created At</th>
+                                            <th>{jobViewMode === 'active' ? 'Created At' : (jobViewMode === 'expired' ? 'Expiry Date' : 'Deleted At')}</th>
                                             <th>Location</th>
                                             <th>Salary</th>
                                             <th>Type</th>
@@ -1223,10 +1275,18 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                         {filteredJobs.length > 0 ? (
                                             filteredJobs.map((job) => (
                                                 <tr key={job.id}>
-                                                    <td>{job.id}</td>
+                                                    <td><strong>{job.id}</strong></td>
                                                     <td><strong>{job.title}</strong></td>
                                                     <td>{job.company}</td>
-                                                    <td>{job.createdAt ? new Date(job.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}</td>
+                                                    <td>
+                                                        {jobViewMode === 'active' ? (
+                                                            job.createdAt ? new Date(job.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'
+                                                        ) : jobViewMode === 'expired' ? (
+                                                            job.expiryDate || '—'
+                                                        ) : (
+                                                            job.deletedAt ? new Date(job.deletedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'
+                                                        )}
+                                                    </td>
                                                     <td>{job.location}</td>
                                                     <td>{job.salary || job.experienceLevel || '—'}</td>
                                                     <td><span className="job-type-badge">{job.jobType}</span></td>
@@ -1237,10 +1297,26 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
                                                     </td>
                                                     <td>
                                                         <div className="action-buttons">
-                                                            <button className="btn-analytics" onClick={() => setExpandedAnalyticsJobId(job.id)}>📊 Data</button>
-                                                            <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
-                                                            <button className="btn-delete" onClick={() => handleDelete(job.id)}>🗑️ Delete</button>
-                                                        </div>
+                                                            {jobViewMode === 'active' ? (
+                                                                <>
+                                                                    <button className="btn-analytics" onClick={() => setExpandedAnalyticsJobId(job.id)}>📊 Data</button>
+                                                                    <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
+                                                                    <button className="btn-delete" onClick={() => handleDelete(job.id)}>🗑️ Delete</button>
+                                                                </>
+                                                             ) : jobViewMode === 'expired' ? (
+                                                                 <>
+                                                                     <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
+                                                                     <button className="btn-primary" onClick={() => handleRestore(job.id)}>↩️ Restore</button>
+                                                                     <button className="btn-delete" onClick={() => handleDelete(job.id)}>🗑️ Delete</button>
+                                                                 </>
+                                                              ) : (
+                                                                  <>
+                                                                      <button className="btn-edit" onClick={() => handleEdit(job)}>✏️ Edit</button>
+                                                                      <button className="btn-primary" onClick={() => handleRestore(job.id)}>↩️ Restore</button>
+                                                                      <button className="btn-delete" onClick={() => handleDelete(job.id)}>🗑️ Delete Permanently</button>
+                                                                  </>
+                                                               )}
+                                                         </div>
                                                     </td>
                                                 </tr>
                                             ))

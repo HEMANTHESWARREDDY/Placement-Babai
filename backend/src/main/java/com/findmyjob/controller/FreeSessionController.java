@@ -48,6 +48,15 @@ public class FreeSessionController {
     @PostMapping
     public ResponseEntity<?> createSession(@RequestBody FreeSession session) {
         try {
+            // Check if sessionDate is today or in future
+            java.time.LocalDate today = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
+            if (session.getSessionDate() != null) {
+                if (!session.getSessionDate().isBefore(today)) {
+                    session.setActive(true);
+                }
+                session.setDeleted(false);
+                session.setDeletedAt(null);
+            }
             FreeSession saved = repository.save(session);
             return ResponseEntity.ok(saved);
         } catch (Exception e) {
@@ -64,8 +73,21 @@ public class FreeSessionController {
             session.setLink(details.getLink());
             session.setSchedule(details.getSchedule());
             session.setSkills(details.getSkills());
-            session.setActive(details.isActive());
             session.setSessionDate(details.getSessionDate());
+            
+            // Check if sessionDate is today or in future
+            java.time.LocalDate today = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
+            if (details.getSessionDate() != null) {
+                if (!details.getSessionDate().isBefore(today)) {
+                    session.setActive(true);
+                }
+                session.setDeleted(false);
+                session.setDeletedAt(null);
+            } else {
+                session.setDeleted(false);
+                session.setDeletedAt(null);
+            }
+            
             return ResponseEntity.ok(repository.save(session));
         }).orElse(ResponseEntity.notFound().build());
     }
@@ -75,6 +97,13 @@ public class FreeSessionController {
         return repository.findById(id).map(session -> {
             session.setDeleted(false);
             session.setDeletedAt(null);
+            
+            // Check if sessionDate is today or in future
+            java.time.LocalDate today = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
+            if (session.getSessionDate() != null && !session.getSessionDate().isBefore(today)) {
+                session.setActive(true);
+            }
+            
             return ResponseEntity.ok(repository.save(session));
         }).orElse(ResponseEntity.notFound().build());
     }

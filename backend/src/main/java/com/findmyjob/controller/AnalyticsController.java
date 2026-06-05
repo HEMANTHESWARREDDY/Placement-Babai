@@ -14,6 +14,7 @@ import com.findmyjob.repository.MentorApplicantRepository;
 import com.findmyjob.repository.FreeSessionRepository;
 import com.findmyjob.repository.SessionJoinRepository;
 import com.findmyjob.model.SessionJoin;
+import com.findmyjob.model.SearchQueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -182,12 +183,12 @@ public class AnalyticsController {
     @GetMapping("/searches/top")
     public ResponseEntity<List<Map<String, Object>>> getTopSearchesDaily() {
         LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
-        List<Map<String, Object>> results = searchQueryLogRepository.findTopSearchesSince(startOfDay);
+        List<SearchQueryResult> results = searchQueryLogRepository.findTopSearchesSince(startOfDay);
 
         List<Map<String, Object>> formattedResults = results.stream().limit(5).map(row -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("keyword", row.get("_id"));
-            map.put("count", row.get("count"));
+            map.put("keyword", row.getId());
+            map.put("count", row.getCount());
             return map;
         }).collect(Collectors.toList());
 
@@ -204,20 +205,70 @@ public class AnalyticsController {
             LocalDateTime startOfDay = targetDate.atStartOfDay();
             LocalDateTime endOfDay = targetDate.plusDays(1).atStartOfDay();
 
-            long views = websiteViewRepository.countByViewedAtBetween(startOfDay, endOfDay);
-            long applies = jobApplyRepository.countByAppliedAtBetween(startOfDay, endOfDay);
-            long jobsCreated = jobRepository.countByPostedDateBetween(startOfDay, endOfDay);
-            long mentorsJoined = mentorRepository.countByStatusAndCreatedAtBetween("APPROVED", startOfDay, endOfDay);
-            long mentorApplicants = mentorApplicantRepository.countByStatusAndCreatedAtBetween("PENDING", startOfDay, endOfDay);
-            long freeSessionsCreated = freeSessionRepository.countByCreatedAtBetween(startOfDay, endOfDay);
-            long sessionJoins = sessionJoinRepository.countByJoinedAtBetween(startOfDay, endOfDay);
-            List<Map<String, Object>> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay);
-            List<Map<String, Object>> topSearches = searches.stream().limit(5).map(row -> {
-                Map<String, Object> m = new HashMap<>();
-                m.put("keyword", row.get("_id"));
-                m.put("count", row.get("count"));
-                return m;
-            }).collect(Collectors.toList());
+            long views = 0;
+            long applies = 0;
+            long jobsCreated = 0;
+            long mentorsJoined = 0;
+            long mentorApplicants = 0;
+            long freeSessionsCreated = 0;
+            long sessionJoins = 0;
+            List<Map<String, Object>> topSearches = new ArrayList<>();
+
+            try {
+                views = websiteViewRepository.countByViewedAtBetween(startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching website views for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                applies = jobApplyRepository.countByAppliedAtBetween(startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching job applies for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                jobsCreated = jobRepository.countByPostedDateBetween(startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching jobs created for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                mentorsJoined = mentorRepository.countByStatusAndCreatedAtBetween("APPROVED", startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching mentors joined for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                mentorApplicants = mentorApplicantRepository.countByStatusAndCreatedAtBetween("PENDING", startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching mentor applicants for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                freeSessionsCreated = freeSessionRepository.countByCreatedAtBetween(startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching sessions created for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                sessionJoins = sessionJoinRepository.countByJoinedAtBetween(startOfDay, endOfDay);
+            } catch (Exception e) {
+                System.err.println("Error fetching session joins for " + targetDate + ": " + e.getMessage());
+            }
+
+            try {
+                List<SearchQueryResult> searches = searchQueryLogRepository.findTopSearchesBetween(startOfDay, endOfDay);
+                if (searches != null) {
+                    topSearches = searches.stream().limit(5).map(row -> {
+                        Map<String, Object> m = new HashMap<>();
+                        m.put("keyword", row.getId());
+                        m.put("count", row.getCount());
+                        return m;
+                    }).collect(Collectors.toList());
+                }
+            } catch (Exception e) {
+                System.err.println("Error fetching top searches for " + targetDate + ": " + e.getMessage());
+            }
 
             Map<String, Object> dayStat = new HashMap<>();
             dayStat.put("date", targetDate.toString());

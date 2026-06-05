@@ -951,6 +951,39 @@ function App() {
     return new Date(mentor.createdAt).toDateString() === new Date().toDateString();
   }).length;
 
+  const getUserProfile = () => {
+    if (adminData && adminData.username) {
+      return {
+        label: adminData.username,
+        role: 'Admin',
+        color: '#10b981',
+        bg: '#ecfdf5',
+        border: '#a7f3d0',
+        iconColor: '#059669'
+      };
+    }
+    if (mentorData && mentorData.username) {
+      return {
+        label: mentorData.username,
+        role: 'Mentor',
+        color: '#0073b1',
+        bg: '#f0f9ff',
+        border: '#bae6fd',
+        iconColor: '#0073b1'
+      };
+    }
+    return {
+      label: 'Guest',
+      role: 'Guest',
+      color: '#475569',
+      bg: '#f8fafc',
+      border: '#cbd5e1',
+      iconColor: '#64748b'
+    };
+  };
+
+  const userProfile = getUserProfile();
+
   return (
     <div className="App">
       {/* Floating Check ATS Score Button */}
@@ -1525,6 +1558,31 @@ function App() {
 
           <nav className={isMobileMenuOpen ? "nav-open" : ""}>
             <ul className="nav-links">
+              {/* Mobile User/Guest Profile Badge */}
+              <li className="mobile-nav-item" style={{ margin: '0 0.5rem 1rem 0.5rem', listStyle: 'none' }}>
+                <div 
+                  className="guest-profile-badge" 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.55rem',
+                    background: userProfile.bg,
+                    padding: '0.5rem 1rem',
+                    borderRadius: '50px',
+                    border: `1.5px solid ${userProfile.border}`,
+                    fontSize: '0.95rem',
+                    fontWeight: '600',
+                    color: userProfile.color,
+                    width: 'fit-content'
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: userProfile.iconColor }}>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span>{userProfile.label}</span>
+                </div>
+              </li>
               <li>
                 <a href="#home" onClick={(e) => {
                   e.preventDefault();
@@ -1635,6 +1693,35 @@ function App() {
                     </button>
                   </div>
                 )}
+              </li>
+
+              {/* PC User/Guest Profile Badge */}
+              <li className="pc-nav-item" style={{ marginLeft: '0.5rem' }}>
+                <div 
+                  className="guest-profile-badge" 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.55rem',
+                    background: userProfile.bg,
+                    padding: '0.45rem 1rem',
+                    borderRadius: '50px',
+                    border: `1.5px solid ${userProfile.border}`,
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    color: userProfile.color,
+                    cursor: 'default',
+                    userSelect: 'none',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: userProfile.iconColor }}>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span>{userProfile.label}</span>
+                </div>
               </li>
             </ul>
           </nav>

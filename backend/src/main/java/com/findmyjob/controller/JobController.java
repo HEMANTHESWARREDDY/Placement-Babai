@@ -83,6 +83,12 @@ public class JobController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}/permanent")
+    public ResponseEntity<Void> deleteJobPermanently(@PathVariable String id) {
+        jobService.deleteJobPermanently(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Job>> searchJobs(@RequestParam String keyword) {
         return ResponseEntity.ok(jobService.searchJobs(keyword));

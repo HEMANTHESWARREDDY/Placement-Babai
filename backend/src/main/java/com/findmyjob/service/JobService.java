@@ -81,10 +81,6 @@ public class JobService {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
 
-        if (jobDetails.getExpiryDate() != null && isPastDate(jobDetails.getExpiryDate())) {
-            throw new RuntimeException("Expiry date is not valid. It must be a future date.");
-        }
-
         job.setTitle(jobDetails.getTitle());
         job.setCompany(jobDetails.getCompany());
         job.setCompanyLogo(jobDetails.getCompanyLogo());
@@ -118,6 +114,12 @@ public class JobService {
         job.setIsDeleted(true);
         job.setDeletedAt(java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata")));
         jobRepository.save(job);
+    }
+
+    public void deleteJobPermanently(String id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+        jobRepository.delete(job);
     }
 
     public void restoreJob(String id) {

@@ -1,0 +1,9 @@
+{
+  "name": "local-mongo",
+  "version": "1.0.0",
+  "description": "Local MongoDB Memory Server",
+  "main": "start-mongo.js",
+  "dependencies": {
+    "mongodb-memory-server": "^9.1.6"
+  }
+}
