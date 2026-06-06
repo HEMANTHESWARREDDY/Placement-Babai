@@ -1844,6 +1844,12 @@
     color: #64748b;
 }
 
+.session-info {
+    flex: 1;
+    min-width: 0;
+    padding-right: 1.5rem;
+}
+
 .session-link-btn {
     background: #f97316;
     color: white;
@@ -1853,6 +1859,8 @@
     font-size: 0.85rem;
     font-weight: 700;
     transition: all 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .session-link-btn:hover {

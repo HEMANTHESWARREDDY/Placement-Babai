@@ -127,7 +127,7 @@ function AdminDashboard({ adminData, onLogout }) {
         return stored === 'deleted' ? 'jobs' : (stored || 'jobs');
     }); // 'jobs', 'analytics', 'mentors', 'sessions'
     const [expandedAnalyticsJobId, setExpandedAnalyticsJobId] = useState(null);
-    const [jobViewMode, setJobViewMode] = useState('active'); // 'active', 'expired', 'deleted'
+    const [jobViewMode, setJobViewMode] = useState(() => localStorage.getItem('adminJobViewMode') || 'active'); // 'active', 'expired', 'deleted'
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDialog, setConfirmDialog] = useState({ show: false, message: '', onConfirm: null });
     const [autofillUrl, setAutofillUrl] = useState('');
@@ -373,6 +373,10 @@ function AdminDashboard({ adminData, onLogout }) {
     useEffect(() => {
         fetchJobs();
         fetchDeletedJobs();
+    }, [jobViewMode]);
+
+    useEffect(() => {
+        localStorage.setItem('adminJobViewMode', jobViewMode);
     }, [jobViewMode]);
 
     useEffect(() => {

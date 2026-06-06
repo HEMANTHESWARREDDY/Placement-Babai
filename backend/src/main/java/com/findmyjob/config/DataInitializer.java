@@ -26,6 +26,9 @@ public class DataInitializer implements CommandLineRunner {
     private com.findmyjob.repository.JobRepository jobRepository;
 
     @Autowired
+    private com.findmyjob.repository.MentorRepository mentorRepository;
+
+    @Autowired
     private org.springframework.data.mongodb.core.MongoOperations mongoOperations;
 
     @Override
@@ -229,6 +232,51 @@ public class DataInitializer implements CommandLineRunner {
                 jobRepository.save(j8);
 
                 System.out.println("✅ Seeded initial sample jobs");
+            }
+
+            // Seed approved mentors if none exist
+            if (mentorRepository.count() == 0) {
+                com.findmyjob.model.Mentor m1 = new com.findmyjob.model.Mentor();
+                m1.setName("Hemanth Kumar");
+                m1.setEmail("hemanth@placementbabai.com");
+                m1.setPhone("+91 98765 43210");
+                m1.setCompany("Placement Babai");
+                m1.setRole("Founder & Lead Mentor");
+                m1.setExperience("5+ years");
+                m1.setLinkedin("https://linkedin.com");
+                m1.setSkills("Career Guidance, Resume Building, Java, System Design");
+                m1.setBio("Helping students land their dream software engineering roles through structured mentorship and placement preparation.");
+                m1.setStatus("APPROVED");
+                m1.setUsername("hemanth");
+                m1.setPassword(passwordEncoder.encode("PlacementBabai@14"));
+                m1.setRating(4.9);
+                m1.setReviews(142);
+                m1.setAvatarBg("#7c3aed");
+                m1.setIsAvailable(true);
+                m1.setServices("[{\"keywords\":\"1:1 Mentorship, Career Guidance, Mock Interview\",\"title\":\"1:1 Mentorship\",\"price\":\"Free\",\"tag\":\"✨ Popular\"},{\"keywords\":\"Resume Review, ATS Optimization, Profile Evaluation\",\"title\":\"Resume Review\",\"price\":\"Free\",\"tag\":\"⭐ Best Seller\"}]");
+                mentorRepository.save(m1);
+
+                com.findmyjob.model.Mentor m2 = new com.findmyjob.model.Mentor();
+                m2.setName("Bobby");
+                m2.setEmail("bobby@placementbabai.com");
+                m2.setPhone("+91 99999 88888");
+                m2.setCompany("Google");
+                m2.setRole("Senior Software Engineer");
+                m2.setExperience("8+ years");
+                m2.setLinkedin("https://linkedin.com");
+                m2.setSkills("Algorithms, Machine Learning, Python, Scaling Systems");
+                m2.setBio("Ex-Amazon, ex-Microsoft engineer passionate about coaching aspiring devs to break into MAANG companies.");
+                m2.setStatus("APPROVED");
+                m2.setUsername("bobby");
+                m2.setPassword(passwordEncoder.encode("PlacementBabai@14"));
+                m2.setRating(5.0);
+                m2.setReviews(98);
+                m2.setAvatarBg("#ec4899");
+                m2.setIsAvailable(true);
+                m2.setServices("[{\"keywords\":\"1:1 Mentorship, Career Guidance, Mock Interview\",\"title\":\"1:1 Mentorship\",\"price\":\"Free\",\"tag\":\"✨ Popular\"},{\"keywords\":\"Resume Review, ATS Optimization, Profile Evaluation\",\"title\":\"Resume Review\",\"price\":\"Free\",\"tag\":\"⭐ Best Seller\"}]");
+                mentorRepository.save(m2);
+
+                System.out.println("✅ Seeded initial approved mentors");
             }
 
 

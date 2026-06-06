@@ -5,7 +5,7 @@ import './AdminBookings.css';
 function AdminBookings() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('PENDING'); // 'PENDING', 'APPROVED', 'SCHEDULED', 'REJECTED' or 'ALL'
+    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('adminBookingsTab') || 'PENDING'); // 'PENDING', 'APPROVED', 'SCHEDULED', 'REJECTED' or 'ALL'
     const [counts, setCounts] = useState({ PENDING: 0, APPROVED: 0, SCHEDULED: 0, REJECTED: 0, ALL: 0 });
     const [selectedBooking, setSelectedBooking] = useState(null);
 
@@ -65,6 +65,10 @@ function AdminBookings() {
     useEffect(() => {
         calculateCounts(bookings);
     }, [bookings]);
+
+    useEffect(() => {
+        localStorage.setItem('adminBookingsTab', activeTab);
+    }, [activeTab]);
 
     const fetchBookings = async () => {
         setLoading(true);

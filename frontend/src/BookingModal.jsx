@@ -112,6 +112,13 @@ const BookingModal = ({ pro, service, onClose }) => {
         }
     }, [pro.id, selectedDate]);
 
+    useEffect(() => {
+        const modalContent = document.querySelector('.booking-modal-content');
+        if (modalContent) {
+            modalContent.scrollTop = 0;
+        }
+    }, [step]);
+
     const fetchBookedSlots = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/bookings/mentor/${pro.id}`);

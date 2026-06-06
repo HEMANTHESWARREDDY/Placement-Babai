@@ -35,11 +35,11 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [bookings, setBookings] = useState([]);
     // Restore stable dashboard logic - removing broken persistence
 
-    const [showBookings, setShowBookings] = useState(false);
-    const [bookingTab, setBookingTab] = useState('Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
+    const [showBookings, setShowBookings] = useState(() => localStorage.getItem('mentorActiveView') === 'bookings');
+    const [bookingTab, setBookingTab] = useState(() => localStorage.getItem('mentorBookingTab') || 'Pending'); // 'Pending', 'Approved', 'Scheduled', 'History'
     const [sortBy, setSortBy] = useState('Newest'); // 'Newest', 'Oldest', 'A-Z'
     const [meetLinks, setMeetLinks] = useState({}); // { bookingId: 'url' }
-    const [showAnalytics, setShowAnalytics] = useState(false);
+    const [showAnalytics, setShowAnalytics] = useState(() => localStorage.getItem('mentorActiveView') === 'analytics');
     const [dailyViews, setDailyViews] = useState({});
     const [viewFilter, setViewFilter] = useState('today'); 
     const [selectedDate, setSelectedDate] = useState('');
@@ -63,6 +63,22 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
     const closeDialog = () => setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+
+    useEffect(() => {
+        if (showBookings) {
+            localStorage.setItem('mentorActiveView', 'bookings');
+        } else if (showAnalytics) {
+            localStorage.setItem('mentorActiveView', 'analytics');
+        } else if (isEditingProfile) {
+            localStorage.setItem('mentorActiveView', 'edit-profile');
+        } else {
+            localStorage.setItem('mentorActiveView', 'profile');
+        }
+    }, [showBookings, showAnalytics, isEditingProfile]);
+
+    useEffect(() => {
+        localStorage.setItem('mentorBookingTab', bookingTab);
+    }, [bookingTab]);
 
     useEffect(() => {
         fetchProfile();
@@ -417,7 +433,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
 
     const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
-    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingProfile, setIsEditingProfile] = useState(() => localStorage.getItem('mentorActiveView') === 'edit-profile');
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [activeServiceTab, setActiveServiceTab] = useState('All');
     const [serviceSearch, setServiceSearch] = useState('');

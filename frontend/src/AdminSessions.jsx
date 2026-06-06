@@ -39,7 +39,7 @@ function AdminSessions() {
     const [showForm, setShowForm] = useState(false);
     const [editingSession, setEditingSession] = useState(null);
     const [formData, setFormData] = useState(EMPTY_SESSION);
-    const [viewMode, setViewMode] = useState('active'); // 'active', 'expired', 'deleted'
+    const [viewMode, setViewMode] = useState(() => localStorage.getItem('adminSessionsViewMode') || 'active'); // 'active', 'expired', 'deleted'
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [formErrors, setFormErrors] = useState({});
     const [selectedSession, setSelectedSession] = useState(null);
@@ -56,6 +56,10 @@ function AdminSessions() {
 
     useEffect(() => {
         fetchSessions();
+    }, [viewMode]);
+
+    useEffect(() => {
+        localStorage.setItem('adminSessionsViewMode', viewMode);
     }, [viewMode]);
 
     const showToast = (message, type = 'success') => {
