@@ -153,7 +153,7 @@ function ProConnect({ onMentorLoginClick }) {
                     const serviceKeywords = finalServices.map(s => s.keywords || '').join(', ');
                     return {
                         ...m,
-                        exp: m.experience ? (m.experience.toLowerCase().includes('year') ? m.experience : `${m.experience} Years of experience`) : '1 Year of experience',
+                        exp: m.experience ? (m.experience.toLowerCase().includes('year') ? m.experience : `${m.experience} ${parseInt(m.experience, 10) === 1 ? 'Year' : 'Years'} of experience`) : '1 Year of experience',
                         rating: m.rating || '4.8',
                         initials: m.name ? m.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M',
                         image: m.image || null,

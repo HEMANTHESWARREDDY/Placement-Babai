@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from './config';
 import './AdminMentors.css';
 
+const formatExperience = (exp) => {
+    if (!exp) return '';
+    const expStr = exp.toString().trim();
+    if (expStr.toLowerCase().includes('year')) {
+        return expStr;
+    }
+    const num = parseInt(expStr, 10);
+    if (num === 1) {
+        return `${expStr} Year`;
+    }
+    return `${expStr} Years`;
+};
+
 function AdminMentors() {
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -167,7 +180,7 @@ function AdminMentors() {
                         </div>
                         <div className="modal-section">
                             <label>Experience</label>
-                            <p>{mentor.experience} Years</p>
+                            <p>{formatExperience(mentor.experience)}</p>
                         </div>
                         <div className="modal-section">
                             <label>Contact Info</label>
@@ -324,7 +337,7 @@ function AdminMentors() {
                                         <div style={{ fontWeight: '600' }}>{mentor.role}</div>
                                         <div style={{ color: '#64748b', fontSize: '0.85rem' }}>@ {mentor.company}</div>
                                     </td>
-                                    <td data-label="Experience">{mentor.experience} Years</td>
+                                    <td data-label="Experience">{formatExperience(mentor.experience)}</td>
                                     <td data-label="Contact / Links">
                                         <div style={{ fontSize: '0.85rem', marginBottom: '4px' }}>{mentor.email}</div>
                                         {mentor.phone && <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{mentor.phone}</div>}
