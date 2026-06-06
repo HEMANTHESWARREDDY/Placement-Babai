@@ -580,6 +580,10 @@ function InterviewPrep() {
                                                 ))}
                                             </div>
 
+                                            <button className="ip-shuffle-btn-mobile" onClick={handleAiShuffle}>
+                                                <span className="ip-shuffle-icon">🔀</span> Shuffle Questions
+                                            </button>
+
                                             {totalPages > 1 && (
                                                 <div className="ip-pagination">
                                                     <button

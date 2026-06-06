@@ -2127,6 +2127,10 @@
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
 }
 
+.ip-shuffle-btn-mobile {
+    display: none;
+}
+
 @media (max-width: 640px) {
     .sessions-toolbar {
         flex-direction: column;
@@ -2146,5 +2150,30 @@
         margin-top: 1rem !important;
         margin-bottom: 1.5rem !important;
         border-radius: 20px !important;
+    }
+
+    .ip-shuffle-btn-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        max-width: 250px;
+        margin: 1.5rem auto 1rem auto;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+    }
+
+    .ip-shuffle-btn-mobile:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
     }
 }
