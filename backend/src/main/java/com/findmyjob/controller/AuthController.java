@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -171,7 +172,8 @@ public class AuthController {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Username must be 3-20 alphanumeric characters or underscores"));
             }
-            if (!newUsername.equals(admin.getUsername()) && adminRepository.existsByUsername(newUsername)) {
+            Optional<Admin> existingUsernameAdmin = adminRepository.findByUsername(newUsername);
+            if (existingUsernameAdmin.isPresent() && !existingUsernameAdmin.get().getId().equals(admin.getId())) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Username already exists"));
             }
@@ -181,7 +183,8 @@ public class AuthController {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Invalid email format"));
             }
-            if (!newEmail.equals(admin.getEmail()) && adminRepository.existsByEmail(newEmail)) {
+            Optional<Admin> existingEmailAdmin = adminRepository.findByEmail(newEmail);
+            if (existingEmailAdmin.isPresent() && !existingEmailAdmin.get().getId().equals(admin.getId())) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Email already exists"));
             }
@@ -191,7 +194,8 @@ public class AuthController {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Invalid phone number format (at least 10 digits)"));
             }
-            if (!newPhoneNumber.equals(admin.getPhoneNumber()) && adminRepository.existsByPhoneNumber(newPhoneNumber)) {
+            Optional<Admin> existingPhoneAdmin = adminRepository.findByPhoneNumber(newPhoneNumber);
+            if (existingPhoneAdmin.isPresent() && !existingPhoneAdmin.get().getId().equals(admin.getId())) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Phone Number already exists"));
             }
