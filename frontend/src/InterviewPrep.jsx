@@ -468,7 +468,7 @@ function InterviewPrep() {
 
                 {top3Sessions.length > 0 && (
                     <div className="ip-homepage-sessions">
-                        <h3 className="ip-section-subtitle">🎁 Featured Free Mentorship Sessions</h3>
+                        <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
                         <div className="ip-sessions-grid">
                             {top3Sessions.map(session => (
                                 <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
@@ -479,9 +479,37 @@ function InterviewPrep() {
                                             📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })}
                                         </div>
                                     )}
-                                    <p className="ip-session-desc-home">
-                                        {session.description ? (session.description.substring(0, 100) + (session.description.length > 100 ? '...' : '')) : ''}
-                                    </p>
+                                    {session.skills ? (
+                                        <div className="ip-session-skills-home" style={{ 
+                                            display: 'flex', 
+                                            gap: '0.4rem', 
+                                            flexWrap: 'nowrap', 
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            marginBottom: '1.25rem',
+                                            marginTop: '0.5rem',
+                                            width: '100%'
+                                        }}>
+                                            {session.skills.split(',').map((skill, idx) => (
+                                                <span key={idx} className="ip-session-skill-tag-home" style={{
+                                                    fontSize: '0.68rem',
+                                                    background: 'rgba(124, 58, 237, 0.1)',
+                                                    color: '#a855f7',
+                                                    padding: '3px 8px',
+                                                    borderRadius: '6px',
+                                                    fontWeight: '600',
+                                                    border: '1px solid rgba(124, 58, 237, 0.2)',
+                                                    whiteSpace: 'nowrap',
+                                                    display: 'inline-block'
+                                                }}>
+                                                    {skill.trim()}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div style={{ height: '24px', marginBottom: '1.25rem' }} />
+                                    )}
                                     <div className="ip-session-footer-home">
                                         <button className="ip-session-view-btn" onClick={(e) => { e.stopPropagation(); setSelectedSession(session); }}>Details</button>
                                         <a 
