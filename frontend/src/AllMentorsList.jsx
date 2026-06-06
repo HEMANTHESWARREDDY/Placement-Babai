@@ -299,7 +299,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                         const num = parseInt(expValue);
                                         if (isNaN(num)) return expValue;
                                         return `${num} ${num === 1 ? 'Year' : 'Years'} of experience`;
-                                    })()} | {pro.topics ? pro.topics.substring(0, 150) : 'No expertise added yet'}
+                                    })()} | {pro.topics ? pro.topics.substring(0, 150) : (pro.skills ? pro.skills.substring(0, 150) : 'No expertise added yet')}
                                 </div>
 
                                 <div className="aml-stats-row">

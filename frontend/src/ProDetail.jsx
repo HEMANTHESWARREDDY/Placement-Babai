@@ -110,7 +110,7 @@ function ProDetail({ pro, onClose }) {
                             </div>
 
                             <div className="preview-subtitle" style={{color: '#475569', marginBottom: '1rem', fontSize: '1rem'}}>
-                                {pro.role} {pro.company ? `@ ${pro.company}` : ''} {pro.topics ? `| ${pro.topics}` : ''}
+                                {pro.role} {pro.company ? `@ ${pro.company}` : ''} {(pro.topics || pro.skills) ? `| ${pro.topics || pro.skills}` : ''}
                             </div>
 
                             <div className="preview-badges">
@@ -153,7 +153,7 @@ function ProDetail({ pro, onClose }) {
                                             </div>
                                             {expandedSections.topics && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                                    {pro.topics || "No topics added yet."}
+                                                    {pro.topics || pro.skills || "No topics added yet."}
                                                 </div>
                                             )}
                                         </div>
@@ -173,7 +173,7 @@ function ProDetail({ pro, onClose }) {
                                             </div>
                                             {expandedSections.work && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                                    {pro.workExperience || "No work experience added yet."}
+                                                    {pro.workExperience || (pro.role && pro.company ? `${pro.role} at ${pro.company}` : (pro.role || pro.company || "No work experience added yet."))}
                                                 </div>
                                             )}
                                         </div>
