@@ -190,6 +190,11 @@ function InterviewPrep() {
             return s.sessionDate === todayStr;
         });
 
+    const top3Sessions = sessions
+        .filter(s => !isSessionPast(s))
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+        .slice(0, 3);
+
     const fetchCommunityData = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/questions/community`);
@@ -460,6 +465,40 @@ function InterviewPrep() {
                     <h2><span>Explore Prep<span className="highlight-text">Zo</span></span></h2>
                     <p>Browse company+role combos from top companies — search questions</p>
                 </div>
+
+                {top3Sessions.length > 0 && (
+                    <div className="ip-homepage-sessions">
+                        <h3 className="ip-section-subtitle">🎁 Featured Free Mentorship Sessions</h3>
+                        <div className="ip-sessions-grid">
+                            {top3Sessions.map(session => (
+                                <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
+                                    <div className="ip-session-badge-home">⚡ FREE SESSION</div>
+                                    <h4 className="ip-session-title-home">{session.title}</h4>
+                                    {session.sessionDate && (
+                                        <div className="ip-session-date-home">
+                                            📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })}
+                                        </div>
+                                    )}
+                                    <p className="ip-session-desc-home">
+                                        {session.description ? (session.description.substring(0, 100) + (session.description.length > 100 ? '...' : '')) : ''}
+                                    </p>
+                                    <div className="ip-session-footer-home">
+                                        <button className="ip-session-view-btn" onClick={(e) => { e.stopPropagation(); setSelectedSession(session); }}>Details</button>
+                                        <a 
+                                            href={session.link} 
+                                            target="_blank" 
+                                            rel="noreferrer" 
+                                            className="ip-session-join-btn" 
+                                            onClick={(e) => { e.stopPropagation(); recordSessionJoin(session.id); }}
+                                        >
+                                            Join Now
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
             {selectedCompany && (
                 <div className="ip-inline-questions">

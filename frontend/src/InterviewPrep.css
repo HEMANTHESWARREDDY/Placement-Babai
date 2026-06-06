@@ -1999,6 +1999,134 @@
     overflow: visible;
 }
 
+/* Homepage sessions section */
+.ip-homepage-sessions {
+    margin-top: 2.5rem;
+    padding: 0 1rem;
+    text-align: left;
+}
+
+.ip-section-subtitle {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.ip-sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ip-session-card-home {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.ip-session-card-home:hover {
+    transform: translateY(-4px);
+    border-color: #f97316;
+    box-shadow: 0 12px 30px rgba(249, 115, 22, 0.08);
+}
+
+.ip-session-badge-home {
+    align-self: flex-start;
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.ip-session-title-home {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+}
+
+.ip-session-date-home {
+    font-size: 0.8rem;
+    color: #f97316;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.ip-session-desc-home {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+}
+
+.ip-session-footer-home {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.ip-session-view-btn {
+    flex: 1;
+    background: #27272a;
+    color: #e4e4e7;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ip-session-view-btn:hover {
+    background: #3f3f46;
+    color: white;
+}
+
+.ip-session-join-btn {
+    flex: 1.2;
+    text-align: center;
+    background: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ip-session-join-btn:hover {
+    background: #ea580c;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
 @media (max-width: 640px) {
     .sessions-toolbar {
         flex-direction: column;
