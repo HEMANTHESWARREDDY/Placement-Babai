@@ -248,8 +248,9 @@
     .session-detail-modal {
         width: 100%;
         max-width: 480px;
-        max-height: 75vh;
+        max-height: 88vh;
         margin-top: 1rem;
+        margin-bottom: 1.5rem;
         border-radius: 20px;
     }
 
