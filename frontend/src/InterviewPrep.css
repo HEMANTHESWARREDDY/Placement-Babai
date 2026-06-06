@@ -1982,9 +1982,23 @@
     overflow: visible;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
     .sessions-toolbar {
         flex-direction: column;
         gap: 0.75rem;
+    }
+
+    .ip-modal-overlay {
+        align-items: flex-start !important;
+        padding: 1.5rem 1rem !important;
+        overflow-y: auto;
+    }
+
+    .ip-sessions-modal {
+        width: 100% !important;
+        max-width: 480px !important;
+        max-height: 75vh !important;
+        margin-top: 1rem !important;
+        border-radius: 20px !important;
     }
 }

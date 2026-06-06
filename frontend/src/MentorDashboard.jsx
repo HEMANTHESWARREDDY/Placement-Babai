@@ -4,6 +4,16 @@ import './ProDetail.css';
 import BookingModal from './BookingModal';
 import { API_BASE_URL } from './config';
 
+const formatTopicsOrSkills = (text) => {
+    if (!text) return '';
+    const items = text.split(',').map(item => item.trim()).filter(Boolean);
+    if (items.length <= 4) {
+        return items.join(', ');
+    } else {
+        return items.slice(0, 4).join(', ') + `, +${items.length - 4}`;
+    }
+};
+
 function MentorDashboard({ mentorAuth, onLogout }) {
     const formatDateTime = (dateVal) => {
         if (!dateVal) return '—';
@@ -1043,7 +1053,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                         </div>
 
                         <div className="preview-subtitle">
-                            {profile.role} @ {profile.company} {(profile.topics || profile.skills) ? `| ${profile.topics || profile.skills}` : ''}
+                            {profile.role} @ {profile.company} {(profile.topics || profile.skills) ? `| ${formatTopicsOrSkills(profile.topics || profile.skills)}` : ''}
                             {isEditingProfile && (
                                 <div className="edit-buttons-stack">
                                     <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('role', 'Job Role', 'text')}>✏️ Role</button>
@@ -1129,7 +1139,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     </div>
                                     {expandedSections.work && (
                                         <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                            {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company}` : (profile.role || profile.company || "No work experience added yet."))}
+                                            {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company} (${(() => {
+                                                const expVal = profile.experience || '';
+                                                const num = parseInt(expVal);
+                                                if (isNaN(num)) return expVal || '1 Year';
+                                                return `${num} ${num === 1 ? 'Year' : 'Years'}`;
+                                            })()})` : (profile.role || profile.company || "No work experience added yet."))}
                                         </div>
                                     )}
                                 </div>
@@ -1612,7 +1627,7 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                             </div>
 
                                 <div className="preview-subtitle" style={{color: '#64748b', marginBottom: '1.5rem', fontSize: '1.05rem'}}>
-                                    {profile.role} @ {profile.company} {(profile.topics || profile.skills) ? `| ${profile.topics || profile.skills}` : ''}
+                                    {profile.role} @ {profile.company} {(profile.topics || profile.skills) ? `| ${formatTopicsOrSkills(profile.topics || profile.skills)}` : ''}
                                 </div>
 
                                 <div className="preview-badges">
@@ -1666,7 +1681,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                             <div className="preview-accordion-header" onClick={() => toggleAccordion('work')} style={{cursor: 'pointer'}}>Work Experience <span>{expandedSections.work ? '^' : 'v'}</span></div>
                                             {expandedSections.work && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                                    {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company}` : (profile.role || profile.company || "No work experience added yet."))}
+                                                    {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company} (${(() => {
+                                                         const expVal = profile.experience || '';
+                                                         const num = parseInt(expVal);
+                                                         if (isNaN(num)) return expVal || '1 Year';
+                                                         return `${num} ${num === 1 ? 'Year' : 'Years'}`;
+                                                     })()})` : (profile.role || profile.company || "No work experience added yet."))}
                                                 </div>
                                             )}
                                         </div>

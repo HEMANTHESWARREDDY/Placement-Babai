@@ -37,7 +37,7 @@ public class MentorController {
     @PostMapping("/apply")
     public ResponseEntity<?> applyAsMentor(@RequestBody Map<String, String> payload) {
         // Validation for mandatory fields
-        String[] requiredFields = {"name", "email", "phone", "company", "role", "experience", "linkedin", "skills", "bio", "username", "password", "confirmPassword"};
+        String[] requiredFields = {"name", "email", "phone", "company", "role", "experience", "linkedin", "skills", "bio", "username", "password", "confirmPassword", "education"};
         for (String field : requiredFields) {
             if (payload.get(field) == null || payload.get(field).isBlank()) {
                 return ResponseEntity.badRequest().body(Map.of("error", field.substring(0, 1).toUpperCase() + field.substring(1) + " is required"));
@@ -82,6 +82,7 @@ public class MentorController {
         applicant.setLinkedin(payload.get("linkedin"));
         applicant.setSkills(payload.get("skills"));
         applicant.setBio(payload.get("bio"));
+        applicant.setEducation(payload.get("education"));
         applicant.setUsername(username);
         applicant.setPassword(passwordEncoder.encode(password));
         applicant.setStatus("PENDING");

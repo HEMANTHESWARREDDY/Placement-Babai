@@ -239,9 +239,18 @@
 }
 
 @media (max-width: 640px) {
+    .session-detail-overlay {
+        align-items: flex-start !important;
+        padding: 1.5rem 1rem !important;
+        overflow-y: auto;
+    }
+
     .session-detail-modal {
-        width: 95%;
-        max-height: 95vh;
+        width: 100%;
+        max-width: 480px;
+        max-height: 75vh;
+        margin-top: 1rem;
+        border-radius: 20px;
     }
 
     .sd-scroll-content {

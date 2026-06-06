@@ -200,6 +200,12 @@ function AdminMentors() {
                                 ))}
                             </div>
                         </div>
+                        {mentor.education && (
+                            <div className="modal-section">
+                                <label>Education</label>
+                                <p>{mentor.education}</p>
+                            </div>
+                        )}
                         {mentor.services && (
                             <div className="modal-section">
                                 <label>Services Offered</label>

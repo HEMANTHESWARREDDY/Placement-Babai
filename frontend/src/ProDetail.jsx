@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './ProDetail.css';
 import BookingModal from './BookingModal';
 
+const formatTopicsOrSkills = (text) => {
+    if (!text) return '';
+    const items = text.split(',').map(item => item.trim()).filter(Boolean);
+    if (items.length <= 4) {
+        return items.join(', ');
+    } else {
+        return items.slice(0, 4).join(', ') + `, +${items.length - 4}`;
+    }
+};
 
 function ProDetail({ pro, onClose }) {
     const [mainTab, setMainTab] = useState('Services');
@@ -110,11 +119,18 @@ function ProDetail({ pro, onClose }) {
                             </div>
 
                             <div className="preview-subtitle" style={{color: '#475569', marginBottom: '1rem', fontSize: '1rem'}}>
-                                {pro.role} {pro.company ? `@ ${pro.company}` : ''} {(pro.topics || pro.skills) ? `| ${pro.topics || pro.skills}` : ''}
+                                {pro.role} {pro.company ? `@ ${pro.company}` : ''} {(pro.topics || pro.skills) ? `| ${formatTopicsOrSkills(pro.topics || pro.skills)}` : ''}
                             </div>
 
                             <div className="preview-badges">
-                                <div className="preview-badge" style={{background: '#f1f5f9', color: '#334155', border: 'none'}}>💼 {pro.exp || '1 year of Experience'}</div>
+                                <div className="preview-badge" style={{background: '#f1f5f9', color: '#334155', border: 'none'}}>
+                                    💼 {(() => {
+                                        const expVal = pro.experience || pro.exp || '';
+                                        const num = parseInt(expVal);
+                                        if (isNaN(num)) return expVal || '1 Year of experience';
+                                        return `${num} ${num === 1 ? 'Year' : 'Years'} of experience`;
+                                    })()}
+                                </div>
                             </div>
 
                             {/* Main Tabs */}
@@ -173,7 +189,12 @@ function ProDetail({ pro, onClose }) {
                                             </div>
                                             {expandedSections.work && (
                                                 <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                                    {pro.workExperience || (pro.role && pro.company ? `${pro.role} at ${pro.company}` : (pro.role || pro.company || "No work experience added yet."))}
+                                                    {pro.workExperience || (pro.role && pro.company ? `${pro.role} at ${pro.company} (${(() => {
+                                                        const expVal = pro.experience || pro.exp || '';
+                                                        const num = parseInt(expVal);
+                                                        if (isNaN(num)) return expVal || '1 Year';
+                                                        return `${num} ${num === 1 ? 'Year' : 'Years'}`;
+                                                    })()})` : (pro.role || pro.company || "No work experience added yet."))}
                                                 </div>
                                             )}
                                         </div>

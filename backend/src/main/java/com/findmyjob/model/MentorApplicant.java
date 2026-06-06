@@ -20,6 +20,7 @@ public class MentorApplicant {
     private String linkedin;
     private String skills;
     private String bio;
+    private String education;
 
     private String status = "PENDING"; // PENDING, APPROVED, REJECTED
 

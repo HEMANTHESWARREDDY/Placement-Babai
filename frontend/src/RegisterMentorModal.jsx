@@ -13,6 +13,7 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
         linkedin: '',
         skills: '',
         bio: '',
+        education: '',
         username: '',
         password: '',
         confirmPassword: '',
@@ -65,7 +66,7 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
         }
 
         // Mandatory fields
-        const requiredFields = ['name', 'linkedin', 'company', 'role', 'experience', 'skills', 'bio'];
+        const requiredFields = ['name', 'linkedin', 'company', 'role', 'experience', 'skills', 'bio', 'education'];
         requiredFields.forEach(field => {
             if (!formData[field]) {
                 newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
@@ -204,6 +205,11 @@ function RegisterMentorModal({ onClose, onLoginClick }) {
                                     <label>Expertise/Skills (comma separated) *</label>
                                     <input type="text" name="skills" required placeholder="React, Node.js, System Design" value={formData.skills} onChange={handleChange} className={errors.skills ? 'input-error' : ''} />
                                     {errors.skills && <div className="rm-error-msg">{errors.skills}</div>}
+                                </div>
+                                <div className="rm-form-group">
+                                    <label>Education / Degree *</label>
+                                    <input type="text" name="education" required placeholder="B.Tech in Computer Science / MBA, etc." value={formData.education} onChange={handleChange} className={errors.education ? 'input-error' : ''} />
+                                    {errors.education && <div className="rm-error-msg">{errors.education}</div>}
                                 </div>
                             </div>
 

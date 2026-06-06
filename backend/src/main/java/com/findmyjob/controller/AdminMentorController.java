@@ -90,6 +90,7 @@ public class AdminMentorController {
             mentor.setLinkedin(applicant.getLinkedin());
             mentor.setSkills(applicant.getSkills());
             mentor.setBio(applicant.getBio());
+            mentor.setEducation(applicant.getEducation());
             mentor.setUsername(applicant.getUsername());
             mentor.setPassword(applicant.getPassword());
             mentor.setStatus("APPROVED");
