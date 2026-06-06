@@ -257,6 +257,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+    max-height: 3.35rem;
+    overflow: hidden;
 }
 
 .aj-skill-tag {

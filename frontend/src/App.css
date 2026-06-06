@@ -936,6 +936,8 @@
   margin-top: auto;
   padding-top: 0.8rem;
   border-top: 1px solid #e5e7eb;
+  max-height: 4.45rem;
+  overflow: hidden;
 }
 
 .skill-tag {
