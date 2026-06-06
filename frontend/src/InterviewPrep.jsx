@@ -657,7 +657,7 @@ function InterviewPrep() {
                                                       {session.description} {session.schedule && `• ${session.schedule}`}
                                                   </p>
                                                   {session.skills && (
-                                                      <div className="session-skills-tags" style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+                                                      <div className="session-skills-tags" style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.4rem', maxHeight: '1.4rem', overflow: 'hidden' }}>
                                                           {session.skills.split(',').map((skill, idx) => (
                                                               <span key={idx} className="session-skill-tag" style={{
                                                                   fontSize: '0.65rem',
