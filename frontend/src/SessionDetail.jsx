@@ -40,7 +40,7 @@ function SessionDetail({ session, onClose }) {
                 
                 <div className="sd-scroll-content">
                     <div className="sd-header">
-                        <div className="sd-badge">🚀 Mentorship Session</div>
+                        <div className="sd-badge">🚀 Free Session</div>
                         <h2 className="sd-title">{session.title}</h2>
                         {session.sessionDate && (
                             <div className="sd-date-tag">
@@ -93,7 +93,7 @@ function SessionDetail({ session, onClose }) {
 
                         <div className="sd-info-banner">
                             <span className="sd-banner-icon">✨</span>
-                            <p>This is a free mentorship session. Make sure to join on time!</p>
+                            <p>This is a free session. Make sure to join on time!</p>
                         </div>
                     </div>
                 </div>
