@@ -2306,9 +2306,20 @@
     font-weight: 700;
     color: #1e293b;
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.welcome-username-row {
+    display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+}
+
+.welcome-tag-row {
+    margin-top: 2px;
 }
 
 .mentor-role-badge {

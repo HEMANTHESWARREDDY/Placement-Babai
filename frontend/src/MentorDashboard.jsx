@@ -609,7 +609,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
 
                     <div className="mentor-welcome-wrap">
                         <div className="welcome-text-new">
-                            Welcome back! 👋 {profile?.username || mentorAuth?.username} <span className="mentor-role-badge">@Mentor</span>
+                            <div className="welcome-username-row">
+                                Welcome back! 👋 {profile?.username || mentorAuth?.username}
+                            </div>
+                            <div className="welcome-tag-row">
+                                <span className="mentor-role-badge">@Mentor</span>
+                            </div>
                         </div>
                         <button 
                             onClick={(e) => { e.preventDefault(); setIsEditingProfile(true); }}
