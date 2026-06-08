@@ -2016,6 +2016,15 @@
     gap: 0.6rem;
 }
 
+.ip-homepage-sessions-container {
+    position: relative;
+    width: 100%;
+}
+
+.ip-scroll-btn {
+    display: none;
+}
+
 .ip-sessions-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -2156,24 +2165,84 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
-        width: 100%;
-        max-width: 250px;
-        margin: 1.5rem auto 1rem auto;
-        padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 0.9rem;
+        gap: 0.4rem;
+        width: auto;
+        max-width: 200px;
+        margin: 1.2rem auto 0.8rem auto;
+        padding: 0.5rem 1.2rem;
+        background: rgba(59, 130, 246, 0.08);
+        border: 1px dashed rgba(59, 130, 246, 0.4);
+        border-radius: 10px;
+        color: #3b82f6;
+        font-size: 0.8rem;
         font-weight: 700;
         cursor: pointer;
         transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
     }
 
     .ip-shuffle-btn-mobile:hover {
+        background: #3b82f6;
+        color: white;
+        border-style: solid;
+        border-color: #3b82f6;
         transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .ip-sessions-grid {
+        display: flex !important;
+        grid-template-columns: none !important;
+        overflow-x: auto !important;
+        gap: 1rem !important;
+        scroll-snap-type: x mandatory !important;
+        scrollbar-width: none !important;
+        padding-bottom: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .ip-sessions-grid::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .ip-session-card-home {
+        min-width: 290px !important;
+        flex: 0 0 85% !important;
+        scroll-snap-align: center !important;
+        margin-bottom: 0 !important;
+    }
+
+    .ip-scroll-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(24, 24, 27, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #f1f5f9;
+        font-size: 1.6rem;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .ip-scroll-btn:hover {
+        background: #f97316;
+        border-color: #f97316;
+        color: white;
+    }
+
+    .ip-scroll-btn.left {
+        left: -12px;
+    }
+
+    .ip-scroll-btn.right {
+        right: -12px;
     }
 }

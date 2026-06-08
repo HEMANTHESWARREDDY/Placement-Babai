@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './InterviewPrep.css';
 import CustomSelect from './CustomSelect';
 import SessionDetail from './SessionDetail';
@@ -194,6 +194,18 @@ function InterviewPrep() {
         .filter(s => !isSessionPast(s))
         .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
         .slice(0, 3);
+
+    const sessionsGridRef = useRef(null);
+
+    const scrollSessionsGrid = (direction) => {
+        if (sessionsGridRef.current) {
+            const scrollAmount = sessionsGridRef.current.offsetWidth * 0.8;
+            sessionsGridRef.current.scrollBy({
+                left: direction === 'right' ? scrollAmount : -scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     const fetchCommunityData = async () => {
         try {
@@ -469,61 +481,69 @@ function InterviewPrep() {
                 {top3Sessions.length > 0 && (
                     <div className="ip-homepage-sessions">
                         <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
-                        <div className="ip-sessions-grid">
-                            {top3Sessions.map(session => (
-                                <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
-                                    <div className="ip-session-badge-home">⚡ FREE SESSION</div>
-                                    <h4 className="ip-session-title-home">{session.title}</h4>
-                                    {session.sessionDate && (
-                                        <div className="ip-session-date-home">
-                                            📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })}
+                        <div className="ip-homepage-sessions-container">
+                            <div className="ip-sessions-grid" ref={sessionsGridRef}>
+                                {top3Sessions.map(session => (
+                                    <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
+                                        <div className="ip-session-badge-home">⚡ FREE SESSION</div>
+                                        <h4 className="ip-session-title-home">{session.title}</h4>
+                                        {session.sessionDate && (
+                                            <div className="ip-session-date-home">
+                                                📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })}
+                                            </div>
+                                        )}
+                                        {session.skills ? (
+                                            <div className="ip-session-skills-home" style={{ 
+                                                display: 'flex', 
+                                                gap: '0.4rem', 
+                                                flexWrap: 'nowrap', 
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                marginBottom: '1.25rem',
+                                                marginTop: '0.5rem',
+                                                width: '100%'
+                                            }}>
+                                                {session.skills.split(',').map((skill, idx) => (
+                                                    <span key={idx} className="ip-session-skill-tag-home" style={{
+                                                        fontSize: '0.68rem',
+                                                        background: 'rgba(124, 58, 237, 0.1)',
+                                                        color: '#a855f7',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '6px',
+                                                        fontWeight: '600',
+                                                        border: '1px solid rgba(124, 58, 237, 0.2)',
+                                                        whiteSpace: 'nowrap',
+                                                        display: 'inline-block'
+                                                    }}>
+                                                        {skill.trim()}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div style={{ height: '24px', marginBottom: '1.25rem' }} />
+                                        )}
+                                        <div className="ip-session-footer-home">
+                                            <button className="ip-session-view-btn" onClick={(e) => { e.stopPropagation(); setSelectedSession(session); }}>Details</button>
+                                            <a 
+                                                href={session.link} 
+                                                target="_blank" 
+                                                rel="noreferrer" 
+                                                className="ip-session-join-btn" 
+                                                onClick={(e) => { e.stopPropagation(); recordSessionJoin(session.id); }}
+                                            >
+                                                Join Now
+                                            </a>
                                         </div>
-                                    )}
-                                    {session.skills ? (
-                                        <div className="ip-session-skills-home" style={{ 
-                                            display: 'flex', 
-                                            gap: '0.4rem', 
-                                            flexWrap: 'nowrap', 
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                            marginBottom: '1.25rem',
-                                            marginTop: '0.5rem',
-                                            width: '100%'
-                                        }}>
-                                            {session.skills.split(',').map((skill, idx) => (
-                                                <span key={idx} className="ip-session-skill-tag-home" style={{
-                                                    fontSize: '0.68rem',
-                                                    background: 'rgba(124, 58, 237, 0.1)',
-                                                    color: '#a855f7',
-                                                    padding: '3px 8px',
-                                                    borderRadius: '6px',
-                                                    fontWeight: '600',
-                                                    border: '1px solid rgba(124, 58, 237, 0.2)',
-                                                    whiteSpace: 'nowrap',
-                                                    display: 'inline-block'
-                                                }}>
-                                                    {skill.trim()}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div style={{ height: '24px', marginBottom: '1.25rem' }} />
-                                    )}
-                                    <div className="ip-session-footer-home">
-                                        <button className="ip-session-view-btn" onClick={(e) => { e.stopPropagation(); setSelectedSession(session); }}>Details</button>
-                                        <a 
-                                            href={session.link} 
-                                            target="_blank" 
-                                            rel="noreferrer" 
-                                            className="ip-session-join-btn" 
-                                            onClick={(e) => { e.stopPropagation(); recordSessionJoin(session.id); }}
-                                        >
-                                            Join Now
-                                        </a>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
+                            {top3Sessions.length > 1 && (
+                                <>
+                                    <button className="ip-scroll-btn left" onClick={(e) => { e.stopPropagation(); scrollSessionsGrid('left'); }}>‹</button>
+                                    <button className="ip-scroll-btn right" onClick={(e) => { e.stopPropagation(); scrollSessionsGrid('right'); }}>›</button>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}
