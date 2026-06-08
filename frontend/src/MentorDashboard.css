@@ -2311,6 +2311,18 @@
     flex-wrap: wrap;
 }
 
+.mentor-role-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #bae6fd;
+}
+
 @media (max-width: 768px) {
     .mentor-welcome-wrap {
         flex-direction: column;
