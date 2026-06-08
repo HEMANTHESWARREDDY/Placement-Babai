@@ -2192,7 +2192,7 @@
     height: 42px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
+    border: none;
 }
 
 .request-bell {
@@ -2292,13 +2292,37 @@
     }
 }
 
-.welcome-name-pc {
-    display: none;
+.mentor-welcome-wrap {
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
 }
 
-@media (min-width: 1025px) {
-    .welcome-name-pc {
-        display: inline;
+.welcome-text-new {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .mentor-welcome-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .welcome-text-new {
+        font-size: 1.35rem;
     }
 }
 /* Professional Toast System */

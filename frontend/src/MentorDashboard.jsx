@@ -607,16 +607,9 @@ function MentorDashboard({ mentorAuth, onLogout }) {
             <div className={`mentor-main-content ${isEditingProfile ? 'editing-mode' : ''}`}>
                 {(!showBookings && !isEditingProfile && !showAnalytics) && (
 
-                    <div style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto 2rem auto',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '0 10px'
-                    }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1e293b' }}>
-                            Welcome back! 👋 <span className="welcome-name-pc">{profile?.name}</span>
+                    <div className="mentor-welcome-wrap">
+                        <div className="welcome-text-new">
+                            Welcome back! 👋 {profile?.name || profile?.username}
                         </div>
                         <button 
                             onClick={(e) => { e.preventDefault(); setIsEditingProfile(true); }}
