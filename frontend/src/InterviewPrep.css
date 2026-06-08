@@ -2006,23 +2006,57 @@
     text-align: left;
 }
 
+.ip-section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+    width: 100%;
+}
+
 .ip-section-subtitle {
     font-size: 1.35rem;
     font-weight: 700;
     color: #f1f5f9;
-    margin-bottom: 1.5rem;
+    margin: 0;
     display: flex;
     align-items: center;
     gap: 0.6rem;
 }
 
+.ip-view-all-btn {
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    padding: 0.45rem 1.1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.ip-view-all-btn:hover {
+    background: #f97316;
+    color: white;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
+.ip-view-all-btn .arrow {
+    transition: transform 0.2s ease;
+}
+
+.ip-view-all-btn:hover .arrow {
+    transform: translateX(3px);
+}
+
 .ip-homepage-sessions-container {
     position: relative;
     width: 100%;
-}
-
-.ip-scroll-btn {
-    display: none;
 }
 
 .ip-sessions-grid {
@@ -2211,38 +2245,12 @@
         margin-bottom: 0 !important;
     }
 
-    .ip-scroll-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: rgba(24, 24, 27, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #f1f5f9;
-        font-size: 1.6rem;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.2s ease;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    .ip-section-subtitle {
+        font-size: 1.15rem !important;
     }
 
-    .ip-scroll-btn:hover {
-        background: #f97316;
-        border-color: #f97316;
-        color: white;
-    }
-
-    .ip-scroll-btn.left {
-        left: -12px;
-    }
-
-    .ip-scroll-btn.right {
-        right: -12px;
+    .ip-view-all-btn {
+        padding: 0.35rem 0.85rem !important;
+        font-size: 0.75rem !important;
     }
 }

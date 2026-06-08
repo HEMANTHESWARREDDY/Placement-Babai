@@ -59,7 +59,20 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
     const [isAnalyticsFilterOpen, setIsAnalyticsFilterOpen] = useState(false);
-    
+    const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
+    const [isEditingProfile, setIsEditingProfile] = useState(() => localStorage.getItem('mentorActiveView') === 'edit-profile');
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
+    const [activeServiceTab, setActiveServiceTab] = useState('All');
+    const [serviceSearch, setServiceSearch] = useState('');
+    const [serviceSort, setServiceSort] = useState('A-Z'); // 'A-Z', 'Z-A', 'Newest', 'Oldest'
+    const [mainTab, setMainTab] = useState('About');
+    const [expandedSections, setExpandedSections] = useState({
+        about: true,
+        topics: false,
+        education: false,
+        work: false
+    });
+    const [bookingData, setBookingData] = useState(null); // {pro, service}
     
     // Custom UI States
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -442,21 +455,6 @@ function MentorDashboard({ mentorAuth, onLogout }) {
     };
 
 
-    const [editModal, setEditModal] = useState({ isOpen: false, field: '', label: '', value: '', value2: '', type: 'text' });
-    const [isEditingProfile, setIsEditingProfile] = useState(() => localStorage.getItem('mentorActiveView') === 'edit-profile');
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
-    const [activeServiceTab, setActiveServiceTab] = useState('All');
-    const [serviceSearch, setServiceSearch] = useState('');
-    const [serviceSort, setServiceSort] = useState('A-Z'); // 'A-Z', 'Z-A', 'Newest', 'Oldest'
-    const [mainTab, setMainTab] = useState('About');
-    const [expandedSections, setExpandedSections] = useState({
-        about: true,
-        topics: false,
-        education: false,
-        work: false
-    });
-
-    const [bookingData, setBookingData] = useState(null); // {pro, service}
 
     const toggleAccordion = (section) => {
         setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));

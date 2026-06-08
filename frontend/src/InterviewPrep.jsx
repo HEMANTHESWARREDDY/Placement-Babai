@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './InterviewPrep.css';
 import CustomSelect from './CustomSelect';
 import SessionDetail from './SessionDetail';
@@ -195,17 +195,7 @@ function InterviewPrep() {
         .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
         .slice(0, 3);
 
-    const sessionsGridRef = useRef(null);
 
-    const scrollSessionsGrid = (direction) => {
-        if (sessionsGridRef.current) {
-            const scrollAmount = sessionsGridRef.current.offsetWidth * 0.8;
-            sessionsGridRef.current.scrollBy({
-                left: direction === 'right' ? scrollAmount : -scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
 
     const fetchCommunityData = async () => {
         try {
@@ -480,9 +470,14 @@ function InterviewPrep() {
 
                 {top3Sessions.length > 0 && (
                     <div className="ip-homepage-sessions">
-                        <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
+                        <div className="ip-section-header-row">
+                            <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
+                            <button className="ip-view-all-btn" onClick={() => setShowSessionsModal(true)}>
+                                View All <span className="arrow">→</span>
+                            </button>
+                        </div>
                         <div className="ip-homepage-sessions-container">
-                            <div className="ip-sessions-grid" ref={sessionsGridRef}>
+                            <div className="ip-sessions-grid">
                                 {top3Sessions.map(session => (
                                     <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
                                         <div className="ip-session-badge-home">⚡ FREE SESSION</div>
@@ -538,12 +533,6 @@ function InterviewPrep() {
                                     </div>
                                 ))}
                             </div>
-                            {top3Sessions.length > 1 && (
-                                <>
-                                    <button className="ip-scroll-btn left" onClick={(e) => { e.stopPropagation(); scrollSessionsGrid('left'); }}>‹</button>
-                                    <button className="ip-scroll-btn right" onClick={(e) => { e.stopPropagation(); scrollSessionsGrid('right'); }}>›</button>
-                                </>
-                            )}
                         </div>
                     </div>
                 )}
