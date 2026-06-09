@@ -3260,7 +3260,7 @@
 /* Shift header badge left on PC to prevent overlapping with nav links */
 @media (min-width: 769px) {
   .header-badge {
-    left: 47%;
+    left: 42%;
   }
 }
 
