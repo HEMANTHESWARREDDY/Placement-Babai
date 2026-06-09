@@ -463,11 +463,6 @@ function InterviewPrep() {
 
 
             <div className="ip-details-section">
-                <div className="ip-explore-header">
-                    <h2><span>Explore Prep<span className="highlight-text">Zo</span></span></h2>
-                    <p>Browse company+role combos from top companies — search questions</p>
-                </div>
-
                 {top3Sessions.length > 0 && (
                     <div className="ip-homepage-sessions">
                         <div className="ip-section-header-row">
@@ -536,6 +531,11 @@ function InterviewPrep() {
                         </div>
                     </div>
                 )}
+
+                <div className="ip-explore-header">
+                    <h2><span>Explore Prep<span className="highlight-text">Zo</span></span></h2>
+                    <p>Browse company+role combos from top companies — search questions</p>
+                </div>
             </div>
             {selectedCompany && (
                 <div className="ip-inline-questions">

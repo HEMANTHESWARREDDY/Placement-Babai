@@ -2001,7 +2001,8 @@
 
 /* Homepage sessions section */
 .ip-homepage-sessions {
-    margin-top: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 2.2rem;
     padding: 0 1rem;
     text-align: left;
 }
