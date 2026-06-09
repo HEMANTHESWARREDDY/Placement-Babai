@@ -462,8 +462,8 @@ function InterviewPrep() {
             </div>
 
 
-            <div className="ip-details-section">
-                {top3Sessions.length > 0 && (
+            {top3Sessions.length > 0 && (
+                <div className="ip-details-section" style={{ marginBottom: '1.5rem' }}>
                     <div className="ip-homepage-sessions">
                         <div className="ip-section-header-row">
                             <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
@@ -530,8 +530,10 @@ function InterviewPrep() {
                             </div>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
 
+            <div className="ip-details-section">
                 <div className="ip-explore-header">
                     <h2><span>Explore Prep<span className="highlight-text">Zo</span></span></h2>
                     <p>Browse company+role combos from top companies — search questions</p>

@@ -208,9 +208,10 @@ function App() {
     
     if (path === '/proConnect' || params.has('proConnect')) return 'pro-connect';
     if (path === '/prepZo' || params.has('prepZo')) return 'interview-prep';
+    if (path === '/home') return 'home';
     if (path === '/jobs' || params.has('jobs')) return 'jobs';
     
-    return 'home';
+    return 'jobs';
   });
 
   // Keep path synchronized when general ATS modal is open/closed
@@ -224,7 +225,8 @@ function App() {
         let newPath = '/';
         if (activeMainTab === 'pro-connect') newPath = '/proConnect';
         else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
-        else if (activeMainTab === 'jobs') newPath = '/jobs';
+        else if (activeMainTab === 'home') newPath = '/home';
+        else if (activeMainTab === 'jobs') newPath = '/';
         
         if (window.location.pathname !== newPath && window.location.pathname === '/ResumeReview') {
           window.history.pushState({}, '', newPath);
@@ -241,7 +243,8 @@ function App() {
       let newPath = '/';
       if (activeMainTab === 'pro-connect') newPath = '/proConnect';
       else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
-      else if (activeMainTab === 'jobs') newPath = '/jobs';
+      else if (activeMainTab === 'home') newPath = '/home';
+      else if (activeMainTab === 'jobs') newPath = '/';
       
       if (window.location.pathname !== newPath) {
         window.history.pushState({}, '', newPath);
@@ -266,8 +269,8 @@ function App() {
           setShowGeneralAtsModal(false);
           if (path === '/proConnect' || params.has('proConnect')) setActiveMainTab('pro-connect');
           else if (path === '/prepZo' || params.has('prepZo')) setActiveMainTab('interview-prep');
-          else if (path === '/jobs' || params.has('jobs')) setActiveMainTab('jobs');
-          else setActiveMainTab('home');
+          else if (path === '/home') setActiveMainTab('home');
+          else setActiveMainTab('jobs');
         }
       }
     };
