@@ -181,18 +181,39 @@ function InterviewPrep() {
             (s.description || '').toLowerCase().includes(sessionSearch.toLowerCase())
         )
         .sort((a, b) => {
-            if (sessionSort === 'newest' || sessionSort === 'today') return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            if (sessionSort === 'newest' || sessionSort === 'today') {
+                const now = new Date();
+                const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+                const isTodayA = a.sessionDate === todayStr;
+                const isTodayB = b.sessionDate === todayStr;
+
+                if (isTodayA && !isTodayB) return -1;
+                if (!isTodayA && isTodayB) return 1;
+
+                return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            }
             return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
         })
         .filter(s => {
             if (sessionSort !== 'today') return true;
-            const todayStr = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
             return s.sessionDate === todayStr;
         });
 
     const top3Sessions = sessions
         .filter(s => !isSessionPast(s))
-        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+        .sort((a, b) => {
+            const now = new Date();
+            const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+            const isTodayA = a.sessionDate === todayStr;
+            const isTodayB = b.sessionDate === todayStr;
+
+            if (isTodayA && !isTodayB) return -1;
+            if (!isTodayA && isTodayB) return 1;
+
+            return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        })
         .slice(0, 3);
 
 
@@ -463,79 +484,80 @@ function InterviewPrep() {
 
 
             {top3Sessions.length > 0 && (
-                <div className="ip-details-section" style={{ marginBottom: '1.5rem' }}>
-                    <div className="ip-homepage-sessions">
-                        <div className="ip-section-header-row">
-                            <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
-                            <button className="ip-view-all-btn" onClick={() => setShowSessionsModal(true)}>
-                                View All <span className="arrow">→</span>
-                            </button>
-                        </div>
-                        <div className="ip-homepage-sessions-container">
-                            <div className="ip-sessions-grid">
-                                {top3Sessions.map(session => (
-                                    <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
-                                        <div className="ip-session-badge-home">⚡ FREE SESSION</div>
-                                        <h4 className="ip-session-title-home">{session.title}</h4>
-                                        {session.sessionDate && (
-                                            <div className="ip-session-date-home">
-                                                📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })}
-                                            </div>
-                                        )}
-                                        {session.skills ? (
-                                            <div className="ip-session-skills-home" style={{ 
-                                                display: 'flex', 
-                                                gap: '0.4rem', 
-                                                flexWrap: 'nowrap', 
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                                marginBottom: '1.25rem',
-                                                marginTop: '0.5rem',
-                                                width: '100%'
-                                            }}>
-                                                {session.skills.split(',').map((skill, idx) => (
-                                                    <span key={idx} className="ip-session-skill-tag-home" style={{
-                                                        fontSize: '0.68rem',
-                                                        background: 'rgba(124, 58, 237, 0.1)',
-                                                        color: '#a855f7',
-                                                        padding: '3px 8px',
-                                                        borderRadius: '6px',
-                                                        fontWeight: '600',
-                                                        border: '1px solid rgba(124, 58, 237, 0.2)',
-                                                        whiteSpace: 'nowrap',
-                                                        display: 'inline-block'
-                                                    }}>
-                                                        {skill.trim()}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div style={{ height: '24px', marginBottom: '1.25rem' }} />
-                                        )}
-                                        <div className="ip-session-footer-home">
-                                            <button className="ip-session-view-btn" onClick={(e) => { e.stopPropagation(); setSelectedSession(session); }}>Details</button>
-                                            <a 
-                                                href={session.link} 
-                                                target="_blank" 
-                                                rel="noreferrer" 
-                                                className="ip-session-join-btn" 
-                                                onClick={(e) => { e.stopPropagation(); recordSessionJoin(session.id); }}
-                                            >
-                                                Join Now
-                                            </a>
+                <div className="ip-homepage-sessions" style={{ marginBottom: '1rem' }}>
+                    <div className="ip-section-header-row">
+                        <h3 className="ip-section-subtitle">🎁 Featured Free Sessions</h3>
+                        <button className="ip-view-all-btn" onClick={() => setShowSessionsModal(true)}>
+                            View All <span className="arrow">→</span>
+                        </button>
+                    </div>
+                    <div className="ip-homepage-sessions-container">
+                        <div className="ip-sessions-grid">
+                            {top3Sessions.map(session => (
+                                <div key={session.id} className="ip-session-card-home" onClick={() => setSelectedSession(session)}>
+                                    <div className="ip-session-badge-home">⚡ FREE SESSION</div>
+                                    <h4 className="ip-session-title-home">{session.title}</h4>
+                                    {session.sessionDate && (
+                                        <div className="ip-session-date-home">
+                                            📅 {new Date(session.sessionDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })}
                                         </div>
+                                    )}
+                                    {session.description && (
+                                        <p className="ip-session-desc-home" title={session.description}>
+                                            {session.description} {session.schedule && `• ${session.schedule}`}
+                                        </p>
+                                    )}
+                                    {session.skills && (
+                                        <div className="ip-session-skills-home" style={{ 
+                                            display: 'flex', 
+                                            gap: '0.4rem', 
+                                            flexWrap: 'nowrap', 
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            marginBottom: '1rem',
+                                            marginTop: '0.5rem',
+                                            width: '100%'
+                                        }}>
+                                            {session.skills.split(',').map((skill, idx) => (
+                                                <span key={idx} className="ip-session-skill-tag-home" style={{
+                                                    fontSize: '0.68rem',
+                                                    background: 'rgba(124, 58, 237, 0.1)',
+                                                    color: '#a855f7',
+                                                    padding: '3px 8px',
+                                                    borderRadius: '6px',
+                                                    fontWeight: '600',
+                                                    border: '1px solid rgba(124, 58, 237, 0.2)',
+                                                    whiteSpace: 'nowrap',
+                                                    display: 'inline-block'
+                                                }}>
+                                                    {skill.trim()}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <div className="ip-session-footer-home">
+                                        <button className="ip-session-view-btn" onClick={(e) => { e.stopPropagation(); setSelectedSession(session); }}>Details</button>
+                                        <a 
+                                            href={session.link} 
+                                            target="_blank" 
+                                            rel="noreferrer" 
+                                            className="ip-session-join-btn" 
+                                            onClick={(e) => { e.stopPropagation(); recordSessionJoin(session.id); }}
+                                        >
+                                            Join Now
+                                        </a>
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             )}
 
-            <div className="ip-details-section">
+            <div className="ip-explore-header-wrapper" style={{ marginBottom: '1.25rem', padding: '0 0.5rem' }}>
                 <div className="ip-explore-header">
-                    <h2><span>Explore Prep<span className="highlight-text">Zo</span></span></h2>
+                    <h2><span>🔍 Explore Prep<span className="highlight-orange">Zo</span></span></h2>
                     <p>Browse company+role combos from top companies — search questions</p>
                 </div>
             </div>

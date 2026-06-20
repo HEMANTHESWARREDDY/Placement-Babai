@@ -2,7 +2,11 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import './AllMentorsList.css';
 
 function AllMentorsList({ mentors, onBack, onSelectPro }) {
-    const [sortBy, setSortBy] = useState('newest');
+    const [sortBy, setSortBy] = useState('bookings');
+    const [showFiltersPanel, setShowFiltersPanel] = useState(false);
+    const [filterExperience, setFilterExperience] = useState('all');
+    const [filterAvailableOnly, setFilterAvailableOnly] = useState(false);
+    const [showTopMentorsOnly, setShowTopMentorsOnly] = useState(false);
     const [showSortMenu, setShowSortMenu] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -39,20 +43,54 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                  (p.services && p.services.some(s => s.title.toLowerCase().includes(cat))) ||
                                  (is1to1 && p.services && p.services.some(s => s.title.toLowerCase().includes('mentor')));
             }
-            return matchesSearch && matchesCategory;
+
+            // Experience filter
+            let matchesExperience = true;
+            if (filterExperience !== 'all') {
+                const requiredExp = parseInt(filterExperience, 10);
+                const proExpVal = parseInt(p.experience || p.exp || '0', 10);
+                if (isNaN(proExpVal) || proExpVal < requiredExp) {
+                    matchesExperience = false;
+                }
+            }
+
+            // Availability filter
+            let matchesAvailability = true;
+            if (filterAvailableOnly && p.isAvailable !== true) {
+                matchesAvailability = false;
+            }
+
+            return matchesSearch && matchesCategory && matchesExperience && matchesAvailability;
         });
 
-        if (sortBy === 'name-asc') {
-            result.sort((a, b) => a.name.localeCompare(b.name));
-        } else if (sortBy === 'name-desc') {
-            result.sort((a, b) => b.name.localeCompare(a.name));
-        } else if (sortBy === 'newest') {
-            result.sort((a, b) => (b.id || 0) - (a.id || 0));
-        } else if (sortBy === 'oldest') {
-            result.sort((a, b) => (a.id || 0) - (b.id || 0));
+        if (showTopMentorsOnly) {
+            // Rank by combined score (bookings * 2 + rating * 3) and slice top 5
+            result.sort((a, b) => {
+                const scoreA = (a.bookingCount || 0) * 2 + (a.rating || 0) * 3;
+                const scoreB = (b.bookingCount || 0) * 2 + (b.rating || 0) * 3;
+                return scoreB - scoreA;
+            });
+            result = result.slice(0, 5);
+        } else {
+            if (sortBy === 'bookings') {
+                result.sort((a, b) => {
+                    const countA = a.bookingCount || 0;
+                    const countB = b.bookingCount || 0;
+                    if (countB !== countA) return countB - countA;
+                    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+                });
+            } else if (sortBy === 'name-asc') {
+                result.sort((a, b) => (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase()));
+            } else if (sortBy === 'name-desc') {
+                result.sort((a, b) => (b.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase()));
+            } else if (sortBy === 'newest') {
+                result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+            } else if (sortBy === 'oldest') {
+                result.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+            }
         }
         return result;
-    }, [mentors, sortBy, searchTerm, selectedCategory]);
+    }, [mentors, sortBy, searchTerm, selectedCategory, filterExperience, filterAvailableOnly, showTopMentorsOnly]);
     const filtersRowRef = useRef(null);
     const [canScrollLeftFilters, setCanScrollLeftFilters] = useState(false);
     const [canScrollRightFilters, setCanScrollRightFilters] = useState(false);
@@ -103,6 +141,8 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             categoriesRowRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         }
     };
+
+    const activeFiltersCount = (filterExperience !== 'all' ? 1 : 0) + (filterAvailableOnly ? 1 : 0);
 
     return (
         <div className="aml-container">
@@ -172,6 +212,12 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                 <div className="aml-dropdown-backdrop" onClick={() => setShowSortMenu(false)}></div>
                                 <div className="aml-dropdown-menu">
                                     <div 
+                                        className={`aml-dropdown-item ${sortBy === 'bookings' ? 'active' : ''}`} 
+                                        onClick={() => { setSortBy('bookings'); setShowSortMenu(false); }}
+                                    >
+                                        Most Booked
+                                    </div>
+                                    <div 
                                         className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
                                         onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
                                     >
@@ -201,21 +247,56 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                     </div>
 
                     <div className="aml-filters-left">
-                        <button className="aml-filter-btn">
+                        <button 
+                            className={`aml-filter-btn ${showFiltersPanel || activeFiltersCount > 0 ? 'aml-filter-active' : ''}`}
+                            onClick={() => setShowFiltersPanel(!showFiltersPanel)}
+                        >
                             <span style={{ fontSize: '1.1rem' }}>▤</span> Filters
+                            {activeFiltersCount > 0 && <span className="aml-filter-badge">{activeFiltersCount}</span>}
                         </button>
-                        <button className="aml-filter-btn">
-                            Top Mentor
+                        <button 
+                            className={`aml-filter-btn ${showTopMentorsOnly ? 'aml-filter-active' : ''}`}
+                            onClick={() => setShowTopMentorsOnly(!showTopMentorsOnly)}
+                        >
+                            👑 Top Mentors
                         </button>
-                        <div className="aml-featured-pill">
-                            Featured
-                        </div>
                     </div>
                 </div>
                 {canScrollRightFilters && (
                     <button className="aml-filters-scroll-btn right" onClick={() => scrollFilters('right')}>❯</button>
                 )}
             </div>
+
+            {/* Collapsible Filters Panel */}
+            {showFiltersPanel && (
+                <div className="aml-filters-panel">
+                    <div className="aml-filter-group">
+                        <label className="aml-filter-label">Experience Level</label>
+                        <div className="aml-filter-options">
+                            {['all', '1', '3', '5', '8'].map(exp => (
+                                <button 
+                                    key={exp}
+                                    className={`aml-filter-pill ${filterExperience === exp ? 'active' : ''}`}
+                                    onClick={() => setFilterExperience(exp)}
+                                >
+                                    {exp === 'all' ? 'Any Exp' : `${exp}+ Years`}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="aml-filter-group">
+                        <label className="aml-filter-label">Availability</label>
+                        <div className="aml-filter-options">
+                            <button 
+                                className={`aml-filter-pill ${filterAvailableOnly ? 'active' : ''}`}
+                                onClick={() => setFilterAvailableOnly(!filterAvailableOnly)}
+                            >
+                                🟢 Available Only
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="aml-list">
                 {filteredAndSortedMentors.map((pro, idx) => (
@@ -321,7 +402,11 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                         <div className="aml-service-title">{srv.title}</div>
                                     </div>
                                     <div className="aml-service-pricing">
-                                        <span className="aml-old-price">₹{parseInt(srv.price?.replace('₹', '') || 499) + 200}</span>
+                                        {srv.price === 'Free' ? (
+                                            <span className="aml-old-price">₹499</span>
+                                        ) : (
+                                            <span className="aml-old-price">₹{parseInt(srv.price?.toString().replace('₹', '') || 499) + 200}</span>
+                                        )}
                                         <span className={`aml-new-price ${srv.price === 'Free' ? 'free-badge' : ''}`}>{srv.price}</span>
                                     </div>
                                 </div>

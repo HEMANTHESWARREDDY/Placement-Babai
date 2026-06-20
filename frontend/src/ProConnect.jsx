@@ -163,6 +163,14 @@ function ProConnect({ onMentorLoginClick }) {
                         serviceKeywords: serviceKeywords
                     };
                 });
+                
+                processed.sort((a, b) => {
+                    const countA = a.bookingCount || 0;
+                    const countB = b.bookingCount || 0;
+                    if (countB !== countA) return countB - countA;
+                    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+                });
+
                 setMentors(processed);
             }
         } catch (e) {

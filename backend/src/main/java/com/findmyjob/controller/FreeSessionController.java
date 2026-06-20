@@ -2,6 +2,7 @@ package com.findmyjob.controller;
 
 import com.findmyjob.model.FreeSession;
 import com.findmyjob.repository.FreeSessionRepository;
+import com.findmyjob.repository.SessionJoinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,21 @@ public class FreeSessionController {
     @Autowired
     private FreeSessionRepository repository;
 
+    @Autowired
+    private SessionJoinRepository sessionJoinRepository;
+
     @GetMapping
     public List<FreeSession> getAllSessions() {
         try {
-            return repository.findByDeletedFalseOrderByCreatedAtDesc();
+            List<FreeSession> sessions = repository.findByDeletedFalseOrderByCreatedAtDesc();
+            for (FreeSession s : sessions) {
+                try {
+                    s.setBookingCount(sessionJoinRepository.countBySessionId(s.getId()));
+                } catch (Exception e) {
+                    s.setBookingCount(0);
+                }
+            }
+            return sessions;
         } catch (Exception e) {
             System.err.println("⚠️ MongoDB query failed in getAllSessions: " + e.getMessage() + ". Falling back to in-memory mock sessions.");
             return getMockSessions();
@@ -28,7 +40,15 @@ public class FreeSessionController {
     @GetMapping("/active")
     public List<FreeSession> getActiveSessions() {
         try {
-            return repository.findByActiveTrueAndDeletedFalse();
+            List<FreeSession> sessions = repository.findByActiveTrueAndDeletedFalse();
+            for (FreeSession s : sessions) {
+                try {
+                    s.setBookingCount(sessionJoinRepository.countBySessionId(s.getId()));
+                } catch (Exception e) {
+                    s.setBookingCount(0);
+                }
+            }
+            return sessions;
         } catch (Exception e) {
             System.err.println("⚠️ MongoDB query failed in getActiveSessions: " + e.getMessage() + ". Falling back to in-memory mock sessions.");
             return getMockSessions();
@@ -38,7 +58,15 @@ public class FreeSessionController {
     @GetMapping("/deleted")
     public List<FreeSession> getDeletedSessions() {
         try {
-            return repository.findByDeletedTrueOrderByDeletedAtDesc();
+            List<FreeSession> sessions = repository.findByDeletedTrueOrderByDeletedAtDesc();
+            for (FreeSession s : sessions) {
+                try {
+                    s.setBookingCount(sessionJoinRepository.countBySessionId(s.getId()));
+                } catch (Exception e) {
+                    s.setBookingCount(0);
+                }
+            }
+            return sessions;
         } catch (Exception e) {
             System.err.println("⚠️ MongoDB query failed in getDeletedSessions: " + e.getMessage() + ". Returning empty list.");
             return new java.util.ArrayList<>();

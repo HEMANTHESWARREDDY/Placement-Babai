@@ -18,13 +18,27 @@ if %ERRORLEVEL% EQU 0 (
         pause
     )
 ) else (
-    echo Maven not found!
-    echo.
-    echo Please install Maven from: https://maven.apache.org/download.cgi
-    echo.
-    echo Alternative: Install Maven using Chocolatey
-    echo   1. Install Chocolatey: https://chocolatey.org/install
-    echo   2. Run: choco install maven -y
-    echo.
-    pause
+    echo Maven not found globally. Checking for local Maven in workspace...
+    if exist "..\apache-maven-3.9.6\bin\mvn.cmd" (
+        echo Local Maven found! Building with local Maven...
+        call "..\apache-maven-3.9.6\bin\mvn.cmd" clean install -DskipTests
+        if %ERRORLEVEL% EQU 0 (
+            echo Build successful!
+            echo Starting Spring Boot application...
+            call "..\apache-maven-3.9.6\bin\mvn.cmd" spring-boot:run
+        ) else (
+            echo Build failed!
+            pause
+        )
+    ) else (
+        echo Maven not found!
+        echo.
+        echo Please install Maven from: https://maven.apache.org/download.cgi
+        echo.
+        echo Alternative: Install Maven using Chocolatey
+        echo   1. Install Chocolatey: https://chocolatey.org/install
+        echo   2. Run: choco install maven -y
+        echo.
+        pause
+    )
 )

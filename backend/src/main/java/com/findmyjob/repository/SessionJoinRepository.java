@@ -7,4 +7,5 @@ import java.time.LocalDateTime;
 public interface SessionJoinRepository extends MongoRepository<SessionJoin, String> {
     long countByJoinedAtAfter(LocalDateTime date);
     long countByJoinedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countBySessionId(String sessionId);
 }

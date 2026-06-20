@@ -4,6 +4,7 @@ import com.findmyjob.model.Mentor;
 import com.findmyjob.model.MentorApplicant;
 import com.findmyjob.repository.MentorApplicantRepository;
 import com.findmyjob.repository.MentorRepository;
+import com.findmyjob.repository.BookingRepository;
 import com.findmyjob.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,9 @@ public class MentorController {
 
     @Autowired
     private MentorApplicantRepository mentorApplicantRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -143,12 +147,23 @@ public class MentorController {
     public ResponseEntity<List<Mentor>> getApprovedMentors() {
         try {
             List<Mentor> approved = mentorRepository.findByStatusOrderByCreatedAtDesc("APPROVED");
+            for (Mentor m : approved) {
+                try {
+                    m.setBookingCount(bookingRepository.countByMentorId(m.getId()));
+                } catch (Exception e) {
+                    m.setBookingCount(0);
+                }
+            }
             // Remove passwords from response
             approved.forEach(m -> m.setPassword(null));
             return ResponseEntity.ok(approved);
         } catch (Exception e) {
             System.err.println("⚠️ MongoDB query failed in getApprovedMentors: " + e.getMessage() + ". Falling back to in-memory mock mentors.");
-            return ResponseEntity.ok(getMockMentors());
+            List<Mentor> mock = getMockMentors();
+            for (Mentor m : mock) {
+                m.setBookingCount(0);
+            }
+            return ResponseEntity.ok(mock);
         }
     }
 

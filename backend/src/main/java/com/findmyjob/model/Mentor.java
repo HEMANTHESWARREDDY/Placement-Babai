@@ -48,4 +48,7 @@ public class Mentor {
     private String services;
 
     private Boolean isAvailable;
+
+    @org.springframework.data.annotation.Transient
+    private long bookingCount;
 }

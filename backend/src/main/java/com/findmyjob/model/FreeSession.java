@@ -20,4 +20,7 @@ public class FreeSession {
     private java.time.LocalDateTime deletedAt;
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
     private java.time.LocalDate sessionDate = java.time.LocalDate.now();
+
+    @org.springframework.data.annotation.Transient
+    private long bookingCount;
 }
