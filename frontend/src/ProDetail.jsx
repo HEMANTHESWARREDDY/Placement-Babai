@@ -118,19 +118,36 @@ function ProDetail({ pro, onClose }) {
                                     </span>
                                     <div className="preview-socials" style={{ gap: '6px', display: 'flex', alignItems: 'center' }}>
                                         {pro.email && (
-                                            <a href={`mailto:${pro.email}`} className="preview-social-icon-raw" title="Email">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="22" height="22" style={{ display: 'block' }}>
-                                                    <path fill="#4885ed" d="M45 16.2V38c0 2.2-1.8 4-4 4H34V18.2L45 16.2z"/>
-                                                    <path fill="#3cba54" d="M3 16.2V38c0 2.2 1.8 4 4 4h9V18.2L3 16.2z"/>
-                                                    <path fill="#f4c20d" d="M16 42h18V18.2H16V42z"/>
-                                                    <path fill="#db3236" d="M45 16.2L24 30 3 16.2V11c0-2.2 1.8-4 4-4h34c2.2 0 4 1.8 4 4v5.2z"/>
+                                            <a href={`mailto:${pro.email}`} className="preview-social-icon-raw" title="Email" style={{ background: 'none', border: 'none', boxShadow: 'none', width: 'auto', height: 'auto', padding: 0 }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="30" height="30" style={{ display: 'block' }}>
+                                                    <defs>
+                                                        <filter id="shadow-gm" x="-15%" y="-15%" width="130%" height="130%">
+                                                            <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.15"/>
+                                                        </filter>
+                                                        <linearGradient id="whiteGrad-gm" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                            <stop offset="0%" stop-color="#ffffff"/>
+                                                            <stop offset="100%" stop-color="#f5f5f5"/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <circle cx="24" cy="24" r="22" fill="url(#whiteGrad-gm)" filter="url(#shadow-gm)" stroke="#e2e8f0" stroke-width="0.75"/>
+                                                    <g transform="translate(11, 11) scale(0.54)">
+                                                        <path fill="#4885ed" d="M45 16.2V38c0 2.2-1.8 4-4 4H34V18.2L45 16.2z"/>
+                                                        <path fill="#3cba54" d="M3 16.2V38c0 2.2 1.8 4 4 4h9V18.2L3 16.2z"/>
+                                                        <path fill="#f4c20d" d="M16 42h18V18.2H16V42z"/>
+                                                        <path fill="#db3236" d="M45 16.2L24 30 3 16.2V11c0-2.2 1.8-4 4-4h34c2.2 0 4 1.8 4 4v5.2z"/>
+                                                    </g>
                                                 </svg>
                                             </a>
                                         )}
                                         {pro.linkedin && (
-                                            <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw" title="LinkedIn">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="22" height="22" style={{ display: 'block' }}>
-                                                    <path fill="#0a66c2" d="M42 37c0 2.76-2.24 5-5 5H11c-2.76 0-5-2.24-5-5V11c0-2.76 2.24-5 5-5h26c2.76 0 5 2.24 5 5v26z"/>
+                                            <a href={pro.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw" title="LinkedIn" style={{ background: 'none', border: 'none', boxShadow: 'none', width: 'auto', height: 'auto', padding: 0 }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="30" height="30" style={{ display: 'block' }}>
+                                                    <defs>
+                                                        <filter id="shadow-li" x="-15%" y="-15%" width="130%" height="130%">
+                                                            <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.15"/>
+                                                        </filter>
+                                                    </defs>
+                                                    <circle cx="24" cy="24" r="22" fill="#0a66c2" filter="url(#shadow-li)"/>
                                                     <path fill="#FFF" d="M12 19h5v17h-5V19zm2.5-7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm5.5 7h5v2.5c1-2 3.5-3.5 6-3.5 6 0 7 4 7 9V36h-5v-8.5c0-3-1.5-4.5-3.5-4.5-2 0-3.5 1.5-3.5 4.5V36h-5V19z"/>
                                                 </svg>
                                             </a>
