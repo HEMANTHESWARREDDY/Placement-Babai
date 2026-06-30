@@ -1399,23 +1399,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                         <div className="preview-socials" style={{ gap: '6px', display: 'flex', alignItems: 'center' }}>
                                             {profile.email && (
                                                 <a href={`mailto:${profile.email}`} className="preview-social-icon-raw" title="Email" style={{ background: 'none', border: 'none', boxShadow: 'none', width: 'auto', height: 'auto', padding: 0 }}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="30" height="30" style={{ display: 'block' }}>
-                                                        <defs>
-                                                            <filter id="shadow-gm-db1" x="-15%" y="-15%" width="130%" height="130%">
-                                                                <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.15"/>
-                                                            </filter>
-                                                            <linearGradient id="whiteGrad-gm-db1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                                <stop offset="0%" stop-color="#ffffff"/>
-                                                                <stop offset="100%" stop-color="#f5f5f5"/>
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <circle cx="24" cy="24" r="22" fill="url(#whiteGrad-gm-db1)" filter="url(#shadow-gm-db1)" stroke="#e2e8f0" stroke-width="0.75"/>
-                                                        <g transform="translate(11, 11) scale(0.54)">
-                                                            <path fill="#4885ed" d="M45 16.2V38c0 2.2-1.8 4-4 4H34V18.2L45 16.2z"/>
-                                                            <path fill="#3cba54" d="M3 16.2V38c0 2.2 1.8 4 4 4h9V18.2L3 16.2z"/>
-                                                            <path fill="#f4c20d" d="M16 42h18V18.2H16V42z"/>
-                                                            <path fill="#db3236" d="M45 16.2L24 30 3 16.2V11c0-2.2 1.8-4 4-4h34c2.2 0 4 1.8 4 4v5.2z"/>
-                                                        </g>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="30" height="30" style={{ display: 'block' }}>
+                                                        <path d="M158 391v-142l-82-63V361q0 30 30 30" fill="#4285f4"/>
+                                                        <path d="M154 248l102 77l102-77v-98l-102 77l-102-77" fill="#ea4335"/>
+                                                        <path d="M354 391v-142l82-63V361q0 30-30 30" fill="#34a853"/>
+                                                        <path d="M76 188l82 63v-98l-30-23c-27-21-52 0-52 26" fill="#c5221f"/>
+                                                        <path d="M436 188l-82 63v-98l30-23c27-21 52 0 52 26" fill="#fbbc04"/>
                                                     </svg>
                                                 </a>
                                             )}
@@ -1895,23 +1884,12 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                                     <div className="preview-socials" style={{ gap: '6px', display: 'flex', alignItems: 'center' }}>
                                         {profile.email && (
                                             <a href={`mailto:${profile.email}`} className="preview-social-icon-raw" title="Email" style={{ background: 'none', border: 'none', boxShadow: 'none', width: 'auto', height: 'auto', padding: 0 }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="30" height="30" style={{ display: 'block' }}>
-                                                    <defs>
-                                                        <filter id="shadow-gm-db2" x="-15%" y="-15%" width="130%" height="130%">
-                                                            <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.15"/>
-                                                        </filter>
-                                                        <linearGradient id="whiteGrad-gm-db2" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                            <stop offset="0%" stop-color="#ffffff"/>
-                                                            <stop offset="100%" stop-color="#f5f5f5"/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle cx="24" cy="24" r="22" fill="url(#whiteGrad-gm-db2)" filter="url(#shadow-gm-db2)" stroke="#e2e8f0" stroke-width="0.75"/>
-                                                    <g transform="translate(11, 11) scale(0.54)">
-                                                        <path fill="#4885ed" d="M45 16.2V38c0 2.2-1.8 4-4 4H34V18.2L45 16.2z"/>
-                                                        <path fill="#3cba54" d="M3 16.2V38c0 2.2 1.8 4 4 4h9V18.2L3 16.2z"/>
-                                                        <path fill="#f4c20d" d="M16 42h18V18.2H16V42z"/>
-                                                        <path fill="#db3236" d="M45 16.2L24 30 3 16.2V11c0-2.2 1.8-4 4-4h34c2.2 0 4 1.8 4 4v5.2z"/>
-                                                    </g>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="30" height="30" style={{ display: 'block' }}>
+                                                    <path d="M158 391v-142l-82-63V361q0 30 30 30" fill="#4285f4"/>
+                                                    <path d="M154 248l102 77l102-77v-98l-102 77l-102-77" fill="#ea4335"/>
+                                                    <path d="M354 391v-142l82-63V361q0 30-30 30" fill="#34a853"/>
+                                                    <path d="M76 188l82 63v-98l-30-23c-27-21-52 0-52 26" fill="#c5221f"/>
+                                                    <path d="M436 188l-82 63v-98l30-23c27-21 52 0 52 26" fill="#fbbc04"/>
                                                 </svg>
                                             </a>
                                         )}
