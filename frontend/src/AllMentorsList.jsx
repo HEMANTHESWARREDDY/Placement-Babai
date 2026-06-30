@@ -349,12 +349,11 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
 
                             {/* Info Right */}
                             <div className="aml-info-col">
-                                <div className="aml-name-row">
+                                <div className="aml-name-row" style={{ justifyContent: 'flex-start', gap: '10px' }}>
                                     <div className="aml-name">{pro.name}</div>
-                                </div>
-
-                                <div className="aml-rating">
-                                    ⭐ {pro.rating}
+                                    <div className="aml-rating" style={{ marginBottom: 0, marginTop: '2px' }}>
+                                        ⭐ {pro.rating}
+                                    </div>
                                 </div>
 
                                 <div className="aml-socials-mobile">
