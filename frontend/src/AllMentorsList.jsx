@@ -5,7 +5,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
     const [sortBy, setSortBy] = useState('bookings');
     const [showFiltersPanel, setShowFiltersPanel] = useState(false);
     const [filterExperience, setFilterExperience] = useState('all');
-    const [filterAvailableOnly, setFilterAvailableOnly] = useState(false);
     const [showTopMentorsOnly, setShowTopMentorsOnly] = useState(false);
     const [showSortMenu, setShowSortMenu] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -54,11 +53,8 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                 }
             }
 
-            // Availability filter
-            let matchesAvailability = true;
-            if (filterAvailableOnly && p.isAvailable !== true) {
-                matchesAvailability = false;
-            }
+            // Availability filter - only show available mentors
+            let matchesAvailability = p.isAvailable === true;
 
             return matchesSearch && matchesCategory && matchesExperience && matchesAvailability;
         });
@@ -90,7 +86,51 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
             }
         }
         return result;
-    }, [mentors, sortBy, searchTerm, selectedCategory, filterExperience, filterAvailableOnly, showTopMentorsOnly]);
+    }, [mentors, sortBy, searchTerm, selectedCategory, filterExperience, showTopMentorsOnly]);
+
+    const topServices = useMemo(() => {
+        const counts = {};
+        mentors.forEach(pro => {
+            if (pro.services && Array.isArray(pro.services)) {
+                pro.services.forEach(srv => {
+                    if (srv && srv.title) {
+                        const title = srv.title.trim();
+                        counts[title] = (counts[title] || 0) + 1;
+                    }
+                });
+            }
+        });
+
+        const sorted = Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([title]) => {
+                let icon = '💼';
+                const lower = title.toLowerCase();
+                if (lower.includes('resume') || lower.includes('cv') || lower.includes('profile')) icon = '📄';
+                else if (lower.includes('interview') || lower.includes('mock') || lower.includes('prep') || lower.includes('coding')) icon = '👨‍💻';
+                else if (lower.includes('career') || lower.includes('guidance') || lower.includes('path')) icon = '💼';
+                else if (lower.includes('branding') || lower.includes('personal') || lower.includes('linkedin') || lower.includes('portfolio') || lower.includes('brand')) icon = '✨';
+                else if (lower.includes('mentorship') || lower.includes('1:1') || lower.includes('one-on-one') || lower.includes('mentor')) icon = '🤝';
+                else if (lower.includes('system design') || lower.includes('architecture')) icon = '🏗️';
+                else if (lower.includes('query') || lower.includes('sql') || lower.includes('database')) icon = '🗄️';
+                else if (lower.includes('referral') || lower.includes('job')) icon = '✉️';
+
+                return { icon, label: title };
+            });
+
+        if (sorted.length === 0) {
+            return [
+                { icon: '📄', label: 'Resume Review' },
+                { icon: '👨‍💻', label: 'Interview Preparation' },
+                { icon: '💼', label: 'Career Guidance' },
+                { icon: '✨', label: 'Personal Branding' },
+                { icon: '🤝', label: '1:1 Mentorship' }
+            ];
+        }
+        return sorted;
+    }, [mentors]);
+
     const filtersRowRef = useRef(null);
     const [canScrollLeftFilters, setCanScrollLeftFilters] = useState(false);
     const [canScrollRightFilters, setCanScrollRightFilters] = useState(false);
@@ -142,7 +182,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
         }
     };
 
-    const activeFiltersCount = (filterExperience !== 'all' ? 1 : 0) + (filterAvailableOnly ? 1 : 0);
+    const activeFiltersCount = (filterExperience !== 'all' ? 1 : 0);
 
     return (
         <div className="aml-container">
@@ -159,13 +199,7 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                     <button className="aml-filters-scroll-btn left" style={{ zIndex: 10 }} onClick={() => scrollCategories('left')}>❮</button>
                 )}
                 <div className="aml-categories-row" ref={categoriesRowRef} onScroll={checkCategoriesScroll}>
-                    {[
-                        { icon: '📄', label: 'Resume Review' },
-                        { icon: '👨‍💻', label: 'Interview Preparation' },
-                        { icon: '💼', label: 'Career Guidance' },
-                        { icon: '✨', label: 'Personal Branding' },
-                        { icon: '🤝', label: '1:1 Mentorship' }
-                    ].map((cat, i) => (
+                    {topServices.map((cat, i) => (
                         <div 
                             className={`aml-category-card ${selectedCategory === cat.label ? 'active' : ''}`} 
                             key={i}
@@ -199,53 +233,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                         />
                     </div>
 
-                    {/* Sort Second - as requested */}
-                    <div className="aml-dropdown-container aml-mobile-sort-second" ref={sortMenuRef}>
-                        <button 
-                            className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
-                            onClick={() => setShowSortMenu(!showSortMenu)}
-                        >
-                            <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
-                        </button>
-                        {showSortMenu && (
-                            <>
-                                <div className="aml-dropdown-backdrop" onClick={() => setShowSortMenu(false)}></div>
-                                <div className="aml-dropdown-menu">
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'bookings' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('bookings'); setShowSortMenu(false); }}
-                                    >
-                                        Most Booked
-                                    </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
-                                    >
-                                        Newest First
-                                    </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
-                                    >
-                                        Oldest First
-                                    </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
-                                    >
-                                        Alphabetical (A-Z)
-                                    </div>
-                                    <div 
-                                        className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
-                                        onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
-                                    >
-                                        Alphabetical (Z-A)
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-
                     <div className="aml-filters-left">
                         <button 
                             className={`aml-filter-btn ${showFiltersPanel || activeFiltersCount > 0 ? 'aml-filter-active' : ''}`}
@@ -254,6 +241,53 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                             <span style={{ fontSize: '1.1rem' }}>▤</span> Filters
                             {activeFiltersCount > 0 && <span className="aml-filter-badge">{activeFiltersCount}</span>}
                         </button>
+
+                        <div className="aml-dropdown-container" ref={sortMenuRef}>
+                            <button 
+                                className={`aml-filter-btn ${showSortMenu ? 'aml-filter-active' : ''}`} 
+                                onClick={() => setShowSortMenu(!showSortMenu)}
+                            >
+                                <span style={{ fontSize: '1.1rem' }}>⇕</span> Sort By
+                            </button>
+                            {showSortMenu && (
+                                <>
+                                    <div className="aml-dropdown-backdrop" onClick={() => setShowSortMenu(false)}></div>
+                                    <div className="aml-dropdown-menu">
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'bookings' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('bookings'); setShowSortMenu(false); }}
+                                        >
+                                            Most Booked
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                        >
+                                            Newest First
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
+                                        >
+                                            Oldest First
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'name-asc' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('name-asc'); setShowSortMenu(false); }}
+                                        >
+                                            Alphabetical (A-Z)
+                                        </div>
+                                        <div 
+                                            className={`aml-dropdown-item ${sortBy === 'name-desc' ? 'active' : ''}`} 
+                                            onClick={() => { setSortBy('name-desc'); setShowSortMenu(false); }}
+                                        >
+                                            Alphabetical (Z-A)
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
                         <button 
                             className={`aml-filter-btn ${showTopMentorsOnly ? 'aml-filter-active' : ''}`}
                             onClick={() => setShowTopMentorsOnly(!showTopMentorsOnly)}
@@ -282,17 +316,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                                     {exp === 'all' ? 'Any Exp' : `${exp}+ Years`}
                                 </button>
                             ))}
-                        </div>
-                    </div>
-                    <div className="aml-filter-group">
-                        <label className="aml-filter-label">Availability</label>
-                        <div className="aml-filter-options">
-                            <button 
-                                className={`aml-filter-pill ${filterAvailableOnly ? 'active' : ''}`}
-                                onClick={() => setFilterAvailableOnly(!filterAvailableOnly)}
-                            >
-                                🟢 Available Only
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -328,9 +351,6 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                             <div className="aml-info-col">
                                 <div className="aml-name-row">
                                     <div className="aml-name">{pro.name}</div>
-                                    <div className="aml-company-logo-fallback">
-                                        {pro.name.charAt(0)}
-                                    </div>
                                 </div>
 
                                 <div className="aml-rating">
@@ -394,7 +414,12 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                         {/* Services List Bottom */}
                         <div className="aml-services-row">
                             {pro.services && pro.services.slice(0, 2).map((srv, i) => (
-                                <div className="aml-service-card" key={i}>
+                                <div 
+                                    className="aml-service-card" 
+                                    key={i}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => onSelectPro({ ...pro, initialHighlightService: srv.title })}
+                                >
                                     <div>
                                         <div className="aml-service-tag">
                                             {srv.tag === 'Best Seller' ? '🌟' : '🎁'} {srv.tag || 'Resource'}

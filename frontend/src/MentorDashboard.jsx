@@ -954,472 +954,730 @@ function MentorDashboard({ mentorAuth, onLogout }) {
                     </div>
                 </div>
             )}
-
-            {/* Main Editing Dashboard Mode */}
-            {!showBookings && !showAnalytics && (
-                <div className="mentor-layout">
-                <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
-                    <div className="preview-header" style={{ 
-                        background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
-                                   (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
-                                   profile.headerBg || '#fbcfe8'
-                    }}>
-                        {isEditingProfile && (
-                            <button className="inline-edit-btn" style={{top:'20px', right:'20px', background:'white', color:'#0f172a', border:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.1)'}} onClick={() => document.getElementById('bannerUpload').click()}>
-                                📷 Change Banner
-                            </button>
-                        )}
-                    </div>
-                    <div className="preview-body">
-                        <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', width: '100%', marginBottom: '1rem' }}>
-                            <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
-                                <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
-                                    {!profile.image && initials}
-                                    {isEditingProfile && (
-                                        <button 
-                                            className="inline-edit-btn inline-edit-avatar" 
-                                            style={{top: '5px', right: '-5px', bottom:'auto'}} 
-                                            onClick={() => document.getElementById('avatarUpload').click()}
-                                        >
-                                            ✏️
-                                        </button>
-                                    )}
-                                </div>
-                                {isEditingProfile ? (
-                                    <button 
-                                        className="availability-badge" 
-                                        style={{
-                                            cursor: 'pointer',
-                                            background: profile.isAvailable ? '#10b981' : '#ef4444',
-                                            transition: '0.2s',
-                                            zIndex: 20
-                                        }}
-                                        onClick={() => setProfile(prev => ({...prev, isAvailable: !prev.isAvailable}))}
-                                        title={profile.isAvailable ? "Click to mark as Unavailable" : "Click to mark as Available"}
-                                    >
-                                        {profile.isAvailable ? '⚡ Available' : '🚫 Unavailable'}
-                                    </button>
-                                ) : (
-                                    profile.isAvailable && <div className="availability-badge">⚡ Available</div>
-                                )}
-                            </div>
-
-                            <div className="preview-header-meta" style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '6px',
-                                paddingBottom: '10px'
+                     {!showBookings && !showAnalytics && (
+                isEditingProfile ? (
+                    <div className="mentor-layout">
+                        <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
+                            {/* Banner Section */}
+                            <div className="preview-header" style={{ 
+                                background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
+                                           (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
+                                           profile.headerBg || '#fbcfe8',
+                                position: 'relative',
+                                height: '220px',
+                                borderRadius: '12px 12px 0 0'
                             }}>
-                                <span className="preview-rating" style={{ 
-                                    background: 'white', 
-                                    padding: '0 12px', 
-                                    borderRadius: '20px', 
-                                    border: '1px solid #e2e8f0',
-                                    height: '36px',
-                                    fontSize: '0.85rem',
-                                    fontWeight: '700',
-                                    color: '#eab308',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                                }}>
-                                    ⭐ {profile.rating || 'New'}
-                                </span>
-                                <div className="preview-socials" style={{ gap: '6px', display: 'flex', alignItems: 'center' }}>
-                                    {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
-                                    {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
-                                    <div className="preview-social-icon-raw cursor-pointer" title="Share" style={{ color: '#475569' }}>
-                                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                                    </div>
-                                </div>
-                                {isEditingProfile && <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('socials', 'Social Links')}>✏️</button>}
-                            </div>
-                        </div>
-
-
-
-
-
-                        <div className="preview-title-row">
-                            <h3>
-                                {profile.name}
-                                {isEditingProfile && <button className="inline-edit-btn" style={{position:'static', marginLeft:'10px'}} onClick={() => openEdit('name', 'Display Name', 'text')}>✏️</button>}
-                            </h3>
-                        </div>
-
-                        <div className="preview-subtitle">
-                            {profile.role} @ {profile.company} {(profile.topics || profile.skills) ? `| ${formatTopicsOrSkills(profile.topics || profile.skills)}` : ''}
-                            {isEditingProfile && (
-                                <div className="edit-buttons-stack">
-                                    <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('role', 'Job Role', 'text')}>✏️ Role</button>
-                                    <button className="inline-edit-btn" style={{position:'static'}} onClick={() => openEdit('company', 'Company Name', 'text')}>✏️ Company</button>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="preview-badges">
-                            <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💼 {profile.experience ? (profile.experience.toLowerCase().includes('year') ? profile.experience : `${profile.experience} ${parseInt(profile.experience, 10) === 1 ? 'Year' : 'Years'} of experience`) : 'Experience'}</div>
-                            {isEditingProfile && <button className="inline-edit-btn-mini" style={{position:'static', marginLeft:'12px'}} onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>}
-                        </div>
-
-                        {/* Main Tabs (Visible on Mobile) */}
-                        <div className="main-tabs-container">
-                            <button 
-                                className={`main-tab-btn ${mainTab === 'About' ? 'active' : ''}`}
-                                onClick={() => setMainTab('About')}
-                            >
-                                👤 About Mentor
-                            </button>
-                            <button 
-                                className={`main-tab-btn ${mainTab === 'Services' ? 'active' : ''}`}
-                                onClick={() => setMainTab('Services')}
-                            >
-                                📅 Available Services
-                            </button>
-                        </div>
-
-                        <div className="preview-content-grid">
-                            <div className={`preview-section-left ${mainTab === 'About' ? 'tab-visible' : 'tab-hidden'}`}>
-                                <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
-                                
-                                <div className="preview-accordion">
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('about')} style={{cursor: 'pointer'}}>
-                                        About 
-                                        <span className="accordion-action-wrapper">
-                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('bio', 'About', 'textarea'); }}>✏️</button>}
-                                            {expandedSections.about ? '^' : 'v'}
-                                        </span>
-                                    </div>
-                                    {expandedSections.about && (
-                                        <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                            {profile.bio || "No about added yet."}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="preview-accordion">
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('topics')} style={{cursor: 'pointer'}}>
-                                        Topics of Expertise 
-                                        <span className="accordion-action-wrapper">
-                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('topics', 'Topics of Expertise', 'text'); }}>✏️</button>}
-                                            {expandedSections.topics ? '^' : 'v'}
-                                        </span>
-                                    </div>
-                                    {expandedSections.topics && (
-                                        <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                            {profile.topics || profile.skills || "No topics added yet."}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="preview-accordion">
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('education')} style={{cursor: 'pointer'}}>
-                                        Education 
-                                        <span className="accordion-action-wrapper">
-                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('education', 'Education', 'textarea'); }}>✏️</button>}
-                                            {expandedSections.education ? '^' : 'v'}
-                                        </span>
-                                    </div>
-                                    {expandedSections.education && (
-                                        <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                            {profile.education || "No education added yet."}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="preview-accordion">
-                                    <div className="preview-accordion-header" onClick={() => toggleAccordion('work')} style={{cursor: 'pointer'}}>
-                                        Work Experience 
-                                        <span className="accordion-action-wrapper">
-                                            {isEditingProfile && <button className="inline-edit-btn-mini" onClick={(e) => { e.stopPropagation(); openEdit('workExperience', 'Work Experience', 'textarea'); }}>✏️</button>}
-                                            {expandedSections.work ? '^' : 'v'}
-                                        </span>
-                                    </div>
-                                    {expandedSections.work && (
-                                        <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
-                                            {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company} (${(() => {
-                                                const expVal = profile.experience || '';
-                                                const num = parseInt(expVal);
-                                                if (isNaN(num)) return expVal || '1 Year';
-                                                return `${num} ${num === 1 ? 'Year' : 'Years'}`;
-                                            })()})` : (profile.role || profile.company || "No work experience added yet."))}
-                                        </div>
-                                    )}
-                                </div>
+                                <button className="inline-edit-btn" style={{top:'20px', right:'20px', background:'white', color:'#0f172a', border:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.1)'}} onClick={() => document.getElementById('bannerUpload').click()}>
+                                    📷 Change Banner
+                                </button>
                             </div>
 
-                            <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
-                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
-                                    <h4 style={{color: '#1e1b4b', margin: 0}}>📅 Available Services</h4>
-                                    {isEditingProfile && (
+                            {/* Intro Section Card */}
+                            <div className="lk-section" style={{ position: 'relative', marginTop: '-50px', borderTopLeftRadius: 0, borderTopRightRadius: 0, paddingBottom: '2rem' }}>
+                                <div className="lk-avatar-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '-80px', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                                    <div className="preview-avatar-wrapper" style={{ margin: 0, position: 'relative' }}>
+                                        <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor, border: '4px solid white', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'}}>
+                                            {!profile.image && initials}
+                                            <button 
+                                                className="inline-edit-btn inline-edit-avatar" 
+                                                style={{top: '5px', right: '-5px', bottom:'auto'}} 
+                                                onClick={() => document.getElementById('avatarUpload').click()}
+                                            >
+                                                ✏️
+                                            </button>
+                                        </div>
                                         <button 
-                                            onClick={openAddService}
+                                            className="availability-badge" 
                                             style={{
-                                                background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                                                color: 'white',
-                                                border: '2px solid rgba(255,255,255,0.2)',
-                                                borderRadius: '30px',
-                                                padding: '0.4rem 1rem',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '8px',
                                                 cursor: 'pointer',
-                                                fontSize: '0.9rem',
-                                                fontWeight: '700',
-                                                boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)',
-                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                height: '36px'
+                                                background: profile.isAvailable ? '#10b981' : '#ef4444',
+                                                transition: '0.2s',
+                                                zIndex: 20,
+                                                position: 'absolute',
+                                                bottom: '-10px',
+                                                left: '50%',
+                                                transform: 'translateX(-50%)',
+                                                whiteSpace: 'nowrap'
                                             }}
-                                            onMouseOver={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                                e.currentTarget.style.boxShadow = '0 6px 16px rgba(124, 58, 237, 0.6)';
-                                            }}
-                                            onMouseOut={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(0)';
-                                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.4)';
-                                            }}
-                                            title="Add New Service"
+                                            onClick={() => setProfile(prev => ({...prev, isAvailable: !prev.isAvailable}))}
+                                            title={profile.isAvailable ? "Click to mark as Unavailable" : "Click to mark as Available"}
                                         >
-                                            <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>+</span>
-                                            <span>Add Service</span>
+                                            {profile.isAvailable ? '⚡ Available' : '🚫 Unavailable'}
                                         </button>
-                                    )}
+                                    </div>
+
+                                    <div className="header-actions-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '10px' }}>
+                                        <span className="preview-rating" style={{ 
+                                            background: 'white', 
+                                            padding: '0 12px', 
+                                            borderRadius: '20px', 
+                                            border: '1px solid #e2e8f0',
+                                            height: '36px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '700',
+                                            color: '#eab308',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                        }}>
+                                            ⭐ {profile.rating || 'New'}
+                                        </span>
+                                        <button className="lk-edit-btn" onClick={() => openEdit('socials', 'Social Links')}>
+                                            🔗 Edit Socials
+                                        </button>
+                                    </div>
                                 </div>
-                                <div style={{
-                                    background: 'rgba(248, 250, 252, 0.5)', 
-                                    backdropFilter: 'blur(8px)', 
-                                    padding: '1.25rem', 
-                                    borderRadius: '16px', 
-                                    border: '1px solid rgba(226, 232, 240, 0.8)', 
-                                    boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
-                                }}>
-                                    
-                                    <div className="services-manage-header">
-                                        <div className="service-tabs-pc-only" style={{ display: 'flex', gap: '8px' }}>
-                                            {['All'].map(tab => (
-                                                <button
-                                                    key={tab}
-                                                    onClick={() => setActiveServiceTab(tab)}
-                                                    style={{
-                                                        padding: '0.4rem 1rem',
-                                                        borderRadius: '8px',
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: '600',
-                                                        border: '1px solid',
-                                                        borderColor: activeServiceTab === tab ? '#4f46e5' : '#e2e8f0',
-                                                        background: activeServiceTab === tab ? '#eef2ff' : 'white',
-                                                        color: activeServiceTab === tab ? '#4f46e5' : '#64748b',
-                                                        cursor: 'pointer',
-                                                        transition: '0.2s',
-                                                        whiteSpace: 'nowrap'
-                                                    }}
-                                                >
-                                                    {tab}
-                                                </button>
-                                            ))}
+
+                                <div className="lk-section-row" style={{ alignItems: 'flex-start' }}>
+                                    <div style={{ width: '100%' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <h1 className="lk-name">{profile.name}</h1>
+                                            <button className="lk-inline-edit" onClick={() => openEdit('name', 'Display Name', 'text')}>✏️</button>
                                         </div>
-                                        <div className="services-search-container">
-                                            <div className="service-search-field-wrap">
-                                                <span className="search-icon">🔍</span>
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="Search services..." 
-                                                    value={serviceSearch}
-                                                    onChange={(e) => setServiceSearch(e.target.value)}
-                                                />
+                                        
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '1.1rem', color: '#475569', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                                            <span>{profile.role || "Role"} @ {profile.company || "Company"}</span>
+                                            <button className="lk-inline-edit" onClick={() => openEdit('role', 'Job Role', 'text')}>✏️ Role</button>
+                                            <button className="lk-inline-edit" onClick={() => openEdit('company', 'Company Name', 'text')}>✏️ Company</button>
+                                        </div>
+
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '0.75rem' }}>
+                                            <span className="lk-tag">
+                                                💼 {profile.experience ? (profile.experience.toLowerCase().includes('year') ? profile.experience : `${profile.experience} ${parseInt(profile.experience, 10) === 1 ? 'Year' : 'Years'} of experience`) : 'Experience'}
+                                            </span>
+                                            <button className="lk-inline-edit" onClick={() => openEdit('experience', 'Experience', 'text')}>✏️</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Mobile Tabs Switcher */}
+                            <div className="main-tabs-container">
+                                <button 
+                                    className={`main-tab-btn ${mainTab === 'About' ? 'active' : ''}`}
+                                    onClick={() => setMainTab('About')}
+                                >
+                                    👤 About Profile
+                                </button>
+                                <button 
+                                    className={`main-tab-btn ${mainTab === 'Services' ? 'active' : ''}`}
+                                    onClick={() => setMainTab('Services')}
+                                >
+                                    📅 Available Services
+                                </button>
+                            </div>
+
+                            {/* Main Two-Column Layout Grid */}
+                            <div className="lk-profile-layout">
+                                {/* Left Main Column */}
+                                <div className={`lk-main-column ${mainTab === 'About' ? 'tab-visible' : 'tab-hidden'}`}>
+                                    {/* About/Bio Section Card */}
+                                    <div className="lk-section">
+                                        <div className="lk-section-header">
+                                            <h3 className="lk-section-title">👤 About Mentor</h3>
+                                            <button className="lk-edit-btn" onClick={() => openEdit('bio', 'About', 'textarea')}>✏️ Edit About</button>
+                                        </div>
+                                        <div className="lk-text-block lk-bio-text">
+                                            {profile.bio || <span className="lk-empty">No bio added yet. Click edit to write something about yourself.</span>}
+                                        </div>
+                                    </div>
+
+                                    {/* Topics Section Card */}
+                                    <div className="lk-section">
+                                        <div className="lk-section-header">
+                                            <h3 className="lk-section-title">🎯 Topics of Expertise</h3>
+                                            <button className="lk-edit-btn" onClick={() => openEdit('topics', 'Topics of Expertise', 'text')}>✏️ Edit Topics</button>
+                                        </div>
+                                        <div className="lk-tags-row">
+                                            <div className="lk-tags-wrap">
+                                                {(profile.topics || profile.skills) ? (
+                                                    (profile.topics || profile.skills).split(',').map((topic, idx) => (
+                                                        <span key={idx} className="lk-tag">{topic.trim()}</span>
+                                                    ))
+                                                ) : (
+                                                    <span className="lk-empty">No expertise topics listed yet.</span>
+                                                )}
                                             </div>
-                                            {serviceSearch.trim() && (
-                                                <div className="search-suggestions-popup">
-                                                    {(profile.services || [])
-                                                        .filter(s => 
-                                                            (s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
-                                                             s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase())) &&
-                                                            s.title?.toLowerCase() !== serviceSearch.toLowerCase()
-                                                        )
-                                                        .slice(0, 3)
-                                                        .map((s, i) => (
-                                                            <div 
-                                                                key={i}
-                                                                onClick={() => setServiceSearch(s.title)}
-                                                                className="suggestion-item"
-                                                            >
-                                                                {s.title}
-                                                            </div>
-                                                        ))
-                                                    }
+                                        </div>
+                                    </div>
+
+                                    {/* Education Section Card */}
+                                    <div className="lk-section">
+                                        <div className="lk-section-header">
+                                            <h3 className="lk-section-title">🎓 Education</h3>
+                                            <button className="lk-edit-btn" onClick={() => openEdit('education', 'Education', 'textarea')}>✏️ Edit Education</button>
+                                        </div>
+                                        <div className="lk-text-block">
+                                            {profile.education || <span className="lk-empty">No education details added yet.</span>}
+                                        </div>
+                                    </div>
+
+                                    {/* Work Experience Section Card */}
+                                    <div className="lk-section">
+                                        <div className="lk-section-header">
+                                            <h3 className="lk-section-title">💼 Work Experience</h3>
+                                            <button className="lk-edit-btn" onClick={() => openEdit('workExperience', 'Work Experience', 'textarea')}>✏️ Edit Experience</button>
+                                        </div>
+                                        <div className="lk-text-block">
+                                            {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company}` : <span className="lk-empty">No work experience details added yet.</span>)}
+                                        </div>
+                                    </div>
+
+                                    {/* Social Details Card */}
+                                    <div className="lk-section">
+                                        <div className="lk-section-header">
+                                            <h3 className="lk-section-title">🔗 Social Links</h3>
+                                            <button className="lk-edit-btn" onClick={() => openEdit('socials', 'Social Links')}>✏️ Edit Links</button>
+                                        </div>
+                                        <div className="lk-info-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                                            {profile.email && (
+                                                <div className="lk-social-chip">
+                                                    <div className="lk-social-icon" style={{ background: '#e2e8f0', color: '#475569' }}>✉️</div>
+                                                    <div>
+                                                        <div className="lk-social-chip-label">Email</div>
+                                                        <div className="lk-social-chip-url">{profile.email}</div>
+                                                    </div>
                                                 </div>
                                             )}
-                                        </div>
-
-                                        <div className="services-sort-container">
-                                            <select 
-                                                value={serviceSort}
-                                                onChange={(e) => setServiceSort(e.target.value)}
-                                            >
-                                                <option value="A-Z">A-Z</option>
-                                                <option value="Z-A">Z-A</option>
-                                                <option value="Newest">Newest</option>
-                                            </select>
-                                            <span className="sort-arrow">▼</span>
+                                            {profile.linkedin && (
+                                                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="lk-social-chip">
+                                                    <div className="lk-social-icon lk-linkedin-icon">in</div>
+                                                    <div>
+                                                        <div className="lk-social-chip-label">LinkedIn</div>
+                                                        <div className="lk-social-chip-url">View Profile</div>
+                                                    </div>
+                                                </a>
+                                            )}
+                                            {!profile.email && !profile.linkedin && (
+                                                <span className="lk-empty">No social links configured yet.</span>
+                                            )}
                                         </div>
                                     </div>
+                                </div>
 
-                                    {/* Dynamic Services Mapping */}
-                                    <div style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
-                                        {(profile.services || [])
-                                            .filter(s => {
-                                                const matchesSearch = !serviceSearch.trim() || 
-                                                    (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
-                                                    (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
-                                                
-                                                const matchesTab = activeServiceTab === 'All' || 
-                                                    (s.title || '').toLowerCase().includes(activeServiceTab.toLowerCase()) || 
-                                                    (s.keywords || '').toLowerCase().includes(activeServiceTab.toLowerCase());
-                                                
-                                                return matchesSearch && matchesTab;
-                                            })
-                                            .sort((a, b) => {
-                                                if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
-                                                if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
-                                                return 0;
-                                            })
-                                            .map((service, index) => (
-                                                <div className="preview-service-card" key={index} style={{ 
-                                                    position: 'relative', 
-                                                    marginBottom: '1rem',
-                                                    background: 'rgba(255, 255, 255, 0.9)',
-                                                    border: '1px solid #e2e8f0',
-                                                    boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
-                                                    padding: '1.25rem',
-                                                    borderRadius: '12px',
-                                                    cursor: isEditingProfile ? 'pointer' : 'default'
+                                {/* Right Sidebar Column (Services) */}
+                                <div className={`lk-profile-sidebar ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
+                                    <div className="lk-section" style={{ height: '100%', minHeight: '400px' }}>
+                                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem'}}>
+                                            <h3 className="lk-section-title">📅 Available Services</h3>
+                                            <button 
+                                                onClick={openAddService}
+                                                style={{
+                                                    background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '30px',
+                                                    padding: '0.4rem 1rem',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: '700',
+                                                    boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)',
+                                                    height: '34px'
                                                 }}
-                                                onClick={() => isEditingProfile && openEditService(service, index)}
-                                                >
-                                                    {isEditingProfile && (
-                                                        <div className="service-edit-icon" style={{
-                                                            position: 'absolute',
-                                                            top: '10px',
-                                                            right: '48px',
-                                                            background: 'rgba(255, 255, 255, 0.95)',
-                                                            color: '#4f46e5',
-                                                            width: '28px',
-                                                            height: '28px',
-                                                            borderRadius: '50%',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            fontSize: '12px',
-                                                            cursor: 'pointer',
-                                                            zIndex: 5,
-                                                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                                                            border: '1px solid #e2e8f0',
-                                                            transition: '0.2s'
-                                                        }}>
-                                                            ✏️
+                                            >
+                                                <span>+ Add</span>
+                                            </button>
+                                        </div>
+
+                                        <div style={{
+                                            background: '#f8fafc', 
+                                            padding: '1rem', 
+                                            borderRadius: '12px', 
+                                            border: '1px solid #e2e8f0', 
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
+                                        }}>
+                                            <div className="services-manage-header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
+                                                <div className="services-search-container" style={{ width: '100%' }}>
+                                                    <div className="service-search-field-wrap">
+                                                        <span className="search-icon">🔍</span>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Search services..." 
+                                                            value={serviceSearch}
+                                                            onChange={(e) => setServiceSearch(e.target.value)}
+                                                        />
+                                                    </div>
+                                                    {serviceSearch.trim() && (
+                                                        <div className="search-suggestions-popup">
+                                                            {(profile.services || [])
+                                                                .filter(s => 
+                                                                    (s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                                     s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase())) &&
+                                                                    s.title?.toLowerCase() !== serviceSearch.toLowerCase()
+                                                                )
+                                                                .slice(0, 3)
+                                                                .map((s, i) => (
+                                                                    <div 
+                                                                        key={i}
+                                                                        onClick={() => setServiceSearch(s.title)}
+                                                                        className="suggestion-item"
+                                                                    >
+                                                                        {s.title}
+                                                                    </div>
+                                                                ))
+                                                            }
                                                         </div>
                                                     )}
-                                                    
-                                                    {isEditingProfile && (
-                                                        <button 
-                                                            onClick={(e) => { e.stopPropagation(); removeService(index); }}
-                                                            style={{
+                                                </div>
+
+                                                <div className="services-sort-container">
+                                                    <select 
+                                                        value={serviceSort}
+                                                        onChange={(e) => setServiceSort(e.target.value)}
+                                                    >
+                                                        <option value="A-Z">A-Z</option>
+                                                        <option value="Z-A">Z-A</option>
+                                                    </select>
+                                                    <span className="sort-arrow">▼</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Scrollable Services List */}
+                                            <div style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 5px', marginTop: '1rem' }}>
+                                                {(profile.services || [])
+                                                    .filter(s => {
+                                                        const matchesSearch = !serviceSearch.trim() || 
+                                                            (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                            (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
+                                                        return matchesSearch;
+                                                    })
+                                                    .sort((a, b) => {
+                                                        if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
+                                                        if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                        return 0;
+                                                    })
+                                                    .map((service, index) => (
+                                                        <div className="preview-service-card" key={index} style={{ 
+                                                            position: 'relative', 
+                                                            marginBottom: '1rem',
+                                                            background: 'white',
+                                                            border: '1px solid #e2e8f0',
+                                                            padding: '1rem',
+                                                            borderRadius: '10px',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                        onClick={() => openEditService(service, index)}
+                                                        >
+                                                            <div className="service-edit-icon" style={{
                                                                 position: 'absolute',
-                                                                top: '10px',
-                                                                right: '10px',
-                                                                background: 'linear-gradient(135deg, #f87171, #ef4444)',
-                                                                color: 'white',
-                                                                border: '2px solid white',
+                                                                top: '8px',
+                                                                right: '42px',
+                                                                background: 'white',
+                                                                color: '#4f46e5',
+                                                                width: '24px',
+                                                                height: '24px',
                                                                 borderRadius: '50%',
-                                                                width: '28px',
-                                                                height: '28px',
-                                                                fontSize: '12px',
-                                                                cursor: 'pointer',
                                                                 display: 'flex',
                                                                 alignItems: 'center',
                                                                 justifyContent: 'center',
-                                                                zIndex: 10,
-                                                                boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)',
-                                                                transition: '0.2s'
-                                                            }}
-                                                            onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
-                                                            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                                                            title="Remove Service"
-                                                        >
-                                                            ✕
-                                                        </button>
-                                                    )}
-                                                    
-                                                    {service.tag && <div className="preview-service-tag" style={{
-                                                        background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
-                                                        color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
-                                                        borderRadius: '8px',
-                                                        letterSpacing: '0.02em',
-                                                        position: 'relative',
-                                                        zIndex: 2
-                                                    }}>{service.tag}</div>}
+                                                                fontSize: '11px',
+                                                                zIndex: 5,
+                                                                boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+                                                                border: '1px solid #e2e8f0'
+                                                            }}>
+                                                                ✏️
+                                                            </div>
+                                                            
+                                                            <button 
+                                                                onClick={(e) => { e.stopPropagation(); removeService(index); }}
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    top: '8px',
+                                                                    right: '8px',
+                                                                    background: 'linear-gradient(135deg, #f87171, #ef4444)',
+                                                                    color: 'white',
+                                                                    border: 'none',
+                                                                    borderRadius: '50%',
+                                                                    width: '24px',
+                                                                    height: '24px',
+                                                                    fontSize: '10px',
+                                                                    cursor: 'pointer',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    zIndex: 10,
+                                                                    boxShadow: '0 2px 6px rgba(239, 68, 68, 0.2)'
+                                                                }}
+                                                            >
+                                                                ✕
+                                                            </button>
+                                                            
+                                                            {service.tag && <div className="preview-service-tag" style={{
+                                                                background: service.tag.toLowerCase().includes('feedback') ? '#e0e7ff' : '#fef9c3',
+                                                                color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
+                                                                borderRadius: '6px',
+                                                                fontSize: '0.7rem',
+                                                                padding: '2px 6px',
+                                                                display: 'inline-block',
+                                                                marginBottom: '6px'
+                                                            }}>{service.tag}</div>}
 
-                                                    <div className="preview-service-title" style={{fontSize: '1rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
-                                                    
-                                                    {service.keywords && (
-                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px', position: 'relative', zIndex: 2 }}>
-                                                            {service.keywords.split(',').map((k, i) => (
-                                                                <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
-                                                                    #{k.trim()}
-                                                                </span>
-                                                            ))}
+                                                            <div className="preview-service-title" style={{fontSize: '0.95rem', fontWeight: '700', color: '#1e1b4b'}}>{service.title || "Untitled Service"}</div>
+                                                            
+                                                            {service.keywords && (
+                                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
+                                                                    {service.keywords.split(',').map((k, i) => (
+                                                                        <span key={i} style={{ fontSize: '0.65rem', color: '#64748b', background: '#f1f5f9', padding: '1px 6px', borderRadius: '4px' }}>
+                                                                            #{k.trim()}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+
+                                                            <div className="preview-service-footer" style={{marginTop: '0.75rem', borderTop: '1px solid #f1f5f9', paddingTop: '6px'}}>
+                                                                <div className="preview-service-price" style={{ fontSize: '1.05rem', fontWeight: '800' }}>
+                                                                    {service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    )}
-
-                                                    <div className="preview-service-footer" style={{marginTop: '1rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', paddingWeight: '5px', position: 'relative', zIndex: 2}}>
-                                                        <div className="preview-service-price" style={{
-                                                            fontSize: '1.2rem',
-                                                            background: 'linear-gradient(135deg, #0f172a, #334155)',
-                                                            WebkitBackgroundClip: 'text',
-                                                            WebkitTextFillColor: 'transparent',
-                                                            letterSpacing: '-0.02em'
-                                                        }}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
-                                                        
-                                                        <button 
-                                                            className="preview-book-btn"
-                                                            disabled={isEditingProfile}
-                                                            onClick={(e) => { e.stopPropagation(); !isEditingProfile && setBookingData({ pro: profile, service: service }); }}
-                                                            style={{ 
-                                                                opacity: isEditingProfile ? 0.4 : 1,
-                                                                background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                                                                padding: '0.6rem 1.4rem',
-                                                                borderRadius: '10px',
-                                                                boxShadow: isEditingProfile ? 'none' : '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
-                                                                border: 'none',
-                                                                transition: '0.3s',
-                                                                fontSize: '0.85rem'
-                                                            }}
-                                                        >
-                                                            Book Now
-                                                        </button>
+                                                    ))
+                                                }
+                                                
+                                                {(profile.services || []).length === 0 && (
+                                                    <div style={{
+                                                        textAlign: 'center', 
+                                                        padding: '2rem 1rem', 
+                                                        color: '#94a3b8', 
+                                                        background: 'white',
+                                                        borderRadius: '10px',
+                                                        border: '1px dashed #e2e8f0'
+                                                    }}>
+                                                        <p style={{fontWeight: '600', fontSize: '0.85rem'}}>No services. Click "+ Add" to create one!</p>
                                                     </div>
-                                                </div>
-                                            ))
-                                        }
-                                        
-                                        {(profile.services || []).length === 0 && (
-                                            <div style={{
-                                                textAlign: 'center', 
-                                                padding: '3rem 1rem', 
-                                                color: '#94a3b8', 
-                                                background: 'rgba(255,255,255,0.4)',
-                                                borderRadius: '16px',
-                                                border: '1px dashed #e2e8f0'
-                                            }}>
-                                                <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>✨</div>
-                                                <p style={{fontWeight: '600', fontSize: '0.95rem'}}>Click the "+" button above to add your first service!</p>
+                                                )}
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                ) : (
+                    <div className="mentor-layout">
+                        <div className="mentor-preview" style={{ margin: '0 auto', maxWidth: '1200px', width: '100%' }}>
+                            <div className="preview-header" style={{ 
+                                background: profile.headerBg?.includes('gradient') ? profile.headerBg : 
+                                           (profile.headerBg?.startsWith('http') || profile.headerBg?.startsWith('data:image')) ? `url(${profile.headerBg}) center/cover no-repeat` : 
+                                           profile.headerBg || '#fbcfe8'
+                            }}>
+                            </div>
+                            <div className="preview-body">
+                                <div className="preview-top-row" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', width: '100%', marginBottom: '1rem' }}>
+                                    <div className="preview-avatar-wrapper" style={{ marginBottom: 0 }}>
+                                        <div className="preview-avatar" style={{background: profile.image ? `url(${profile.image}) center/cover` : avatarBgColor}}>
+                                            {!profile.image && initials}
+                                        </div>
+                                        {profile.isAvailable && <div className="availability-badge">⚡ Available</div>}
+                                    </div>
+
+                                    <div className="preview-header-meta" style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '6px',
+                                        paddingBottom: '10px'
+                                    }}>
+                                        <span className="preview-rating" style={{ 
+                                            background: 'white', 
+                                            padding: '0 12px', 
+                                            borderRadius: '20px', 
+                                            border: '1px solid #e2e8f0',
+                                            height: '36px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '700',
+                                            color: '#eab308',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                        }}>
+                                            ⭐ {profile.rating || 'New'}
+                                        </span>
+                                        <div className="preview-socials" style={{ gap: '6px', display: 'flex', alignItems: 'center' }}>
+                                            {profile.email && <a href={`mailto:${profile.email}`} className="preview-social-icon-raw">✉️</a>}
+                                            {profile.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="preview-social-icon-raw">in</a>}
+                                            <div className="preview-social-icon-raw cursor-pointer" title="Share" style={{ color: '#475569' }}>
+                                                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="preview-title-row">
+                                    <h3>
+                                        {profile.name}
+                                    </h3>
+                                </div>
+
+                                <div className="preview-subtitle">
+                                    {profile.role} @ {profile.company} {(profile.topics || profile.skills) ? `| ${formatTopicsOrSkills(profile.topics || profile.skills)}` : ''}
+                                </div>
+
+                                <div className="preview-badges">
+                                    <div className="preview-badge" style={{background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b'}}>💼 {profile.experience ? (profile.experience.toLowerCase().includes('year') ? profile.experience : `${profile.experience} ${parseInt(profile.experience, 10) === 1 ? 'Year' : 'Years'} of experience`) : 'Experience'}</div>
+                                </div>
+
+                                {/* Main Tabs (Visible on Mobile) */}
+                                <div className="main-tabs-container">
+                                    <button 
+                                        className={`main-tab-btn ${mainTab === 'About' ? 'active' : ''}`}
+                                        onClick={() => setMainTab('About')}
+                                    >
+                                        👤 About Mentor
+                                    </button>
+                                    <button 
+                                        className={`main-tab-btn ${mainTab === 'Services' ? 'active' : ''}`}
+                                        onClick={() => setMainTab('Services')}
+                                    >
+                                        📅 Available Services
+                                    </button>
+                                </div>
+
+                                <div className="preview-content-grid">
+                                    <div className={`preview-section-left ${mainTab === 'About' ? 'tab-visible' : 'tab-hidden'}`}>
+                                        <h4 style={{color: '#1e1b4b'}}>👤 About Mentor</h4>
+                                        
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header" onClick={() => toggleAccordion('about')} style={{cursor: 'pointer'}}>
+                                                About 
+                                                <span className="accordion-action-wrapper">
+                                                    {expandedSections.about ? '^' : 'v'}
+                                                </span>
+                                            </div>
+                                            {expandedSections.about && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
+                                                    {profile.bio || "No about added yet."}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header" onClick={() => toggleAccordion('topics')} style={{cursor: 'pointer'}}>
+                                                Topics of Expertise 
+                                                <span className="accordion-action-wrapper">
+                                                    {expandedSections.topics ? '^' : 'v'}
+                                                </span>
+                                            </div>
+                                            {expandedSections.topics && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
+                                                    {profile.topics || profile.skills || "No topics added yet."}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header" onClick={() => toggleAccordion('education')} style={{cursor: 'pointer'}}>
+                                                Education 
+                                                <span className="accordion-action-wrapper">
+                                                    {expandedSections.education ? '^' : 'v'}
+                                                </span>
+                                            </div>
+                                            {expandedSections.education && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
+                                                    {profile.education || "No education added yet."}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="preview-accordion">
+                                            <div className="preview-accordion-header" onClick={() => toggleAccordion('work')} style={{cursor: 'pointer'}}>
+                                                Work Experience 
+                                                <span className="accordion-action-wrapper">
+                                                    {expandedSections.work ? '^' : 'v'}
+                                                </span>
+                                            </div>
+                                            {expandedSections.work && (
+                                                <div style={{fontSize: '0.9rem', color: '#475569', marginTop: '0.5rem', lineHeight: '1.5', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word'}}>
+                                                    {profile.workExperience || (profile.role && profile.company ? `${profile.role} at ${profile.company} (${(() => {
+                                                        const expVal = profile.experience || '';
+                                                        const num = parseInt(expVal);
+                                                        if (isNaN(num)) return expVal || '1 Year';
+                                                        return `${num} ${num === 1 ? 'Year' : 'Years'}`;
+                                                    })()})` : (profile.role || profile.company || "No work experience added yet."))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className={`preview-section-right ${mainTab === 'Services' ? 'tab-visible' : 'tab-hidden'}`}>
+                                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
+                                            <h4 style={{color: '#1e1b4b', margin: 0}}>📅 Available Services</h4>
+                                        </div>
+                                        <div style={{
+                                            background: 'rgba(248, 250, 252, 0.5)', 
+                                            backdropFilter: 'blur(8px)', 
+                                            padding: '1.25rem', 
+                                            borderRadius: '16px', 
+                                            border: '1px solid rgba(226, 232, 240, 0.8)', 
+                                            boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
+                                        }}>
+                                            
+                                            <div className="services-manage-header">
+                                                <div className="service-tabs-pc-only" style={{ display: 'flex', gap: '8px' }}>
+                                                    {['All'].map(tab => (
+                                                        <button
+                                                            key={tab}
+                                                            onClick={() => setActiveServiceTab(tab)}
+                                                            style={{
+                                                                padding: '0.4rem 1rem',
+                                                                borderRadius: '8px',
+                                                                fontSize: '0.85rem',
+                                                                fontWeight: '600',
+                                                                border: '1px solid',
+                                                                borderColor: activeServiceTab === tab ? '#4f46e5' : '#e2e8f0',
+                                                                background: activeServiceTab === tab ? '#eef2ff' : 'white',
+                                                                color: activeServiceTab === tab ? '#4f46e5' : '#64748b',
+                                                                cursor: 'pointer',
+                                                                transition: '0.2s',
+                                                                whiteSpace: 'nowrap'
+                                                            }}
+                                                        >
+                                                            {tab}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="services-search-container">
+                                                    <div className="service-search-field-wrap">
+                                                        <span className="search-icon">🔍</span>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Search services..." 
+                                                            value={serviceSearch}
+                                                            onChange={(e) => setServiceSearch(e.target.value)}
+                                                        />
+                                                    </div>
+                                                    {serviceSearch.trim() && (
+                                                        <div className="search-suggestions-popup">
+                                                            {(profile.services || [])
+                                                                .filter(s => 
+                                                                    (s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                                     s.keywords?.toLowerCase().includes(serviceSearch.toLowerCase())) &&
+                                                                    s.title?.toLowerCase() !== serviceSearch.toLowerCase()
+                                                                )
+                                                                .slice(0, 3)
+                                                                .map((s, i) => (
+                                                                    <div 
+                                                                        key={i}
+                                                                        onClick={() => setServiceSearch(s.title)}
+                                                                        className="suggestion-item"
+                                                                    >
+                                                                        {s.title}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="services-sort-container">
+                                                    <select 
+                                                        value={serviceSort}
+                                                        onChange={(e) => setServiceSort(e.target.value)}
+                                                    >
+                                                        <option value="A-Z">A-Z</option>
+                                                        <option value="Z-A">Z-A</option>
+                                                    </select>
+                                                    <span className="sort-arrow">▼</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Dynamic Services Mapping */}
+                                            <div style={{ maxHeight: '310px', overflowY: 'auto', overflowX: 'hidden', padding: '10px 15px 10px 10px' }}>
+                                                {(profile.services || [])
+                                                    .filter(s => {
+                                                        const matchesSearch = !serviceSearch.trim() || 
+                                                            (s.title || '').toLowerCase().includes(serviceSearch.toLowerCase()) || 
+                                                            (s.keywords || '').toLowerCase().includes(serviceSearch.toLowerCase());
+                                                        return matchesSearch;
+                                                    })
+                                                    .sort((a, b) => {
+                                                        if (serviceSort === 'A-Z') return (a.title || '').localeCompare(b.title || '');
+                                                        if (serviceSort === 'Z-A') return (b.title || '').localeCompare(a.title || '');
+                                                        return 0;
+                                                    })
+                                                    .map((service, index) => (
+                                                        <div className="preview-service-card" key={index} style={{ 
+                                                            position: 'relative', 
+                                                            marginBottom: '1rem',
+                                                            background: 'rgba(255, 255, 255, 0.9)',
+                                                            border: '1px solid #e2e8f0',
+                                                            boxShadow: '0 8px 20px -5px rgba(0,0,0,0.05)',
+                                                            padding: '1.25rem',
+                                                            borderRadius: '12px',
+                                                            cursor: 'default'
+                                                        }}
+                                                        >
+                                                            {service.tag && <div className="preview-service-tag" style={{
+                                                                background: service.tag.toLowerCase().includes('feedback') ? 'linear-gradient(135deg, #e0e7ff, #c7d2fe)' : 'linear-gradient(135deg, #fef9c3, #fde68a)',
+                                                                color: service.tag.toLowerCase().includes('feedback') ? '#4338ca' : '#854d0e',
+                                                                borderRadius: '8px',
+                                                                letterSpacing: '0.02em',
+                                                                position: 'relative',
+                                                                zIndex: 2
+                                                            }}>{service.tag}</div>}
+
+                                                            <div className="preview-service-title" style={{fontSize: '1rem', color: '#1e1b4b', position: 'relative', zIndex: 2}}>{service.title || "Untitled Service"}</div>
+                                                            
+                                                            {service.keywords && (
+                                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px', position: 'relative', zIndex: 2 }}>
+                                                                    {service.keywords.split(',').map((k, i) => (
+                                                                        <span key={i} style={{ fontSize: '0.7rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
+                                                                            #{k.trim()}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+
+                                                            <div className="preview-service-footer" style={{marginTop: '1rem', borderTop: '1px solid rgba(226, 232, 240, 0.6)', paddingWeight: '5px', position: 'relative', zIndex: 2}}>
+                                                                <div className="preview-service-price" style={{
+                                                                    fontSize: '1.2rem',
+                                                                    background: 'linear-gradient(135deg, #0f172a, #334155)',
+                                                                    WebkitBackgroundClip: 'text',
+                                                                    WebkitTextFillColor: 'transparent',
+                                                                    letterSpacing: '-0.02em'
+                                                                }}>{service.price === 'Free' ? 'Free' : (service.price && !service.price.toString().startsWith('₹') ? `₹${service.price}` : service.price || '₹0')}</div>
+                                                                
+                                                                <button 
+                                                                    className="preview-book-btn"
+                                                                    onClick={(e) => { e.stopPropagation(); setBookingData({ pro: profile, service: service }); }}
+                                                                    style={{ 
+                                                                        background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                                                                        padding: '0.6rem 1.4rem',
+                                                                        borderRadius: '10px',
+                                                                        boxShadow: '0 10px 20px -5px rgba(79, 70, 229, 0.4)',
+                                                                        border: 'none',
+                                                                        transition: '0.3s',
+                                                                        fontSize: '0.85rem'
+                                                                    }}
+                                                                >
+                                                                    Book Now
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
+                                                
+                                                {(profile.services || []).length === 0 && (
+                                                    <div style={{
+                                                        textAlign: 'center', 
+                                                        padding: '3rem 1rem', 
+                                                        color: '#94a3b8', 
+                                                        background: 'rgba(255,255,255,0.4)',
+                                                        borderRadius: '16px',
+                                                        border: '1px dashed #e2e8f0'
+                                                    }}>
+                                                        <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>✨</div>
+                                                        <p style={{fontWeight: '600', fontSize: '0.95rem'}}>No available services from this mentor.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
             )}
             {showAnalytics && (
                 <div className="analytics-section">

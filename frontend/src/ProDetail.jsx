@@ -18,6 +18,9 @@ function ProDetail({ pro, onClose }) {
     const [serviceSearch, setServiceSearch] = useState('');
     const [serviceSort, setServiceSort] = useState('A-Z');
     const [activeTab, setActiveTab] = useState('All');
+    const [sortOpen, setSortOpen] = useState(false);
+    const [sortBtnRect, setSortBtnRect] = useState(null);
+    const sortBtnRef = React.useRef(null);
 
     const [expandedSections, setExpandedSections] = useState({
         about: true,
@@ -33,14 +36,33 @@ function ProDetail({ pro, onClose }) {
     };
 
     useEffect(() => {
-        const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+        const handleKey = (e) => { if (e.key === 'Escape') { if (sortOpen) setSortOpen(false); else onClose(); } };
+        const handleClickOutside = () => { if (sortOpen) setSortOpen(false); };
         document.addEventListener('keydown', handleKey);
+        document.addEventListener('click', handleClickOutside);
         document.body.style.overflow = 'hidden';
         return () => {
             document.removeEventListener('keydown', handleKey);
+            document.removeEventListener('click', handleClickOutside);
             document.body.style.overflow = '';
         };
-    }, [onClose]);
+    }, [onClose, sortOpen]);
+
+    useEffect(() => {
+        if (pro.initialHighlightService) {
+            setMainTab('Services');
+            setTimeout(() => {
+                const element = document.querySelector(`[data-service-title="${pro.initialHighlightService}"]`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    element.classList.add('pulse-highlight');
+                    setTimeout(() => {
+                        element.classList.remove('pulse-highlight');
+                    }, 2500);
+                }
+            }, 300);
+        }
+    }, [pro.initialHighlightService]);
 
     const avatarBgColor = pro.avatarBg || '#1e293b';
     const initials = pro.name ? pro.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'M';
@@ -69,7 +91,6 @@ function ProDetail({ pro, onClose }) {
                                     >
                                         {!pro.image && initials}
                                     </div>
-                                    {pro.isAvailable !== false && <div className="availability-badge">⚡ Available</div>}
                                 </div>
                                 <div className="preview-header-meta" style={{ 
                                     display: 'flex', 
@@ -89,7 +110,9 @@ function ProDetail({ pro, onClose }) {
                                         display: 'flex',
                                         alignItems: 'center',
                                         gap: '4px',
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                                        whiteSpace: 'nowrap',
+                                        flexShrink: 0
                                     }}>
                                         ⭐ {pro.rating || '4.8'}
                                     </span>
@@ -205,7 +228,7 @@ function ProDetail({ pro, onClose }) {
                                     <h4>📅 Available Services</h4>
                                     <div className="services-content-tab">
                                         <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'nowrap', gap: '8px', alignItems: 'center'}}>
+                                            <div style={{display: 'flex', background: '#e2e8f0', borderRadius: '12px', padding: '0.4rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '6px', alignItems: 'center', boxSizing: 'border-box', width: '100%', position: 'relative'}}>
                                                 {/* Left-aligned Tab(s) */}
                                                 <div className="service-filter-tabs" style={{ display: 'flex', gap: '4px' }}>
                                                     {['All'].map(tab => (
@@ -232,8 +255,8 @@ function ProDetail({ pro, onClose }) {
                                                 <div style={{ flex: 1 }}></div>
 
                                                 {/* Right-aligned Group */}
-                                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-                                                    <div style={{ position: 'relative', width: '170px' }}>
+                                                <div className="pd-service-filters-group" style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0, minWidth: 0 }}>
+                                                    <div className="pd-service-search-wrapper" style={{ position: 'relative', flex: '1 1 auto', minWidth: '80px', maxWidth: '160px' }}>
                                                         <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.9rem' }}>🔍</span>
                                                         <input 
                                                             type="text" 
@@ -254,28 +277,81 @@ function ProDetail({ pro, onClose }) {
                                                         />
                                                     </div>
 
-                                                    <div style={{ position: 'relative' }}>
-                                                        <select 
-                                                            value={serviceSort}
-                                                            onChange={(e) => setServiceSort(e.target.value)}
+                                                    {/* Custom Sort Dropdown */}
+                                                    <div style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
+                                                        <button
+                                                            ref={sortBtnRef}
+                                                            onClick={() => {
+                                                                if (sortBtnRef.current) {
+                                                                    setSortBtnRect(sortBtnRef.current.getBoundingClientRect());
+                                                                }
+                                                                setSortOpen(o => !o);
+                                                            }}
                                                             style={{
-                                                                padding: '0.5rem 1.4rem 0.5rem 0.8rem',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '6px',
+                                                                padding: '0.45rem 0.75rem',
                                                                 borderRadius: '10px',
                                                                 border: '1px solid #cbd5e1',
                                                                 background: 'white',
-                                                                fontSize: '0.85rem',
-                                                                color: '#475569',
+                                                                fontSize: '0.82rem',
+                                                                color: '#1e293b',
+                                                                fontWeight: '700',
+                                                                cursor: 'pointer',
+                                                                whiteSpace: 'nowrap',
+                                                                boxShadow: sortOpen ? '0 0 0 2px #2563eb33' : '0 1px 3px rgba(0,0,0,0.07)',
                                                                 outline: 'none',
-                                                                appearance: 'none',
-                                                                fontWeight: '600',
-                                                                cursor: 'pointer'
+                                                                transition: 'box-shadow 0.15s'
                                                             }}
                                                         >
-                                                            <option value="A-Z">A-Z</option>
-                                                            <option value="Z-A">Z-A</option>
-                                                            <option value="Newest">Newest</option>
-                                                        </select>
-                                                        <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: '#94a3b8' }}>▼</span>
+                                                            {serviceSort}
+                                                            <span style={{ fontSize: '0.65rem', color: '#94a3b8', marginLeft: '2px' }}>{sortOpen ? '▲' : '▼'}</span>
+                                                        </button>
+
+                                                        {sortOpen && sortBtnRect && (
+                                                            <div style={{
+                                                                position: 'fixed',
+                                                                top: sortBtnRect.bottom + 6,
+                                                                right: window.innerWidth - sortBtnRect.right,
+                                                                background: 'white',
+                                                                borderRadius: '10px',
+                                                                boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
+                                                                border: '1px solid #e2e8f0',
+                                                                zIndex: 99999,
+                                                                minWidth: '120px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {[
+                                                                    { value: 'A-Z', label: 'A-Z' },
+                                                                    { value: 'Z-A', label: 'Z-A' },
+                                                                    { value: 'Newest', label: 'Newest' }
+                                                                ].map(opt => (
+                                                                    <button
+                                                                        key={opt.value}
+                                                                        onClick={() => { setServiceSort(opt.value); setSortOpen(false); }}
+                                                                        style={{
+                                                                            display: 'block',
+                                                                            width: '100%',
+                                                                            padding: '0.6rem 1rem',
+                                                                            background: serviceSort === opt.value ? '#eff6ff' : 'transparent',
+                                                                            border: 'none',
+                                                                            cursor: 'pointer',
+                                                                            fontSize: '0.85rem',
+                                                                            fontWeight: serviceSort === opt.value ? '700' : '500',
+                                                                            color: serviceSort === opt.value ? '#2563eb' : '#374151',
+                                                                            textAlign: 'left',
+                                                                            transition: 'background 0.15s',
+                                                                            borderBottom: opt.value !== 'Newest' ? '1px solid #f1f5f9' : 'none'
+                                                                        }}
+                                                                        onMouseEnter={e => { if (serviceSort !== opt.value) e.currentTarget.style.background = '#f8fafc'; }}
+                                                                        onMouseLeave={e => { if (serviceSort !== opt.value) e.currentTarget.style.background = 'transparent'; }}
+                                                                    >
+                                                                        {opt.label}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -317,7 +393,12 @@ function ProDetail({ pro, onClose }) {
                                                     }
 
                                                     return filtered.map((service, index) => (
-                                                        <div className="preview-service-card" key={index} style={{ marginBottom: '1rem' }}>
+                                                        <div 
+                                                            className="preview-service-card" 
+                                                            key={index} 
+                                                            style={{ marginBottom: '1rem' }}
+                                                            data-service-title={service.title}
+                                                        >
                                                             {service.tag && (
                                                                 <div className="preview-service-tag" style={service.tag.toLowerCase().includes('feedback') ? {background: '#e0e7ff', color: '#4338ca'} : {}}>
                                                                     {service.tag}

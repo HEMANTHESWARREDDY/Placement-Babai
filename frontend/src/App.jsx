@@ -9,7 +9,9 @@ import ProConnect from './ProConnect';
 import MentorLogin from './MentorLogin';
 import MentorDashboard from './MentorDashboard';
 import InterviewPrep from './InterviewPrep';
+import PracticeHub from './PracticeHub';
 import { API_BASE_URL } from './config';
+
 import './App.css';
 
 // Force Redeploy Stable State f881810
@@ -85,6 +87,8 @@ function App() {
       newPath = '/proConnect';
     } else if (activeMainTab === 'interview-prep') {
       newPath = '/prepZo';
+    } else if (activeMainTab === 'practice-hub') {
+      newPath = '/practiceHub';
     }
 
     if (window.location.pathname !== newPath) {
@@ -208,6 +212,7 @@ function App() {
     
     if (path === '/proConnect' || params.has('proConnect')) return 'pro-connect';
     if (path === '/prepZo' || params.has('prepZo')) return 'interview-prep';
+    if (path === '/practiceHub' || params.has('practiceHub')) return 'practice-hub';
     if (path === '/home') return 'home';
     if (path === '/jobs' || params.has('jobs')) return 'jobs';
     
@@ -225,6 +230,7 @@ function App() {
         let newPath = '/';
         if (activeMainTab === 'pro-connect') newPath = '/proConnect';
         else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
+        else if (activeMainTab === 'practice-hub') newPath = '/practiceHub';
         else if (activeMainTab === 'home') newPath = '/home';
         else if (activeMainTab === 'jobs') newPath = '/';
         
@@ -243,6 +249,7 @@ function App() {
       let newPath = '/';
       if (activeMainTab === 'pro-connect') newPath = '/proConnect';
       else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
+      else if (activeMainTab === 'practice-hub') newPath = '/practiceHub';
       else if (activeMainTab === 'home') newPath = '/home';
       else if (activeMainTab === 'jobs') newPath = '/';
       
@@ -269,6 +276,7 @@ function App() {
           setShowGeneralAtsModal(false);
           if (path === '/proConnect' || params.has('proConnect')) setActiveMainTab('pro-connect');
           else if (path === '/prepZo' || params.has('prepZo')) setActiveMainTab('interview-prep');
+          else if (path === '/practiceHub' || params.has('practiceHub')) setActiveMainTab('practice-hub');
           else if (path === '/home') setActiveMainTab('home');
           else setActiveMainTab('jobs');
         }
@@ -1558,6 +1566,21 @@ function App() {
               </button>
             )}
 
+            {activeMainTab !== 'practice-hub' && (
+              <button 
+                className="mobile-pro-connect-btn" 
+                title="PracticeHub"
+                onClick={() => {
+                  setActiveMainTab('practice-hub');
+                  sessionStorage.setItem('activeMainTab', 'practice-hub');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99-2h.01"/></svg>
+              </button>
+            )}
+
             <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? '✕' : '☰'}
             </button>
@@ -1627,6 +1650,18 @@ function App() {
               
               {/* MOBILE ONLY FLAT LINKS */}
               <li className="mobile-nav-item">
+                <a href="#practice-hub" onClick={(e) => {
+                  e.preventDefault();
+                  setActiveMainTab('practice-hub');
+                  sessionStorage.setItem('activeMainTab', 'practice-hub');
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} className={activeMainTab === 'practice-hub' ? 'active-nav' : ''}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99-2h.01"/></svg>
+                  PracticeHub
+                </a>
+              </li>
+              <li className="mobile-nav-item">
                 <a 
                   href="#all-jobs"
                   onClick={(e) => {
@@ -1680,6 +1715,10 @@ function App() {
                 </button>
                 {showMenuDropdown && (
                   <div className="nav-dropdown-content">
+                    <button onClick={() => { setActiveMainTab('practice-hub'); sessionStorage.setItem('activeMainTab', 'practice-hub'); setShowMenuDropdown(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99-2h.01"/></svg>
+                      PracticeHub
+                    </button>
                     <button onClick={() => { setShowAllJobsModal(true); setShowMenuDropdown(false); setIsMobileMenuOpen(false); }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
                       Browse All Jobs
@@ -1904,6 +1943,28 @@ function App() {
                   <div className={`pillar-card-body ${expandedPillar === 'prep' ? 'expanded' : ''}`}>
                     <p>Practice company-specific interview questions and join free live mentorship workshops daily.</p>
                     <span className="pillar-link" onClick={(e) => { e.stopPropagation(); setActiveMainTab('interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Start Practice &rarr;</span>
+                  </div>
+                </div>
+
+                <div
+                  className="home-pillar-card prep-pillar"
+                  onClick={() => {
+                    if (window.innerWidth <= 640) {
+                      setExpandedPillar(expandedPillar === 'practice' ? null : 'practice');
+                    } else {
+                      setActiveMainTab('practice-hub'); window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  style={{ borderLeft: '4px solid #7c3aed' }}
+                >
+                  <div className="pillar-card-header">
+                    <div className="pillar-icon-wrapper">🎮</div>
+                    <h3>PracticeHub Coding Arena</h3>
+                    <span className={`pillar-chevron ${expandedPillar === 'practice' ? 'open' : ''}`}>▾</span>
+                  </div>
+                  <div className={`pillar-card-body ${expandedPillar === 'practice' ? 'expanded' : ''}`}>
+                    <p>Play gamified coding puzzles (Bug Hunter, Output Predictor) and fight 1v1 in MCQ battles.</p>
+                    <span className="pillar-link" onClick={(e) => { e.stopPropagation(); setActiveMainTab('practice-hub'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Enter Arena &rarr;</span>
                   </div>
                 </div>
               </div>
@@ -2395,6 +2456,8 @@ function App() {
         </>
       ) : activeMainTab === 'pro-connect' ? (
         <ProConnect onMentorLoginClick={() => setCurrentView('mentor-login')} />
+      ) : activeMainTab === 'practice-hub' ? (
+        <PracticeHub />
       ) : (
         <InterviewPrep />
       )}
@@ -2467,6 +2530,7 @@ function App() {
                 <li><a href="#jobs" onClick={(e) => { e.preventDefault(); setActiveMainTab('jobs'); sessionStorage.setItem('activeMainTab', 'jobs'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Search Jobs</a></li>
                 <li><a href="#pro-connect" onClick={(e) => { e.preventDefault(); setActiveMainTab('pro-connect'); sessionStorage.setItem('activeMainTab', 'pro-connect'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>ProConnect</a></li>
                 <li><a href="#interview-prep" onClick={(e) => { e.preventDefault(); setActiveMainTab('interview-prep'); sessionStorage.setItem('activeMainTab', 'interview-prep'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>PrepZo Practice</a></li>
+                <li><a href="#practice-hub" onClick={(e) => { e.preventDefault(); setActiveMainTab('practice-hub'); sessionStorage.setItem('activeMainTab', 'practice-hub'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>PracticeHub Arena</a></li>
                 <li><a href="#companies" onClick={(e) => { e.preventDefault(); if (activeMainTab !== 'home') { setActiveMainTab('home'); sessionStorage.setItem('activeMainTab', 'home'); setTimeout(() => { document.querySelector('.companies-section')?.scrollIntoView({ behavior: 'smooth' }); }, 150); } else { document.querySelector('.companies-section')?.scrollIntoView({ behavior: 'smooth' }); } }}>Featured Companies</a></li>
               </ul>
             </div>
