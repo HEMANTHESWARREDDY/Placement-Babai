@@ -1028,6 +1028,7 @@ function PracticeHub() {
                             <span className="ph-stat-label">Daily Streak</span>
                             <span className="ph-stat-val streak">🔥 {streak} Days</span>
                         </div>
+                        {/* Temporarily disabled My Badges column
                         <div className="ph-divider" />
                         <div className="ph-stat-pill">
                             <span className="ph-stat-label">My Badges</span>
@@ -1043,6 +1044,7 @@ function PracticeHub() {
                                 ))}
                             </div>
                         </div>
+                        */}
                     </div>
                 </div>
             </div>
