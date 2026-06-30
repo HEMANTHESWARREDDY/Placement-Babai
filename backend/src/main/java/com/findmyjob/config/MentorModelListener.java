@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class MentorModelListener extends AbstractMongoEventListener<Mentor> {
 
+    private final SequenceGeneratorService sequenceGenerator;
+
     @Autowired
-    private SequenceGeneratorService sequenceGenerator;
+    public MentorModelListener(SequenceGeneratorService sequenceGenerator) {
+        this.sequenceGenerator = sequenceGenerator;
+    }
 
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Mentor> event) {

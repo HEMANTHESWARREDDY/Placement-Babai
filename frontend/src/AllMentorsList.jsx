@@ -53,8 +53,8 @@ function AllMentorsList({ mentors, onBack, onSelectPro }) {
                 }
             }
 
-            // Availability filter - only show available mentors
-            let matchesAvailability = p.isAvailable === true;
+            // Availability filter - availability status is private
+            let matchesAvailability = true;
 
             return matchesSearch && matchesCategory && matchesExperience && matchesAvailability;
         });

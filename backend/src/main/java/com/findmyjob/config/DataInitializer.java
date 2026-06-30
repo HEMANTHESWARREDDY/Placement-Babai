@@ -243,7 +243,7 @@ public class DataInitializer implements CommandLineRunner {
                 m1.setCompany("Placement Babai");
                 m1.setRole("Founder & Lead Mentor");
                 m1.setExperience("5+ years");
-                m1.setLinkedin("https://linkedin.com");
+                m1.setLinkedin("https://www.linkedin.com/in/moilla-hemantheswar-reddy-549373247/");
                 m1.setSkills("Career Guidance, Resume Building, Java, System Design");
                 m1.setBio("Helping students land their dream software engineering roles through structured mentorship and placement preparation.");
                 m1.setStatus("APPROVED");

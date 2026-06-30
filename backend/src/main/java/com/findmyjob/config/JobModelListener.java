@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobModelListener extends AbstractMongoEventListener<Job> {
 
+    private final SequenceGeneratorService sequenceGenerator;
+
     @Autowired
-    private SequenceGeneratorService sequenceGenerator;
+    public JobModelListener(SequenceGeneratorService sequenceGenerator) {
+        this.sequenceGenerator = sequenceGenerator;
+    }
 
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Job> event) {

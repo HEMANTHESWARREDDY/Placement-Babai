@@ -154,14 +154,18 @@ public class MentorController {
                     m.setBookingCount(0);
                 }
             }
-            // Remove passwords from response
-            approved.forEach(m -> m.setPassword(null));
+            // Remove passwords and private fields from response
+            approved.forEach(m -> {
+                m.setPassword(null);
+                m.setIsAvailable(null);
+            });
             return ResponseEntity.ok(approved);
         } catch (Exception e) {
             System.err.println("⚠️ MongoDB query failed in getApprovedMentors: " + e.getMessage() + ". Falling back to in-memory mock mentors.");
             List<Mentor> mock = getMockMentors();
             for (Mentor m : mock) {
                 m.setBookingCount(0);
+                m.setIsAvailable(null);
             }
             return ResponseEntity.ok(mock);
         }
@@ -315,7 +319,7 @@ public class MentorController {
         m1.setCompany("Placement Babai");
         m1.setRole("Founder & Lead Mentor");
         m1.setExperience("5+ years");
-        m1.setLinkedin("https://linkedin.com");
+        m1.setLinkedin("https://www.linkedin.com/in/moilla-hemantheswar-reddy-549373247/");
         m1.setSkills("Career Guidance, Resume Building, Java, System Design");
         m1.setBio("Helping students land their dream software engineering roles through structured mentorship and placement preparation.");
         m1.setStatus("APPROVED");

@@ -41,7 +41,7 @@ function ProConnect({ onMentorLoginClick }) {
             }
         }
 
-        let matchAvail = pro.isAvailable === true;
+        let matchAvail = true;
 
         return matchKw && matchExp && matchAvail;
     });
