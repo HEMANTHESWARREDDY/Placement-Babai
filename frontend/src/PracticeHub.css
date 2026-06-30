@@ -129,6 +129,10 @@
     gap: 2rem;
 }
 
+.ph-left-panel {
+    min-width: 0;
+}
+
 @media (max-width: 1024px) {
     .ph-workspace {
         grid-template-columns: 1fr;
