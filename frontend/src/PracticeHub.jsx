@@ -1077,8 +1077,10 @@ function PracticeHub() {
                                     <h3>Bug Hunter</h3>
                                 </div>
                                 <p>Find syntax & logic bugs inside raw Java, Python & JavaScript snippets before compile time.</p>
-                                <span className="ph-card-reward">🏆 +15 XP</span>
-                                <div className="ph-personal-best">Personal Best: {highScores['bug-hunter']}/{BUG_HUNTER_QUESTIONS.length}</div>
+                                <div className="ph-card-meta">
+                                    <span className="ph-card-reward">🏆 +15 XP</span>
+                                    <div className="ph-personal-best">Personal Best: {highScores['bug-hunter']}/{BUG_HUNTER_QUESTIONS.length}</div>
+                                </div>
                             </div>
 
                             <div className="ph-card" onClick={() => startGame('output-predictor')}>
@@ -1087,8 +1089,10 @@ function PracticeHub() {
                                     <h3>Output Predictor</h3>
                                 </div>
                                 <p>Analyze code blocks with complex variable scope, data mutation & coercion to predict output.</p>
-                                <span className="ph-card-reward">🏆 +15 XP</span>
-                                <div className="ph-personal-best">Personal Best: {highScores['output-predictor']}/{OUTPUT_PREDICTOR_QUESTIONS.length}</div>
+                                <div className="ph-card-meta">
+                                    <span className="ph-card-reward">🏆 +15 XP</span>
+                                    <div className="ph-personal-best">Personal Best: {highScores['output-predictor']}/{OUTPUT_PREDICTOR_QUESTIONS.length}</div>
+                                </div>
                             </div>
 
                             <div className="ph-card" onClick={() => startGame('code-sprint')}>
@@ -1097,8 +1101,10 @@ function PracticeHub() {
                                     <h3>Code Sprint</h3>
                                 </div>
                                 <p>Solve core DSA implementation questions against a fast ticking timer limit.</p>
-                                <span className="ph-card-reward">🏆 +25 XP</span>
-                                <div className="ph-personal-best">Personal Best: {highScores['code-sprint']}/{CODE_SPRINT_QUESTIONS.length}</div>
+                                <div className="ph-card-meta">
+                                    <span className="ph-card-reward">🏆 +25 XP</span>
+                                    <div className="ph-personal-best">Personal Best: {highScores['code-sprint']}/{CODE_SPRINT_QUESTIONS.length}</div>
+                                </div>
                             </div>
 
                             <div className="ph-card" onClick={() => startGame('sql-detective')}>
@@ -1107,8 +1113,10 @@ function PracticeHub() {
                                     <h3>SQL Detective</h3>
                                 </div>
                                 <p>Translate schema descriptions & target statements into valid, optimized SQL queries.</p>
-                                <span className="ph-card-reward">🏆 +20 XP</span>
-                                <div className="ph-personal-best">Personal Best: {highScores['sql-detective']}/{SQL_DETECTIVE_QUESTIONS.length}</div>
+                                <div className="ph-card-meta">
+                                    <span className="ph-card-reward">🏆 +20 XP</span>
+                                    <div className="ph-personal-best">Personal Best: {highScores['sql-detective']}/{SQL_DETECTIVE_QUESTIONS.length}</div>
+                                </div>
                             </div>
 
                             <div className="ph-card" onClick={() => startGame('error-fix')}>
@@ -1117,8 +1125,10 @@ function PracticeHub() {
                                     <h3>Error Fix Challenge</h3>
                                 </div>
                                 <p>Receive broken scripts throwing NullPointer or scope errors and choose the optimal fix.</p>
-                                <span className="ph-card-reward">🏆 +15 XP</span>
-                                <div className="ph-personal-best">Personal Best: {highScores['error-fix']}/{ERROR_FIX_QUESTIONS.length}</div>
+                                <div className="ph-card-meta">
+                                    <span className="ph-card-reward">🏆 +15 XP</span>
+                                    <div className="ph-personal-best">Personal Best: {highScores['error-fix']}/{ERROR_FIX_QUESTIONS.length}</div>
+                                </div>
                             </div>
 
                             <div className="ph-card" onClick={() => startGame('zip')}>
@@ -1127,8 +1137,10 @@ function PracticeHub() {
                                     <h3>Zip Puzzle</h3>
                                 </div>
                                 <p>Connect sequential numbers and fill every grid cell exactly once without crossing walls.</p>
-                                <span className="ph-card-reward">🏆 +20 XP</span>
-                                <div className="ph-personal-best">Personal Best: {highScores['zip'] || 0}/2 Levels</div>
+                                <div className="ph-card-meta">
+                                    <span className="ph-card-reward">🏆 +20 XP</span>
+                                    <div className="ph-personal-best">Personal Best: {highScores['zip'] || 0}/2 Levels</div>
+                                </div>
                             </div>
                         </div>
                     )}

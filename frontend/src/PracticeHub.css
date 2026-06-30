@@ -264,6 +264,14 @@
     line-height: 1.5;
 }
 
+.ph-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
 .ph-card-reward {
     display: inline-flex;
     align-items: center;
@@ -275,7 +283,7 @@
     padding: 0.35rem 0.75rem;
     border-radius: 12px;
     align-self: flex-start;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
 }
 
 .ph-personal-best {
@@ -1130,11 +1138,23 @@
     }
 
     .ph-games-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
         gap: 1rem;
+        padding: 0.5rem 0.25rem 1.25rem 0.25rem;
+        margin: 0 -0.25rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    
+    .ph-games-grid::-webkit-scrollbar {
+        display: none;
     }
 
     .ph-card {
+        width: 290px;
+        flex-shrink: 0;
         padding: 1.25rem;
         border-radius: 16px;
     }
@@ -1216,11 +1236,23 @@
     }
 
     .ph-quiz-modes-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
         gap: 1rem;
+        padding: 0.5rem 0.25rem 1.25rem 0.25rem;
+        margin: 0 -0.25rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    
+    .ph-quiz-modes-grid::-webkit-scrollbar {
+        display: none;
     }
 
     .ph-mode-card {
+        width: 290px;
+        flex-shrink: 0;
         padding: 1.25rem;
         border-radius: 16px;
     }
