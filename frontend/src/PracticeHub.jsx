@@ -1069,7 +1069,7 @@ function PracticeHub() {
                     </div>
 
                     {/* Tab 1: Coding Games List */}
-                    {activeTab === 'coding-games' && !activeGame && (
+                    {activeTab === 'coding-games' && (
                         <div className="ph-games-grid">
                             <div className="ph-card" onClick={() => startGame('bug-hunter')}>
                                 <div className="ph-card-header">
@@ -1891,7 +1891,7 @@ function PracticeHub() {
                     })()}
 
                     {/* Tab 2: MCQ Battle Arena Mode Selection */}
-                    {activeTab === 'mcq-battle' && !mcqMode && (
+                    {activeTab === 'mcq-battle' && (
                         <div className="ph-modes-section">
                             <div className="ph-quiz-modes-grid">
                                 <div className="ph-mode-card" onClick={() => startGame('daily-quiz')}>
@@ -2352,6 +2352,11 @@ function PracticeHub() {
                     </div>
                 </div>
             </div>
+
+            {/* Modal Backdrop Overlay */}
+            {(activeGame || mcqMode === 'battle') && (
+                <div className="ph-modal-backdrop" onClick={backToMenu} />
+            )}
 
             {/* Badge Unlocked Notification Toast */}
             {showBadgeToast && (
