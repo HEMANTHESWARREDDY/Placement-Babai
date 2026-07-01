@@ -4462,7 +4462,7 @@ onClick={() => selectBugLine(idx)}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -4863,7 +4863,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -5259,7 +5259,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -5672,7 +5672,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -6077,7 +6077,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -7493,7 +7493,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -7665,7 +7665,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ background: '#1e293b', padding: '1rem', borderRadius: '12px', color: '#f8fafc', marginBottom: '2rem', textAlign: 'center', fontWeight: '700', fontSize: '1rem', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ background: '#1e293b', padding: '1rem', borderRadius: '12px', color: '#f8fafc', marginBottom: '2rem', textAlign: 'center', fontWeight: '700', fontSize: '1rem', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
@@ -8405,7 +8405,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-accent)' }}>
+<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
 
 
 
