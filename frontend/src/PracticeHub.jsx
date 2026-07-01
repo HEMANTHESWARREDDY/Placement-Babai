@@ -4314,7 +4314,7 @@ Personal Best: {highScores['bug-hunter']}/{BUG_HUNTER_QUESTIONS.length}
 
 
 
-<button className="ph-btn-primary" style={{ marginTop: '2rem' }} onClick={backToMenu}>Quit to Hub</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Quit to Hub</button>
 
 
 
@@ -4378,7 +4378,7 @@ style={{ width: `${(gameState.timerLeft / BUG_HUNTER_QUESTIONS[gameState.current
 <button className="ph-btn-primary" onClick={() => nextQuestion('bug-hunter')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === BUG_HUNTER_QUESTIONS.length ? "Finish Workout" : (
+{gameState.currentQuestionIndex + 1 === BUG_HUNTER_QUESTIONS.length ? "Finish" : (
 
 
 <>
@@ -4662,7 +4662,7 @@ Personal Best: {highScores['output-predictor']}/{OUTPUT_PREDICTOR_QUESTIONS.leng
 
 
 
-<button className="ph-btn-primary" style={{ marginTop: '2rem' }} onClick={backToMenu}>Quit to Hub</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Quit to Hub</button>
 
 
 
@@ -4723,7 +4723,7 @@ style={{ width: `${(gameState.timerLeft / OUTPUT_PREDICTOR_QUESTIONS[gameState.c
 <button className="ph-btn-primary" onClick={() => nextQuestion('output-predictor')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === OUTPUT_PREDICTOR_QUESTIONS.length ? "Finish Workout" : (
+{gameState.currentQuestionIndex + 1 === OUTPUT_PREDICTOR_QUESTIONS.length ? "Finish" : (
 
 
 <>
@@ -5063,7 +5063,7 @@ Personal Best: {highScores['code-sprint']}/{CODE_SPRINT_QUESTIONS.length}
 
 
 
-<button className="ph-btn-primary" style={{ marginTop: '2rem' }} onClick={backToMenu}>Quit to Hub</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Quit to Hub</button>
 
 
 
@@ -5127,7 +5127,7 @@ style={{ width: `${(gameState.timerLeft / CODE_SPRINT_QUESTIONS[gameState.curren
 <button className="ph-btn-primary" onClick={() => nextQuestion('code-sprint')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === CODE_SPRINT_QUESTIONS.length ? "Finish Sprint" : (
+{gameState.currentQuestionIndex + 1 === CODE_SPRINT_QUESTIONS.length ? "Finish" : (
 
 
 <>
@@ -5459,7 +5459,7 @@ Personal Best: {highScores['sql-detective']}/{SQL_DETECTIVE_QUESTIONS.length}
 
 
 
-<button className="ph-btn-primary" style={{ marginTop: '2rem' }} onClick={backToMenu}>Quit to Hub</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Quit to Hub</button>
 
 
 
@@ -5520,7 +5520,7 @@ style={{ width: `${(gameState.timerLeft / SQL_DETECTIVE_QUESTIONS[gameState.curr
 <button className="ph-btn-primary" onClick={() => nextQuestion('sql-detective')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === SQL_DETECTIVE_QUESTIONS.length ? "Submit Case" : (
+{gameState.currentQuestionIndex + 1 === SQL_DETECTIVE_QUESTIONS.length ? "Finish" : (
 
 
 <>
@@ -5872,7 +5872,7 @@ Personal Best: {highScores['error-fix']}/{ERROR_FIX_QUESTIONS.length}
 
 
 
-<button className="ph-btn-primary" style={{ marginTop: '2rem' }} onClick={backToMenu}>Quit to Hub</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Quit to Hub</button>
 
 
 
@@ -5933,7 +5933,7 @@ style={{ width: `${(gameState.timerLeft / ERROR_FIX_QUESTIONS[gameState.currentQ
 <button className="ph-btn-primary" onClick={() => nextQuestion('error-fix')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === ERROR_FIX_QUESTIONS.length ? "Finish Workout" : (
+{gameState.currentQuestionIndex + 1 === ERROR_FIX_QUESTIONS.length ? "Finish" : (
 
 
 <>
@@ -6725,7 +6725,7 @@ boxShadow: 'inset 0 0 20px rgba(0,0,0,0.05)'
 
 
 
-<button className="ph-btn-primary" onClick={backToMenu} style={{ minWidth: '150px' }}>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu} style={{ marginTop: 0 }}>
 
 
 
@@ -7137,7 +7137,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<button className="ph-btn-primary" onClick={backToMenu}>Quit to Arena</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Quit to Arena</button>
 
 
 
@@ -7341,7 +7341,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <button className="ph-btn-primary" onClick={() => nextQuestion('daily-quiz')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqTopic].length ? "Finish Workout" : (
+{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqTopic].length ? "Finish" : (
 
 
 <>
@@ -7697,7 +7697,7 @@ disabled={gameState.isAnswered}
 
 
 
-<button className="ph-btn-primary" style={{ marginTop: '1rem' }} onClick={backToMenu}>Back to Arena</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Back to Arena</button>
 
 
 
@@ -8069,7 +8069,7 @@ disabled={battleState.isAnswered}
 
 
 
-<button className="ph-btn-primary" onClick={backToMenu}>Back to Arena</button>
+<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu}>Back to Arena</button>
 
 
 
@@ -8253,7 +8253,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <button className="ph-btn-primary" onClick={() => nextQuestion('company-quiz')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqCompany].length ? "Finish Workout" : (
+{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqCompany].length ? "Finish" : (
 
 
 <>

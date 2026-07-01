@@ -1572,3 +1572,17 @@
         flex-shrink: 0 !important;
     }
 }
+
+/* Scorecard/Results Screen Quit Button Custom Sizing */
+.ph-btn-scorecard-quit {
+    padding: 0.75rem 2.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    width: auto !important;
+    min-width: 180px !important;
+    align-self: center !important;
+    margin-top: 2rem !important;
+    display: inline-block !important;
+    text-align: center !important;
+}
