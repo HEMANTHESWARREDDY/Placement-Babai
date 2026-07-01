@@ -4363,7 +4363,7 @@ style={{ width: `${(gameState.timerLeft / BUG_HUNTER_QUESTIONS[gameState.current
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 8 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 8 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
@@ -4708,7 +4708,7 @@ style={{ width: `${(gameState.timerLeft / OUTPUT_PREDICTOR_QUESTIONS[gameState.c
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
@@ -5112,7 +5112,7 @@ style={{ width: `${(gameState.timerLeft / CODE_SPRINT_QUESTIONS[gameState.curren
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 5 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 5 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
@@ -5505,7 +5505,7 @@ style={{ width: `${(gameState.timerLeft / SQL_DETECTIVE_QUESTIONS[gameState.curr
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 8 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 8 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
@@ -5918,7 +5918,7 @@ style={{ width: `${(gameState.timerLeft / ERROR_FIX_QUESTIONS[gameState.currentQ
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 7 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 7 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
@@ -7326,7 +7326,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
@@ -8238,7 +8238,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 </div>
 
 
-<span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-accent)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
+<span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
 ⏱️ {gameState.timerLeft}s
