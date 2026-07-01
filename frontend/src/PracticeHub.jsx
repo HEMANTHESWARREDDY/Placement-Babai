@@ -7526,7 +7526,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ fontWeight: '700', color: '#ffffff' }}>{battleState.playerHp} / 100 HP</div>
+<div style={{ fontWeight: '700', color: '#ffffff', fontSize: '0.8rem' }}>{battleState.playerHp} / 100 HP</div>
 
 
 
@@ -7538,11 +7538,11 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: '800' }}>Strike Timer</div>
+<div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: '#64748b', fontWeight: '800' }}>Strike Timer</div>
 
 
 
-<div style={{ fontSize: '2rem', fontWeight: '900', color: battleTimer <= 5 ? '#ef4444' : '#e2e8f0' }}>{battleTimer}s</div>
+<div style={{ fontSize: '1.5rem', fontWeight: '900', color: battleTimer <= 5 ? '#ef4444' : '#e2e8f0', lineHeight: '1.2' }}>{battleTimer}s</div>
 
 
 
@@ -7574,7 +7574,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div style={{ fontWeight: '700', color: '#ffffff' }}>{battleState.opponentHp} / 100 HP</div>
+<div style={{ fontWeight: '700', color: '#ffffff', fontSize: '0.8rem' }}>{battleState.opponentHp} / 100 HP</div>
 
 
 
