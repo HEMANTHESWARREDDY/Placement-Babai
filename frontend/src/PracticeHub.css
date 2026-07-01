@@ -896,7 +896,10 @@
 @keyframes ph-toast-out {
     from { transform: translateX(0); opacity: 1; }
     to { transform: translateX(-120%); opacity: 0; }
+}.ph-desktop-results-title {
+    display: inline;
 }
+
 
 .ph-results-screen {
     text-align: center;
@@ -1181,6 +1184,10 @@
 
 /* ── Mobile Responsive Overrides (max-width: 768px) ──────────────── */
 @media (max-width: 768px) {
+    .ph-desktop-results-title {
+        display: none !important;
+    }
+
     .ph-container {
         padding: 1rem 0.75rem;
     }

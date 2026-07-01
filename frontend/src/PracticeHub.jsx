@@ -4194,7 +4194,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<h2>Bug Hunter <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {BUG_HUNTER_QUESTIONS.length}</span></h2>
+<h2>Bug Hunter {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {BUG_HUNTER_QUESTIONS.length}</span>}</h2>
 
 
 
@@ -4542,7 +4542,7 @@ onClick={() => selectBugLine(idx)}
 
 
 
-<h2>Output Predictor <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {OUTPUT_PREDICTOR_QUESTIONS.length}</span></h2>
+<h2>Output Predictor {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {OUTPUT_PREDICTOR_QUESTIONS.length}</span>}</h2>
 
 
 
@@ -4943,7 +4943,7 @@ disabled={gameState.isAnswered}
 
 
 
-<h2>Code Sprint <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {CODE_SPRINT_QUESTIONS.length}</span></h2>
+<h2>Code Sprint {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {CODE_SPRINT_QUESTIONS.length}</span>}</h2>
 
 
 
@@ -5339,7 +5339,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<h2>SQL Detective <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {SQL_DETECTIVE_QUESTIONS.length}</span></h2>
+<h2>SQL Detective {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {SQL_DETECTIVE_QUESTIONS.length}</span>}</h2>
 
 
 
@@ -5752,7 +5752,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<h2>Error Fix Challenge <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {ERROR_FIX_QUESTIONS.length}</span></h2>
+<h2>Error Fix Challenge {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {ERROR_FIX_QUESTIONS.length}</span>}</h2>
 
 
 
@@ -7049,7 +7049,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<h2>Daily Quiz <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {MCQ_QUESTIONS[mcqTopic].length}</span></h2>
+<h2>Daily Quiz {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {MCQ_QUESTIONS[mcqTopic].length}</span>}</h2>
 
 
 
@@ -7977,7 +7977,7 @@ disabled={battleState.isAnswered}
 
 
 
-<h2>Company placement Archives</h2>
+<h2>Company placement Archives{gameState.showResults && <span className="ph-desktop-results-title"> - Results</span>}</h2>
 
 
 
