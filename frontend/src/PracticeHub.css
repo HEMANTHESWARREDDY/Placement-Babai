@@ -1459,9 +1459,26 @@
     }
 
     .ph-battle-arena {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 1.25rem 1rem;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .ph-battle-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 1.1rem;
+        border-width: 2px;
+        margin-bottom: 0.2rem;
+    }
+
+    .ph-battle-name {
+        font-size: 0.75rem;
+    }
+
+    .ph-battle-hp-bar {
+        width: 90%;
+        height: 6px;
     }
 
     .ph-results-grid {
