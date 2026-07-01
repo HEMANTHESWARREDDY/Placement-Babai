@@ -4378,22 +4378,7 @@ style={{ width: `${(gameState.timerLeft / BUG_HUNTER_QUESTIONS[gameState.current
 <button className="ph-btn-primary" onClick={() => nextQuestion('bug-hunter')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === BUG_HUNTER_QUESTIONS.length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next Code Snippet →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === BUG_HUNTER_QUESTIONS.length ? "Finish" : "Next"}
 
 
 </button>
@@ -4723,22 +4708,7 @@ style={{ width: `${(gameState.timerLeft / OUTPUT_PREDICTOR_QUESTIONS[gameState.c
 <button className="ph-btn-primary" onClick={() => nextQuestion('output-predictor')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === OUTPUT_PREDICTOR_QUESTIONS.length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next Code Snippet →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === OUTPUT_PREDICTOR_QUESTIONS.length ? "Finish" : "Next"}
 
 
 </button>
@@ -5127,22 +5097,7 @@ style={{ width: `${(gameState.timerLeft / CODE_SPRINT_QUESTIONS[gameState.curren
 <button className="ph-btn-primary" onClick={() => nextQuestion('code-sprint')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === CODE_SPRINT_QUESTIONS.length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next Sprint Question →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === CODE_SPRINT_QUESTIONS.length ? "Finish" : "Next"}
 
 
 </button>
@@ -5520,22 +5475,7 @@ style={{ width: `${(gameState.timerLeft / SQL_DETECTIVE_QUESTIONS[gameState.curr
 <button className="ph-btn-primary" onClick={() => nextQuestion('sql-detective')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === SQL_DETECTIVE_QUESTIONS.length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next SQL Case →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === SQL_DETECTIVE_QUESTIONS.length ? "Finish" : "Next"}
 
 
 </button>
@@ -5933,22 +5873,7 @@ style={{ width: `${(gameState.timerLeft / ERROR_FIX_QUESTIONS[gameState.currentQ
 <button className="ph-btn-primary" onClick={() => nextQuestion('error-fix')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === ERROR_FIX_QUESTIONS.length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next Error Case →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === ERROR_FIX_QUESTIONS.length ? "Finish" : "Next"}
 
 
 </button>
@@ -7341,22 +7266,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <button className="ph-btn-primary" onClick={() => nextQuestion('daily-quiz')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqTopic].length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next Question →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqTopic].length ? "Finish" : "Next"}
 
 
 </button>
@@ -7789,18 +7699,8 @@ style={{ background: '#1e293b', color: '#ffffff', border: '1px solid #334155', p
 
 
 
-<button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
-
-
-
-<span className="ph-btn-next-desktop">Next Attack Round →</span>
-
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-
+<button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
+Next
 </button>
 
 
@@ -8253,22 +8153,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <button className="ph-btn-primary" onClick={() => nextQuestion('company-quiz')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqCompany].length ? "Finish" : (
-
-
-<>
-
-
-<span className="ph-btn-next-desktop">Next Question →</span>
-
-
-<span className="ph-btn-next-mobile">Next</span>
-
-
-</>
-
-
-)}
+{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqCompany].length ? "Finish" : "Next"}
 
 
 </button>
