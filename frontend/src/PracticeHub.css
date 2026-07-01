@@ -544,6 +544,9 @@
 .ph-option-marker {
     width: 24px;
     height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    flex-shrink: 0;
     border-radius: 50%;
     border: 2px solid currentColor;
     display: flex;
@@ -868,19 +871,21 @@
 /* Animations & confetti-like effects */
 .ph-badge-toast {
     position: fixed;
-    bottom: 2rem;
-    left: 2rem;
+    bottom: 1rem;
+    left: 1rem;
+    max-width: calc(100% - 2rem);
     background: #0f172a;
     color: #ffffff;
-    padding: 1.25rem 2rem;
-    border-radius: 16px;
+    padding: 0.65rem 1.25rem;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     z-index: 10000;
     border-left: 4px solid var(--ph-accent);
     animation: ph-toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, ph-toast-out 0.4s ease 3.6s forwards;
+    box-sizing: border-box;
 }
 
 @keyframes ph-toast-in {

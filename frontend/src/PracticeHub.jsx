@@ -8569,7 +8569,7 @@ className={`ph-leaderboard-item ${user.name === "You" ? 'user-highlight' : ''}`}
 
 
 
-<span style={{ fontSize: '2.5rem' }}>🎁</span>
+<span style={{ fontSize: '1.75rem' }}>🎁</span>
 
 
 
