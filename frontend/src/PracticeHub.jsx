@@ -2171,6 +2171,17 @@ const [mcqMode, setMcqMode] = useState(null); // 'daily', 'battle', 'company'
 
 
 const [mcqTopic, setMcqTopic] = useState('java');
+  const [isTopicDropdownOpen, setIsTopicDropdownOpen] = useState(false);
+  
+  const COMBAT_TOPICS = [
+    { id: 'java', label: 'Java Programming', icon: '☕' },
+    { id: 'python', label: 'Python Programming', icon: '🐍' },
+    { id: 'dbms', label: 'DBMS / SQL', icon: '💾' },
+    { id: 'os', label: 'Operating Systems', icon: '💻' },
+    { id: 'cn', label: 'Computer Networks', icon: '🌐' },
+    { id: 'oops', label: 'OOP Concepts', icon: '🧱' },
+    { id: 'aptitude', label: 'Quantitative Aptitude', icon: '🧮' }
+  ];
 
 
 
@@ -7639,55 +7650,41 @@ disabled={gameState.isAnswered}
 
 
 
-<select
-
-
-
-value={mcqTopic}
-
-
-
-onChange={(e) => setMcqTopic(e.target.value)}
-
-
-
-style={{ background: '#1e293b', color: '#ffffff', border: '1px solid #334155', padding: '0.4rem 1rem', borderRadius: '8px', fontWeight: '700' }}
-
-
-
->
-
-
-
-<option value="java">Java Programming</option>
-
-
-
-<option value="python">Python Programming</option>
-
-
-
-<option value="dbms">DBMS / SQL</option>
-
-
-
-<option value="os">Operating Systems</option>
-
-
-
-<option value="cn">Computer Networks</option>
-
-
-
-<option value="oops">OOP Concepts</option>
-
-
-
-<option value="aptitude">Quantitative Aptitude</option>
-
-
-
-</select>
+<div className="ph-custom-select-container">
+    <button 
+        className="ph-custom-select-trigger" 
+        onClick={() => setIsTopicDropdownOpen(!isTopicDropdownOpen)}
+    >
+        <span className="ph-custom-select-selected-icon">
+            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || '☕'}
+        </span>
+        <span className="ph-custom-select-selected-label">
+            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.label || 'Java Programming'}
+        </span>
+        <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>▼</span>
+    </button>
+    {isTopicDropdownOpen && (
+        <>
+            <div className="ph-custom-select-backdrop" onClick={() => setIsTopicDropdownOpen(false)} />
+            <div className="ph-custom-select-options">
+                {COMBAT_TOPICS.map(topic => (
+                    <div
+                        key={topic.id}
+                        className={`ph-custom-select-option ${mcqTopic === topic.id ? 'active' : ''}`}
+                        onClick={() => {
+                            setMcqTopic(topic.id);
+                            setIsTopicDropdownOpen(false);
+                        }}
+                    >
+                        <span className="ph-custom-select-option-icon">{topic.icon}</span>
+                        <span className="ph-custom-select-option-label">{topic.label}</span>
+                        {mcqTopic === topic.id && <span className="ph-custom-select-option-check">✓</span>}
+                    </div>
+                ))}
+            </div>
+        </>
+    )}
+</div>
 
 
 
@@ -7699,8 +7696,10 @@ style={{ background: '#1e293b', color: '#ffffff', border: '1px solid #334155', p
 
 
 
-<button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
-Next
+<button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
+
+Next
+
 </button>
 
 
