@@ -1279,6 +1279,12 @@
         margin-bottom: 1rem;
     }
 
+    .ph-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
     .ph-play-zone {
         padding: 1.25rem 1rem;
         border-radius: 16px;
