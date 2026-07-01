@@ -144,7 +144,7 @@
     display: flex;
     gap: 1rem;
     border-bottom: 2px solid var(--ph-border);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     padding-bottom: 0.5rem;
 }
 
@@ -1232,7 +1232,7 @@
 
     .ph-tab-nav {
         gap: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.75rem;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
