@@ -1763,3 +1763,17 @@
         padding: 0.35rem 0.5rem !important;
     }
 }
+
+.ph-battle-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .ph-battle-title {
+        font-size: 0.95rem !important;
+    }
+}

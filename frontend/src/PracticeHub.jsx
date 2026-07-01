@@ -7478,7 +7478,7 @@ disabled={gameState.isAnswered}
 
 
 
-<h2 style={{ color: '#ffffff' }}>1v1 Battle Arena</h2>
+<h2 className="ph-battle-title">1v1 Arena</h2>
 
 
 
