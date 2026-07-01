@@ -7466,11 +7466,11 @@ disabled={gameState.isAnswered}
 
 
 
-<div className="ph-play-header" style={{ borderBottom: '1px solid #1e293b' }}>
+<div className="ph-play-header" style={{ borderBottom: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
 
 
 
-<div className="ph-play-title-wrap">
+<div className="ph-play-title-wrap" style={{ flexShrink: 0 }}>
 
 
 
@@ -7486,7 +7486,93 @@ disabled={gameState.isAnswered}
 
 
 
-<button className="ph-btn-back" style={{ background: '#1e293b', color: '#ffffff' }} onClick={backToMenu}>✕ <span className="ph-btn-back-text">Flee Battle</span></button>
+<div className="ph-header-topic-select" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+
+
+
+<span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '700', whiteSpace: 'nowrap' }}>Topic:</span>
+
+
+
+<div className="ph-custom-select-container">
+
+    <button 
+
+        className="ph-custom-select-trigger" 
+
+        onClick={() => setIsTopicDropdownOpen(!isTopicDropdownOpen)}
+
+        style={{ minWidth: '150px', padding: '0.35rem 0.75rem', fontSize: '0.85rem', borderRadius: '8px' }}
+
+    >
+
+        <span className="ph-custom-select-selected-icon">
+
+            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || '☕'}
+
+        </span>
+
+        <span className="ph-custom-select-selected-label">
+
+            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.label || 'Java Programming'}
+
+        </span>
+
+        <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>▼</span>
+
+    </button>
+
+    {isTopicDropdownOpen && (
+
+        <>
+
+            <div className="ph-custom-select-backdrop" onClick={() => setIsTopicDropdownOpen(false)} />
+
+            <div className="ph-custom-select-options" style={{ minWidth: '200px', borderRadius: '10px' }}>
+
+                {COMBAT_TOPICS.map(topic => (
+
+                    <div
+
+                        key={topic.id}
+
+                        className={`ph-custom-select-option ${mcqTopic === topic.id ? 'active' : ''}`}
+
+                        onClick={() => {
+
+                            setMcqTopic(topic.id);
+
+                            setIsTopicDropdownOpen(false);
+
+                        }}
+
+                    >
+
+                        <span className="ph-custom-select-option-icon">{topic.icon}</span>
+
+                        <span className="ph-custom-select-option-label">{topic.label}</span>
+
+                        {mcqTopic === topic.id && <span className="ph-custom-select-option-check">✓</span>}
+
+                    </div>
+
+                ))}
+
+            </div>
+
+        </>
+
+    )}
+
+</div>
+
+
+
+</div>
+
+
+
+<button className="ph-btn-back" style={{ background: '#1e293b', color: '#ffffff', flexShrink: 0 }} onClick={backToMenu}>✕ <span className="ph-btn-back-text">Flee Battle</span></button>
 
 
 
@@ -7634,81 +7720,13 @@ disabled={gameState.isAnswered}
 
 
 
-{/* Topic Selector for Battle */}
-
-
-
-<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', color: '#ffffff' }}>
-
-
-
-<div>
-
-
-
-<span style={{ marginRight: '1rem', fontWeight: '700' }}>Choose Combat Topic:</span>
-
-
-
-<div className="ph-custom-select-container">
-    <button 
-        className="ph-custom-select-trigger" 
-        onClick={() => setIsTopicDropdownOpen(!isTopicDropdownOpen)}
-    >
-        <span className="ph-custom-select-selected-icon">
-            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || '☕'}
-        </span>
-        <span className="ph-custom-select-selected-label">
-            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.label || 'Java Programming'}
-        </span>
-        <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>▼</span>
-    </button>
-    {isTopicDropdownOpen && (
-        <>
-            <div className="ph-custom-select-backdrop" onClick={() => setIsTopicDropdownOpen(false)} />
-            <div className="ph-custom-select-options">
-                {COMBAT_TOPICS.map(topic => (
-                    <div
-                        key={topic.id}
-                        className={`ph-custom-select-option ${mcqTopic === topic.id ? 'active' : ''}`}
-                        onClick={() => {
-                            setMcqTopic(topic.id);
-                            setIsTopicDropdownOpen(false);
-                        }}
-                    >
-                        <span className="ph-custom-select-option-icon">{topic.icon}</span>
-                        <span className="ph-custom-select-option-label">{topic.label}</span>
-                        {mcqTopic === topic.id && <span className="ph-custom-select-option-check">✓</span>}
-                    </div>
-                ))}
-            </div>
-        </>
-    )}
-</div>
-
-
-
-</div>
-
-
-
 {battleState.isAnswered && (
-
-
-
-<button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
-
-Next
-
-</button>
-
-
-
+    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+        <button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
+            Next
+        </button>
+    </div>
 )}
-
-
-
-</div>
 
 
 

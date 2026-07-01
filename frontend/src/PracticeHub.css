@@ -1747,3 +1747,19 @@
     bottom: 0;
     z-index: 999;
 }
+
+/* Responsive overrides for topic selector inside header */
+.ph-header-topic-select span {
+    display: inline;
+}
+
+@media (max-width: 768px) {
+    .ph-header-topic-select span {
+        display: none !important;
+    }
+    .ph-header-topic-select .ph-custom-select-trigger {
+        min-width: 120px !important;
+        font-size: 0.8rem !important;
+        padding: 0.35rem 0.5rem !important;
+    }
+}
