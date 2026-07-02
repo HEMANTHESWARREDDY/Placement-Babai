@@ -32,6 +32,84 @@ public class QuestionController {
     @Autowired
     private com.findmyjob.service.ChatGPTInterviewService chatGPTInterviewService;
 
+    @Autowired
+    private com.findmyjob.service.DailyBugHunterService dailyBugHunterService;
+
+    @Autowired
+    private com.findmyjob.service.DailyGameService dailyGameService;
+
+    @GetMapping("/bug-hunter/daily")
+    public ResponseEntity<?> getDailyBugHunterQuestions() {
+        try {
+            return ResponseEntity.ok(dailyBugHunterService.getDailyQuiz());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting daily Bug Hunter questions: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/output-predictor/daily")
+    public ResponseEntity<?> getDailyOutputPredictorQuestions() {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("output-predictor"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting Output Predictor questions: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/code-sprint/daily")
+    public ResponseEntity<?> getDailyCodeSprintQuestions() {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("code-sprint"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting Code Sprint questions: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/sql-detective/daily")
+    public ResponseEntity<?> getDailySqlDetectiveQuestions() {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("sql-detective"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting SQL Detective questions: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/error-fix/daily")
+    public ResponseEntity<?> getDailyErrorFixQuestions() {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("error-fix"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting Error Fix questions: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/daily-quiz/{topic}")
+    public ResponseEntity<?> getDailyQuizByTopic(@org.springframework.web.bind.annotation.PathVariable String topic) {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("daily-quiz-" + topic));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting daily quiz for topic " + topic + ": " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/company-quiz/daily")
+    public ResponseEntity<?> getDailyCompanyQuiz() {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("company-quiz"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting company quiz: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/arena-battle/daily")
+    public ResponseEntity<?> getDailyArenaBattle(@org.springframework.web.bind.annotation.RequestParam String topic) {
+        try {
+            return ResponseEntity.ok(dailyGameService.getDailyQuiz("arena-battle-" + topic));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error getting arena battle for topic " + topic + ": " + e.getMessage());
+        }
+    }
+
     @GetMapping("/trending-stats")
     public Map<String, Long> getTrendingStats() {
         return searchHistoryRepository.findAll().stream()

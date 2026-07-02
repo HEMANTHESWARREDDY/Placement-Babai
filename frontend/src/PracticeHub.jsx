@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from './config';
 
 
 
@@ -1144,7 +1145,89 @@ const SEGMENT_COLORS = [
 
 function PracticeHub() {
 
+  // ── Dynamic daily questions (fetched from Gemini backend) ──────────────────
+  const [bugHunterQuestions, setBugHunterQuestions] = useState(BUG_HUNTER_QUESTIONS);
+  const [outputPredictorQuestions, setOutputPredictorQuestions] = useState(OUTPUT_PREDICTOR_QUESTIONS);
+  const [codeSprintQuestions, setCodeSprintQuestions] = useState(CODE_SPRINT_QUESTIONS);
+  const [sqlDetectiveQuestions, setSqlDetectiveQuestions] = useState(SQL_DETECTIVE_QUESTIONS);
+  const [errorFixQuestions, setErrorFixQuestions] = useState(ERROR_FIX_QUESTIONS);
+  // Daily Quiz: 1 AI question per topic { java:[], python:[], ... }
+  const [dailyQuizQuestions, setDailyQuizQuestions] = useState({});
+  // Company Quiz: 3 AI questions [MNC, ProductBased, Startup]
+  const [companyQuizQuestions, setCompanyQuizQuestions] = useState([]);
+  // Arena Battle: 3 AI questions for the selected topic
+  const [battleQuestions, setBattleQuestions] = useState([]);
+  const [battleQTopic, setBattleQTopic] = useState(null); // which topic the loaded battle Qs are for
+  const [battleQLoading, setBattleQLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchSimple = async (endpoint, setter) => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/questions/${endpoint}/daily`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) setter(data);
+        }
+      } catch (e) { console.warn(`[PracticeHub] Failed to fetch ${endpoint}:`, e); }
+    };
+    fetchSimple('bug-hunter',      setBugHunterQuestions);
+    fetchSimple('output-predictor', setOutputPredictorQuestions);
+    fetchSimple('code-sprint',      setCodeSprintQuestions);
+    fetchSimple('sql-detective',    setSqlDetectiveQuestions);
+    fetchSimple('error-fix',        setErrorFixQuestions);
+
+    // Daily Quiz – 1 question per topic
+    const topics = ['java','python','dbms','os','cn','oops','aptitude'];
+    const loadDailyQuizTopics = async () => {
+      const result = {};
+      await Promise.all(topics.map(async (topic) => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/questions/daily-quiz/${topic}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.q) result[topic] = [data];
+          }
+        } catch (e) { console.warn(`[DailyQuiz] Failed for topic ${topic}:`, e); }
+      }));
+      if (Object.keys(result).length > 0) setDailyQuizQuestions(result);
+    };
+    loadDailyQuizTopics();
+
+    // Company Quiz – 1 MNC + 1 Product-Based + 1 Startup question
+    const loadCompanyQuiz = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/questions/company-quiz/daily`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) setCompanyQuizQuestions(data);
+        }
+      } catch (e) { console.warn('[CompanyQuiz] Failed:', e); }
+    };
+    loadCompanyQuiz();
+  }, []);
+
+  // Load Arena Battle questions when topic changes
+  const loadBattleQuestions = async (topic) => {
+    if (battleQTopic === topic && battleQuestions.length > 0) return; // already loaded
+    setBattleQLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/questions/arena-battle/daily?topic=${topic}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setBattleQuestions(data);
+          setBattleQTopic(topic);
+        }
+      }
+    } catch (e) { console.warn('[ArenaBattle] Failed:', e); }
+    setBattleQLoading(false);
+  };
+  
+  // Need to load battle questions if we are in battle mode and topic changes
+  // But mcqMode is defined later in the component. We can't easily reference it here unless we move things around.
+  // Actually, we can just fetch it when they click the Battle Arena start button, or inside a useEffect further down.
+  // Let's leave it as a function here and we'll call it further down.
+  // ───────────────────────────────────────────────────────────────────────────
 
 const [activeTab, setActiveTab] = useState('coding-games');
 
@@ -1166,7 +1249,7 @@ const saved = localStorage.getItem('ph_badges');
 
 
 
-return saved ? JSON.parse(saved) : ["🐛 Bug Hunter Cadet", "🔥 Streak Master"];
+return saved ? JSON.parse(saved) : ["≡ƒÉ¢ Bug Hunter Cadet", "≡ƒöÑ Streak Master"];
 
 
 
@@ -1586,7 +1669,7 @@ gainXp(level.xp);
 
 
 
-triggerBadge("🔗 Master of Zip");
+triggerBadge("≡ƒöù Master of Zip");
 
 
 
@@ -1990,7 +2073,7 @@ gainXp(level.xp);
 
 
 
-triggerBadge("🔗 Master of Zip");
+triggerBadge("≡ƒöù Master of Zip");
 
 
 
@@ -2234,6 +2317,12 @@ const [mcqTopic, setMcqTopic] = useState('java');
     { id: 'oops', label: 'OOP Concepts', icon: '🧱' },
     { id: 'aptitude', label: 'Quantitative Aptitude', icon: '🧮' }
   ];
+
+  useEffect(() => {
+    if (mcqMode === 'battle') {
+      loadBattleQuestions(mcqTopic);
+    }
+  }, [mcqMode, mcqTopic]);
 
 
 
@@ -2489,7 +2578,7 @@ if (newXp >= 200 && prev < 200) {
 
 
 
-setTimeout(() => triggerBadge("🎓 MCQ Gladiator"), 500);
+setTimeout(() => triggerBadge("≡ƒÄô MCQ Gladiator"), 500);
 
 
 
@@ -2501,7 +2590,7 @@ if (newXp >= 350 && prev < 350) {
 
 
 
-setTimeout(() => triggerBadge("🏆 Code Sprint Champion"), 500);
+setTimeout(() => triggerBadge("≡ƒÅå Code Sprint Champion"), 500);
 
 
 
@@ -2697,7 +2786,7 @@ playerHp: nextHp,
 
 
 
-battleLog: `⏱️ Time ran out! Opponent struck you for ${dmg} damage!`,
+battleLog: `ΓÅ▒∩╕Å Time ran out! Opponent struck you for ${dmg} damage!`,
 
 
 
@@ -2893,11 +2982,18 @@ case 'error-fix': return ERROR_FIX_QUESTIONS;
 
 
 
-case 'daily-quiz': return MCQ_QUESTIONS[mcqTopic] ? [MCQ_QUESTIONS[mcqTopic][0]] : [];
+case 'daily-quiz': {
+  if (dailyQuizQuestions[mcqTopic] && dailyQuizQuestions[mcqTopic].length > 0)
+    return dailyQuizQuestions[mcqTopic];
+  return MCQ_QUESTIONS[mcqTopic] ? [MCQ_QUESTIONS[mcqTopic][0]] : [];
+}
 
 
 
-case 'company-quiz': return [ MCQ_QUESTIONS['tcs'][0], MCQ_QUESTIONS['amazon'][0], MCQ_QUESTIONS['infosys'][0] ];
+case 'company-quiz': {
+  if (companyQuizQuestions.length > 0) return companyQuizQuestions;
+  return [ MCQ_QUESTIONS['tcs'][0], MCQ_QUESTIONS['amazon'][0], MCQ_QUESTIONS['infosys'][0] ];
+}
 
 
 
@@ -3345,15 +3441,15 @@ if (finalCorrect === questionsList.length) {
 
 
 
-if (gameType === 'bug-hunter') triggerBadge("🐛 Master Bug Squasher");
+if (gameType === 'bug-hunter') triggerBadge("≡ƒÉ¢ Master Bug Squasher");
 
 
 
-if (gameType === 'sql-detective') triggerBadge("🕵️ SQL Detective Cadet");
+if (gameType === 'sql-detective') triggerBadge("≡ƒò╡∩╕Å SQL Detective Cadet");
 
 
 
-if (gameType === 'code-sprint') triggerBadge("⚡ Lightning Sprinter");
+if (gameType === 'code-sprint') triggerBadge("ΓÜí Lightning Sprinter");
 
 
 
@@ -3429,7 +3525,7 @@ dmgOpponent = 20 + speedBonus;
 
 
 
-logMsg = `🔥 Correct! Striking opponent for ${dmgOpponent} damage (includes +${speedBonus} speed bonus)!`;
+logMsg = `≡ƒöÑ Correct! Striking opponent for ${dmgOpponent} damage (includes +${speedBonus} speed bonus)!`;
 
 
 
@@ -3445,7 +3541,7 @@ dmgPlayer = Math.floor(Math.random() * 10) + 15;
 
 
 
-logMsg = `⚠️ Incorrect! You missed. Opponent counter strikes for ${dmgPlayer} damage!`;
+logMsg = `ΓÜá∩╕Å Incorrect! You missed. Opponent counter strikes for ${dmgPlayer} damage!`;
 
 
 
@@ -3525,7 +3621,7 @@ playerWins = true;
 
 
 
-logMsg = "🏆 VICTORY! Opponent has been defeated! +50 XP";
+logMsg = "≡ƒÅå VICTORY! Opponent has been defeated! +50 XP";
 
 
 
@@ -3533,7 +3629,7 @@ gainXp(50);
 
 
 
-triggerBadge("⚔️ Arena Overlord");
+triggerBadge("ΓÜö∩╕Å Arena Overlord");
 
 
 
@@ -3549,7 +3645,7 @@ playerWins = false;
 
 
 
-logMsg = "💀 DEFEAT! Opponent overpowered you. Keep practicing!";
+logMsg = "≡ƒÆÇ DEFEAT! Opponent overpowered you. Keep practicing!";
 
 
 
@@ -3657,11 +3753,11 @@ let logMsg = playerWins
 
 
 
-? "🏆 TIME UP! You had higher remaining HP. Victory! +30 XP"
+? "≡ƒÅå TIME UP! You had higher remaining HP. Victory! +30 XP"
 
 
 
-: "💀 TIME UP! Opponent had higher remaining HP. Defeat!";
+: "≡ƒÆÇ TIME UP! Opponent had higher remaining HP. Defeat!";
 
 
 
@@ -3713,19 +3809,19 @@ const accuracy = (correct / total) * 100;
 
 
 
-if (accuracy === 100) return "Elite Coder ⚡";
+if (accuracy === 100) return "Elite Coder ΓÜí";
 
 
 
-if (accuracy >= 70) return "Senior Developer 🛠️";
+if (accuracy >= 70) return "Senior Developer ≡ƒ¢á∩╕Å";
 
 
 
-if (accuracy >= 45) return "Junior Apprentice 🎓";
+if (accuracy >= 45) return "Junior Apprentice ≡ƒÄô";
 
 
 
-return "Trainee 🐛";
+return "Trainee ≡ƒÉ¢";
 
 
 
@@ -3781,7 +3877,7 @@ return (
 
 
 
-<span className="ph-stat-val xp">⭐ {xp} XP</span>
+<span className="ph-stat-val xp">Γ¡É {xp} XP</span>
 
 
 
@@ -3801,7 +3897,7 @@ return (
 
 
 
-<span className="ph-stat-val streak">🔥 {streak} Days</span>
+<span className="ph-stat-val streak">≡ƒöÑ {streak} Days</span>
 
 
 
@@ -3925,7 +4021,7 @@ onClick={() => { setActiveTab('coding-games'); backToMenu(); }}
 
 
 
-🎮 Coding Games
+≡ƒÄ« Coding Games
 
 
 
@@ -3949,7 +4045,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-🧠 MCQ Battle Arena
+≡ƒºá MCQ Battle Arena
 
 
 
@@ -3981,7 +4077,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-icon">🐛</span>
+<span className="ph-card-icon">≡ƒÉ¢</span>
 
 
 
@@ -4001,7 +4097,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-reward">🏆 +15 XP</span>
+<span className="ph-card-reward">≡ƒÅå +15 XP</span>
 
 
 
@@ -4025,7 +4121,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-icon">🔮</span>
+<span className="ph-card-icon">≡ƒö«</span>
 
 
 
@@ -4045,7 +4141,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-reward">🏆 +15 XP</span>
+<span className="ph-card-reward">≡ƒÅå +15 XP</span>
 
 
 
@@ -4069,7 +4165,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-icon">⚡</span>
+<span className="ph-card-icon">ΓÜí</span>
 
 
 
@@ -4089,7 +4185,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-reward">🏆 +25 XP</span>
+<span className="ph-card-reward">≡ƒÅå +25 XP</span>
 
 
 
@@ -4113,7 +4209,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-icon">🕵️</span>
+<span className="ph-card-icon">≡ƒò╡∩╕Å</span>
 
 
 
@@ -4133,7 +4229,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-reward">🏆 +20 XP</span>
+<span className="ph-card-reward">≡ƒÅå +20 XP</span>
 
 
 
@@ -4157,7 +4253,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-icon">🛠️</span>
+<span className="ph-card-icon">≡ƒ¢á∩╕Å</span>
 
 
 
@@ -4177,7 +4273,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-reward">🏆 +15 XP</span>
+<span className="ph-card-reward">≡ƒÅå +15 XP</span>
 
 
 
@@ -4201,7 +4297,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-icon">🔗</span>
+<span className="ph-card-icon">≡ƒöù</span>
 
 
 
@@ -4221,7 +4317,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-card-reward">🏆 +20 XP</span>
+<span className="ph-card-reward">≡ƒÅå +20 XP</span>
 
 
 
@@ -4265,7 +4361,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<span className="ph-play-icon">🐛</span>
+<span className="ph-play-icon">≡ƒÉ¢</span>
 
 
 
@@ -4277,7 +4373,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Game</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Game</span></button>
 
 
 
@@ -4293,7 +4389,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<div className="ph-results-trophy">🏆</div>
+<div className="ph-results-trophy">≡ƒÅå</div>
 
 
 
@@ -4441,7 +4537,7 @@ style={{ width: `${(gameState.timerLeft / BUG_HUNTER_QUESTIONS[gameState.current
 <span style={{ color: gameState.timerLeft <= 8 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -4530,7 +4626,7 @@ onClick={() => selectBugLine(idx)}
 
 
 
-{gameState.selectedBugLine === -1 ? "⏱️ Timeout! Time ran out." : gameState.selectedBugLine === BUG_HUNTER_QUESTIONS[gameState.currentQuestionIndex].buggyLineIndex ? "✓ Correct Bug Line Identified!" : "✗ That line was not the bug source!"}
+{gameState.selectedBugLine === -1 ? "ΓÅ▒∩╕Å Timeout! Time ran out." : gameState.selectedBugLine === BUG_HUNTER_QUESTIONS[gameState.currentQuestionIndex].buggyLineIndex ? "Γ£ô Correct Bug Line Identified!" : "Γ£ù That line was not the bug source!"}
 
 
 
@@ -4598,7 +4694,7 @@ onClick={() => selectBugLine(idx)}
 
 
 
-<span className="ph-play-icon">🔮</span>
+<span className="ph-play-icon">≡ƒö«</span>
 
 
 
@@ -4610,7 +4706,7 @@ onClick={() => selectBugLine(idx)}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Game</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Game</span></button>
 
 
 
@@ -4626,7 +4722,7 @@ onClick={() => selectBugLine(idx)}
 
 
 
-<div className="ph-results-trophy">🏆</div>
+<div className="ph-results-trophy">≡ƒÅå</div>
 
 
 
@@ -4771,7 +4867,7 @@ style={{ width: `${(gameState.timerLeft / OUTPUT_PREDICTOR_QUESTIONS[gameState.c
 <span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -4880,7 +4976,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.isAnswered && isCorrect ? "✓" : gameState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{gameState.isAnswered && isCorrect ? "Γ£ô" : gameState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 
 
 
@@ -4916,7 +5012,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.selectedOption === -1 ? "⏱️ Timeout! Time ran out." : (OUTPUT_PREDICTOR_QUESTIONS[gameState.currentQuestionIndex].options[gameState.selectedOption] === OUTPUT_PREDICTOR_QUESTIONS[gameState.currentQuestionIndex].correctOption ? "✓ Correct Output predicted!" : "✗ Incorrect prediction!")}
+{gameState.selectedOption === -1 ? "ΓÅ▒∩╕Å Timeout! Time ran out." : (OUTPUT_PREDICTOR_QUESTIONS[gameState.currentQuestionIndex].options[gameState.selectedOption] === OUTPUT_PREDICTOR_QUESTIONS[gameState.currentQuestionIndex].correctOption ? "Γ£ô Correct Output predicted!" : "Γ£ù Incorrect prediction!")}
 
 
 
@@ -4984,7 +5080,7 @@ disabled={gameState.isAnswered}
 
 
 
-<span className="ph-play-icon">⚡</span>
+<span className="ph-play-icon">ΓÜí</span>
 
 
 
@@ -4996,7 +5092,7 @@ disabled={gameState.isAnswered}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Game</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Game</span></button>
 
 
 
@@ -5012,7 +5108,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div className="ph-results-trophy">⚡</div>
+<div className="ph-results-trophy">ΓÜí</div>
 
 
 
@@ -5160,7 +5256,7 @@ style={{ width: `${(gameState.timerLeft / CODE_SPRINT_QUESTIONS[gameState.curren
 <span style={{ color: gameState.timerLeft <= 5 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -5261,7 +5357,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-{gameState.isAnswered && isCorrect ? "✓" : gameState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{gameState.isAnswered && isCorrect ? "Γ£ô" : gameState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 
 
 
@@ -5297,7 +5393,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-{gameState.selectedOption === -1 ? "⏱️ Timeout! Time ran out." : (gameState.selectedOption === CODE_SPRINT_QUESTIONS[gameState.currentQuestionIndex].correctIndex ? "✓ Correct Sprint Answer!" : "✗ Incorrect answer!")}
+{gameState.selectedOption === -1 ? "ΓÅ▒∩╕Å Timeout! Time ran out." : (gameState.selectedOption === CODE_SPRINT_QUESTIONS[gameState.currentQuestionIndex].correctIndex ? "Γ£ô Correct Sprint Answer!" : "Γ£ù Incorrect answer!")}
 
 
 
@@ -5365,7 +5461,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<span className="ph-play-icon">🕵️</span>
+<span className="ph-play-icon">≡ƒò╡∩╕Å</span>
 
 
 
@@ -5377,7 +5473,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Game</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Game</span></button>
 
 
 
@@ -5393,7 +5489,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<div className="ph-results-trophy">🏆</div>
+<div className="ph-results-trophy">≡ƒÅå</div>
 
 
 
@@ -5538,7 +5634,7 @@ style={{ width: `${(gameState.timerLeft / SQL_DETECTIVE_QUESTIONS[gameState.curr
 <span style={{ color: gameState.timerLeft <= 8 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -5659,7 +5755,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-{gameState.isAnswered && isCorrect ? "✓" : gameState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{gameState.isAnswered && isCorrect ? "Γ£ô" : gameState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 
 
 
@@ -5695,7 +5791,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-{gameState.selectedOption === -1 ? "⏱️ Timeout! Time ran out." : (gameState.selectedOption === SQL_DETECTIVE_QUESTIONS[gameState.currentQuestionIndex].correctIndex ? "✓ Correct SQL query selected!" : "✗ That was not the correct query!")}
+{gameState.selectedOption === -1 ? "ΓÅ▒∩╕Å Timeout! Time ran out." : (gameState.selectedOption === SQL_DETECTIVE_QUESTIONS[gameState.currentQuestionIndex].correctIndex ? "Γ£ô Correct SQL query selected!" : "Γ£ù That was not the correct query!")}
 
 
 
@@ -5763,7 +5859,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<span className="ph-play-icon">🛠️</span>
+<span className="ph-play-icon">≡ƒ¢á∩╕Å</span>
 
 
 
@@ -5775,7 +5871,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Game</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Game</span></button>
 
 
 
@@ -5791,7 +5887,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-<div className="ph-results-trophy">🏆</div>
+<div className="ph-results-trophy">≡ƒÅå</div>
 
 
 
@@ -5936,7 +6032,7 @@ style={{ width: `${(gameState.timerLeft / ERROR_FIX_QUESTIONS[gameState.currentQ
 <span style={{ color: gameState.timerLeft <= 7 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -6049,7 +6145,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-{gameState.isAnswered && isCorrect ? "✓" : gameState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{gameState.isAnswered && isCorrect ? "Γ£ô" : gameState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 
 
 
@@ -6085,7 +6181,7 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 
-{gameState.selectedOption === -1 ? "⏱️ Timeout! Time ran out." : (gameState.selectedOption === ERROR_FIX_QUESTIONS[gameState.currentQuestionIndex].correctIndex ? "✓ Correct Patch selected!" : "✗ That patch doesn't fix the bug!")}
+{gameState.selectedOption === -1 ? "ΓÅ▒∩╕Å Timeout! Time ran out." : (gameState.selectedOption === ERROR_FIX_QUESTIONS[gameState.currentQuestionIndex].correctIndex ? "Γ£ô Correct Patch selected!" : "Γ£ù That patch doesn't fix the bug!")}
 
 
 
@@ -6161,7 +6257,7 @@ return (
 
 
 
-<span className="ph-play-icon">🔗</span>
+<span className="ph-play-icon">≡ƒöù</span>
 
 
 
@@ -6173,7 +6269,7 @@ return (
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Game</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Game</span></button>
 
 
 
@@ -6189,7 +6285,7 @@ return (
 
 
 
-{zipWin ? "🎉 Puzzle Solved!" : "Goal: Connect 1 to 8 sequentially and fill every cell!"}
+{zipWin ? "≡ƒÄë Puzzle Solved!" : "Goal: Connect 1 to 8 sequentially and fill every cell!"}
 
 
 
@@ -6201,7 +6297,7 @@ return (
 
 
 
-⏱️ {formatTime(zipTime)}
+ΓÅ▒∩╕Å {formatTime(zipTime)}
 
 
 
@@ -6673,7 +6769,7 @@ boxShadow: 'inset 0 0 20px rgba(0,0,0,0.05)'
 
 
 
-<div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🏆</div>
+<div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>≡ƒÅå</div>
 
 
 
@@ -6777,7 +6873,7 @@ style={{ minWidth: '130px' }}
 
 
 
-↩ Undo<span className="zip-btn-extra-text"> Step</span>
+Γå⌐ Undo<span className="zip-btn-extra-text"> Step</span>
 
 
 
@@ -6789,7 +6885,7 @@ style={{ minWidth: '130px' }}
 
 
 
-🔄 Reset<span className="zip-btn-extra-text"> Board</span>
+≡ƒöä Reset<span className="zip-btn-extra-text"> Board</span>
 
 
 
@@ -6803,7 +6899,7 @@ style={{ minWidth: '130px' }}
   style={{ minWidth: '130px' }}
   disabled={zipWin || hintCooldown > 0}
 >
-  💡 {hintCooldown > 0 ? `Hint (${hintCooldown}s)` : "Get Hint"}
+  ≡ƒÆí {hintCooldown > 0 ? `Hint (${hintCooldown}s)` : "Get Hint"}
 </button>
 
 
@@ -6816,7 +6912,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<div className="zip-how-title">🎮 How to Play</div>
+<div className="zip-how-title">≡ƒÄ« How to Play</div>
 
 
 
@@ -6828,7 +6924,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="zip-how-icon">1️⃣</span>
+<span className="zip-how-icon">1∩╕ÅΓâú</span>
 
 
 
@@ -6840,7 +6936,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="zip-how-text">Connect all numbers in order (1 → 2 → 3 → 4 → 5 → 6 → 7 → 8) in a single continuous line. Click/drag starting from 1.</span>
+<span className="zip-how-text">Connect all numbers in order (1 ΓåÆ 2 ΓåÆ 3 ΓåÆ 4 ΓåÆ 5 ΓåÆ 6 ΓåÆ 7 ΓåÆ 8) in a single continuous line. Click/drag starting from 1.</span>
 
 
 
@@ -6856,7 +6952,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="zip-how-icon">🟪</span>
+<span className="zip-how-icon">≡ƒƒ¬</span>
 
 
 
@@ -6884,7 +6980,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="zip-how-icon">🚧</span>
+<span className="zip-how-icon">≡ƒÜº</span>
 
 
 
@@ -7044,7 +7140,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="ph-play-icon">🧠</span>
+<span className="ph-play-icon">≡ƒºá</span>
 
 
 
@@ -7056,7 +7152,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Quiz</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Quiz</span></button>
 
 
 
@@ -7072,7 +7168,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<div className="ph-results-trophy">🌟</div>
+<div className="ph-results-trophy">≡ƒîƒ</div>
 
 
 
@@ -7172,31 +7268,31 @@ style={{ minWidth: '130px' }}
 
 
 
-{ id: 'java', label: 'Java', icon: '☕' },
+{ id: 'java', label: 'Java', icon: 'Γÿò' },
 
 
 
-{ id: 'python', label: 'Python', icon: '🐍' },
+{ id: 'python', label: 'Python', icon: '≡ƒÉì' },
 
 
 
-{ id: 'dbms', label: 'DBMS', icon: '🗄️' },
+{ id: 'dbms', label: 'DBMS', icon: '≡ƒùä∩╕Å' },
 
 
 
-{ id: 'os', label: 'OS', icon: '🖥️' },
+{ id: 'os', label: 'OS', icon: '≡ƒûÑ∩╕Å' },
 
 
 
-{ id: 'cn', label: 'Comp Networks', icon: '🌐' },
+{ id: 'cn', label: 'Comp Networks', icon: '≡ƒîÉ' },
 
 
 
-{ id: 'oops', label: 'OOPs', icon: '🧩' },
+{ id: 'oops', label: 'OOPs', icon: '≡ƒº⌐' },
 
 
 
-{ id: 'aptitude', label: 'Aptitude', icon: '🧮' }
+{ id: 'aptitude', label: 'Aptitude', icon: '≡ƒº«' }
 
 
 
@@ -7328,7 +7424,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -7340,7 +7436,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <button className="ph-btn-primary" onClick={() => nextQuestion('daily-quiz')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqTopic].length ? "Finish" : "Next"}
+{gameState.currentQuestionIndex + 1 === getQuestionsList('daily-quiz').length ? "Finish" : "Next"}
 
 
 </button>
@@ -7365,7 +7461,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 
 
 
-Q{gameState.currentQuestionIndex + 1}: {MCQ_QUESTIONS[mcqTopic][gameState.currentQuestionIndex].q}
+Q{gameState.currentQuestionIndex + 1}: {getQuestionsList('daily-quiz')[gameState.currentQuestionIndex].q}
 
 
 
@@ -7377,11 +7473,11 @@ Q{gameState.currentQuestionIndex + 1}: {MCQ_QUESTIONS[mcqTopic][gameState.curren
 
 
 
-{MCQ_QUESTIONS[mcqTopic][gameState.currentQuestionIndex].a.map((opt, idx) => {
+{getQuestionsList('daily-quiz')[gameState.currentQuestionIndex].a.map((opt, idx) => {
 
 
 
-const isCorrect = idx === MCQ_QUESTIONS[mcqTopic][gameState.currentQuestionIndex].c;
+const isCorrect = idx === getQuestionsList('daily-quiz')[gameState.currentQuestionIndex].c;
 
 
 
@@ -7445,7 +7541,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.isAnswered && isCorrect ? "✓" : gameState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{gameState.isAnswered && isCorrect ? "Γ£ô" : gameState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 
 
 
@@ -7513,7 +7609,7 @@ disabled={gameState.isAnswered}
 
 
 
-<span className="ph-play-icon">⚔️</span>
+<span className="ph-play-icon">ΓÜö∩╕Å</span>
 
 
 
@@ -7525,7 +7621,7 @@ disabled={gameState.isAnswered}
 
 
 
-<button className="ph-btn-back" style={{ background: '#1e293b', color: '#ffffff', flexShrink: 0 }} onClick={backToMenu}>✕ <span className="ph-btn-back-text">Flee Battle</span></button>
+<button className="ph-btn-back" style={{ background: '#1e293b', color: '#ffffff', flexShrink: 0 }} onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Flee Battle</span></button>
 
 
 
@@ -7545,7 +7641,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div className="ph-battle-avatar">🧙</div>
+<div className="ph-battle-avatar">≡ƒºÖ</div>
 
 
 
@@ -7593,7 +7689,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div className="ph-battle-avatar">👾</div>
+<div className="ph-battle-avatar">≡ƒæ╛</div>
 
 
 
@@ -7645,7 +7741,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div className="ph-results-trophy" style={{ fontSize: '5rem' }}>{battleState.win ? "👑" : "💀"}</div>
+<div className="ph-results-trophy" style={{ fontSize: '5rem' }}>{battleState.win ? "≡ƒææ" : "≡ƒÆÇ"}</div>
 
 
 
@@ -7684,12 +7780,12 @@ disabled={gameState.isAnswered}
           style={{ minWidth: '150px', padding: '0.35rem 0.75rem', fontSize: '0.85rem', borderRadius: '8px' }}
       >
           <span className="ph-custom-select-selected-icon">
-              {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || '☕'}
+              {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || 'Γÿò'}
           </span>
           <span className="ph-custom-select-selected-label">
               {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.label || 'Java Programming'}
           </span>
-          <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>▼</span>
+          <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>Γû╝</span>
       </button>
       {isTopicDropdownOpen && (
           <>
@@ -7706,7 +7802,7 @@ disabled={gameState.isAnswered}
                       >
                           <span className="ph-custom-select-option-icon">{topic.icon}</span>
                           <span className="ph-custom-select-option-label">{topic.label}</span>
-                          {mcqTopic === topic.id && <span className="ph-custom-select-option-check">✓</span>}
+                          {mcqTopic === topic.id && <span className="ph-custom-select-option-check">Γ£ô</span>}
                       </div>
                   ))}
               </div>
@@ -7717,7 +7813,7 @@ disabled={gameState.isAnswered}
 
   {/* Next Button */}
   {battleState.isAnswered ? (
-      <button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
+      <button className="ph-btn-primary" onClick={() => nextBattleQuestion(battleQuestions.length > 0 ? battleQuestions : MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
           Next
       </button>
   ) : (
@@ -7737,7 +7833,7 @@ disabled={gameState.isAnswered}
 
 
 
-Attack {battleState.currentQIndex + 1}: {MCQ_QUESTIONS[mcqTopic][battleState.currentQIndex].q}
+Attack {battleState.currentQIndex + 1}: {(battleQuestions.length > 0 ? battleQuestions : MCQ_QUESTIONS[mcqTopic])[battleState.currentQIndex]?.q}
 
 
 
@@ -7749,8 +7845,8 @@ Attack {battleState.currentQIndex + 1}: {MCQ_QUESTIONS[mcqTopic][battleState.cur
 
 
 
-{MCQ_QUESTIONS[mcqTopic][battleState.currentQIndex].a.map((opt, idx) => {
-const isCorrect = idx === MCQ_QUESTIONS[mcqTopic][battleState.currentQIndex].c;
+{(battleQuestions.length > 0 ? battleQuestions : MCQ_QUESTIONS[mcqTopic])[battleState.currentQIndex]?.a?.map((opt, idx) => {
+const isCorrect = idx === (battleQuestions.length > 0 ? battleQuestions : MCQ_QUESTIONS[mcqTopic])[battleState.currentQIndex].c;
 const isSelected = battleState.selectedOption === idx;
 let btnClass = "";
 let btnStyle = { background: '#0f172a', border: '1px solid #334155', color: '#f8fafc' };
@@ -7773,12 +7869,12 @@ return (
 key={idx}
 className={`ph-option-btn ${btnClass}`}
 style={btnStyle}
-onClick={() => handleBattleMcqAnswer(idx, MCQ_QUESTIONS[mcqTopic])}
+onClick={() => handleBattleMcqAnswer(idx, battleQuestions.length > 0 ? battleQuestions : MCQ_QUESTIONS[mcqTopic])}
 disabled={battleState.isAnswered}
 >
 <span>{opt}</span>
 <span className="ph-option-marker" style={markerStyle}>
-{battleState.isAnswered && isCorrect ? "✓" : battleState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{battleState.isAnswered && isCorrect ? "Γ£ô" : battleState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 </span>
 </button>
 );
@@ -7830,7 +7926,7 @@ disabled={battleState.isAnswered}
 
 
 
-<span className="ph-play-icon">🏢</span>
+<span className="ph-play-icon">≡ƒÅó</span>
 
 
 
@@ -7842,7 +7938,7 @@ disabled={battleState.isAnswered}
 
 
 
-<button className="ph-btn-back" onClick={backToMenu}>✕ <span className="ph-btn-back-text">Quit Workout</span></button>
+<button className="ph-btn-back" onClick={backToMenu}>Γ£ò <span className="ph-btn-back-text">Quit Workout</span></button>
 
 
 
@@ -7858,7 +7954,7 @@ disabled={battleState.isAnswered}
 
 
 
-<div className="ph-results-trophy">🏆</div>
+<div className="ph-results-trophy">≡ƒÅå</div>
 
 
 
@@ -7990,7 +8086,7 @@ disabled={battleState.isAnswered}
 
 
 
-  <span style={{ fontSize: '1.25rem' }}>🎯</span>
+  <span style={{ fontSize: '1.25rem' }}>≡ƒÄ»</span>
 
 
 
@@ -8062,7 +8158,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <span style={{ color: gameState.timerLeft <= 6 ? 'var(--ph-danger)' : 'var(--ph-text)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0, fontSize: '0.9rem' }}>
 
 
-⏱️ {gameState.timerLeft}s
+ΓÅ▒∩╕Å {gameState.timerLeft}s
 
 
 </span>
@@ -8179,7 +8275,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.isAnswered && isCorrect ? "✓" : gameState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
+{gameState.isAnswered && isCorrect ? "Γ£ô" : gameState.isAnswered && isSelected ? "Γ£ù" : String.fromCharCode(65 + idx)}
 
 
 
@@ -8247,7 +8343,7 @@ disabled={gameState.isAnswered}
 
 
 
-<h3>🏆 Global Leaderboard</h3>
+<h3>≡ƒÅå Global Leaderboard</h3>
 
 
 
@@ -8351,7 +8447,7 @@ className={`ph-leaderboard-item ${user.name === "You" ? 'user-highlight' : ''}`}
 
 
 
-<span style={{ fontSize: '1.75rem' }}>🎁</span>
+<span style={{ fontSize: '1.75rem' }}>≡ƒÄü</span>
 
 
 

@@ -3,6 +3,8 @@ package com.findmyjob.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findmyjob.model.Question;
+import com.findmyjob.model.BugHunterQuestion;
+import com.findmyjob.model.DailyBugHunterQuiz;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -140,5 +142,103 @@ public class GeminiInterviewService {
         }
         
         return text.trim();
+    }
+
+    public List<BugHunterQuestion> generateBugHunterQuestions(List<String> excludedTitles) {
+        if (geminiApiKey == null || geminiApiKey.trim().isEmpty() || geminiApiKey.equals("${GEMINI_API_KEY:}")) {
+            throw new RuntimeException("Gemini API Key is missing or not configured correctly in application.properties!");
+        }
+
+        String prompt = "Generate exactly 3 coding interview questions for a game called 'Bug Hunter'.\n" +
+            "For each question, provide a snippet of code (in java, python, or javascript) containing exactly one logical or syntax bug.\n" +
+            "Format the response strictly as a JSON array of objects with these keys:\n" +
+            "- 'title': The name of the question/puzzle (e.g. 'Recursive Factorial (Java)', 'List Appender (Python)')\n" +
+            "- 'language': The programming language in lowercase (e.g. 'java', 'python', 'javascript')\n" +
+            "- 'description': Short description of the goal or the error type (e.g. 'Identify the line with the bug that causes an infinite loop / stack overflow error.')\n" +
+            "- 'codeLines': An array of strings where each element represents one line of the code snippet. Make sure it is short (4 to 12 lines) and readable.\n" +
+            "- 'buggyLineIndex': The 0-indexed line number in the 'codeLines' array where the bug resides.\n" +
+            "- 'explanation': Explanation of the bug and how to fix it.\n" +
+            "- 'xp': Always 15\n" +
+            "- 'timeLimit': Time limit in seconds (typically 45 or 60)\n\n" +
+            "Crucial rule: Do NOT generate questions with titles/topics that match or are extremely similar to any of these: " + excludedTitles.toString() + "\n" +
+            "Response must be ONLY valid JSON.";
+
+        try {
+            System.out.println("[Gemini BugHunter Prompt] " + prompt);
+            String response = callGemini(prompt);
+            System.out.println("[Gemini BugHunter Response] " + response);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response);
+            List<BugHunterQuestion> questions = new ArrayList<>();
+
+            JsonNode arrayNode = root.isArray() ? root : root.path("questions");
+            if (!arrayNode.isArray()) {
+                Iterator<Map.Entry<String, JsonNode>> fields = root.fields();
+                while (fields.hasNext()) {
+                    JsonNode node = fields.next().getValue();
+                    if (node.isArray()) {
+                        arrayNode = node;
+                        break;
+                    }
+                }
+            }
+
+            if (arrayNode.isArray()) {
+                for (JsonNode node : arrayNode) {
+                    BugHunterQuestion q = new BugHunterQuestion();
+                    q.setTitle(node.path("title").asText("Bug Hunter Challenge"));
+                    q.setLanguage(node.path("language").asText("java"));
+                    q.setDescription(node.path("description").asText("Identify the buggy line."));
+                    
+                    List<String> lines = new ArrayList<>();
+                    JsonNode linesNode = node.path("codeLines");
+                    if (linesNode.isArray()) {
+                        for (JsonNode line : linesNode) {
+                            lines.add(line.asText());
+                        }
+                    }
+                    q.setCodeLines(lines);
+                    q.setBuggyLineIndex(node.path("buggyLineIndex").asInt(0));
+                    q.setExplanation(node.path("explanation").asText(""));
+                    q.setXp(node.path("xp").asInt(15));
+                    q.setTimeLimit(node.path("timeLimit").asInt(45));
+                    
+                    if (!q.getCodeLines().isEmpty()) {
+                        questions.add(q);
+                    }
+                }
+            }
+
+            // Fallback seed if Gemini fails or returns empty array
+            if (questions.isEmpty()) {
+                questions.add(new BugHunterQuestion(
+                    "Recursive Factorial (Java)", "java",
+                    "Identify the line with the bug that causes an infinite loop / stack overflow error.",
+                    List.of("public int factorial(int n) {", "    if (n <= 1) return 1;", "    return n * factorial(n);", "}"),
+                    2, "Line 3 should call factorial(n - 1) instead of factorial(n). Calling factorial(n) causes infinite recursion.",
+                    15, 45
+                ));
+                questions.add(new BugHunterQuestion(
+                    "List Appender (Python)", "python",
+                    "Identify the line with the bug where loop counters share the same global variable scope, outputting 3 thrice.",
+                    List.of("def append_to_list(val, my_list=[]):", "    my_list.append(val)", "    return my_list"),
+                    0, "Default arguments in Python are evaluated once at function definition. A mutable default value like my_list=[] persists across calls.",
+                    15, 45
+                ));
+                questions.add(new BugHunterQuestion(
+                    "Scope Binding (JavaScript)", "javascript",
+                    "Identify the line with the bug where loop counters share the same global variable scope, outputting 3 thrice.",
+                    List.of("for (var i = 0; i < 3; i++) {", "    setTimeout(() => console.log(i), 100);", "}"),
+                    0, "Using var i creates a function-scoped or globally-scoped variable. After the loop completes, i equals 3, so all timeouts print 3. Change var to let.",
+                    15, 45
+                ));
+            }
+
+            return questions;
+        } catch (Exception e) {
+            System.err.println("[Gemini BugHunter] Error generating questions: " + e.getMessage());
+            throw new RuntimeException("AI generation error: " + e.getMessage(), e);
+        }
     }
 }

@@ -1676,10 +1676,34 @@ Return ONLY valid JSON (no markdown, no explanation) with these exact keys:
 
                                 {/* Company Logo */}
                                 <div className="form-group">
-                                    <label>Company Logo URL <span className="form-hint">(optional)</span></label>
-                                    <input type="url" name="companyLogo" value={formData.companyLogo}
-                                        onChange={handleInputChange}
-                                        placeholder="https://example.com/logo.png" />
+                                    <label>Company Logo <span className="form-hint">(optional - URL or upload image)</span></label>
+                                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                        <label className="btn-primary-compact" style={{ cursor: 'pointer', margin: 0, padding: '0.6rem 1rem', whiteSpace: 'nowrap', display: 'inline-block', color: '#ffffff' }}>
+                                            📁 Upload Image
+                                            <input type="file" accept="image/*" style={{ display: 'none' }}
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = () => {
+                                                            setFormData(prev => ({ ...prev, companyLogo: reader.result }));
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }}
+                                            />
+                                        </label>
+                                        <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 'bold' }}>OR</span>
+                                        <input type="text" name="companyLogo" value={formData.companyLogo}
+                                            onChange={handleInputChange}
+                                            placeholder="Paste image URL here..." 
+                                            style={{ flex: 1 }} />
+                                    </div>
+                                    {formData.companyLogo && (
+                                        <div style={{ marginTop: '10px' }}>
+                                            <img src={formData.companyLogo} alt="Logo Preview" style={{ height: '40px', borderRadius: '4px', objectFit: 'contain', background: '#fff', padding: '2px', border: '1px solid #e2e8f0' }} />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="form-actions">

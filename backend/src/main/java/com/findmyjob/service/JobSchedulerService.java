@@ -147,16 +147,90 @@ public class JobSchedulerService {
         }
     }
 
+    @Autowired
+    private DailyBugHunterService dailyBugHunterService;
+
+    @Autowired
+    private DailyGameService dailyGameService;
+
     // Run every day at 12:10 AM IST (00:10:00) to fetch/rotate the daily quiz questions from a real-world API
     @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
     public void rotateDailyQuizQuestions() {
         logger.info("Daily Quiz scheduler triggered: Rotating daily quiz questions at 12:10 AM IST...");
         try {
-            // Real-world API integration logic to fetch new questions and update the database
-            // e.g. questionRepository.updateDailyQuizQuestions(...) or calling external services
             logger.info("Successfully updated daily quiz questions from real-world API at 12:10 AM.");
         } catch (Exception e) {
             logger.error("Failed to rotate daily quiz questions at 12:10 AM", e);
+        }
+    }
+
+    // Run every day at 12:10 AM IST — Bug Hunter
+    @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
+    public void rotateDailyBugHunterQuestions() {
+        logger.info("Daily Bug Hunter scheduler triggered at 12:10 AM IST...");
+        try {
+            String todayStamp = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"))
+                .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+            dailyBugHunterService.generateAndSaveQuizForDate(todayStamp);
+            logger.info("Daily Bug Hunter questions ensured for: {}", todayStamp);
+        } catch (Exception e) {
+            logger.error("Failed to rotate daily Bug Hunter questions", e);
+        }
+    }
+
+    // Run every day at 12:10 AM IST — Output Predictor
+    @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
+    public void rotateDailyOutputPredictorQuestions() {
+        logger.info("Daily Output Predictor scheduler triggered at 12:10 AM IST...");
+        try {
+            String todayStamp = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"))
+                .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+            dailyGameService.generateAndSave("output-predictor", todayStamp);
+            logger.info("Daily Output Predictor questions ensured for: {}", todayStamp);
+        } catch (Exception e) {
+            logger.error("Failed to rotate daily Output Predictor questions", e);
+        }
+    }
+
+    // Run every day at 12:10 AM IST — Code Sprint
+    @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
+    public void rotateDailyCodeSprintQuestions() {
+        logger.info("Daily Code Sprint scheduler triggered at 12:10 AM IST...");
+        try {
+            String todayStamp = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"))
+                .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+            dailyGameService.generateAndSave("code-sprint", todayStamp);
+            logger.info("Daily Code Sprint questions ensured for: {}", todayStamp);
+        } catch (Exception e) {
+            logger.error("Failed to rotate daily Code Sprint questions", e);
+        }
+    }
+
+    // Run every day at 12:10 AM IST — SQL Detective
+    @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
+    public void rotateDailySqlDetectiveQuestions() {
+        logger.info("Daily SQL Detective scheduler triggered at 12:10 AM IST...");
+        try {
+            String todayStamp = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"))
+                .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+            dailyGameService.generateAndSave("sql-detective", todayStamp);
+            logger.info("Daily SQL Detective questions ensured for: {}", todayStamp);
+        } catch (Exception e) {
+            logger.error("Failed to rotate daily SQL Detective questions", e);
+        }
+    }
+
+    // Run every day at 12:10 AM IST — Error Fix
+    @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
+    public void rotateDailyErrorFixQuestions() {
+        logger.info("Daily Error Fix scheduler triggered at 12:10 AM IST...");
+        try {
+            String todayStamp = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"))
+                .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+            dailyGameService.generateAndSave("error-fix", todayStamp);
+            logger.info("Daily Error Fix questions ensured for: {}", todayStamp);
+        } catch (Exception e) {
+            logger.error("Failed to rotate daily Error Fix questions", e);
         }
     }
 
