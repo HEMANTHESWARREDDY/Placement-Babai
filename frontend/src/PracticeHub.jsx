@@ -8062,15 +8062,7 @@ timerLeft: 30
 
 
 
-<div style={{ fontWeight: '700', fontSize: '1.05rem', marginBottom: '1rem', lineHeight: '1.5' }}>
 
-
-
-Corporate Test ({mcqCompany === 'tcs' ? 'Easy' : mcqCompany === 'infosys' ? 'Medium' : 'Hard'}):
-
-
-
-</div>
 
 
 
