@@ -7962,15 +7962,15 @@ disabled={battleState.isAnswered}
 
 
 
-{ id: 'tcs', label: 'MNC (Easy)' },
+{ id: 'tcs', label: 'MNC' },
 
 
 
-{ id: 'amazon', label: 'Product Based (Hard)' },
+{ id: 'amazon', label: 'Product Based' },
 
 
 
-{ id: 'infosys', label: 'Startup Level (Medium)' }
+{ id: 'infosys', label: 'Startup Level' }
 
 
 
@@ -8066,7 +8066,7 @@ timerLeft: 30
 
 
 
-Corporate Test:
+Corporate Test ({mcqCompany === 'tcs' ? 'Easy' : mcqCompany === 'infosys' ? 'Medium' : 'Hard'}):
 
 
 
