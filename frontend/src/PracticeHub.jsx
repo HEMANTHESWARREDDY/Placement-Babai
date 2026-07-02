@@ -6956,11 +6956,11 @@ style={{ minWidth: '130px' }}
 
 
 
-<p>Answer a daily topic question. Includes a 30s timer & 2X XP bonus.</p>
+<p>Answer daily placement-focused topic questions with a 30s timer & 2X XP bonus.</p>
 
 
 
-<div className="ph-personal-best">Best score: {highScores['daily-quiz']}/{getQuestionsList('daily-quiz').length}</div>
+
 
 
 
@@ -6980,7 +6980,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<p>Fight in real-time against placement_wizard. You have 20s to lock-in each strike, or opponent strikes you automatically!</p>
+<p>Compete in real-time placement duels. Lock in correct answers within 20s to defeat your opponent.</p>
 
 
 
@@ -7000,11 +7000,11 @@ style={{ minWidth: '130px' }}
 
 
 
-<p>Select MNC, Product Based, or Startup Level to test real historical questions with a 30s timer.</p>
+<p>Solve real historical interview questions from MNC, Product-Based, and Startup tiers sequentially.</p>
 
 
 
-<div className="ph-personal-best">Best score: {highScores['company-quiz']}/2</div>
+
 
 
 
