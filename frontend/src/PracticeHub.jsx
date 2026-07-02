@@ -7998,7 +7998,7 @@ disabled={battleState.isAnswered}
 
 
 
-    Current Target: {
+    Target Question for: {
 
 
 
