@@ -7834,7 +7834,7 @@ disabled={battleState.isAnswered}
 
 
 
-<h2>Company placement Archives{gameState.showResults && <span className="ph-desktop-results-title"> - Results</span>}</h2>
+<h2 style={{ fontSize: '1.25rem' }}>Company placement Archives{gameState.showResults && <span className="ph-desktop-results-title"> - Results</span>}</h2>
 
 
 
