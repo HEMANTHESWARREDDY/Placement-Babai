@@ -6956,7 +6956,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<p>Answer a daily topic question. Refreshes daily at 12:10 AM. Includes a 30s timer & 2X XP bonus.</p>
+<p>Answer a daily topic question. Includes a 30s timer & 2X XP bonus.</p>
 
 
 
