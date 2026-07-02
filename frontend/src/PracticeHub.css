@@ -1247,6 +1247,14 @@
 
 /* ── Mobile Responsive Overrides (max-width: 768px) ──────────────── */
 @media (max-width: 768px) {
+    .ph-workspace {
+        gap: 1rem !important;
+    }
+
+    .ph-modes-section {
+        margin-bottom: 1rem !important;
+    }
+
     .ph-desktop-results-title {
         display: none !important;
     }
