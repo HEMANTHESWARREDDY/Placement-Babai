@@ -8207,31 +8207,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.isAnswered && (
 
-
-
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
-
-
-
-<p style={{ margin: 0 }}>
-
-
-
-{gameState.selectedOption === -1 ? "⏱️ Time ran out!" : (gameState.selectedOption === getQuestionsList('company-quiz')[gameState.currentQuestionIndex].c ? "✓ Correct!" : "✗ Incorrect!")}
-
-
-
-</p>
-
-
-
-</div>
-
-
-
-)}
 
 
 
