@@ -1000,6 +1000,7 @@
     border-radius: 16px;
     padding: 6px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    touch-action: none;
 }
 
 .zip-cell {
@@ -1012,6 +1013,7 @@
     align-items: center;
     user-select: none;
     box-sizing: border-box;
+    touch-action: none;
 }
 
 .zip-cell.path-cell {
@@ -1185,6 +1187,62 @@
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--ph-text-muted);
+}
+
+.ph-quiz-topics-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.ph-quiz-topics-wrapper h4 {
+    margin: 0 0 1rem 0;
+}
+
+.ph-quiz-arena-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.ph-quiz-timer-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.ph-quiz-question-card {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--ph-border);
+    margin: 1.5rem 0;
+}
+
+.ph-quiz-question-title {
+    margin: 0 0 1.5rem 0;
+}
+
+.zip-goal-timer-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.zip-goal-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ph-text);
+}
+
+.zip-timer-text {
+    color: var(--ph-primary);
+    font-weight: 800;
+    font-size: 1.25rem;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* ── Mobile Responsive Overrides (max-width: 768px) ──────────────── */
@@ -1433,18 +1491,48 @@
     }
 
     .ph-topics-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
     }
 
     .ph-topic-select-btn {
-        padding: 1rem 0.5rem;
-        font-size: 0.85rem;
-        border-radius: 12px;
+        padding: 0.45rem 0.4rem !important;
+        font-size: 0.74rem !important;
+        border-radius: 10px !important;
     }
 
     .ph-topic-icon {
-        font-size: 1.5rem;
+        font-size: 1.25rem !important;
+    }
+
+    .ph-quiz-topics-wrapper {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .ph-quiz-topics-wrapper h4 {
+        margin: 0 0 0.5rem 0 !important;
+        font-size: 0.88rem !important;
+    }
+
+    .ph-quiz-arena-title {
+        font-size: 0.88rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .ph-quiz-timer-wrapper {
+        margin-bottom: 0.75rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .ph-quiz-question-card {
+        padding: 0.85rem !important;
+        margin: 0.75rem 0 !important;
+        border-radius: 12px !important;
+    }
+
+    .ph-quiz-question-title {
+        margin: 0 0 0.85rem 0 !important;
+        font-size: 0.95rem !important;
     }
 
     .ph-company-select-grid {
@@ -1498,38 +1586,87 @@
     }
 
     .zip-controls {
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        flex-wrap: nowrap;
+        gap: 0.4rem;
         justify-content: center;
+        width: 100%;
     }
 
     .zip-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 0.4rem;
+        font-size: 0.8rem;
         flex: 1;
         justify-content: center;
-        min-width: 110px !important;
+        min-width: 80px !important;
+        white-space: nowrap;
+    }
+
+    .zip-btn-extra-text {
+        display: none;
+    }
+
+    .zip-goal-timer-wrapper {
+        margin-bottom: 0.8rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .zip-goal-text {
+        font-size: 0.85rem !important;
+        line-height: 1.35 !important;
+    }
+
+    .zip-timer-text {
+        font-size: 0.95rem !important;
+    }
+
+    .zip-how-to-play {
+        padding: 0.85rem;
+        margin-top: 1.2rem;
+        border-radius: 12px;
+    }
+
+    .zip-how-title {
+        font-size: 0.95rem;
+        margin-bottom: 0.6rem;
     }
 
     .zip-how-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.5rem;
+    }
+
+    .zip-how-item {
+        padding: 0.5rem 0.75rem;
+        border-radius: 10px;
+        gap: 0.75rem;
+    }
+
+    .zip-how-icon {
+        font-size: 1.3rem;
+    }
+
+    .zip-how-text-group div {
+        font-size: 0.85rem !important;
+    }
+
+    .zip-how-text {
+        font-size: 0.75rem;
     }
 
     /* Zip game dynamic grid scaling for smaller mobile screens */
     .zip-grid {
-        --zip-cell-size: 45px !important;
+        --zip-cell-size: 46px !important;
     }
     
     .zip-cell {
-        width: var(--zip-cell-size, 45px) !important;
-        height: var(--zip-cell-size, 45px) !important;
+        width: var(--zip-cell-size, 46px) !important;
+        height: var(--zip-cell-size, 46px) !important;
     }
     
     .zip-number-circle {
-        width: 26px !important;
-        height: 26px !important;
-        font-size: 0.8rem !important;
+        width: 27px !important;
+        height: 27px !important;
+        font-size: 0.85rem !important;
     }
     
     .zip-path-dot {
@@ -1545,6 +1682,10 @@
     .zip-line-left, .zip-line-right {
         width: 24px !important;
         height: 20px !important;
+    }
+
+    .zip-grid-container {
+        margin: 0.4rem 0 !important;
     }
 }
 
@@ -1582,13 +1723,14 @@
         width: 92% !important;
         max-width: 92% !important;
         height: auto !important;
-        max-height: 85vh !important;
+        max-height: 94vh !important;
         border-radius: 20px !important;
         border: 1px solid var(--ph-border) !important;
-        padding: 1.5rem 1.25rem !important;
+        padding: 1rem 0.85rem !important;
         z-index: 9999 !important;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
         overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 
     .ph-workspace {
@@ -1670,6 +1812,9 @@
 
 .ph-custom-select-selected-label {
     flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .ph-custom-select-arrow {
@@ -1749,12 +1894,12 @@
 }
 
 /* Responsive overrides for topic selector inside header */
-.ph-header-topic-select span {
+.ph-header-topic-select > span {
     display: inline;
 }
 
 @media (max-width: 768px) {
-    .ph-header-topic-select span {
+    .ph-header-topic-select > span {
         display: none !important;
     }
     .ph-header-topic-select .ph-custom-select-trigger {

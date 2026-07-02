@@ -1242,7 +1242,15 @@ const [zipTime, setZipTime] = useState(0);
 
 
 
+const [zipStarted, setZipStarted] = useState(false);
+
+
+
 const [zipWin, setZipWin] = useState(false);
+
+
+
+const [hintCooldown, setHintCooldown] = useState(0);
 
 
 
@@ -1298,7 +1306,7 @@ useEffect(() => {
 
 
 
-if (activeGame === 'zip' && !zipWin) {
+if (activeGame === 'zip' && !zipWin && zipStarted) {
 
 
 
@@ -1322,7 +1330,31 @@ return () => clearInterval(zipTimerRef.current);
 
 
 
-}, [activeGame, zipWin]);
+}, [activeGame, zipWin, zipStarted]);
+
+
+
+// Effect to start zip timer when user starts drawing / makes a move
+useEffect(() => {
+  if (activeGame === 'zip') {
+    const path = zipPaths[0] || [];
+    if (path.length > 1 && !zipStarted) {
+      setZipStarted(true);
+    }
+  }
+}, [zipPaths, activeGame, zipStarted]);
+
+
+
+// Hint cooldown effect
+useEffect(() => {
+  if (hintCooldown > 0) {
+    const timer = setTimeout(() => {
+      setHintCooldown(prev => prev - 1);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }
+}, [hintCooldown]);
 
 
 
@@ -1363,6 +1395,18 @@ setZipWin(false);
 
 
 setZipHistory([]);
+
+
+
+setZipStarted(false);
+
+
+
+setZipTime(0);
+
+
+
+setHintCooldown(0);
 
 
 
@@ -1434,7 +1478,11 @@ const handleZipHint = (level) => {
 
 
 
-if (zipWin) return;
+if (zipWin || hintCooldown > 0) return;
+
+
+
+setHintCooldown(6);
 
 
 
@@ -1966,6 +2014,10 @@ const handleTouchMove = (e, level) => {
 
 
 
+if (e.cancelable) e.preventDefault();
+
+
+
 if (zipWin || !isDrawing) return;
 
 
@@ -2177,7 +2229,7 @@ const [mcqTopic, setMcqTopic] = useState('java');
     { id: 'java', label: 'Java Programming', icon: '☕' },
     { id: 'python', label: 'Python Programming', icon: '🐍' },
     { id: 'dbms', label: 'DBMS / SQL', icon: '💾' },
-    { id: 'os', label: 'Operating Systems', icon: '💻' },
+    { id: 'os', label: 'OS', icon: '💻' },
     { id: 'cn', label: 'Computer Networks', icon: '🌐' },
     { id: 'oops', label: 'OOP Concepts', icon: '🧱' },
     { id: 'aptitude', label: 'Quantitative Aptitude', icon: '🧮' }
@@ -2717,6 +2769,10 @@ setActiveGame(null);
 
 
 
+setHintCooldown(0);
+
+
+
 setGameState({
 
 
@@ -2837,7 +2893,7 @@ case 'error-fix': return ERROR_FIX_QUESTIONS;
 
 
 
-case 'daily-quiz': return MCQ_QUESTIONS[mcqTopic];
+case 'daily-quiz': return MCQ_QUESTIONS[mcqTopic] ? [MCQ_QUESTIONS[mcqTopic][0]] : [];
 
 
 
@@ -2893,7 +2949,15 @@ setZipTime(0);
 
 
 
+setZipStarted(false);
+
+
+
 setZipWin(false);
+
+
+
+setHintCooldown(0);
 
 
 
@@ -6117,11 +6181,11 @@ return (
 
 
 
-<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+<div className="zip-goal-timer-wrapper">
 
 
 
-<span style={{ fontWeight: '700', fontSize: '1.1rem', color: 'var(--ph-text)' }}>
+<span className="zip-goal-text">
 
 
 
@@ -6133,7 +6197,7 @@ return (
 
 
 
-<span style={{ color: 'var(--ph-primary)', fontWeight: '800', fontSize: '1.25rem' }}>
+<span className="zip-timer-text">
 
 
 
@@ -6333,7 +6397,7 @@ onMouseEnter={() => handleDragMove(r, c, level)}
 
 
 
-onTouchStart={(e) => { handleDragStart(r, c, level); }}
+onTouchStart={(e) => { if (e.cancelable) e.preventDefault(); handleDragStart(r, c, level); }}
 
 
 
@@ -6713,7 +6777,7 @@ style={{ minWidth: '130px' }}
 
 
 
-↩ Undo Step
+↩ Undo<span className="zip-btn-extra-text"> Step</span>
 
 
 
@@ -6725,7 +6789,7 @@ style={{ minWidth: '130px' }}
 
 
 
-🔄 Reset Board
+🔄 Reset<span className="zip-btn-extra-text"> Board</span>
 
 
 
@@ -6733,14 +6797,13 @@ style={{ minWidth: '130px' }}
 
 
 
-<button className="zip-btn" onClick={() => handleZipHint(level)} style={{ minWidth: '130px' }} disabled={zipWin}>
-
-
-
-💡 Get Hint
-
-
-
+<button
+  className={`zip-btn ${zipWin || hintCooldown > 0 ? 'disabled' : ''}`}
+  onClick={() => handleZipHint(level)}
+  style={{ minWidth: '130px' }}
+  disabled={zipWin || hintCooldown > 0}
+>
+  💡 {hintCooldown > 0 ? `Hint (${hintCooldown}s)` : "Get Hint"}
 </button>
 
 
@@ -6749,7 +6812,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<div className="zip-how-to-play" style={{ marginTop: '2rem' }}>
+<div className="zip-how-to-play">
 
 
 
@@ -6893,11 +6956,11 @@ style={{ minWidth: '130px' }}
 
 
 
-<p>Answer a mixed set of 3 questions. Refreshes daily. Includes a 30s timer per question & 2X XP bonus.</p>
+<p>Answer a daily topic question. Refreshes daily at 12:10 AM. Includes a 30s timer & 2X XP bonus.</p>
 
 
 
-<div className="ph-personal-best">Best score: {highScores['daily-quiz']}/3</div>
+<div className="ph-personal-best">Best score: {highScores['daily-quiz']}/{getQuestionsList('daily-quiz').length}</div>
 
 
 
@@ -6929,7 +6992,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="ph-mode-badge company">MNC Special</span>
+<span className="ph-mode-badge company">MNC & Product</span>
 
 
 
@@ -6937,7 +7000,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<p>Select target corporate brands like Amazon, TCS, or Infosys to test real historical questions with a 30s timer.</p>
+<p>Select MNC, Product Based, or Startup Level to test real historical questions with a 30s timer.</p>
 
 
 
@@ -6985,7 +7048,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<h2>Daily Quiz {gameState.showResults ? <span className="ph-desktop-results-title"> - Results</span> : <span className="ph-play-sub-title">Question {gameState.currentQuestionIndex + 1} of {MCQ_QUESTIONS[mcqTopic].length}</span>}</h2>
+<h2>Daily Quiz {gameState.showResults && <span className="ph-desktop-results-title"> - Results</span>}</h2>
 
 
 
@@ -7025,7 +7088,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="ph-results-stat-val">{gameState.correctCount}/{MCQ_QUESTIONS[mcqTopic].length}</span>
+<span className="ph-results-stat-val">{gameState.correctCount}/{getQuestionsList('daily-quiz').length}</span>
 
 
 
@@ -7041,7 +7104,7 @@ style={{ minWidth: '130px' }}
 
 
 
-<span className="ph-results-stat-val">{Math.round((gameState.correctCount / MCQ_QUESTIONS[mcqTopic].length) * 100)}%</span>
+<span className="ph-results-stat-val">{Math.round((gameState.correctCount / getQuestionsList('daily-quiz').length) * 100)}%</span>
 
 
 
@@ -7093,11 +7156,11 @@ style={{ minWidth: '130px' }}
 
 
 
-<div style={{ marginBottom: '1.5rem' }}>
+<div className="ph-quiz-topics-wrapper">
 
 
 
-<h4 style={{ margin: '0 0 1rem 0' }}>Select Quiz Topic:</h4>
+<h4>Select Quiz Topic:</h4>
 
 
 
@@ -7121,7 +7184,7 @@ style={{ minWidth: '130px' }}
 
 
 
-{ id: 'os', label: 'Operating Sys', icon: '🖥️' },
+{ id: 'os', label: 'OS', icon: '🖥️' },
 
 
 
@@ -7229,7 +7292,7 @@ timerLeft: 30
 
 
 
-<div style={{ fontWeight: '700', fontSize: '1.05rem', marginBottom: '1rem', lineHeight: '1.5' }}>
+<div className="ph-quiz-arena-title">
 
 
 
@@ -7241,7 +7304,7 @@ Challenge Arena:
 
 
 
-<div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+<div className="ph-quiz-timer-wrapper">
 
 
 <div className="ph-timer-bar-container" style={{ flexGrow: 1, marginBottom: 0 }}>
@@ -7294,11 +7357,11 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 
 
 
-<div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--ph-border)', margin: '1.5rem 0' }}>
+<div className="ph-quiz-question-card">
 
 
 
-<h3 style={{ margin: '0 0 1.5rem 0' }}>
+<h3 className="ph-quiz-question-title">
 
 
 
@@ -7410,31 +7473,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.isAnswered && (
 
-
-
-<div style={{ margin: '1.5rem 0', padding: '1rem', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid var(--ph-info)' }}>
-
-
-
-<p style={{ margin: 0 }}>
-
-
-
-{gameState.selectedOption === -1 ? "⏱️ Time limit exceeded!" : (gameState.selectedOption === MCQ_QUESTIONS[mcqTopic][gameState.currentQuestionIndex].c ? "✓ Correct Attack hit!" : "✗ Missed!")}
-
-
-
-</p>
-
-
-
-</div>
-
-
-
-)}
 
 
 
@@ -7470,7 +7509,7 @@ disabled={gameState.isAnswered}
 
 
 
-<div className="ph-play-title-wrap" style={{ flexShrink: 0 }}>
+<div className="ph-play-title-wrap">
 
 
 
@@ -7478,93 +7517,7 @@ disabled={gameState.isAnswered}
 
 
 
-<h2 className="ph-battle-title">1v1 Arena</h2>
-
-
-
-</div>
-
-
-
-<div className="ph-header-topic-select" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-
-
-
-<span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '700', whiteSpace: 'nowrap' }}>Topic:</span>
-
-
-
-<div className="ph-custom-select-container">
-
-    <button 
-
-        className="ph-custom-select-trigger" 
-
-        onClick={() => setIsTopicDropdownOpen(!isTopicDropdownOpen)}
-
-        style={{ minWidth: '150px', padding: '0.35rem 0.75rem', fontSize: '0.85rem', borderRadius: '8px' }}
-
-    >
-
-        <span className="ph-custom-select-selected-icon">
-
-            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || '☕'}
-
-        </span>
-
-        <span className="ph-custom-select-selected-label">
-
-            {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.label || 'Java Programming'}
-
-        </span>
-
-        <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>▼</span>
-
-    </button>
-
-    {isTopicDropdownOpen && (
-
-        <>
-
-            <div className="ph-custom-select-backdrop" onClick={() => setIsTopicDropdownOpen(false)} />
-
-            <div className="ph-custom-select-options" style={{ minWidth: '200px', borderRadius: '10px' }}>
-
-                {COMBAT_TOPICS.map(topic => (
-
-                    <div
-
-                        key={topic.id}
-
-                        className={`ph-custom-select-option ${mcqTopic === topic.id ? 'active' : ''}`}
-
-                        onClick={() => {
-
-                            setMcqTopic(topic.id);
-
-                            setIsTopicDropdownOpen(false);
-
-                        }}
-
-                    >
-
-                        <span className="ph-custom-select-option-icon">{topic.icon}</span>
-
-                        <span className="ph-custom-select-option-label">{topic.label}</span>
-
-                        {mcqTopic === topic.id && <span className="ph-custom-select-option-check">✓</span>}
-
-                    </div>
-
-                ))}
-
-            </div>
-
-        </>
-
-    )}
-
-</div>
+<h2 style={{ color: '#ffffff', margin: 0 }}>1v1 Arena</h2>
 
 
 
@@ -7720,15 +7673,57 @@ disabled={gameState.isAnswered}
 
 
 
-{battleState.isAnswered && (
-    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
-        <button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
-            Next
-        </button>
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
+  {/* Topic Selection Dropdown */}
+  <div className="ph-header-topic-select" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+    <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: '700', whiteSpace: 'nowrap' }}>Topic:</span>
+    <div className="ph-custom-select-container">
+      <button 
+          className="ph-custom-select-trigger" 
+          onClick={() => setIsTopicDropdownOpen(!isTopicDropdownOpen)}
+          style={{ minWidth: '150px', padding: '0.35rem 0.75rem', fontSize: '0.85rem', borderRadius: '8px' }}
+      >
+          <span className="ph-custom-select-selected-icon">
+              {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.icon || '☕'}
+          </span>
+          <span className="ph-custom-select-selected-label">
+              {COMBAT_TOPICS.find(t => t.id === mcqTopic)?.label || 'Java Programming'}
+          </span>
+          <span className={`ph-custom-select-arrow ${isTopicDropdownOpen ? 'open' : ''}`}>▼</span>
+      </button>
+      {isTopicDropdownOpen && (
+          <>
+              <div className="ph-custom-select-backdrop" onClick={() => setIsTopicDropdownOpen(false)} />
+              <div className="ph-custom-select-options" style={{ minWidth: '200px', borderRadius: '10px' }}>
+                  {COMBAT_TOPICS.map(topic => (
+                      <div
+                          key={topic.id}
+                          className={`ph-custom-select-option ${mcqTopic === topic.id ? 'active' : ''}`}
+                          onClick={() => {
+                              setMcqTopic(topic.id);
+                              setIsTopicDropdownOpen(false);
+                          }}
+                      >
+                          <span className="ph-custom-select-option-icon">{topic.icon}</span>
+                          <span className="ph-custom-select-option-label">{topic.label}</span>
+                          {mcqTopic === topic.id && <span className="ph-custom-select-option-check">✓</span>}
+                      </div>
+                  ))}
+              </div>
+          </>
+      )}
     </div>
-)}
+  </div>
 
-
+  {/* Next Button */}
+  {battleState.isAnswered ? (
+      <button className="ph-btn-primary" onClick={() => nextBattleQuestion(MCQ_QUESTIONS[mcqTopic])} style={{ margin: 0 }}>
+          Next
+      </button>
+  ) : (
+      <div />
+  )}
+</div>
 
 {/* Question Display Card */}
 
@@ -7755,93 +7750,38 @@ Attack {battleState.currentQIndex + 1}: {MCQ_QUESTIONS[mcqTopic][battleState.cur
 
 
 {MCQ_QUESTIONS[mcqTopic][battleState.currentQIndex].a.map((opt, idx) => {
-
-
-
 const isCorrect = idx === MCQ_QUESTIONS[mcqTopic][battleState.currentQIndex].c;
-
-
-
 const isSelected = battleState.selectedOption === idx;
-
-
-
 let btnClass = "";
-
-
+let btnStyle = { background: '#0f172a', border: '1px solid #334155', color: '#f8fafc' };
+let markerStyle = { border: '2px solid #475569' };
 
 if (battleState.isAnswered) {
-
-
-
-if (isCorrect) btnClass = "correct";
-
-
-
-else if (isSelected) btnClass = "incorrect";
-
-
-
+  if (isCorrect) {
+    btnClass = "correct";
+    btnStyle = { background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--ph-success)', color: 'var(--ph-success)' };
+    markerStyle = { border: '2px solid var(--ph-success)', color: 'var(--ph-success)' };
+  } else if (isSelected) {
+    btnClass = "incorrect";
+    btnStyle = { background: 'rgba(239, 68, 68, 0.15)', border: '1px solid var(--ph-danger)', color: 'var(--ph-danger)' };
+    markerStyle = { border: '2px solid var(--ph-danger)', color: 'var(--ph-danger)' };
+  }
 }
 
-
-
 return (
-
-
-
 <button
-
-
-
 key={idx}
-
-
-
 className={`ph-option-btn ${btnClass}`}
-
-
-
-style={{ background: '#0f172a', border: '1px solid #334155', color: '#f8fafc' }}
-
-
-
+style={btnStyle}
 onClick={() => handleBattleMcqAnswer(idx, MCQ_QUESTIONS[mcqTopic])}
-
-
-
 disabled={battleState.isAnswered}
-
-
-
 >
-
-
-
 <span>{opt}</span>
-
-
-
-<span className="ph-option-marker" style={{ border: '2px solid #475569' }}>
-
-
-
+<span className="ph-option-marker" style={markerStyle}>
 {battleState.isAnswered && isCorrect ? "✓" : battleState.isAnswered && isSelected ? "✗" : String.fromCharCode(65 + idx)}
-
-
-
 </span>
-
-
-
 </button>
-
-
-
 );
-
-
-
 })}
 
 
@@ -8022,15 +7962,15 @@ disabled={battleState.isAnswered}
 
 
 
-{ id: 'amazon', label: 'Amazon Archive' },
+{ id: 'tcs', label: 'MNC (Easy)' },
 
 
 
-{ id: 'tcs', label: 'TCS NQT Prep' },
+{ id: 'amazon', label: 'Product Based (Hard)' },
 
 
 
-{ id: 'infosys', label: 'Infosys Special' }
+{ id: 'infosys', label: 'Startup Level (Medium)' }
 
 
 

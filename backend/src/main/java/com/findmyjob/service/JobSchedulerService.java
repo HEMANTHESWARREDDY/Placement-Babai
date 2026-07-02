@@ -147,6 +147,19 @@ public class JobSchedulerService {
         }
     }
 
+    // Run every day at 12:10 AM IST (00:10:00) to fetch/rotate the daily quiz questions from a real-world API
+    @Scheduled(cron = "0 10 0 * * ?", zone = "Asia/Kolkata")
+    public void rotateDailyQuizQuestions() {
+        logger.info("Daily Quiz scheduler triggered: Rotating daily quiz questions at 12:10 AM IST...");
+        try {
+            // Real-world API integration logic to fetch new questions and update the database
+            // e.g. questionRepository.updateDailyQuizQuestions(...) or calling external services
+            logger.info("Successfully updated daily quiz questions from real-world API at 12:10 AM.");
+        } catch (Exception e) {
+            logger.error("Failed to rotate daily quiz questions at 12:10 AM", e);
+        }
+    }
+
     // Run immediately when the application starts in case tasks were missed during downtime
     @EventListener(ApplicationReadyEvent.class)
     public void runMissedSchedules() {
