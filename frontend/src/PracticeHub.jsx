@@ -2897,7 +2897,7 @@ case 'daily-quiz': return MCQ_QUESTIONS[mcqTopic] ? [MCQ_QUESTIONS[mcqTopic][0]]
 
 
 
-case 'company-quiz': return MCQ_QUESTIONS[mcqCompany];
+case 'company-quiz': return MCQ_QUESTIONS[mcqCompany] ? [MCQ_QUESTIONS[mcqCompany][0]] : [];
 
 
 
