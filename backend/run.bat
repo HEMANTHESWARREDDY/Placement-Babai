@@ -2,7 +2,18 @@
 echo ========================================
 echo FindMyJob Backend Build Script
 echo ========================================
-echo.
+REM Load environment variables from .env file if it exists
+if exist ..\.env (
+    for /f "usebackq tokens=1,2 delims==" %%i in ("..\.env") do (
+        set %%i=%%j
+    )
+)
+if exist .env (
+    for /f "usebackq tokens=1,2 delims==" %%i in (".env") do (
+        set %%i=%%j
+    )
+)
+
 
 REM Check if Maven is installed
 where mvn >nul 2>nul
