@@ -7998,7 +7998,7 @@ disabled={battleState.isAnswered}
 
 
 
-    Target Question for: {
+    {"Target Question for: " + (
 
 
 
@@ -8014,7 +8014,7 @@ disabled={battleState.isAnswered}
 
 
 
-    }
+    )}
 
 
 
