@@ -8002,15 +8002,15 @@ disabled={battleState.isAnswered}
 
 
 
-      gameState.currentQuestionIndex === 0 ? "MNC (Easy)" :
+      gameState.currentQuestionIndex === 0 ? "MNC" :
 
 
 
-      gameState.currentQuestionIndex === 1 ? "Product Based (Hard)" :
+      gameState.currentQuestionIndex === 1 ? "Product Based" :
 
 
 
-      "Startup Level (Medium)"
+      "Startup Level"
 
 
 
