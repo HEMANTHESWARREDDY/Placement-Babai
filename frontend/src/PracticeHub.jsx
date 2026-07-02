@@ -2897,7 +2897,7 @@ case 'daily-quiz': return MCQ_QUESTIONS[mcqTopic] ? [MCQ_QUESTIONS[mcqTopic][0]]
 
 
 
-case 'company-quiz': return MCQ_QUESTIONS[mcqCompany] ? [MCQ_QUESTIONS[mcqCompany][0]] : [];
+case 'company-quiz': return [ MCQ_QUESTIONS['tcs'][0], MCQ_QUESTIONS['amazon'][0], MCQ_QUESTIONS['infosys'][0] ];
 
 
 
@@ -7878,7 +7878,7 @@ disabled={battleState.isAnswered}
 
 
 
-<span className="ph-results-stat-val">{gameState.correctCount}/{MCQ_QUESTIONS[mcqCompany].length}</span>
+<span className="ph-results-stat-val">{gameState.correctCount}/{getQuestionsList('company-quiz').length}</span>
 
 
 
@@ -7894,7 +7894,7 @@ disabled={battleState.isAnswered}
 
 
 
-<span className="ph-results-stat-val">{Math.round((gameState.correctCount / MCQ_QUESTIONS[mcqCompany].length) * 100)}%</span>
+<span className="ph-results-stat-val">{Math.round((gameState.correctCount / getQuestionsList('company-quiz').length) * 100)}%</span>
 
 
 
@@ -7942,111 +7942,83 @@ disabled={battleState.isAnswered}
 
 
 
-{/* Company selector */}
+{/* Current Target Indicator */}
 
 
 
-<div style={{ marginBottom: '2rem' }}>
+<div style={{
 
 
 
-<h4 style={{ margin: '0 0 1rem 0' }}>Select Corporate Target:</h4>
+  display: 'flex',
 
 
 
-<div className="ph-company-select-grid">
+  alignItems: 'center',
 
 
 
-{[
+  gap: '0.75rem',
 
 
 
-{ id: 'tcs', label: 'MNC' },
+  background: 'rgba(124, 58, 237, 0.08)',
 
 
 
-{ id: 'amazon', label: 'Product Based' },
+  border: '1px dashed var(--ph-primary)',
 
 
 
-{ id: 'infosys', label: 'Startup Level' }
+  padding: '0.75rem 1rem',
 
 
 
-].map(company => (
+  borderRadius: '12px',
 
 
 
-<button
+  marginBottom: '1.5rem',
 
 
 
-key={company.id}
+  fontWeight: '700'
 
 
 
-className={`ph-company-btn ${mcqCompany === company.id ? 'active' : ''}`}
+}}>
 
 
 
-onClick={() => {
+  <span style={{ fontSize: '1.25rem' }}>🎯</span>
 
 
 
-setMcqCompany(company.id);
+  <span style={{ color: 'var(--ph-text)' }}>
 
 
 
-setGameState(prev => ({
+    Current Target: {
 
 
 
-...prev,
+      gameState.currentQuestionIndex === 0 ? "MNC (Easy)" :
 
 
 
-currentQuestionIndex: 0,
+      gameState.currentQuestionIndex === 1 ? "Product Based (Hard)" :
 
 
 
-selectedOption: null,
+      "Startup Level (Medium)"
 
 
 
-isAnswered: false,
+    }
 
 
 
-correctCount: 0,
-
-
-
-timerLeft: 30
-
-
-
-}));
-
-
-
-}}
-
-
-
->
-
-
-
-{company.label}
-
-
-
-</button>
-
-
-
-))}
+  </span>
 
 
 
@@ -8054,7 +8026,7 @@ timerLeft: 30
 
 
 
-</div>
+
 
 
 
@@ -8102,7 +8074,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 <button className="ph-btn-primary" onClick={() => nextQuestion('company-quiz')} style={{ margin: 0 }}>
 
 
-{gameState.currentQuestionIndex + 1 === MCQ_QUESTIONS[mcqCompany].length ? "Finish" : "Next"}
+{gameState.currentQuestionIndex + 1 === getQuestionsList('company-quiz').length ? "Finish" : "Next"}
 
 
 </button>
@@ -8127,7 +8099,7 @@ style={{ width: `${(gameState.timerLeft / 30) * 100}%` }}
 
 
 
-Q{gameState.currentQuestionIndex + 1}: {MCQ_QUESTIONS[mcqCompany][gameState.currentQuestionIndex].q}
+Q{gameState.currentQuestionIndex + 1}: {getQuestionsList('company-quiz')[gameState.currentQuestionIndex].q}
 
 
 
@@ -8139,11 +8111,11 @@ Q{gameState.currentQuestionIndex + 1}: {MCQ_QUESTIONS[mcqCompany][gameState.curr
 
 
 
-{MCQ_QUESTIONS[mcqCompany][gameState.currentQuestionIndex].a.map((opt, idx) => {
+{getQuestionsList('company-quiz')[gameState.currentQuestionIndex].a.map((opt, idx) => {
 
 
 
-const isCorrect = idx === MCQ_QUESTIONS[mcqCompany][gameState.currentQuestionIndex].c;
+const isCorrect = idx === getQuestionsList('company-quiz')[gameState.currentQuestionIndex].c;
 
 
 
@@ -8247,7 +8219,7 @@ disabled={gameState.isAnswered}
 
 
 
-{gameState.selectedOption === -1 ? "⏱️ Time ran out!" : (gameState.selectedOption === MCQ_QUESTIONS[mcqCompany][gameState.currentQuestionIndex].c ? "✓ Correct!" : "✗ Incorrect!")}
+{gameState.selectedOption === -1 ? "⏱️ Time ran out!" : (gameState.selectedOption === getQuestionsList('company-quiz')[gameState.currentQuestionIndex].c ? "✓ Correct!" : "✗ Incorrect!")}
 
 
 
