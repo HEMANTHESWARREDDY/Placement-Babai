@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 echo ========================================
 echo FindMyJob Backend Build Script
 echo ========================================
@@ -17,10 +18,10 @@ if exist .env (
 
 REM Check if Maven is installed
 where mvn >nul 2>nul
-if %ERRORLEVEL% EQU 0 (
+if !ERRORLEVEL! EQU 0 (
     echo Maven found! Building with Maven...
     call mvn clean install -DskipTests
-    if %ERRORLEVEL% EQU 0 (
+    if !ERRORLEVEL! EQU 0 (
         echo Build successful!
         echo Starting Spring Boot application...
         call mvn spring-boot:run
@@ -33,7 +34,7 @@ if %ERRORLEVEL% EQU 0 (
     if exist "..\apache-maven-3.9.6\bin\mvn.cmd" (
         echo Local Maven found! Building with local Maven...
         call "..\apache-maven-3.9.6\bin\mvn.cmd" clean install -DskipTests
-        if %ERRORLEVEL% EQU 0 (
+        if !ERRORLEVEL! EQU 0 (
             echo Build successful!
             echo Starting Spring Boot application...
             call "..\apache-maven-3.9.6\bin\mvn.cmd" spring-boot:run
