@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -134,38 +136,49 @@ public class QuestionController {
     }
 
     @GetMapping("/{company}")
-    public Map<String, List<Question>> getQuestionsByCompany(@PathVariable String company) {
-        List<Question> questions = questionRepository.findByCompanyIgnoreCase(company);
+    public Map<String, List<Question>> getQuestionsByCompany(
+            @PathVariable String company,
+            @RequestParam(required = false, defaultValue = "General") String role) {
+        String targetRole = (role == null || role.trim().isEmpty()) ? "General" : role.trim();
+        List<Question> questions = questionRepository.findByCompanyIgnoreCaseAndRoleIgnoreCase(company, targetRole);
         
-        // Force refresh if the data is old or incomplete
-        boolean needsRefresh = false;
+        // Remove any default hardcoded general questions if they exist in the DB for this company
         if (questions != null && !questions.isEmpty()) {
-            boolean isTopCompany = isTopCompany(company);
-            if (isTopCompany) {
-                boolean hasOnlyDefault = questions.stream().anyMatch(q -> q.getCategory().equalsIgnoreCase("Most Common"));
-                long count = questions.size();
-                // Check if it contains the new extensive sets (usually 40+ questions)
-                // and has the specific wording from our new manual questions
-                boolean hasLatestSet = questions.stream().anyMatch(q -> 
-                    q.getContent().contains("Object-Oriented Programming with examples") || 
-                    q.getContent().contains("Object-Oriented Programming concepts") ||
-                    q.getContent().contains("why are they important?")
-                );
-
-                if (hasOnlyDefault || count < 35 || !hasLatestSet) {
-                    needsRefresh = true;
-                }
+            boolean hasOnlyDefault = questions.stream().allMatch(q -> q.getCategory().equalsIgnoreCase("Most Common"));
+            if (hasOnlyDefault) {
+                questionRepository.deleteAll(questions);
+                questions = new ArrayList<>();
             }
         }
 
-        if (questions == null || questions.isEmpty() || needsRefresh) {
-            if (needsRefresh) {
-                questionRepository.deleteAll(questions);
+        if (questions == null || questions.isEmpty()) {
+            // Company + Role combination does not exist in DB, call external API
+            try {
+                System.out.println("Company " + company + " (Role: " + targetRole + ") not in DB. Calling external API...");
+                List<Question> generated = geminiInterviewService.generateQuestions(company, targetRole, "All");
+                if (generated != null && !generated.isEmpty()) {
+                    // Filter out empty/invalid content before saving
+                    generated = generated.stream()
+                        .filter(q -> q.getContent() != null && !q.getContent().trim().isEmpty())
+                        .collect(Collectors.toList());
+                    
+                    if (!generated.isEmpty()) {
+                        // Ensure they all have the correct company and role set
+                        for (Question q : generated) {
+                            q.setCompany(company.toLowerCase());
+                            q.setRole(targetRole);
+                        }
+                        questionRepository.saveAll(generated);
+                        questions = generated;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error generating questions via Gemini for " + company + " (Role: " + targetRole + "): " + e.getMessage());
             }
-            questions = getManualQuestions(company);
-            if (questions != null && !questions.isEmpty()) {
-                questionRepository.saveAll(questions);
-            }
+        }
+
+        if (questions == null || questions.isEmpty()) {
+            return new HashMap<>(); // Returns empty map if no questions found or generated
         }
 
         return questions.stream()
@@ -188,7 +201,7 @@ public class QuestionController {
         
         List<Question> generated;
         try {
-            generated = geminiInterviewService.generateQuestions(company, role, category);
+            generated = geminiInterviewService.generateQuestions(company, role, category, "Frequently Asked");
         } catch (Exception e) {
             System.err.println("[QuestionController] AI Failed (Freq), using fallback: " + e.getMessage());
             generated = new ArrayList<>();
@@ -215,7 +228,7 @@ public class QuestionController {
         
         List<Question> generated;
         try {
-            generated = geminiInterviewService.generateQuestions(company, role, category);
+            generated = geminiInterviewService.generateQuestions(company, role, category, "Recently Asked");
         } catch (Exception e) {
             System.err.println("[QuestionController] AI Failed (Recent), using fallback: " + e.getMessage());
             generated = new ArrayList<>();

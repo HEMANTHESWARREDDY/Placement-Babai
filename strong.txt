@@ -1,0 +1,4 @@
+Senior Java Developer | 4 years experience
+Skills: Java, Spring Boot, REST APIs, PostgreSQL, AWS, Docker, Git
+Experience: Built resilient backend services, reduced latency by 40%, collaborated with product teams.
+Education: B.Tech in Computer Science

@@ -1,7 +1,9 @@
 package com.findmyjob.config;
 
 import com.findmyjob.model.Admin;
+import com.findmyjob.model.Question;
 import com.findmyjob.repository.AdminRepository;
+import com.findmyjob.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
 
     @Autowired
@@ -299,6 +304,20 @@ public class DataInitializer implements CommandLineRunner {
                     adminRepository.save(bobbyAdmin);
                 }
                 System.out.println("ℹ️ Bobby admin user already exists.");
+            }
+
+            // Seed Fidelity questions
+            if (questionRepository.findByCompanyIgnoreCase("Fidelity").isEmpty()) {
+                questionRepository.save(new Question(null, "Fidelity", "Technical", "General", "What is the difference between optimistic and pessimistic locking in database transactions?", "Optimistic locking assumes multiple transactions can complete without affecting each other, checking for conflicts before committing. Pessimistic locking locks the record immediately to prevent other transactions from modifying it."));
+                questionRepository.save(new Question(null, "Fidelity", "Technical", "General", "Explain the concept of Dependency Injection in Spring and how it helps in loose coupling.", "Dependency Injection (DI) is a design pattern where the container injects dependencies into an object rather than the object creating them itself. This decouples the object creation from its usage, making components modular, reusable, and easy to unit test."));
+                questionRepository.save(new Question(null, "Fidelity", "Technical", "General", "How do you handle large data processing or batch processing in a financial system?", "By using Spring Batch, chunk-based processing, database indexing, caching strategies, and asynchronous execution to optimize throughput and ensure transaction safety."));
+                questionRepository.save(new Question(null, "Fidelity", "Programming", "General", "Write a function to check if a binary tree is a valid binary search tree.", "Iteratively or recursively traverse the tree, ensuring that every node's value is within the valid range defined by its parent/ancestor nodes (min and max constraints)."));
+                questionRepository.save(new Question(null, "Fidelity", "Programming", "General", "Explain how you would design and implement a rate-limiting algorithm for API endpoints.", "Use token bucket or leaky bucket algorithms, typically implemented using Redis for distributed caching to track and throttle client requests."));
+                questionRepository.save(new Question(null, "Fidelity", "Managerial", "General", "How do you handle a situation where a production deployment causes a critical transaction failure?", "Immediately trigger a rollback to the last stable state, coordinate with the team to identify the root cause in logs/metrics, and communicate the status to stakeholders."));
+                questionRepository.save(new Question(null, "Fidelity", "Managerial", "General", "Describe a time when you had to resolve a technical conflict in your team.", "Encouraged open discussion, evaluated pros/cons of both approaches via proof-of-concepts, and aligned the team on the solution that best met the project's long-term goals."));
+                questionRepository.save(new Question(null, "Fidelity", "HR", "General", "Why do you want to work at Fidelity Investments?", "Fidelity is a global leader in financial services known for its focus on technology innovation, strong engineering culture, and commitment to customer trust."));
+                questionRepository.save(new Question(null, "Fidelity", "HR", "General", "How do you handle pressure and tight deadlines in a project?", "By breaking down tasks into smaller priorities, maintaining clear communication with stakeholders, and avoiding multitasking to ensure quality delivery."));
+                System.out.println("✅ Seeded initial Fidelity questions in DB");
             }
         } catch (Exception e) {
             System.err.println("⚠️ MongoDB connection failed during data seeding: " + e.getMessage());

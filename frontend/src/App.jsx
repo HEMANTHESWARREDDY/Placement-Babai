@@ -10,6 +10,7 @@ import MentorLogin from './MentorLogin';
 import MentorDashboard from './MentorDashboard';
 import InterviewPrep from './InterviewPrep';
 import PracticeHub from './PracticeHub';
+import ChatBot from './ChatBot';
 import { API_BASE_URL } from './config';
 
 import './App.css';
@@ -206,20 +207,36 @@ function App() {
     return path.toLowerCase() === '/resumereview' || params.has('resumeReview');
   });
 
-  const [activeMainTab, setActiveMainTab] = useState(() => {
-    const path = window.location.pathname;
-    const params = new URLSearchParams(window.location.search);
-    
+  const getMainTabPath = (tab) => {
+    if (tab === 'pro-connect') return '/proConnect';
+    if (tab === 'interview-prep') return '/prepZo';
+    if (tab === 'practice-hub') return '/practiceHub';
+    if (tab === 'home') return '/home';
+    return '/';
+  };
+
+  const resolveMainTabFromPath = (path, params) => {
     if (path === '/proConnect' || params.has('proConnect')) return 'pro-connect';
     if (path === '/prepZo' || params.has('prepZo')) return 'interview-prep';
     if (path === '/practiceHub' || params.has('practiceHub')) return 'practice-hub';
     if (path === '/home') return 'home';
-    if (path === '/jobs' || params.has('jobs')) return 'jobs';
-    
     return 'jobs';
+  };
+
+  const navigateToTab = (tab) => {
+    setActiveMainTab(tab);
+    sessionStorage.setItem('activeMainTab', tab);
+    setIsMobileMenuOpen(false);
+    setShowMenuDropdown(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const [activeMainTab, setActiveMainTab] = useState(() => {
+    const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
+    return resolveMainTabFromPath(path, params);
   });
 
-  // Keep path synchronized when general ATS modal is open/closed
   useEffect(() => {
     if (currentView === 'home') {
       if (showGeneralAtsModal) {
@@ -227,13 +244,7 @@ function App() {
           window.history.pushState({}, '', '/ResumeReview');
         }
       } else {
-        let newPath = '/';
-        if (activeMainTab === 'pro-connect') newPath = '/proConnect';
-        else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
-        else if (activeMainTab === 'practice-hub') newPath = '/practiceHub';
-        else if (activeMainTab === 'home') newPath = '/home';
-        else if (activeMainTab === 'jobs') newPath = '/';
-        
+        const newPath = getMainTabPath(activeMainTab);
         if (window.location.pathname !== newPath && window.location.pathname === '/ResumeReview') {
           window.history.pushState({}, '', newPath);
         }
@@ -243,16 +254,9 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('activeMainTab', activeMainTab);
-    
-    // Only update path if not in a special dashboard view
+
     if (currentView === 'home' && !showGeneralAtsModal) {
-      let newPath = '/';
-      if (activeMainTab === 'pro-connect') newPath = '/proConnect';
-      else if (activeMainTab === 'interview-prep') newPath = '/prepZo';
-      else if (activeMainTab === 'practice-hub') newPath = '/practiceHub';
-      else if (activeMainTab === 'home') newPath = '/home';
-      else if (activeMainTab === 'jobs') newPath = '/';
-      
+      const newPath = getMainTabPath(activeMainTab);
       if (window.location.pathname !== newPath) {
         window.history.pushState({}, '', newPath);
       }
@@ -263,7 +267,7 @@ function App() {
     const handlePopState = () => {
       const path = window.location.pathname;
       const params = new URLSearchParams(window.location.search);
-      
+
       if (path === '/admin') {
         setCurrentView(localStorage.getItem('adminToken') ? 'admin-dashboard' : 'admin-login');
       } else if (path === '/mentor') {
@@ -274,11 +278,7 @@ function App() {
           setShowGeneralAtsModal(true);
         } else {
           setShowGeneralAtsModal(false);
-          if (path === '/proConnect' || params.has('proConnect')) setActiveMainTab('pro-connect');
-          else if (path === '/prepZo' || params.has('prepZo')) setActiveMainTab('interview-prep');
-          else if (path === '/practiceHub' || params.has('practiceHub')) setActiveMainTab('practice-hub');
-          else if (path === '/home') setActiveMainTab('home');
-          else setActiveMainTab('jobs');
+          setActiveMainTab(resolveMainTabFromPath(path, params));
         }
       }
     };
@@ -804,19 +804,19 @@ function App() {
     }
   };
 
-  const handleSearch = async () => {
+  const runJobSearch = async (keywordOverride = searchKeyword, locationOverride = searchLocation) => {
     try {
       setLoading(true);
 
-      if (searchKeyword && searchKeyword.trim()) {
-        fetch(`${API_BASE_URL}/api/analytics/search?keyword=${encodeURIComponent(searchKeyword.trim())}`, { method: 'POST' }).catch(() => { });
+      if (keywordOverride && keywordOverride.trim()) {
+        fetch(`${API_BASE_URL}/api/analytics/search?keyword=${encodeURIComponent(keywordOverride.trim())}`, { method: 'POST' }).catch(() => { });
       }
       let url = `${API_BASE_URL}/api/jobs`;
 
-      if (searchKeyword) {
-        url = `${API_BASE_URL}/api/jobs/search?keyword=${encodeURIComponent(searchKeyword)}`;
-      } else if (searchLocation) {
-        url = `${API_BASE_URL}/api/jobs/location?location=${encodeURIComponent(searchLocation)}`;
+      if (keywordOverride) {
+        url = `${API_BASE_URL}/api/jobs/search?keyword=${encodeURIComponent(keywordOverride)}`;
+      } else if (locationOverride) {
+        url = `${API_BASE_URL}/api/jobs/location?location=${encodeURIComponent(locationOverride)}`;
       }
 
       const response = await fetch(url);
@@ -825,8 +825,8 @@ function App() {
       }
       const data = await response.json();
       const sorted = [...data].sort((a, b) => {
-        if (searchKeyword) {
-          const kw = searchKeyword.toLowerCase();
+        if (keywordOverride) {
+          const kw = keywordOverride.toLowerCase();
 
           const getScore = (job) => {
             let score = 0;
@@ -834,17 +834,14 @@ function App() {
             const skills = (job.skills || '').toLowerCase();
             const company = (job.company || '').toLowerCase();
 
-            // 1. Title matching (Highest priority)
             if (title === kw) score += 100;
             else if (title.startsWith(kw)) score += 80;
             else if (title.includes(kw)) score += 60;
 
-            // 2. Skills matching (Second priority)
             const skillsList = skills.split(',').map(s => s.trim());
             if (skillsList.includes(kw)) score += 50;
             else if (skills.includes(kw)) score += 30;
 
-            // 3. Company matching (Third priority)
             if (company === kw) score += 20;
             else if (company.startsWith(kw)) score += 15;
             else if (company.includes(kw)) score += 10;
@@ -856,19 +853,17 @@ function App() {
           const bScore = getScore(b);
 
           if (aScore !== bScore) {
-            return bScore - aScore; // higher score first
+            return bScore - aScore;
           }
         }
 
-        // If no search or scores are tied, sort by date
         const dateDiff = new Date(b.postedDate) - new Date(a.postedDate);
         return dateDiff !== 0 ? dateDiff : b.id - a.id;
       });
       setJobs(sorted);
-      setShowAll(!!searchKeyword || !!searchLocation); // expand results if user searched
-      setIsSearchResult(!!searchKeyword || !!searchLocation);
+      setShowAll(!!keywordOverride || !!locationOverride);
+      setIsSearchResult(!!keywordOverride || !!locationOverride);
       setError(null);
-      // Wait for React to render the new state, then smoothly scroll down to the results
       setTimeout(() => {
         document.querySelector('.jobs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 50);
@@ -877,6 +872,35 @@ function App() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = async () => {
+    await runJobSearch(searchKeyword, searchLocation);
+  };
+
+  const handleAssistantQuery = ({ kind, query, location, experience }) => {
+    if (kind !== 'jobs') return;
+
+    const normalizedQuery = (query || '').trim();
+    const normalizedLocation = (location || '').trim();
+    const rawExperience = (experience || '').trim();
+    const normalizedExperience = (() => {
+      const lower = rawExperience.toLowerCase();
+      if (!lower) return '';
+      if (lower.includes('fresher') || lower.includes('0 year')) return '0';
+      const match = lower.match(/(\d+)/);
+      return match ? match[1] : '';
+    })();
+
+    setActiveMainTab('jobs');
+    setCurrentView('home');
+    setSearchKeyword(normalizedQuery);
+    setSearchLocation(normalizedLocation);
+    setSearchExperience(normalizedExperience);
+
+    setTimeout(() => {
+      runJobSearch(normalizedQuery, normalizedLocation);
+    }, 120);
   };
 
   const handleKeyPress = (e) => {
@@ -1010,28 +1034,79 @@ function App() {
           className="ats-floating-button"
           style={{
             position: 'fixed',
-            bottom: '35px',
-            right: '35px',
+            bottom: '28px',
+            right: '26px',
             zIndex: 9999,
-            background: 'linear-gradient(135deg, #0ea5e9, #0073b1)',
-            color: '#ffffff',
             border: 'none',
-            borderRadius: '50px',
-            padding: '0.85rem 1.75rem',
-            fontWeight: '700',
-            fontSize: '0.95rem',
+            borderRadius: '999px',
+            padding: '0.48rem 1.05rem 0.48rem 0.52rem',
+            fontWeight: '800',
+            fontSize: '0.92rem',
             cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(0, 115, 177, 0.35)',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.6rem',
-            transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            gap: '0.55rem',
+            letterSpacing: '0.01em',
+            transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            boxShadow: '0 18px 30px rgba(14, 116, 144, 0.28)',
+            background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 35%, #0369a1 100%)',
+            color: '#ffffff',
           }}
         >
-          <span style={{ fontSize: '1.2rem' }}>📊</span>
-          Check ATS Score
+          {/* Free Badge */}
+          <div style={{
+            position: 'absolute',
+            top: '-8px',
+            right: '12px',
+            background: '#fbbf24',
+            color: '#000',
+            padding: '2px 8px',
+            borderRadius: '6px',
+            fontSize: '0.65rem',
+            fontWeight: '900',
+            textTransform: 'uppercase',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+            zIndex: 10
+          }}>
+            Free
+          </div>
+          <span
+            className="ats-floating-button-icon"
+            style={{
+              width: '40px',
+              height: '40px',
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '14px',
+              background: 'rgba(255,255,255,0.18)',
+              border: '1px solid rgba(255,255,255,0.22)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
+              fontSize: '1.2rem',
+              lineHeight: 1,
+            }}
+            aria-hidden="true"
+          >
+            📊
+          </span>
+          <span style={{ whiteSpace: 'nowrap' }}>Check ATS Score</span>
         </button>
       )}
+
+      {/* AI Chatbot Assistant */}
+      <ChatBot
+        onNavigate={(tab) => {
+          setActiveMainTab(tab);
+          setCurrentView('home');
+        }}
+        onOpenAts={() => {
+          setActiveMainTab('jobs');
+          setShowGeneralAtsModal(true);
+          setCurrentView('home');
+        }}
+        onAssistantQuery={handleAssistantQuery}
+      />
 
       {/* Job Detail Modal */}
       {selectedJob && (
@@ -1395,6 +1470,91 @@ function App() {
                       </div>
                     )}
 
+                    {genAtsResult.keywordAnalysis && (
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+                          <h4 style={{ margin: '0 0 0.9rem', fontSize: '1rem', color: '#0f172a', fontWeight: '700' }}>✅ Matched Keywords</h4>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            {(genAtsResult.keywordAnalysis.matched || []).slice(0, 12).map((item, idx) => (
+                              <span key={idx} style={{ background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '0.35rem 0.7rem', fontSize: '0.78rem', fontWeight: '600' }}>
+                                {item.keyword}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+                          <h4 style={{ margin: '0 0 0.9rem', fontSize: '1rem', color: '#0f172a', fontWeight: '700' }}>⚠️ Optional Suggestions</h4>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            {(genAtsResult.keywordAnalysis.missing || []).slice(0, 12).map((item, idx) => (
+                              <span key={idx} style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', borderRadius: '999px', padding: '0.35rem 0.7rem', fontSize: '0.78rem', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                                {item.keyword}
+                                {Boolean(item.optional) && (
+                                  <span style={{ fontSize: '0.68rem', opacity: 0.8 }}>(optional)</span>
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {genAtsResult.scoreBreakdown && (
+                      <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+                        <h4 style={{ margin: '0 0 1rem', fontSize: '1.1rem', color: '#0f172a', fontWeight: '700' }}>📊 Score Breakdown</h4>
+                        <div style={{ display: 'grid', gap: '0.7rem' }}>
+                          {Object.entries(genAtsResult.scoreBreakdown).map(([key, value]) => (
+                            <div key={key} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.8rem 0.9rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                                <strong style={{ color: '#0f172a' }}>{value.label || key}</strong>
+                                <span style={{ color: '#475569', fontSize: '0.8rem' }}>{value.score}% contribution {value.contribution}</span>
+                              </div>
+                              <div style={{ height: '6px', background: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }}>
+                                <div style={{ width: `${Math.max(4, value.score)}%`, height: '100%', background: getSubscoreColor(value.score), borderRadius: '999px' }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {genAtsResult.issues && (
+                      <div className="ats-issues-box" style={{ background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+                        <h4 style={{ margin: '0 0 1rem', fontSize: '1.1rem', color: '#7c2d12', fontWeight: '700' }}>🔎 Resume Evidence & ATS Issues</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+                          {genAtsResult.issues.map((issue, idx) => (
+                            <div key={idx} style={{ background: '#ffffff', border: '1px solid #fed7aa', borderRadius: '10px', padding: '0.9rem 1rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                                <strong style={{ color: '#7c2d12' }}>{issue.title}</strong>
+                                <span style={{ background: issue.severity === 'warning' ? '#fef3c7' : '#e0f2fe', color: issue.severity === 'warning' ? '#92400e' : '#075985', borderRadius: '999px', padding: '0.2rem 0.5rem', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase' }}>
+                                  {issue.severity || 'info'}
+                                </span>
+                              </div>
+                              <p style={{ margin: '0 0 0.35rem', color: '#475569', lineHeight: 1.5, fontSize: '0.9rem' }}>{issue.detail}</p>
+                              <p style={{ margin: 0, color: '#64748b', fontSize: '0.8rem' }}><strong>Evidence:</strong> {issue.evidence}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {genAtsResult.recommendations && (
+                      <div className="ats-recommendations-box" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+                        <h4 style={{ margin: '0 0 1rem', fontSize: '1.1rem', color: '#0f172a', fontWeight: '700' }}>✅ Prioritized Improvements</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                          {genAtsResult.recommendations.map((item, idx) => (
+                            <div key={idx} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.9rem 1rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                                <strong style={{ color: '#0f172a' }}>{item.title}</strong>
+                                <span style={{ color: '#2563eb', background: '#dbeafe', borderRadius: '999px', padding: '0.2rem 0.5rem', fontSize: '0.7rem', fontWeight: '700' }}>Priority {item.priority}</span>
+                              </div>
+                              <p style={{ margin: '0 0 0.2rem', color: '#475569', lineHeight: 1.5, fontSize: '0.9rem' }}>{item.reason}</p>
+                              <p style={{ margin: 0, color: '#64748b', fontSize: '0.8rem' }}><strong>Action:</strong> {item.action}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Detailed Analysis Tabs */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
                       
@@ -1566,21 +1726,6 @@ function App() {
               </button>
             )}
 
-            {activeMainTab !== 'practice-hub' && (
-              <button 
-                className="mobile-pro-connect-btn" 
-                title="PracticeHub"
-                onClick={() => {
-                  setActiveMainTab('practice-hub');
-                  sessionStorage.setItem('activeMainTab', 'practice-hub');
-                  setIsMobileMenuOpen(false);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99-2h.01"/></svg>
-              </button>
-            )}
-
             <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? '✕' : '☰'}
             </button>
@@ -1637,19 +1782,6 @@ function App() {
                 </a>
               </li>
               <li>
-                <a href="#about" onClick={(e) => {
-                  e.preventDefault();
-                  setIsMobileMenuOpen(false);
-                  const footer = document.querySelector('.footer-section');
-                  if (footer) footer.scrollIntoView({ behavior: 'smooth' });
-                }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
-                  About
-                </a>
-              </li>
-              
-              {/* MOBILE ONLY FLAT LINKS */}
-              <li className="mobile-nav-item">
                 <a href="#practice-hub" onClick={(e) => {
                   e.preventDefault();
                   setActiveMainTab('practice-hub');
@@ -1661,6 +1793,8 @@ function App() {
                   PracticeHub
                 </a>
               </li>
+              
+              {/* MOBILE ONLY FLAT LINKS */}
               <li className="mobile-nav-item">
                 <a 
                   href="#all-jobs"
@@ -1715,10 +1849,6 @@ function App() {
                 </button>
                 {showMenuDropdown && (
                   <div className="nav-dropdown-content">
-                    <button onClick={() => { setActiveMainTab('practice-hub'); sessionStorage.setItem('activeMainTab', 'practice-hub'); setShowMenuDropdown(false); setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4m7-2h.01m2.99-2h.01"/></svg>
-                      PracticeHub
-                    </button>
                     <button onClick={() => { setShowAllJobsModal(true); setShowMenuDropdown(false); setIsMobileMenuOpen(false); }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
                       Browse All Jobs

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends MongoRepository<Question, String> {
     List<Question> findByCompanyIgnoreCase(String company);
+    List<Question> findByCompanyIgnoreCaseAndRoleIgnoreCase(String company, String role);
 }

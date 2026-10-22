@@ -27,7 +27,7 @@ public class DailyGameService {
     private static final Logger logger = LoggerFactory.getLogger(DailyGameService.class);
 
     private static final String GEMINI_ENDPOINT =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=";
 
     @Value("${gemini.api.key:}")
     private String geminiApiKey;

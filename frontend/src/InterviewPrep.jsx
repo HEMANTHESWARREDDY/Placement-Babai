@@ -34,6 +34,13 @@ function QuestionItem({ question, index }) {
         </div>
     );
 }
+const loadingMessages = [
+    "Analyzing company interview history...",
+    "Consulting Gemini AI placement engine...",
+    "Synthesizing Technical & Programming questions...",
+    "Formatting HR and Managerial questions...",
+    "Almost ready! Polishing up your preparation..."
+];
 
 function InterviewPrep() {
     const [company, setCompany] = useState('');
@@ -41,9 +48,24 @@ function InterviewPrep() {
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [groupedQuestions, setGroupedQuestions] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+
+    useEffect(() => {
+        let interval;
+        if (loading) {
+            setLoadingMessageIndex(0);
+            interval = setInterval(() => {
+                setLoadingMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
+            }, 1800);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [loading]);
     const [communityData, setCommunityData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [targetRole, setTargetRole] = useState('');
+    const [roleInput, setRoleInput] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -116,7 +138,7 @@ function InterviewPrep() {
         } else {
             setGroupedQuestions(null);
         }
-    }, [activeFilter, selectedCompany, targetRole, activeCategory]);
+    }, [activeFilter, selectedCompany, targetRole]);
 
     useEffect(() => {
         fetchSessions();
@@ -237,7 +259,7 @@ function InterviewPrep() {
         if (!compName) return;
         setLoading(true);
         try {
-            const url = `${API_BASE_URL}/api/questions/${compName.toLowerCase()}`;
+            const url = `${API_BASE_URL}/api/questions/${compName.toLowerCase()}?role=${encodeURIComponent(targetRole || 'General')}`;
             const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
@@ -308,6 +330,23 @@ function InterviewPrep() {
     };
 
     const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (suggestionIndex >= 0 && suggestionIndex < suggestions.length) {
+                const s = suggestions[suggestionIndex];
+                setSearchTerm(s);
+                setCompany(s);
+                setTargetRole(roleInput);
+                setSelectedCompany(s);
+                setShowSuggestions(false);
+            } else if (searchTerm) {
+                setTargetRole(roleInput);
+                setSelectedCompany(searchTerm);
+                setShowSuggestions(false);
+            }
+            return;
+        }
+
         if (suggestions.length === 0) return;
 
         if (e.key === 'ArrowDown') {
@@ -316,19 +355,6 @@ function InterviewPrep() {
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             setSuggestionIndex(prev => (prev > 0 ? prev - 1 : prev));
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            if (suggestionIndex >= 0) {
-                const s = suggestions[suggestionIndex];
-                setSearchTerm(s);
-                setCompany(s);
-                setSelectedCompany(s);
-                setShowSuggestions(false);
-                fetchQuestions(s);
-            } else if (searchTerm) {
-                setSelectedCompany(searchTerm);
-                fetchQuestions(searchTerm);
-            }
         } else if (e.key === 'Escape') {
             setShowSuggestions(false);
         }
@@ -367,9 +393,9 @@ function InterviewPrep() {
                                         onClick={() => {
                                             setSearchTerm(s);
                                             setCompany(s);
+                                            setTargetRole(roleInput);
                                             setSelectedCompany(s);
                                             setShowSuggestions(false);
-                                            fetchQuestions(s);
                                         }}
                                         onMouseEnter={() => setSuggestionIndex(i)}
                                     >
@@ -388,8 +414,9 @@ function InterviewPrep() {
                             type="text"
                             className="search-input"
                             placeholder="Role"
-                            value={targetRole}
-                            onChange={(e) => setTargetRole(e.target.value)}
+                            value={roleInput}
+                            onChange={(e) => setRoleInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
                         />
                     </div>
 
@@ -426,8 +453,8 @@ function InterviewPrep() {
 
                     <button className="search-btn" onClick={() => {
                         if (searchTerm) {
+                            setTargetRole(roleInput);
                             setSelectedCompany(searchTerm);
-                            fetchQuestions(searchTerm);
                             setTimeout(() => {
                                 document.querySelector('.ip-inline-questions')?.scrollIntoView({ behavior: 'smooth' });
                             }, 100);
@@ -555,7 +582,7 @@ function InterviewPrep() {
                 </div>
             )}
 
-            <div className="ip-explore-header-wrapper" style={{ marginBottom: '1.25rem', padding: '0 0.5rem' }}>
+            <div className="ip-explore-header-wrapper">
                 <div className="ip-explore-header">
                     <h2><span>🔍 Explore Prep<span className="highlight-orange">Zo</span></span></h2>
                     <p>Browse company+role combos from top companies — search questions</p>
@@ -566,7 +593,7 @@ function InterviewPrep() {
                     <div className="ip-qs-layout">
                         <div className="ip-qs-main">
                             <div className="ip-inline-header">
-                                <h3><span className="ip-ih-icon">📋</span> {activeFilter} {selectedCompany} Questions</h3>
+                                <h3><span className="ip-ih-icon">📋</span> {activeFilter} {selectedCompany ? selectedCompany.charAt(0).toUpperCase() + selectedCompany.slice(1) : ''} Questions</h3>
                             </div>
 
                             <div className="ip-qs-sidebar">
@@ -592,8 +619,17 @@ function InterviewPrep() {
                             <div className="ip-inline-content">
                                 {loading ? (
                                     <div className="ip-generating-loader">
-                                        <div className="ip-spinner"></div>
-                                        <p>Loading questions...</p>
+                                        <div className="ip-loader-icon-container">
+                                            <div className="ip-loader-pulse-ring"></div>
+                                            <div className="ip-loader-icon">🚀</div>
+                                        </div>
+                                        <div className="ip-loader-message">
+                                            {loadingMessages[loadingMessageIndex]}
+                                        </div>
+                                        <div className="ip-loader-progress-bar">
+                                            <div className="ip-loader-progress-fill"></div>
+                                        </div>
+                                        <p className="ip-loader-subtext">Our AI engine compiles company-specific questions in real-time</p>
                                     </div>
                                 ) : (() => {
                                     let currentCategoryQs = activeCategory === 'All'

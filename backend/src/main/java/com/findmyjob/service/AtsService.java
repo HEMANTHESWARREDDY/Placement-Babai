@@ -110,7 +110,7 @@ public class AtsService {
     }
 
     private Map<String, Object> callGemini(Job job, String resumeText) throws Exception {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key="
                 + geminiApiKey.trim();
 
         String prompt = "You are a world-class expert ATS (Applicant Tracking System) recruiter and technical resume parser. "
@@ -239,6 +239,7 @@ public class AtsService {
     }
 
     private Map<String, Object> basicCalculate(Job job, String resumeTextLower) {
+        String normalizedResume = normalizeText(resumeTextLower);
         Set<String> skillsKeywords = new HashSet<>();
         if (job.getSkills() != null) {
             Arrays.stream(job.getSkills().split(","))
@@ -248,34 +249,33 @@ public class AtsService {
                     .forEach(skillsKeywords::add);
         }
 
-        // Extract descriptive keywords from Description, Requirements, Responsibilities, and Title
         Set<String> descKeywords = new HashSet<>();
         descKeywords.addAll(extractCleanKeywords(stripHtml(job.getDescription())));
         descKeywords.addAll(extractCleanKeywords(stripHtml(job.getRequirements())));
         descKeywords.addAll(extractCleanKeywords(stripHtml(job.getResponsibilities())));
 
         Set<String> titleKeywords = extractCleanKeywords(stripHtml(job.getTitle()));
-
-        Set<String> resumeWords = extractCleanKeywords(resumeTextLower);
+        Set<String> resumeWords = extractCleanKeywords(normalizedResume);
 
         List<Map<String, String>> matched = new ArrayList<>();
         List<Map<String, String>> missing = new ArrayList<>();
-
         int matchedSkills = 0;
+
         for (String skill : skillsKeywords) {
-            if (resumeTextLower.contains(skill)) {
+            String skillLower = skill.toLowerCase(Locale.ROOT);
+            if (normalizedResume.contains(skillLower)) {
                 matchedSkills++;
-                Map<String, String> m = new HashMap<>();
-                m.put("keyword", skill);
-                m.put("synonymUsed", "exact");
-                m.put("category", "Required Skills");
-                matched.add(m);
+                Map<String, String> entry = new HashMap<>();
+                entry.put("keyword", skillLower);
+                entry.put("synonymUsed", "exact");
+                entry.put("category", "Required Skills");
+                matched.add(entry);
             } else {
-                Map<String, String> m = new HashMap<>();
-                m.put("keyword", skill);
-                m.put("category", "Required Skills");
-                m.put("importance", "High");
-                missing.add(m);
+                Map<String, String> entry = new HashMap<>();
+                entry.put("keyword", skillLower);
+                entry.put("category", "Required Skills");
+                entry.put("importance", "High");
+                missing.add(entry);
             }
         }
 
@@ -297,189 +297,40 @@ public class AtsService {
         double descPercentage = descKeywords.isEmpty() ? 0 : ((double) matchedDesc / descKeywords.size());
         double titlePercentage = titleKeywords.isEmpty() ? 0 : ((double) matchedTitle / titleKeywords.size());
 
-        // Alignment penalty if JD has descriptions but none match the resume (indicates fake or completely mismatched JD)
-        double alignmentFactor = 1.0;
-        if (!descKeywords.isEmpty() && matchedDesc == 0) {
-            alignmentFactor = 0.08;
-        }
+        boolean hasDateIssue = containsInvalidDateIssue(normalizedResume);
+        boolean hasEmail = normalizedResume.contains("@") && (normalizedResume.contains(".com") || normalizedResume.contains(".org") || normalizedResume.contains(".in") || normalizedResume.contains(".edu"));
+        boolean hasPhone = normalizedResume.replaceAll("[^0-9]", "").length() >= 10;
+        boolean hasBulletPoints = normalizedResume.contains("- ") || normalizedResume.contains("* ") || normalizedResume.contains("•") || normalizedResume.contains("▪") || normalizedResume.contains("◦") || normalizedResume.contains("\n-");
+        boolean hasEducationHeader = normalizedResume.contains("education") || normalizedResume.contains("academic") || normalizedResume.contains("qualification");
+        boolean hasExperienceHeader = normalizedResume.contains("experience") || normalizedResume.contains("internship") || normalizedResume.contains("employment") || normalizedResume.contains("work history");
+        boolean hasSkillsHeader = normalizedResume.contains("skills") || normalizedResume.contains("abilities") || normalizedResume.contains("expertise");
 
-        // Calculate subscores authentically without scaling by the alignment factor
         int skillsMatch = skillsKeywords.isEmpty() ? 0 : (int) Math.round(skillPercentage * 100);
+        int keywordMatch = (int) Math.round((skillPercentage * 0.6 + descPercentage * 0.3 + titlePercentage * 0.1) * 100);
+        int experienceMatch = estimateExperienceMatch(job, normalizedResume);
+        int projectRelevance = estimateProjectRelevance(normalizedResume, skillsKeywords);
 
-        // Determine experience match authentically and conservatively
-        int experienceMatch = 0;
-        String expReq = job.getExperienceLevel() != null ? job.getExperienceLevel().toLowerCase() : "";
-        boolean isEntryOrFresherJob = expReq.contains("0-2") || expReq.contains("entry") || expReq.contains("fresher") || expReq.isEmpty();
-        boolean isMidOrSeniorJob = expReq.contains("3-5") || expReq.contains("mid") || expReq.contains("senior") || expReq.contains("5+");
-        boolean hasInternshipOrTeaching = resumeTextLower.contains("intern") || resumeTextLower.contains("assistant") || resumeTextLower.contains("teaching");
-        boolean hasWorkExp = resumeTextLower.contains("experience") || resumeTextLower.contains("years") || resumeTextLower.contains("worked") || resumeTextLower.contains("employment");
-        
-        if (hasWorkExp || hasInternshipOrTeaching) {
-            if (isEntryOrFresherJob) {
-                experienceMatch = hasInternshipOrTeaching || hasWorkExp ? 72 : 50;
-            } else if (isMidOrSeniorJob) {
-                if (hasWorkExp && (resumeTextLower.contains("lead") || resumeTextLower.contains("senior") || resumeTextLower.contains("manager") || resumeTextLower.contains("3") || resumeTextLower.contains("4") || resumeTextLower.contains("5"))) {
-                    experienceMatch = 85; // Genuine experienced developer match
-                } else {
-                    experienceMatch = 60;
-                }
-            } else {
-                experienceMatch = 70;
-            }
-        }
+        int formattingScore = 35;
+        if (hasEmail) formattingScore += 15;
+        if (hasPhone) formattingScore += 15;
+        if (hasBulletPoints) formattingScore += 15;
+        if (hasEducationHeader) formattingScore += 8;
+        if (hasExperienceHeader) formattingScore += 8;
+        if (hasSkillsHeader) formattingScore += 8;
+        if (hasDateIssue) formattingScore = Math.max(0, formattingScore - 15);
+        formattingScore = Math.min(100, formattingScore);
 
-        int keywordMatch = 0;
-        if (skillPercentage > 0 || descPercentage > 0 || titlePercentage > 0) {
-            keywordMatch = (int) Math.round(((skillPercentage * 40) + (descPercentage * 50) + (titlePercentage * 10)) * alignmentFactor);
-        }
+        int educationMatch = estimateEducationMatch(job, normalizedResume);
 
-        // Determine project relevance authentically based on matching tech stack inside projects
-        int projectRelevance = 0;
-        boolean hasProjectsSection = resumeTextLower.contains("project") || 
-                                     resumeTextLower.contains("portfolio") || 
-                                     resumeTextLower.contains("capstone");
-                                     
-        if (hasProjectsSection) {
-            int matchedSkillsInProjects = 0;
-            for (String skill : skillsKeywords) {
-                if (resumeTextLower.contains(skill.toLowerCase())) {
-                    matchedSkillsInProjects++;
-                }
-            }
-            if (matchedSkillsInProjects >= 3) {
-                projectRelevance = 80; // Genuine exceptional projects tech alignment
-            } else if (matchedSkillsInProjects >= 2) {
-                projectRelevance = 70; // Genuine strong projects tech alignment
-            } else if (matchedSkillsInProjects >= 1) {
-                projectRelevance = 60; // Moderate projects tech alignment
-            } else {
-                projectRelevance = 50; // Unrelated projects
-            }
-        }
+        Map<String, Object> subScores = new HashMap<>();
+        subScores.put("skillsMatch", skillsMatch);
+        subScores.put("experienceMatch", experienceMatch);
+        subScores.put("keywordMatch", keywordMatch);
+        subScores.put("projectRelevance", projectRelevance);
+        subScores.put("formattingScore", formattingScore);
+        subScores.put("educationMatch", educationMatch);
 
-        // Determine formatting score authentically based on structural ATS standards
-        int formattingScore = 0;
-        boolean hasEmail = resumeTextLower.contains("@") && (resumeTextLower.contains(".com") || resumeTextLower.contains(".org") || resumeTextLower.contains(".in") || resumeTextLower.contains(".edu"));
-        boolean hasPhone = resumeTextLower.replaceAll("[^0-9]", "").length() >= 10;
-        
-        boolean hasBulletPoints = resumeTextLower.contains("\n-") || 
-                                   resumeTextLower.contains("\n*") || 
-                                   resumeTextLower.contains("\n•") || 
-                                   resumeTextLower.contains(" bullet ") ||
-                                   resumeTextLower.contains("•") ||
-                                   resumeTextLower.contains("▪") ||
-                                   resumeTextLower.contains("◦");
-                                   
-        boolean hasEducationHeader = resumeTextLower.contains("education") || resumeTextLower.contains("academic") || resumeTextLower.contains("qualification");
-        boolean hasExperienceHeader = resumeTextLower.contains("experience") || resumeTextLower.contains("internship") || resumeTextLower.contains("history") || resumeTextLower.contains("employment");
-        boolean hasSkillsHeader = resumeTextLower.contains("skills") || resumeTextLower.contains("abilities") || resumeTextLower.contains("expertise");
-        
-        int structuralChecksPassed = 0;
-        if (hasEmail) structuralChecksPassed++;
-        if (hasPhone) structuralChecksPassed++;
-        if (hasBulletPoints) structuralChecksPassed++;
-        if (hasEducationHeader) structuralChecksPassed++;
-        if (hasExperienceHeader) structuralChecksPassed++;
-        if (hasSkillsHeader) structuralChecksPassed++;
-        
-        if (structuralChecksPassed > 0) {
-            switch (structuralChecksPassed) {
-                case 6:
-                    formattingScore = 95; // Flawless ATS structure
-                    break;
-                case 5:
-                    formattingScore = 80;
-                    break;
-                case 4:
-                    formattingScore = 65;
-                    break;
-                case 3:
-                    formattingScore = 50;
-                    break;
-                case 2:
-                    formattingScore = 35;
-                    break;
-                default:
-                    formattingScore = 20;
-                    break;
-            }
-        }
-
-        // Determine dynamic education match authentically based on job specified requirements vs candidate resume fields
-        int educationMatch = 0;
-        boolean hasDegree = resumeTextLower.contains("btech") || 
-                             resumeTextLower.contains("bachelor") || 
-                             resumeTextLower.contains("degree") || 
-                             resumeTextLower.contains("graduate") || 
-                             resumeTextLower.contains("b.tech") || 
-                             resumeTextLower.contains("b.e.") || 
-                             resumeTextLower.contains("mca") || 
-                             resumeTextLower.contains("tech") || 
-                             resumeTextLower.contains("diploma");
-
-        String jobTextLower = (job.getTitle() != null ? job.getTitle().toLowerCase() : "") + " " + 
-                              (job.getRequirements() != null ? job.getRequirements().toLowerCase() : "") + " " + 
-                              (job.getSkills() != null ? job.getSkills().toLowerCase() : "") + " " + 
-                              (job.getDescription() != null ? job.getDescription().toLowerCase() : "");
-
-        // Categorize candidate fields
-        boolean candCS = resumeTextLower.contains("computer science") || resumeTextLower.contains("cse") || resumeTextLower.contains("aiml") || resumeTextLower.contains("ai/ml") || resumeTextLower.contains("software") || resumeTextLower.contains("information technology") || resumeTextLower.contains("it ");
-        boolean candECE = resumeTextLower.contains("electronics") || resumeTextLower.contains("ece") || resumeTextLower.contains("communication");
-        boolean candMech = resumeTextLower.contains("mechanical") || resumeTextLower.contains("mech ");
-        boolean candCivil = resumeTextLower.contains("civil ");
-        boolean candBiz = resumeTextLower.contains("mba") || resumeTextLower.contains("business") || resumeTextLower.contains("marketing") || resumeTextLower.contains("sales");
-
-        // Categorize job requirement fields
-        boolean jobWantsCS = jobTextLower.contains("computer science") || jobTextLower.contains("cse") || jobTextLower.contains("software") || jobTextLower.contains("it ") || jobTextLower.contains("information technology") || jobTextLower.contains("aiml") || jobTextLower.contains("developer") || jobTextLower.contains("programmer");
-        boolean jobWantsECE = jobTextLower.contains("electronics") || jobTextLower.contains("ece") || jobTextLower.contains("communication");
-        boolean jobWantsMech = jobTextLower.contains("mechanical") || jobTextLower.contains("mech ");
-        boolean jobWantsCivil = jobTextLower.contains("civil ");
-        boolean jobWantsBiz = jobTextLower.contains("mba") || jobTextLower.contains("business") || jobTextLower.contains("marketing") || jobTextLower.contains("sales");
-
-        if (hasDegree) {
-            // Check if job specifies a branch and candidate matches it
-            boolean specifiedRequirementFound = false;
-            boolean candidateMatchesSpecified = false;
-
-            if (jobWantsCS) {
-                specifiedRequirementFound = true;
-                if (candCS) candidateMatchesSpecified = true;
-            }
-            if (jobWantsECE) {
-                specifiedRequirementFound = true;
-                if (candECE) candidateMatchesSpecified = true;
-            }
-            if (jobWantsMech) {
-                specifiedRequirementFound = true;
-                if (candMech) candidateMatchesSpecified = true;
-            }
-            if (jobWantsCivil) {
-                specifiedRequirementFound = true;
-                if (candCivil) candidateMatchesSpecified = true;
-            }
-            if (jobWantsBiz) {
-                specifiedRequirementFound = true;
-                if (candBiz) candidateMatchesSpecified = true;
-            }
-
-            if (specifiedRequirementFound) {
-                if (candidateMatchesSpecified) {
-                    educationMatch = 82; // Perfect matching education (genuine limit)
-                } else {
-                    educationMatch = 45; // Branch mismatch: candidate does not have the specified branch!
-                }
-            } else {
-                // Generic job: candidate has a degree
-                educationMatch = 75;
-            }
-        } else {
-            // No degree
-            educationMatch = 0;
-        }
-
-        // Overall score is weighted: 25% for skillsMatch, 25% for content match (keywordMatch), and 50% for structural matches (experience, projects, formatting, education)
-        double remainingFourAverage = (experienceMatch + projectRelevance + formattingScore + educationMatch) / 4.0;
-        int overallScore = (int) Math.round((skillsMatch * 0.25) + (keywordMatch * 0.25) + (remainingFourAverage * 0.50));
+        int overallScore = calculateWeightedOverallScore(subScores);
 
         Map<String, Object> result = new HashMap<>();
         result.put("score", overallScore);
@@ -491,78 +342,302 @@ public class AtsService {
             message = "Good Match! Solid alignment, but there are areas you can optimize.";
         } else if (overallScore >= 40) {
             message = "Fair Match! You meet some core requirements but need to add more relevant keywords.";
-        } else if (alignmentFactor < 0.2) {
-            message = "Extremely Low Match! The job requirements and responsibilities do not align with your resume at all (unrecognized content).";
+        } else if (hasDateIssue) {
+            message = "Low Match! Resume date details appear inconsistent or invalid, which reduces the ATS trust score.";
         } else {
             message = "Low Match! High potential mismatch. Consider tailoring your resume for this role.";
         }
-        
         result.put("message", message);
 
-        Map<String, Object> subScores = new HashMap<>();
-        subScores.put("skillsMatch", skillsMatch);
-        subScores.put("experienceMatch", experienceMatch);
-        subScores.put("keywordMatch", keywordMatch);
-        subScores.put("projectRelevance", projectRelevance);
-        subScores.put("formattingScore", formattingScore);
-        subScores.put("educationMatch", educationMatch);
         result.put("subScores", subScores);
+        result.put("scoreBreakdown", buildScoreBreakdown(subScores));
 
         Map<String, Object> keywordAnalysis = new HashMap<>();
         keywordAnalysis.put("matched", matched);
         keywordAnalysis.put("missing", missing);
         result.put("keywordAnalysis", keywordAnalysis);
 
-        if (alignmentFactor < 0.2) {
-            result.put("strengths", Arrays.asList(
-                "Resume uses basic clean structural formatting.",
-                "Primary contact information and section titles are legible."
-            ));
+        List<String> strengths = new ArrayList<>();
+        if (matchedSkills > 0) strengths.add("Targeted resume skills align with the role requirements.");
+        if (hasEmail && hasPhone) strengths.add("Contact data and basic ATS structure are present.");
+        if (hasBulletPoints) strengths.add("The content is organized with readable bullet style formatting.");
+        if (strengths.isEmpty()) strengths.add("Resume contains enough text to be scanned, but it needs more role-specific detail.");
+        result.put("strengths", strengths);
 
-            result.put("weaknesses", Arrays.asList(
-                "Critical mismatch: Job description keywords are completely absent from your resume.",
-                "Zero contextual overlap between your work experience and the target role's core responsibilities."
-            ));
-        } else {
-            result.put("strengths", Arrays.asList(
-                "Clear technical keywords matching the core job description requirements.",
-                "Strong layout structure with searchable section headers."
-            ));
-
-            result.put("weaknesses", Arrays.asList(
-                "Missing clear quantified achievements (metrics like %, $, or hours saved).",
-                "Several high-priority technical skills from the job description are not mentioned."
-            ));
-        }
+        List<String> weaknesses = new ArrayList<>();
+        if (missing.size() > 0) weaknesses.add("Several key skills from the job description are not yet demonstrated in the resume.");
+        if (hasDateIssue) weaknesses.add("Date values appear inconsistent or invalid and should be normalized.");
+        if (!hasExperienceHeader) weaknesses.add("Experience section could be clearer and more ATS-friendly.");
+        if (weaknesses.isEmpty()) weaknesses.add("Resume could be strengthened with more quantified impact and role-specific keywords.");
+        result.put("weaknesses", weaknesses);
 
         List<Map<String, String>> improvements = new ArrayList<>();
-        if (alignmentFactor >= 0.2) {
-            Map<String, String> imp1 = new HashMap<>();
-            imp1.put("section", "Professional Experience / Projects");
-            imp1.put("original", "Responsible for working on backend tasks and building APIs.");
-            imp1.put("suggested", "Spearheaded development of 10+ high-performance REST APIs using " + (skillsKeywords.isEmpty() ? "modern frameworks" : skillsKeywords.iterator().next()) + ", reducing response latencies by 25%.");
-            improvements.add(imp1);
+        if (!skillsKeywords.isEmpty()) {
+            String topSkill = skillsKeywords.iterator().next();
+            Map<String, String> improvement = new HashMap<>();
+            improvement.put("section", "Professional Experience / Projects");
+            improvement.put("original", "Worked on application development tasks and solved backend issues.");
+            improvement.put("suggested", "Delivered " + topSkill + "-driven features and improved system reliability by 25%, enabling faster team delivery and smoother production operations.");
+            improvements.add(improvement);
         }
         result.put("improvements", improvements);
 
         Map<String, Object> formattingAnalysis = new HashMap<>();
         formattingAnalysis.put("bulletPointsCheck", hasBulletPoints ? "Pass" : "Warning");
         formattingAnalysis.put("sectionHeaderCheck", (hasEducationHeader && hasExperienceHeader && hasSkillsHeader) ? "Pass" : ((hasEducationHeader || hasExperienceHeader || hasSkillsHeader) ? "Warning" : "Fail"));
-        formattingAnalysis.put("tablesCheck", "Pass");
-        if (alignmentFactor < 0.2) {
-            formattingAnalysis.put("feedback", "Formatting is acceptable but the semantic content is a complete mismatch. Ensure you are targeting appropriate job listings.");
-        } else {
-            formattingAnalysis.put("feedback", "Excellent clean structure. Ensure you use bullet points with action verbs and avoid any graphic bars or side columns.");
+        formattingAnalysis.put("tablesCheck", hasDateIssue ? "Warning" : "Pass");
+        String feedback = "The resume has a usable ATS structure. Add consistent section naming and normalize any invalid dates before submission.";
+        if (!hasBulletPoints) feedback = "Use concise bullet points under experience and project sections to boost ATS readability.";
+        if (hasDateIssue) feedback = "Date values appear invalid or inconsistent. Standardize them to a single format like 2023-2024 or Jun 2023 – Sep 2024.";
+        formattingAnalysis.put("feedback", feedback);
+        List<Map<String, Object>> verifiedIssues = new ArrayList<>();
+        if (hasDateIssue) {
+            verifiedIssues.add(buildIssue(
+                "Date format is inconsistent or invalid",
+                "The parsed resume text contains a date-like value outside a valid calendar range.",
+                extractDateEvidence(normalizedResume),
+                "Experience timeline",
+                "warning"
+            ));
         }
+        if (!hasBulletPoints) {
+            verifiedIssues.add(buildIssue(
+                "Bullet structure is weak",
+                "The resume text does not clearly show bullet points, which can reduce ATS readability.",
+                "No bullet markers such as - or • were detected in the parsed text.",
+                "Experience section",
+                "warning"
+            ));
+        }
+        if (verifiedIssues.isEmpty()) {
+            verifiedIssues.add(buildIssue(
+                "Formatting review is clear",
+                "The parsed resume text does not show a verified ATS formatting issue.",
+                "The resume includes readable section naming and a scan-friendly structure.",
+                "Formatting review",
+                "info"
+            ));
+        }
+        formattingAnalysis.put("verifiedIssues", verifiedIssues);
+        formattingAnalysis.put("potentialRisks", new ArrayList<>());
         result.put("formattingAnalysis", formattingAnalysis);
 
-        if (alignmentFactor < 0.2) {
-            result.put("aiInsights", "ALERT: Complete content mismatch detected. Please check if the job details are valid, or rewrite your resume content to address the target right.");
+        if (hasDateIssue) {
+            result.put("aiInsights", "ALERT: Resume date values appear inconsistent or invalid. Fix them before submission so recruiters and ATS systems can trust the chronology and experience timeline.");
         } else {
-            result.put("aiInsights", "To maximize your compatibility, focus on upgrading your bullet points to the 'X-Y-Z' formula (e.g., 'Accomplished [X], as measured by [Y], by doing [Z]') and integrate the missing technical keywords in your skills section.");
+            result.put("aiInsights", "To maximize your compatibility, quantify your impact in each role and align the exact skill language used in the job description with your project and experience bullets.");
         }
 
         return result;
+    }
+
+    private String normalizeText(String input) {
+        if (input == null) return "";
+        return input.replace("\r", " ").replace("\n", " ").replaceAll("\\s+", " ").trim().toLowerCase(Locale.ROOT);
+    }    private boolean containsInvalidDateIssue(String resumeTextLower) {
+        if (resumeTextLower == null || resumeTextLower.isBlank()) {
+            return false;
+        }
+
+        String sanitized = resumeTextLower
+                .replace("�", "-")
+                .replace("�", "-")
+                .replaceAll("\\b(?:present|current(?:ly)?)\\b", " ");
+
+        if (sanitized.isBlank()) {
+            return false;
+        }
+
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.util.regex.Pattern dateRegex = java.util.regex.Pattern.compile(
+                "(?:\\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\s+\\d{4}\\b|\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b|\\b\\d{1,2}[-/.]\\d{1,2}[-/.]\\d{2,4}\\b)",
+                java.util.regex.Pattern.CASE_INSENSITIVE
+        );
+
+        java.util.regex.Matcher matcher = dateRegex.matcher(sanitized);
+        while (matcher.find()) {
+            String dateText = matcher.group().trim();
+            java.time.LocalDate parsed = parseDateCandidate(dateText);
+            if (parsed == null) {
+                continue;
+            }
+            if (parsed.isAfter(today.plusMonths(1))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private java.time.LocalDate parseDateCandidate(String dateText) {
+        if (dateText == null || dateText.isBlank()) {
+            return null;
+        }
+
+        String cleaned = dateText.trim().replace("�", "-").replace("�", "-");
+        String lower = cleaned.toLowerCase(Locale.ROOT);
+
+        if (lower.contains("present") || lower.contains("current") || lower.contains("currently")) {
+            return java.time.LocalDate.now();
+        }
+
+        try {
+            if (lower.matches("^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\s+\\d{4}$")) {
+                String[] parts = cleaned.split("\\s+");
+                String monthName = parts[0];
+                int year = Integer.parseInt(parts[1]);
+                int month = getMonthNumber(monthName);
+                if (month == -1) {
+                    return null;
+                }
+                return java.time.LocalDate.of(year, month, 1);
+            }
+
+            if (lower.matches("^\\d{4}$")) {
+                int year = Integer.parseInt(cleaned);
+                return java.time.LocalDate.of(year, 1, 1);
+            }
+
+            if (lower.matches("^\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?$")) {
+                String[] parts = cleaned.split("[-/.]");
+                int year = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]);
+                int day = parts.length > 2 ? Integer.parseInt(parts[2]) : 1;
+                if (month < 1 || month > 12 || day < 1 || day > 31) {
+                    return null;
+                }
+                return java.time.LocalDate.of(year, month, day);
+            }
+
+            if (lower.matches("^\\d{1,2}[-/.]\\d{1,2}[-/.]\\d{2,4}$")) {
+                String[] parts = cleaned.split("[-/.]");
+                int month = Integer.parseInt(parts[0]);
+                int day = Integer.parseInt(parts[1]);
+                int year = Integer.parseInt(parts[2]);
+                if (month < 1 || month > 12 || day < 1 || day > 31) {
+                    return null;
+                }
+                return java.time.LocalDate.of(year, month, day);
+            }
+        } catch (NumberFormatException | java.time.DateTimeException ignored) {
+            return null;
+        }
+
+        return null;
+    }
+
+    private int getMonthNumber(String monthValue) {
+        String month = monthValue.toLowerCase(Locale.ROOT);
+        return switch (month) {
+            case "jan", "january" -> 1;
+            case "feb", "february" -> 2;
+            case "mar", "march" -> 3;
+            case "apr", "april" -> 4;
+            case "may" -> 5;
+            case "jun", "june" -> 6;
+            case "jul", "july" -> 7;
+            case "aug", "august" -> 8;
+            case "sep", "sept", "september" -> 9;
+            case "oct", "october" -> 10;
+            case "nov", "november" -> 11;
+            case "dec", "december" -> 12;
+            default -> -1;
+        };
+    }
+
+    private int estimateExperienceMatch(Job job, String resumeTextLower) {
+        String expReq = job.getExperienceLevel() != null ? job.getExperienceLevel().toLowerCase(Locale.ROOT) : "";
+        boolean isEntryOrFresherJob = expReq.contains("0-2") || expReq.contains("entry") || expReq.contains("fresher") || expReq.isEmpty();
+        boolean isMidOrSeniorJob = expReq.contains("3-5") || expReq.contains("mid") || expReq.contains("senior") || expReq.contains("5+");
+
+        boolean hasInternship = resumeTextLower.contains("intern") || resumeTextLower.contains("assistant") || resumeTextLower.contains("teaching");
+        boolean hasExperienceText = resumeTextLower.contains("experience") || resumeTextLower.contains("worked") || resumeTextLower.contains("employment") || resumeTextLower.contains("years") || resumeTextLower.contains("y/o");
+        boolean hasStrongExperience = resumeTextLower.matches(".*(?:\\b(?:1|2|3|4|5|6|7|8|9)\\s*(?:-|to|\\+)\\s*(?:1|2|3|4|5|6|7|8|9|10|\\+)\\s*years.*|.*\\b(?:1|2|3|4|5|6|7|8|9)\\+\\s*years.*).*")
+                || resumeTextLower.contains("senior") || resumeTextLower.contains("lead") || resumeTextLower.contains("manager");
+
+        if (isEntryOrFresherJob) {
+            if (hasStrongExperience || hasInternship) return 72;
+            if (hasExperienceText) return 60;
+            return 40;
+        }
+
+        if (isMidOrSeniorJob) {
+            if (hasStrongExperience) return 82;
+            if (hasExperienceText || hasInternship) return 62;
+            return 48;
+        }
+
+        if (hasStrongExperience) return 80;
+        if (hasExperienceText || hasInternship) return 65;
+        return 45;
+    }
+
+    private int estimateProjectRelevance(String resumeTextLower, Set<String> skillsKeywords) {
+        boolean hasProjectsSection = resumeTextLower.contains("project") || resumeTextLower.contains("portfolio") || resumeTextLower.contains("capstone");
+        if (!hasProjectsSection) return 35;
+
+        int matchedSkillsInProjects = 0;
+        for (String skill : skillsKeywords) {
+            if (resumeTextLower.contains(skill.toLowerCase(Locale.ROOT))) {
+                matchedSkillsInProjects++;
+            }
+        }
+
+        if (matchedSkillsInProjects >= 3) return 82;
+        if (matchedSkillsInProjects >= 2) return 70;
+        if (matchedSkillsInProjects >= 1) return 58;
+        return 45;
+    }
+
+    private int estimateEducationMatch(Job job, String resumeTextLower) {
+        boolean hasDegree = resumeTextLower.contains("btech") || resumeTextLower.contains("bachelor") || resumeTextLower.contains("degree") || resumeTextLower.contains("graduate") || resumeTextLower.contains("b.tech") || resumeTextLower.contains("mca") || resumeTextLower.contains("diploma");
+        if (!hasDegree) return 0;
+
+        String jobTextLower = (job.getTitle() != null ? job.getTitle().toLowerCase(Locale.ROOT) : "") + " " +
+                (job.getRequirements() != null ? job.getRequirements().toLowerCase(Locale.ROOT) : "") + " " +
+                (job.getSkills() != null ? job.getSkills().toLowerCase(Locale.ROOT) : "") + " " +
+                (job.getDescription() != null ? job.getDescription().toLowerCase(Locale.ROOT) : "");
+
+        boolean candCS = resumeTextLower.contains("computer science") || resumeTextLower.contains("cse") || resumeTextLower.contains("aiml") || resumeTextLower.contains("ai/ml") || resumeTextLower.contains("software") || resumeTextLower.contains("information technology");
+        boolean candECE = resumeTextLower.contains("electronics") || resumeTextLower.contains("ece") || resumeTextLower.contains("communication");
+        boolean candMech = resumeTextLower.contains("mechanical") || resumeTextLower.contains("mech");
+        boolean candCivil = resumeTextLower.contains("civil");
+        boolean candBiz = resumeTextLower.contains("mba") || resumeTextLower.contains("business") || resumeTextLower.contains("marketing") || resumeTextLower.contains("sales");
+
+        boolean jobWantsCS = jobTextLower.contains("computer science") || jobTextLower.contains("cse") || jobTextLower.contains("software") || jobTextLower.contains("information technology") || jobTextLower.contains("aiml") || jobTextLower.contains("developer");
+        boolean jobWantsECE = jobTextLower.contains("electronics") || jobTextLower.contains("ece") || jobTextLower.contains("communication");
+        boolean jobWantsMech = jobTextLower.contains("mechanical") || jobTextLower.contains("mech");
+        boolean jobWantsCivil = jobTextLower.contains("civil");
+        boolean jobWantsBiz = jobTextLower.contains("mba") || jobTextLower.contains("business") || jobTextLower.contains("marketing") || jobTextLower.contains("sales");
+
+        boolean specifiedRequirementFound = false;
+        boolean candidateMatchesSpecified = false;
+
+        if (jobWantsCS) {
+            specifiedRequirementFound = true;
+            if (candCS) candidateMatchesSpecified = true;
+        }
+        if (jobWantsECE) {
+            specifiedRequirementFound = true;
+            if (candECE) candidateMatchesSpecified = true;
+        }
+        if (jobWantsMech) {
+            specifiedRequirementFound = true;
+            if (candMech) candidateMatchesSpecified = true;
+        }
+        if (jobWantsCivil) {
+            specifiedRequirementFound = true;
+            if (candCivil) candidateMatchesSpecified = true;
+        }
+        if (jobWantsBiz) {
+            specifiedRequirementFound = true;
+            if (candBiz) candidateMatchesSpecified = true;
+        }
+
+        if (specifiedRequirementFound) {
+            return candidateMatchesSpecified ? 82 : 45;
+        }
+        return 75;
     }
 
     private String extractText(MultipartFile file) throws Exception {
@@ -572,7 +647,7 @@ public class AtsService {
             if (filename.endsWith(".pdf")) {
                 try (PDDocument document = PDDocument.load(is)) {
                     PDFTextStripper stripper = new PDFTextStripper();
-                    return stripper.getText(document);
+                    return normalizeText(stripper.getText(document));
                 }
             } else if (filename.endsWith(".docx")) {
                 try (XWPFDocument doc = new XWPFDocument(is)) {
@@ -580,7 +655,7 @@ public class AtsService {
                     for (XWPFParagraph p : doc.getParagraphs()) {
                         sb.append(p.getText()).append(" ");
                     }
-                    return sb.toString();
+                    return normalizeText(sb.toString());
                 }
             } else if (filename.endsWith(".pptx")) {
                 try (XMLSlideShow ppt = new XMLSlideShow(is)) {
@@ -592,8 +667,10 @@ public class AtsService {
                             }
                         }
                     }
-                    return sb.toString();
+                    return normalizeText(sb.toString());
                 }
+            } else if (filename.endsWith(".txt")) {
+                return normalizeText(new String(is.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8));
             }
         }
         return "";
@@ -650,6 +727,9 @@ public class AtsService {
         }
 
         if (geminiApiKey == null || geminiApiKey.trim().isEmpty()) {
+            if (jd != null && !jd.trim().isEmpty()) {
+                return basicTargetedCalculate(resumeText, jd);
+            }
             return basicGeneralCalculate(resumeText.toLowerCase());
         }
 
@@ -657,18 +737,26 @@ public class AtsService {
             return callGeminiGeneral(resumeText, jd);
         } catch (Exception e) {
             e.printStackTrace();
+            if (jd != null && !jd.trim().isEmpty()) {
+                return basicTargetedCalculate(resumeText, jd);
+            }
             return basicGeneralCalculate(resumeText.toLowerCase());
         }
     }
 
     private Map<String, Object> callGeminiGeneral(String resumeText, String jd) throws Exception {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key="
                 + geminiApiKey.trim();
 
         String prompt;
         if (jd != null && !jd.trim().isEmpty()) {
             prompt = "You are a world-class expert ATS recruiter and technical resume auditor.\n"
                     + "Evaluate the user's resume rigorously and critically AGAINST the pasted Target Job Description (JD).\n\n"
+                    + "MANDATORY EVIDENCE RULES:\n"
+                    + "- Base every match on evidence in the actual resume and JD. Do not invent skills, qualifications, years of experience, certifications, achievements, or projects.\n"
+                    + "- If the resume does not explicitly mention a requirement, mark it missing rather than assuming it.\n"
+                    + "- If the JD is not a valid job description or is gibberish, explicitly say so in message and aiInsights.\n"
+                    + "- Use the actual wording from resume and JD as much as possible to identify matched and missing keywords.\n\n"
                     + "TARGET JOB DESCRIPTION:\n" + jd + "\n\n"
                     + "CANDIDATE RESUME TEXT:\n" + resumeText + "\n\n"
                     + "YOUR AUDIT MUST CRITICALLY ASSESS:\n"
@@ -788,50 +876,509 @@ public class AtsService {
         result.put("strengths", objectMapper.convertValue(resultNode.path("strengths"), List.class));
         result.put("weaknesses", objectMapper.convertValue(resultNode.path("weaknesses"), List.class));
         result.put("improvements", objectMapper.convertValue(resultNode.path("improvements"), List.class));
-        result.put("formattingAnalysis", objectMapper.convertValue(resultNode.path("formattingAnalysis"), Map.class));
+
+        Map<String, Object> formattingAnalysis = objectMapper.convertValue(resultNode.path("formattingAnalysis"), Map.class);
+        if (formattingAnalysis == null) {
+            formattingAnalysis = new HashMap<>();
+        }
+        List<Map<String, Object>> verifiedIssues = new ArrayList<>();
+        if (resultNode.has("verifiedIssues")) {
+            verifiedIssues = objectMapper.convertValue(resultNode.path("verifiedIssues"), List.class);
+        }
+        if (verifiedIssues.isEmpty()) {
+            verifiedIssues.add(buildIssue(
+                "Formatting checks are based on extracted text",
+                "No verified parsing issue was found in the scanned resume text.",
+                "Parsed content from the uploaded resume was used to validate this assessment.",
+                "Formatting review",
+                "info"
+            ));
+        }
+        formattingAnalysis.put("verifiedIssues", verifiedIssues);
+        formattingAnalysis.put("potentialRisks", objectMapper.convertValue(resultNode.path("potentialRisks"), List.class));
+        result.put("formattingAnalysis", formattingAnalysis);
+        result.put("scoreBreakdown", buildScoreBreakdown(objectMapper.convertValue(resultNode.path("subScores"), Map.class)));
         result.put("aiInsights", resultNode.path("aiInsights").asText(""));
         return result;
     }
 
-    private Map<String, Object> basicGeneralCalculate(String resumeTextLower) {
+    private Map<String, Object> basicTargetedCalculate(String resumeText, String jd) {
+        String resumeLower = normalizeText(resumeText);
+        String jdLower = normalizeText(jd);
+
+        Set<String> jdKeywords = extractCleanKeywords(jdLower);
+        Set<String> resumeKeywords = extractCleanKeywords(resumeLower);
+
+        List<Map<String, String>> matched = new ArrayList<>();
+        List<Map<String, String>> missing = new ArrayList<>();
+
+        for (String keyword : jdKeywords) {
+            if (keyword.length() <= 2) continue;
+            if (resumeKeywords.contains(keyword)) {
+                Map<String, String> item = new HashMap<>();
+                item.put("keyword", keyword);
+                item.put("synonymUsed", "exact");
+                item.put("category", "Targeted JD");
+                matched.add(item);
+            } else {
+                Map<String, String> item = new HashMap<>();
+                item.put("keyword", keyword);
+                item.put("category", "Targeted JD");
+                item.put("importance", "High");
+                missing.add(item);
+            }
+        }
+
+        int totalKeywords = Math.max(1, jdKeywords.size());
+        int matchedCount = matched.size();
+        int keywordMatch = (int) Math.round((matchedCount / (double) totalKeywords) * 100.0);
+
+        int experienceMatch = 45;
+        if (resumeLower.contains("experience") || resumeLower.contains("worked") || resumeLower.contains("years") || resumeLower.contains("intern")) {
+            if (jdLower.contains("senior") || jdLower.contains("lead") || jdLower.contains("manager")) {
+                experienceMatch = resumeLower.contains("senior") || resumeLower.contains("lead") ? 76 : 62;
+            } else if (jdLower.contains("mid") || jdLower.contains("3") || jdLower.contains("4") || jdLower.contains("5")) {
+                experienceMatch = 68;
+            } else {
+                experienceMatch = 74;
+            }
+        }
+
+        int projectRelevance = 50;
+        if (resumeLower.contains("project") || resumeLower.contains("portfolio") || resumeLower.contains("implementation")) {
+            projectRelevance = matchedCount > 0 ? 72 : 56;
+        }
+
+        int formattingScore = 74;
+        if (resumeLower.contains("education") || resumeLower.contains("experience") || resumeLower.contains("skills")) formattingScore += 8;
+        if (resumeLower.contains("- ") || resumeLower.contains("•") || resumeLower.contains("\n")) formattingScore += 8;
+        formattingScore = Math.min(100, formattingScore);
+
+        boolean jdMentionsDegree = jdLower.contains("degree") || jdLower.contains("btech") || jdLower.contains("bachelor") || jdLower.contains("master") || jdLower.contains("mca");
+        boolean resumeMentionsDegree = resumeLower.contains("btech") || resumeLower.contains("bachelor") || resumeLower.contains("degree") || resumeLower.contains("master") || resumeLower.contains("mca");
+        int educationMatch = jdMentionsDegree ? (resumeMentionsDegree ? 82 : 43) : 77;
+
+        int skillsMatch = keywordMatch;
+        int score = (int) Math.round((skillsMatch * 0.35) + (experienceMatch * 0.2) + (projectRelevance * 0.15) + (formattingScore * 0.15) + (educationMatch * 0.15));
+        score = Math.max(0, Math.min(100, score));
+
         Map<String, Object> result = new HashMap<>();
-        result.put("score", 75);
-        result.put("message", "General Resume Analysis Complete (Basic Parser).");
-        
+        result.put("score", score);
+
+        String message = score >= 80 ? "Strong JD match. The resume evidence aligns well with the job requirements." :
+                score >= 60 ? "Good JD match. The resume covers most core requirements, with a few gaps to close." :
+                score >= 40 ? "Moderate JD match. The resume reflects some role alignment but needs stronger keyword and responsibility coverage." :
+                "Low JD match. The resume has limited evidence for the target role and requires targeted tailoring.";
+        result.put("message", message);
+
         Map<String, Object> subScores = new HashMap<>();
-        subScores.put("skillsMatch", 78);
-        subScores.put("experienceMatch", 72);
-        subScores.put("keywordMatch", 75);
-        subScores.put("projectRelevance", 80);
-        subScores.put("formattingScore", 85);
-        subScores.put("educationMatch", 90);
+        subScores.put("skillsMatch", skillsMatch);
+        subScores.put("experienceMatch", experienceMatch);
+        subScores.put("keywordMatch", keywordMatch);
+        subScores.put("projectRelevance", projectRelevance);
+        subScores.put("formattingScore", formattingScore);
+        subScores.put("educationMatch", educationMatch);
         result.put("subScores", subScores);
 
         Map<String, Object> keywordAnalysis = new HashMap<>();
-        keywordAnalysis.put("matched", new ArrayList<>());
-        keywordAnalysis.put("missing", new ArrayList<>());
+        keywordAnalysis.put("matched", matched);
+        keywordAnalysis.put("missing", missing);
         result.put("keywordAnalysis", keywordAnalysis);
 
-        result.put("strengths", Arrays.asList("Clear sections and standard fonts detected.", "Strong presentation of credentials."));
-        result.put("weaknesses", Arrays.asList("Some experience descriptions could be more detailed.", "Lack of quantifiable business impact (X-Y-Z formula)."));
-        
-        List<Map<String, String>> imps = new ArrayList<>();
-        Map<String, String> imp = new HashMap<>();
-        imp.put("section", "Experience");
-        imp.put("original", "Responsible for working on frontend codebase.");
-        imp.put("suggested", "Refactored frontend codebase using React and Vite, boosting loading performance by 35%.");
-        imps.add(imp);
-        result.put("improvements", imps);
+        List<String> strengths = new ArrayList<>();
+        if (matchedCount > 0) strengths.add("The resume explicitly contains several keywords from the target job description.");
+        if (resumeLower.contains("project") || resumeLower.contains("experience")) strengths.add("Relevant experience and project context are present for ATS review.");
+        if (strengths.isEmpty()) strengths.add("The resume has a readable structure but needs stronger role-specific evidence.");
+        result.put("strengths", strengths);
+
+        List<String> weaknesses = new ArrayList<>();
+        if (missing.size() > 0) weaknesses.add("The JD contains critical requirements that are not clearly evidenced in the resume.");
+        if (!resumeLower.contains("project") && !resumeLower.contains("experience")) weaknesses.add("Experience and project evidence should be expanded to support the target role.");
+        if (weaknesses.isEmpty()) weaknesses.add("Add more measurable achievements and role-specific responsibilities to strengthen the resume.");
+        result.put("weaknesses", weaknesses);
+
+        List<Map<String, String>> improvements = new ArrayList<>();
+        if (missing.size() > 0) {
+            Map<String, String> improvement = new HashMap<>();
+            improvement.put("section", "Experience / Skills");
+            improvement.put("original", "Worked on software tasks relevant to business needs.");
+            improvement.put("suggested", "Delivered production-ready solutions in " + (missing.size() > 0 ? missing.get(0).get("keyword") : "core technology") + " using measurable impact, architecture decisions, and cross-functional collaboration.");
+            improvements.add(improvement);
+        }
+        result.put("improvements", improvements);
 
         Map<String, Object> formatting = new HashMap<>();
-        formatting.put("bulletPointsCheck", "Pass");
-        formatting.put("sectionHeaderCheck", "Pass");
+        formatting.put("bulletPointsCheck", resumeLower.contains("- ") || resumeLower.contains("•") ? "Pass" : "Warning");
+        formatting.put("sectionHeaderCheck", (resumeLower.contains("experience") || resumeLower.contains("education") || resumeLower.contains("skills")) ? "Pass" : "Warning");
         formatting.put("tablesCheck", "Pass");
-        formatting.put("feedback", "Your resume uses standard fonts and section layouts. Ensure you do not use complex multi-column tables.");
+        formatting.put("feedback", "The resume is readable and ATS-friendly. Add missing JD keywords and expand your experience bullets with explicit impact statements.");
         result.put("formattingAnalysis", formatting);
 
-        result.put("aiInsights", "Leverage strong developer keywords such as Java, Python, React, and AWS to enhance visibility on search filters.");
+        result.put("aiInsights", "Use the JD as a checklist for exact skill and responsibility alignment. Keep all claims tied to evidence in the resume and add missing keywords where they are genuinely present in your work experience.");
         return result;
+    }
+
+    private Map<String, Object> basicGeneralCalculate(String resumeTextLower) {
+        String originalResume = resumeTextLower == null ? "" : resumeTextLower;
+        String normalizedResume = normalizeText(resumeTextLower);
+        Set<String> resumeWords = extractCleanKeywords(normalizedResume);
+        List<String> genericSkills = Arrays.asList("java", "python", "sql", "react", "spring", "javascript", "aws", "docker", "postgresql", "mongodb", "api", "rest", "html", "css", "git", "data structures", "machine learning", "cloud");
+
+        List<Map<String, Object>> matched = new ArrayList<>();
+        List<Map<String, Object>> missing = new ArrayList<>();
+        int matchedSkillCount = 0;
+        for (String skill : genericSkills) {
+            if (normalizedResume.contains(skill)) {
+                matchedSkillCount++;
+                Map<String, Object> record = new HashMap<>();
+                record.put("keyword", skill);
+                record.put("synonymUsed", "exact");
+                record.put("category", "Technical");
+                record.put("optional", Boolean.FALSE);
+                matched.add(record);
+            } else {
+                Map<String, Object> record = new HashMap<>();
+                record.put("keyword", skill);
+                record.put("category", "Technical");
+                record.put("importance", "Low");
+                record.put("optional", Boolean.TRUE);
+                record.put("note", "Optional suggestion for stronger profile coverage, not a required role gap.");
+                record.put("evidence", "No direct match found in the resume text.");
+                missing.add(record);
+            }
+        }
+
+        int skillsMatch = (int) Math.round(((double) matchedSkillCount / genericSkills.size()) * 100);
+        int experienceMatch = estimateGeneralExperienceMatch(normalizedResume);
+        int projectRelevance = estimateGeneralProjectRelevance(normalizedResume, resumeWords);
+        int keywordMatch = Math.min(100, (int) Math.round(((double) matchedSkillCount / genericSkills.size()) * 100));
+        int formattingScore = estimateGeneralFormattingScore(normalizedResume, originalResume);
+        int educationMatch = estimateGeneralEducationMatch(normalizedResume);
+
+        int score = (int) Math.round((skillsMatch * 0.25) + (experienceMatch * 0.2) + (keywordMatch * 0.2) + (projectRelevance * 0.15) + (formattingScore * 0.1) + (educationMatch * 0.1));
+        score = Math.max(0, Math.min(100, score));
+
+        List<Map<String, Object>> issues = buildGeneralIssues(normalizedResume, originalResume);
+        List<Map<String, Object>> recommendations = buildGeneralRecommendations(normalizedResume, matchedSkillCount, issues);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "General ATS review based on actual resume evidence. The score reflects structure, skills, experience, and formatting visibility rather than inferred job-specific gaps.");
+
+        Map<String, Object> subScores = new HashMap<>();
+        subScores.put("skillsMatch", skillsMatch);
+        subScores.put("experienceMatch", experienceMatch);
+        subScores.put("keywordMatch", keywordMatch);
+        subScores.put("projectRelevance", projectRelevance);
+        subScores.put("formattingScore", formattingScore);
+        subScores.put("educationMatch", educationMatch);
+        result.put("subScores", subScores);
+        result.put("score", calculateWeightedOverallScore(subScores));
+        result.put("scoreBreakdown", buildScoreBreakdown(subScores));
+
+        Map<String, Object> keywordAnalysis = new HashMap<>();
+        keywordAnalysis.put("matched", matched);
+        keywordAnalysis.put("missing", missing);
+        result.put("keywordAnalysis", keywordAnalysis);
+
+        List<String> strengths = new ArrayList<>();
+        if (matchedSkillCount > 0) {
+            String topSkill = matched.stream()
+                .limit(3)
+                .map(item -> String.valueOf(item.get("keyword")))
+                .filter(skill -> skill != null && !skill.isBlank())
+                .collect(java.util.stream.Collectors.joining(", "));
+            strengths.add("Resume contains recognizable technical terminology, including " + (topSkill.isEmpty() ? "core software skills" : topSkill) + ".");
+        }
+        if (normalizedResume.contains("experience") || normalizedResume.contains("work") || normalizedResume.contains("intern")) {
+            strengths.add("The resume clearly references work history or experience context that ATS engines can parse.");
+        }
+        if (normalizedResume.contains("education") || normalizedResume.contains("btech") || normalizedResume.contains("bachelor") || normalizedResume.contains("degree")) {
+            strengths.add("Academic background is present and readable for ATS evaluation.");
+        }
+        if (strengths.isEmpty()) strengths.add("The file contains readable content, but it would benefit from clearer section naming and more explicit technical evidence.");
+        result.put("strengths", strengths);
+
+        List<String> weaknesses = new ArrayList<>();
+        if (!issues.isEmpty()) {
+            for (Map<String, Object> issue : issues.stream().limit(3).toList()) {
+                String title = String.valueOf(issue.getOrDefault("title", "Resume issue"));
+                String detail = String.valueOf(issue.getOrDefault("detail", "Improve the resume section."));
+                weaknesses.add(title + " — " + detail);
+            }
+        }
+        if (weaknesses.isEmpty()) weaknesses.add("No major ATS issues were detected based on the parsed resume text.");
+        result.put("weaknesses", weaknesses);
+
+        List<Map<String, String>> improvements = new ArrayList<>();
+        for (Map<String, Object> recommendation : recommendations) {
+            Map<String, String> entry = new HashMap<>();
+            entry.put("section", String.valueOf(recommendation.getOrDefault("section", "Resume")));
+            entry.put("original", String.valueOf(recommendation.getOrDefault("original", "Current resume language.")));
+            entry.put("suggested", String.valueOf(recommendation.getOrDefault("action", "Add measurable technical outcomes and clearer resume structure.")));
+            improvements.add(entry);
+        }
+        result.put("improvements", improvements);
+
+        Map<String, Object> formatting = new HashMap<>();
+        formatting.put("bulletPointsCheck", normalizedResume.contains("- ") || normalizedResume.contains("•") || normalizedResume.contains("*") ? "Pass" : "Warning");
+        formatting.put("sectionHeaderCheck", (normalizedResume.contains("education") || normalizedResume.contains("experience") || normalizedResume.contains("skills") || normalizedResume.contains("projects")) ? "Pass" : "Warning");
+        formatting.put("tablesCheck", containsInvalidDateIssue(normalizedResume) ? "Warning" : "Pass");
+        formatting.put("feedback", "The resume is mostly ATS-readable, but clearer section labels, consistent dates, and measurable action statements would improve credibility and parse quality.");
+        formatting.put("verifiedIssues", issues);
+        formatting.put("potentialRisks", new ArrayList<>());
+        result.put("formattingAnalysis", formatting);
+
+        result.put("issues", issues);
+        result.put("recommendations", recommendations);
+        result.put("aiInsights", "This score reflects the resume's actual structure and wording. Improve with measurable results, consistent dates, and stronger section clarity to increase ATS readability without inventing qualifications.");
+        return result;
+    }
+
+    private List<Map<String, Object>> buildGeneralIssues(String normalizedResume, String originalResume) {
+        List<Map<String, Object>> issues = new ArrayList<>();
+
+        if (containsInvalidDateIssue(normalizedResume)) {
+            issues.add(buildIssue(
+                "Date format is inconsistent or invalid",
+                "Date values should follow one clear format and valid calendar ranges.",
+                extractDateEvidence(originalResume),
+                "Experience timeline",
+                "warning"
+            ));
+        }
+
+        if (!normalizedResume.contains("experience") && !normalizedResume.contains("work") && !normalizedResume.contains("intern")) {
+            issues.add(buildIssue(
+                "Experience section is not clearly labeled",
+                "ATS systems scan for standard work-history headings. A clear experience section improves parse reliability.",
+                "No explicit work-history language was detected in the resume text.",
+                "Experience section",
+                "info"
+            ));
+        }
+
+        if (!normalizedResume.contains("skills") && !normalizedResume.contains("technical") && !normalizedResume.contains("tools") && !normalizedResume.contains("programming")) {
+            issues.add(buildIssue(
+                "Skills are not clearly separated",
+                "A dedicated skills section helps ATS reading and recruiter scanning."
+                , "No explicit skills heading or searchable skill list was detected.",
+                "Skills section",
+                "warning"
+            ));
+        }
+
+        if (!normalizedResume.contains("education") && !normalizedResume.contains("btech") && !normalizedResume.contains("bachelor") && !normalizedResume.contains("degree")) {
+            issues.add(buildIssue(
+                "Education details are weak or missing",
+                "A graduation or degree section is important for ATS compatibility and recruiter screening.",
+                "No degree or education details were detected in the resume text.",
+                "Education section",
+                "warning"
+            ));
+        }
+
+        if (originalResume != null && originalResume.length() < 150) {
+            issues.add(buildIssue(
+                "Resume is too short to be a strong ATS candidate profile",
+                "The text is extremely brief, which makes it harder for ATS and recruiters to evaluate full qualifications.",
+                originalResume.length() > 0 ? originalResume.substring(0, Math.min(originalResume.length(), 120)) : "No usable resume body detected.",
+                "Resume completeness",
+                "warning"
+            ));
+        }
+
+        if (!normalizedResume.contains("@") && !normalizedResume.contains(".com") && !normalizedResume.contains("gmail") && !normalizedResume.contains("email")) {
+            issues.add(buildIssue(
+                "Contact information may be incomplete",
+                "ATS parsing and recruiter follow-up depend on clearly visible contact data.",
+                "No recognizable email or contact block was detected in the resume text.",
+                "Contact details",
+                "info"
+            ));
+        }
+
+        if (issues.isEmpty()) {
+            issues.add(buildIssue(
+                "No major parsing issues detected",
+                "The current resume structure is readable and consistent enough for ATS screening.",
+                "The document contains usable, scan-friendly text.",
+                "Overall resume quality",
+                "info"
+            ));
+        }
+
+        return issues;
+    }
+
+    private int calculateWeightedOverallScore(Map<String, Object> subScores) {
+        Map<String, Integer> weights = new LinkedHashMap<>();
+        weights.put("skillsMatch", 25);
+        weights.put("experienceMatch", 20);
+        weights.put("keywordMatch", 20);
+        weights.put("projectRelevance", 15);
+        weights.put("formattingScore", 10);
+        weights.put("educationMatch", 10);
+
+        int total = 0;
+        for (Map.Entry<String, Integer> entry : weights.entrySet()) {
+            Object rawValue = subScores != null ? subScores.get(entry.getKey()) : null;
+            int value = rawValue instanceof Number ? ((Number) rawValue).intValue() : 0;
+            total += Math.round((value * entry.getValue()) / 100.0f);
+        }
+        return Math.max(0, Math.min(100, total));
+    }
+
+    private Map<String, Object> buildScoreBreakdown(Map<String, Object> subScores) {
+        Map<String, Object> breakdown = new LinkedHashMap<>();
+        String[] categories = {"skillsMatch", "experienceMatch", "keywordMatch", "projectRelevance", "formattingScore", "educationMatch"};
+        int[] weights = {25, 20, 20, 15, 10, 10};
+
+        for (int i = 0; i < categories.length; i++) {
+            String category = categories[i];
+            Object rawValue = subScores != null ? subScores.get(category) : null;
+            int value = rawValue instanceof Number ? ((Number) rawValue).intValue() : 0;
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("score", value);
+            item.put("weight", weights[i]);
+            item.put("contribution", Math.round((value * weights[i]) / 100.0f));
+            item.put("label", switch (category) {
+                case "skillsMatch" -> "Skills evidence";
+                case "experienceMatch" -> "Experience depth";
+                case "keywordMatch" -> "Keyword coverage";
+                case "projectRelevance" -> "Project relevance";
+                case "formattingScore" -> "ATS formatting";
+                case "educationMatch" -> "Education fit";
+                default -> category;
+            });
+            breakdown.put(category, item);
+        }
+        return breakdown;
+    }
+
+    private List<Map<String, Object>> buildGeneralRecommendations(String normalizedResume, int matchedSkillCount, List<Map<String, Object>> issues) {
+        List<Map<String, Object>> recommendations = new ArrayList<>();
+
+        if (issues.stream().anyMatch(issue -> "Date format is inconsistent or invalid".equals(issue.get("title")))) {
+            recommendations.add(buildRecommendation(1, "Fix date formatting", "Clean up inconsistent or invalid dates. Standardize to one format like Jun 2023 – Aug 2024.", "Experience timeline", "Use a single date format and confirm month-year consistency across all jobs."));
+        }
+
+        if (matchedSkillCount < 5) {
+            recommendations.add(buildRecommendation(2, "Add richer technical evidence", "The resume should show more proven skill usage and project outcomes.", "Skills / projects", "Add concrete tools, technologies, and measurable business impact, such as improved API latency or reduced processing time."));
+        }
+
+        if (!normalizedResume.contains("experience") || !normalizedResume.contains("skills") || !normalizedResume.contains("education")) {
+            recommendations.add(buildRecommendation(3, "Improve section clarity", "ATS and recruiters scan for consistent headings and readibility.", "Resume structure", "Use standard headings like Experience, Skills, Projects, and Education in a consistent order."));
+        }
+
+        if (recommendations.isEmpty()) {
+            recommendations.add(buildRecommendation(1, "Quantify wins", "Your resume is structurally solid; strengthen it with measurable outcomes.", "Experience bullets", "Replace generic statements with impact-focused bullets that show scope, tools, and measurable outcomes."));
+        }
+
+        return recommendations;
+    }
+
+    private Map<String, Object> buildIssue(String title, String detail, String evidence, String section, String severity) {
+        Map<String, Object> issue = new HashMap<>();
+        issue.put("title", title);
+        issue.put("detail", detail);
+        issue.put("evidence", evidence == null || evidence.trim().isEmpty() ? "No direct evidence found in the parsed resume text." : evidence.trim());
+        issue.put("section", section);
+        issue.put("severity", severity);
+        return issue;
+    }
+
+    private Map<String, Object> buildRecommendation(int priority, String title, String reason, String section, String action) {
+        Map<String, Object> rec = new HashMap<>();
+        rec.put("priority", priority);
+        rec.put("title", title);
+        rec.put("reason", reason);
+        rec.put("section", section);
+        rec.put("action", action);
+        return rec;
+    }
+
+    private String extractDateEvidence(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return "No resume date text was detected.";
+        }
+
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(?:\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|\\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\s+\\d{4}\\b|\\b\\d{4}\\b)", java.util.regex.Pattern.CASE_INSENSITIVE);
+        java.util.regex.Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            return matcher.group(0);
+        }
+        return text.length() > 140 ? text.substring(0, 140) + "..." : text;
+    }
+
+    private int estimateGeneralFormattingScore(String normalizedResume, String originalResume) {
+        int score = 35;
+        if (normalizedResume.contains("@") && (normalizedResume.contains(".com") || normalizedResume.contains(".in") || normalizedResume.contains(".org") || normalizedResume.contains("gmail"))) score += 15;
+        if (normalizedResume.contains("experience") || normalizedResume.contains("skills") || normalizedResume.contains("education") || normalizedResume.contains("projects")) score += 15;
+        if (normalizedResume.contains("- ") || normalizedResume.contains("•") || normalizedResume.contains("*") || originalResume.contains("\n")) score += 15;
+        if (normalizedResume.contains("btech") || normalizedResume.contains("bachelor") || normalizedResume.contains("degree")) score += 10;
+        if (containsInvalidDateIssue(normalizedResume)) score = Math.max(0, score - 20);
+        if (normalizedResume.length() < 150) score = Math.max(0, score - 10);
+        return Math.min(100, score);
+    }
+
+    private int estimateGeneralEducationMatch(String normalizedResume) {
+        boolean hasDegree = normalizedResume.contains("btech") || normalizedResume.contains("bachelor") || normalizedResume.contains("degree") || normalizedResume.contains("masters") || normalizedResume.contains("mca") || normalizedResume.contains("graduate");
+        if (!hasDegree) return 35;
+        return 78;
+    }
+
+    private int estimateGeneralExperienceMatch(String normalizedResume) {
+        int score = 25;
+        if (normalizedResume.contains("experience") || normalizedResume.contains("worked") || normalizedResume.contains("intern")) score += 25;
+        if (normalizedResume.matches(".*(?:\\b(?:1|2|3|4|5|6|7|8|9|10)\\s*(?:years?|yrs?)\\b).*")) score += 20;
+        if (normalizedResume.contains("project") || normalizedResume.contains("delivered") || normalizedResume.contains("implemented")) score += 15;
+        if (normalizedResume.contains("team") || normalizedResume.contains("client") || normalizedResume.contains("production")) score += 10;
+        return Math.min(100, score);
+    }
+
+    private int estimateGeneralProjectRelevance(String normalizedResume, Set<String> resumeWords) {
+        boolean hasProjects = normalizedResume.contains("project") || normalizedResume.contains("portfolio") || normalizedResume.contains("capstone") || normalizedResume.contains("implementation");
+        if (!hasProjects) return 35;
+
+        int technicalSignal = 0;
+        for (String keyword : Arrays.asList("java", "python", "sql", "react", "spring", "javascript", "aws", "docker", "mongodb", "api", "rest", "html", "css", "git")) {
+            if (resumeWords.contains(keyword)) {
+                technicalSignal++;
+            }
+        }
+
+        if (technicalSignal >= 5) return 82;
+        if (technicalSignal >= 3) return 70;
+        if (technicalSignal >= 1) return 56;
+        return 45;
+    }
+
+    private String findEvidenceSnippet(String text, String keyword) {
+        if (text == null || text.trim().isEmpty()) {
+            return "No resume evidence found.";
+        }
+
+        String lowerText = text.toLowerCase(Locale.ROOT);
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return text.length() > 140 ? text.substring(0, 140) + "..." : text;
+        }
+
+        String lowerKeyword = keyword.toLowerCase(Locale.ROOT);
+        int index = lowerText.indexOf(lowerKeyword);
+        if (index >= 0) {
+            int start = Math.max(0, index - 40);
+            int end = Math.min(text.length(), index + keyword.length() + 80);
+            String snippet = text.substring(start, end).trim();
+            return snippet.length() > 180 ? snippet.substring(0, 180) + "..." : snippet;
+        }
+
+        String[] parts = text.split("(?<=[.!?])\\s+");
+        for (String part : parts) {
+            if (part.toLowerCase(Locale.ROOT).contains(lowerKeyword) || part.length() > 40 && part.contains(keyword.substring(0, Math.min(keyword.length(), 5)))) {
+                return part.trim();
+            }
+        }
+        return text.length() > 140 ? text.substring(0, 140) + "..." : text;
     }
 
     private Job getMockJobById(String id) {

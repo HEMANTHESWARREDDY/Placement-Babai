@@ -1,0 +1,62 @@
+[
+  {
+    "category": "Technical",
+    "content": "Explain the difference between process and thread in operating systems."
+  },
+  {
+    "category": "Technical",
+    "content": "What is normalization in databases, and why is it important?"
+  },
+  {
+    "category": "Technical",
+    "content": "Explain the basic principles of Object-Oriented Programming."
+  },
+  {
+    "category": "Technical",
+    "content": "What is the difference between REST and SOAP APIs?"
+  },
+  {
+    "category": "Programming",
+    "content": "Write a function to reverse a string in your preferred programming language."
+  },
+  {
+    "category": "Programming",
+    "content": "How would you find the first non-repeating character in a string?"
+  },
+  {
+    "category": "Programming",
+    "content": "Explain the concept of recursion and write a program to calculate the factorial of a number."
+  },
+  {
+    "category": "Programming",
+    "content": "How do you detect a cycle in a linked list?"
+  },
+  {
+    "category": "Managerial",
+    "content": "How do you prioritize your tasks when working on multiple projects with tight deadlines?"
+  },
+  {
+    "category": "Managerial",
+    "content": "Describe a situation where you had a disagreement with a team member. How did you resolve it?"
+  },
+  {
+    "category": "Managerial",
+    "content": "How do you handle constructive feedback or criticism on your code or work?"
+  },
+  {
+    "category": "Managerial",
+    "content": "Tell me about a time when you had to learn a new technology quickly to complete a project."
+  },
+  {
+    "category": "HR",
+    "content": "Why do you want to start your career at IBM?"
+  },
+  {
+    "category": "HR",
+    "content": "Where do you see yourself professionally in the next five years?"
+  },
+  {
+    "category": "HR",
+    "content": "What are your greatest strengths and weaknesses as a software engineer?"
+  }
+]

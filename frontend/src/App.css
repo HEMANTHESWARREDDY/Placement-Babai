@@ -142,6 +142,7 @@
 
 .nav-links a.active-nav {
   color: var(--primary-purple);
+  transform: translateX(-8px);
 }
 
 .nav-links a.active-nav::after {
@@ -3264,10 +3265,11 @@
   }
 }
 
-/* Shift header badge left on PC to prevent overlapping with nav links */
+/* Shift header badge left on desktop to match the mockup */
 @media (min-width: 769px) {
   .header-badge {
-    left: 44.5%;
+    left: 35% !important;
+    transform: translateX(0) !important;
   }
 }
 
@@ -3281,10 +3283,33 @@
   }
 }
 
+.ats-floating-button {
+  filter: drop-shadow(0 20px 35px rgba(11, 124, 182, 0.18));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
 .ats-floating-button:hover {
-  transform: scale(1.06) translateY(-4px) !important;
-  box-shadow: 0 12px 30px rgba(0, 115, 177, 0.45) !important;
-  background: linear-gradient(135deg, #0284c7, #005a8c) !important;
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 22px 35px rgba(2, 132, 199, 0.36) !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 40%, #075985 100%) !important;
+}
+
+.ats-floating-button:active {
+  transform: translateY(-1px) scale(0.99) !important;
+}
+
+.ats-floating-button-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.ats-floating-button-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.32), rgba(255,255,255,0.04));
+  pointer-events: none;
 }
 
 @media (max-width: 640px) {
@@ -3292,15 +3317,18 @@
     bottom: 20px !important;
     right: 15px !important;
     transform: none !important;
-    padding: 0.55rem 1.1rem !important;
-    font-size: 0.8rem !important;
+    padding: 0.4rem 0.9rem 0.4rem 0.42rem !important;
+    font-size: 0.82rem !important;
     white-space: nowrap !important;
   }
-  .ats-floating-button span {
-    font-size: 1rem !important;
+  .ats-floating-button-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 12px !important;
+    font-size: 1.05rem !important;
   }
   .ats-floating-button:hover {
-    transform: scale(1.02) translateY(-2px) !important;
+    transform: translateY(-2px) scale(1.01) !important;
   }
 }
 

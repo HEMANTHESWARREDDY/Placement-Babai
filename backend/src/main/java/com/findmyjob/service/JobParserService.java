@@ -22,7 +22,7 @@ public class JobParserService {
     private String geminiApiKey;
 
     // Use latest stable Gemini model
-    private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+    private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=";
 
     public boolean isGeminiConfigured() {
         return geminiApiKey != null && !geminiApiKey.trim().isEmpty();
