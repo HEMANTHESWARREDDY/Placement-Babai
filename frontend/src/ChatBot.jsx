@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import './ChatBot.css';
 
-const CHAT_API_KEY = 'REDACTED_OPENROUTER_KEY';
+const CHAT_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY || '';
 const USE_OPENROUTER = CHAT_API_KEY.startsWith('sk-or-v1-');
 const CHAT_API_URL = USE_OPENROUTER
   ? 'https://openrouter.ai/api/v1/chat/completions'
