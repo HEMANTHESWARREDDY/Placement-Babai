@@ -70,18 +70,22 @@ jobs:
           cd $HOME/app/
           rm -f app.log
           
-          # Pass the secrets directly to the Java process
-          export MONGODB_PASSWORD="${{ secrets.MONGODB_PASSWORD }}"
-          export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
-          
           # Find the latest deployed jar to prevent conflicts
           LATEST_JAR=$(ls -t *.jar | head -n1)
           echo "Running latest jar: $LATEST_JAR"
-          nohup java -jar -Dspring.profiles.active=prod "$LATEST_JAR" > app.log 2>&1 &
+
+          # Pass secrets inline so nohup inherits them correctly
+          nohup env \
+            MONGODB_PASSWORD="${{ secrets.MONGODB_PASSWORD }}" \
+            MONGODB_USER="${{ secrets.MONGODB_USER }}" \
+            GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
+            MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
+            MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+            java -jar -Dspring.profiles.active=prod "$LATEST_JAR" > app.log 2>&1 &
           
-          echo "Verifying startup (waiting 20s)..."
-          sleep 20
-          if pgrep -f '[f]indmyjob-backend' > /dev/null; then
+          echo "Verifying startup (waiting 30s)..."
+          sleep 30
+          if pgrep -f 'findmyjob' > /dev/null; then
             echo "✅ SUCCESS: App is running on port 8080."
           else
             echo "❌ FAILED: App crashed. Check logs below:"
