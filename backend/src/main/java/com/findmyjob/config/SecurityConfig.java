@@ -52,7 +52,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
-                "http://localhost:5173",
+                "http://localhost:*",
+                "https://*.vercel.app",
                 "https://main.d1smp3vpptz385.amplifyapp.com",
                 "https://placementbabai.online",
                 "https://www.placementbabai.online",
