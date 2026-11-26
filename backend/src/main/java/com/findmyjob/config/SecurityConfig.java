@@ -56,8 +56,7 @@ public class SecurityConfig {
                 "https://*.vercel.app",
                 "https://main.d1smp3vpptz385.amplifyapp.com",
                 "https://placementbabai.online",
-                "https://www.placementbabai.online",
-                "*"
+                "https://www.placementbabai.online"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
