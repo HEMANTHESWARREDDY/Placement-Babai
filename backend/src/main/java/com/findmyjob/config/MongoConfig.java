@@ -27,7 +27,7 @@ public class MongoConfig {
     @Value("${MONGODB_USER:hemanth14082004_db_user}")
     private String mongoUser;
 
-    @Value("${MONGODB_PASSWORD:Bobby@1408}")
+    @Value("${MONGODB_PASSWORD:aeC3JKZwThXd6U}")
     private String mongoPassword;
 
     @Bean
