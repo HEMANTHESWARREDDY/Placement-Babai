@@ -1,11 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { API_BASE_URL } from './config';
 import './ChatBot.css';
-
-const CHAT_API_KEY = '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';
-const USE_OPENROUTER = CHAT_API_KEY.startsWith('sk-or-v1-');
-const CHAT_API_URL = USE_OPENROUTER
-  ? 'https://openrouter.ai/api/v1/chat/completions'
-  : `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CHAT_API_KEY}`;
 
 const SITE_CONTEXT = `You are "AI Babai", the friendly AI assistant for Placement Babai — India's trusted off-campus placement and career platform.
 
@@ -355,41 +350,18 @@ function ChatBot({ onNavigate, onOpenAts, onAssistantQuery }) {
     });
 
     try {
-      const requestBody = USE_OPENROUTER
-        ? {
-            model: 'openai/gpt-oss-20b',
-            messages: [
-              { role: 'system', content: SITE_CONTEXT },
-              ...conversationHistory.current.map((entry) => ({
-                role: entry.role === 'user' ? 'user' : 'assistant',
-                content: (entry.parts || []).map((part) => part.text).join('\n') || ''
-              }))
-            ],
-            temperature: 0.65,
-            max_tokens: 350,
-          }
-        : {
-            system_instruction: {
-              parts: [{ text: SITE_CONTEXT }]
-            },
-            contents: conversationHistory.current,
-            generationConfig: {
-              maxOutputTokens: 350,
-              temperature: 0.65,
-            }
-          };
+      const messagesPayload = [
+        { role: 'system', content: SITE_CONTEXT },
+        ...conversationHistory.current.map((entry) => ({
+          role: entry.role === 'user' ? 'user' : 'assistant',
+          content: (entry.parts || []).map((part) => part.text).join('\n') || ''
+        }))
+      ];
 
-      const response = await fetch(CHAT_API_URL, {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
-        headers: USE_OPENROUTER
-          ? {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${CHAT_API_KEY}`,
-              'HTTP-Referer': 'http://localhost:5174',
-              'X-Title': 'PlacementBabai',
-            }
-          : { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messagesPayload })
       });
 
       if (!response.ok) {
@@ -397,15 +369,9 @@ function ChatBot({ onNavigate, onOpenAts, onAssistantQuery }) {
       }
 
       const data = await response.json();
-      const rawText = USE_OPENROUTER
-        ? (
-            data?.choices?.[0]?.message?.content ||
-            "I'm not sure about that. Could you rephrase, or try asking about jobs, mentors, interview prep, or resume review?"
-          )
-        : (
-            data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "I'm not sure about that. Could you rephrase, or try asking about jobs, mentors, interview prep, or resume review?"
-          );
+      const rawText =
+        data?.reply ||
+        "I'm not sure about that. Could you rephrase, or try asking about jobs, mentors, interview prep, or resume review?";
 
       const parsed = parseResponse(rawText);
 
