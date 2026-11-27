@@ -4289,47 +4289,7 @@ onClick={() => { setActiveTab('mcq-battle'); backToMenu(); }}
 
 
 
-<div className="ph-card" onClick={() => startGame('zip')}>
 
-
-
-<div className="ph-card-header">
-
-
-
-<span className="ph-card-icon">🔗</span>
-
-
-
-<h3>Zip Puzzle</h3>
-
-
-
-</div>
-
-
-
-<p>Connect sequential numbers and fill every grid cell exactly once without crossing walls.</p>
-
-
-
-<div className="ph-card-meta">
-
-
-
-<span className="ph-card-reward">🏆 +20 XP</span>
-
-
-
-<div className="ph-personal-best">Personal Best: {highScores['zip'] || 0}/2 Levels</div>
-
-
-
-</div>
-
-
-
-</div>
 
 
 
@@ -6226,801 +6186,6 @@ style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.9rem' }}
 
 
 )}
-
-
-
-{/* Game 6: Zip Puzzle Play Zone */}
-
-
-
-{activeGame === 'zip' && (() => {
-
-
-
-const level = ZIP_LEVEL;
-
-
-
-return (
-
-
-
-<div className="ph-play-zone">
-
-
-
-<div className="ph-play-header">
-
-
-
-<div className="ph-play-title-wrap">
-
-
-
-<span className="ph-play-icon">🔗</span>
-
-
-
-<h2>Zip Puzzle Challenge</h2>
-
-
-
-</div>
-
-
-
-<button className="ph-btn-back" onClick={backToMenu}>✖ <span className="ph-btn-back-text">Quit Game</span></button>
-
-
-
-</div>
-
-
-
-<div className="zip-goal-timer-wrapper">
-
-
-
-<span className="zip-goal-text">
-
-
-
-{zipWin ? "🎉 Puzzle Solved!" : "Goal: Connect 1 to 8 sequentially and fill every cell!"}
-
-
-
-</span>
-
-
-
-<span className="zip-timer-text">
-
-
-
-⏱️ {formatTime(zipTime)}
-
-
-
-</span>
-
-
-
-</div>
-
-
-
-<div style={{ position: 'relative' }}>
-
-
-
-<div className="zip-grid-container" style={{ display: 'flex', justifyContent: 'center', margin: '1.5rem 0' }}>
-
-
-
-<div
-
-
-
-className="zip-grid"
-
-
-
-onTouchMove={(e) => handleTouchMove(e, level)}
-
-
-
-onTouchEnd={() => setIsDrawing(false)}
-
-
-
-style={{
-
-
-
-display: 'grid',
-
-
-
-gridTemplateColumns: `repeat(${level.cols}, var(--zip-cell-size, 60px))`,
-
-
-
-gridTemplateRows: `repeat(${level.rows}, var(--zip-cell-size, 60px))`,
-
-
-
-'--zip-cell-size': '60px',
-
-
-
-gap: '0px',
-
-
-
-background: '#e2e8f0',
-
-
-
-padding: '8px',
-
-
-
-borderRadius: '16px',
-
-
-
-boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-
-
-
-opacity: zipWin ? 0.65 : 1,
-
-
-
-transition: 'opacity 0.3s'
-
-
-
-}}
-
-
-
->
-
-
-
-{Array.from({ length: level.rows }).map((_, r) => (
-
-
-
-Array.from({ length: level.cols }).map((_, c) => {
-
-
-
-const numVal = level.numbers[`${r},${c}`];
-
-
-
-const conn = getPathConnections(r, c);
-
-
-
-const isPath = conn.pairIdx !== -1;
-
-
-
-const activePath = zipPaths[activePair];
-
-
-
-const isHead = activePath && activePath.length > 0 && activePath[activePath.length - 1][0] === r && activePath[activePath.length - 1][1] === c;
-
-
-
-// Border/wall checks (match 0-indexed walls key format)
-
-
-
-const borderRight = level.walls[`V:${r},${c}`] ? '4px solid #0f172a' : '1px solid #cbd5e1';
-
-
-
-const borderBottom = level.walls[`H:${r},${c}`] ? '4px solid #0f172a' : '1px solid #cbd5e1';
-
-
-
-const cellBg = isPath ? `${conn.color}22` : '#ffffff';
-
-
-
-const activeStyle = {
-
-
-
-width: 'var(--zip-cell-size, 60px)',
-
-
-
-height: 'var(--zip-cell-size, 60px)',
-
-
-
-position: 'relative',
-
-
-
-'--segment-color': conn.color || '#2563eb'
-
-
-
-};
-
-
-
-return (
-
-
-
-<div
-
-
-
-key={`${r}-${c}`}
-
-
-
-className={`zip-cell ${isPath ? 'path-cell' : ''} ${isHead ? 'head-cell' : ''}`}
-
-
-
-style={activeStyle}
-
-
-
-data-row={r}
-
-
-
-data-col={c}
-
-
-
-onMouseDown={(e) => { e.preventDefault(); handleDragStart(r, c, level); }}
-
-
-
-onMouseEnter={() => handleDragMove(r, c, level)}
-
-
-
-onTouchStart={(e) => { if (e.cancelable) e.preventDefault(); handleDragStart(r, c, level); }}
-
-
-
->
-
-
-
-{/* Clean cell background overlay */}
-
-
-
-<div
-
-
-
-className="zip-cell-bg"
-
-
-
-style={{
-
-
-
-position: 'absolute',
-
-
-
-top: 0,
-
-
-
-left: 0,
-
-
-
-right: 0,
-
-
-
-bottom: 0,
-
-
-
-background: cellBg,
-
-
-
-zIndex: 1
-
-
-
-}}
-
-
-
-/>
-
-
-
-{isPath && (
-
-
-
-<div className="zip-path-dot" />
-
-
-
-)}
-
-
-
-{numVal && (
-
-
-
-<div className="zip-number-circle" style={{ background: SEGMENT_COLORS[Math.floor((numVal - 1) / 2) % SEGMENT_COLORS.length], color: '#ffffff', zIndex: 10 }}>
-
-
-
-{numVal}
-
-
-
-</div>
-
-
-
-)}
-
-
-
-{conn.top && <div className="zip-line zip-line-top" />}
-
-
-
-{conn.bottom && <div className="zip-line zip-line-bottom" />}
-
-
-
-{conn.left && <div className="zip-line zip-line-left" />}
-
-
-
-{conn.right && <div className="zip-line zip-line-right" />}
-
-
-
-{/* Cell borders and walls overlay on top of the paths */}
-
-
-
-<div
-
-
-
-className="zip-cell-borders"
-
-
-
-style={{
-
-
-
-position: 'absolute',
-
-
-
-top: 0,
-
-
-
-left: 0,
-
-
-
-right: 0,
-
-
-
-bottom: 0,
-
-
-
-borderTop: r === 0 ? '1px solid #cbd5e1' : undefined,
-
-
-
-borderLeft: c === 0 ? '1px solid #cbd5e1' : undefined,
-
-
-
-borderRight: borderRight,
-
-
-
-borderBottom: borderBottom,
-
-
-
-pointerEvents: 'none',
-
-
-
-zIndex: 5
-
-
-
-}}
-
-
-
-/>
-
-
-
-</div>
-
-
-
-);
-
-
-
-})
-
-
-
-))}
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-{zipWin && (
-
-
-
-<div style={{
-
-
-
-position: 'absolute',
-
-
-
-top: 0,
-
-
-
-left: 0,
-
-
-
-right: 0,
-
-
-
-bottom: 0,
-
-
-
-background: 'rgba(255, 255, 255, 0.85)',
-
-
-
-backdropFilter: 'blur(3px)',
-
-
-
-display: 'flex',
-
-
-
-flexDirection: 'column',
-
-
-
-alignItems: 'center',
-
-
-
-justifyContent: 'center',
-
-
-
-borderRadius: '16px',
-
-
-
-zIndex: 50,
-
-
-
-padding: '2rem',
-
-
-
-textAlign: 'center',
-
-
-
-boxShadow: 'inset 0 0 20px rgba(0,0,0,0.05)'
-
-
-
-}}>
-
-
-
-<div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🏆</div>
-
-
-
-<h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--ph-text)', marginBottom: '0.5rem' }}>Puzzle Solved!</h2>
-
-
-
-<p style={{ color: '#64748b', marginBottom: '1.5rem', fontWeight: '500' }}>You connected all zip links in order and filled the entire grid!</p>
-
-
-
-<div className="ph-results-grid" style={{ marginBottom: '2rem', width: '100%', maxWidth: '300px' }}>
-
-
-
-<div className="ph-results-stat">
-
-
-
-<span className="ph-results-stat-val">+{level.xp} XP</span>
-
-
-
-<div>XP Reward</div>
-
-
-
-</div>
-
-
-
-<div className="ph-results-stat">
-
-
-
-<span className="ph-results-stat-val">{formatTime(zipTime)}</span>
-
-
-
-<div>Clear Time</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-<button className="ph-btn-primary ph-btn-scorecard-quit" onClick={backToMenu} style={{ marginTop: 0 }}>
-
-
-
-Back to Hub
-
-
-
-</button>
-
-
-
-</div>
-
-
-
-)}
-
-
-
-</div>
-
-
-
-<div className="zip-controls" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
-
-
-
-<button
-
-
-
-className={`zip-btn ${zipHistory.length === 0 || zipWin ? 'disabled' : ''}`}
-
-
-
-onClick={handleZipUndo}
-
-
-
-disabled={zipHistory.length === 0 || zipWin}
-
-
-
-style={{ minWidth: '130px' }}
-
-
-
->
-
-
-
-↩ Undo<span className="zip-btn-extra-text"> Step</span>
-
-
-
-</button>
-
-
-
-<button className="zip-btn" onClick={handleZipReset} style={{ minWidth: '130px' }} disabled={zipWin}>
-
-
-
-🔄 Reset<span className="zip-btn-extra-text"> Board</span>
-
-
-
-</button>
-
-
-
-<button
-  className={`zip-btn ${zipWin || hintCooldown > 0 ? 'disabled' : ''}`}
-  onClick={() => handleZipHint(level)}
-  style={{ minWidth: '130px' }}
-  disabled={zipWin || hintCooldown > 0}
->
-  💡 {hintCooldown > 0 ? `Hint (${hintCooldown}s)` : "Get Hint"}
-</button>
-
-
-
-</div>
-
-
-
-<div className="zip-how-to-play">
-
-
-
-<div className="zip-how-title">🎮 How to Play</div>
-
-
-
-<div className="zip-how-grid">
-
-
-
-<div className="zip-how-item">
-
-
-
-<span className="zip-how-icon">1️⃣</span>
-
-
-
-<div className="zip-how-text-group">
-
-
-
-<div style={{ fontWeight: '700', color: 'var(--ph-text)' }}>Draw Path</div>
-
-
-
-<span className="zip-how-text">Connect all numbers in order (1 → 2 → 3 → 4 → 5 → 6 → 7 → 8) in a single continuous line. Click/drag starting from 1.</span>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-<div className="zip-how-item">
-
-
-
-<span className="zip-how-icon">🗺️</span>
-
-
-
-<div className="zip-how-text-group">
-
-
-
-<div style={{ fontWeight: '700', color: 'var(--ph-text)' }}>Fill the Grid</div>
-
-
-
-<span className="zip-how-text">Your path must pass through every single cell in the grid exactly once.</span>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-<div className="zip-how-item">
-
-
-
-<span className="zip-how-icon">⭐</span>
-
-
-
-<div className="zip-how-text-group">
-
-
-
-<div style={{ fontWeight: '700', color: 'var(--ph-text)' }}>Avoid Barriers</div>
-
-
-
-<span className="zip-how-text">Do not cross any thick black walls between cells.</span>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-);
-
-
-
-})()}
 
 
 
